@@ -25,9 +25,6 @@ export default function RootLayout({ children }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   return (
     <MainWrapper className="mainwrapper">
-      {/* ------------------------------------------- */}
-      {/* Sidebar */}
-      {/* ------------------------------------------- */}
       <Sidebar
         isSidebarOpen={sidebarOpen}
         isMobileSidebarOpen={mobileSidebarOpen}
