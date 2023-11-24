@@ -3,7 +3,7 @@
 import { Breadcrumbs, Typography } from "@mui/material";
 import Link from "next/link";
 
-import ProjectList from "/components/projects";
+import ProjectList from "/components/projects/List";
 import DashboardCard from "/components/shared/DashboardCard";
 import PageContainer from "/components/container/PageContainer";
 

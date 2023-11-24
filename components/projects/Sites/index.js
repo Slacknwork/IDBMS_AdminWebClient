@@ -46,7 +46,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ProjectDetails() {
+export default function ProjectList() {
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Table
@@ -143,7 +143,7 @@ export default function ProjectDetails() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}/tasks/1`}
+                  href={`/projects/${product.id}`}
                 >
                   Thông tin
                 </Button>
