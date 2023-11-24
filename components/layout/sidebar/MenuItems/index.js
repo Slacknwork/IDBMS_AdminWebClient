@@ -9,13 +9,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Dashboard",
+    title: "Trang chủ",
     icon: IconLayoutDashboard,
     href: "/",
   },
   {
     id: uniqueId(),
-    title: "Projects",
+    title: "Dự án",
     icon: IconFileInvoice,
     href: "/projects",
   },
