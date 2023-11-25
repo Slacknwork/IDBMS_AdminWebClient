@@ -13,7 +13,14 @@ import {
   TableHead,
   TableRow,
   Chip,
+  FormControl,
+  TextField,
+  InputAdornment,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
+import { IconSearch } from "@tabler/icons-react";
 
 const products = [
   {
@@ -49,6 +56,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectList() {
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <Box sx={{ mt: 2 }}>
+        <FormControl sx={{ mt: 2, minWidth: 300 }}>
+          <TextField
+            label="Tìm kiếm"
+            size="small"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconSearch />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </FormControl>
+        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+          <InputLabel>Age</InputLabel>
+          <Select labelId="demo-simple-select-label" label="Age">
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       <Table
         aria-label="simple table"
         sx={{

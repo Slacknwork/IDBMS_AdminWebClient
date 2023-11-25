@@ -140,7 +140,7 @@ export default function RoomList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${params.id}/sites/${params.siteId}/floors/${params.floorId}/rooms/${params.roomId}`}
+                  href={`/projects/${params.id}/sites/${params.siteId}/floors/${params.floorId}/rooms/${room.id}`}
                 >
                   Chi tiết
                 </Button>
