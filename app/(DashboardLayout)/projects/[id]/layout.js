@@ -14,13 +14,15 @@ export default function ClientLayout({ children }) {
   return (
     <PageContainer title={projectName}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-        <Link underline="hover" color="inherit" href="/">
-          Trang chủ
+        <Link href="/">
+          <Typography>Trang chủ</Typography>
         </Link>
-        <Link underline="hover" color="inherit" href="/projects">
-          Danh sách dự án
+        <Link href="/projects">
+          <Typography>Dự án</Typography>
         </Link>
-        <Typography color="text.primary">Thông tin dự án</Typography>
+        <Typography variant="subtitle2" fontWeight={600}>
+          Thông tin dự án
+        </Typography>
       </Breadcrumbs>
       <DashboardCard title={projectName}>
         <Tabs uriPos={3} tabs={TabItems}></Tabs>

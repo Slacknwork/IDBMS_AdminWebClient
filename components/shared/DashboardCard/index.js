@@ -1,18 +1,6 @@
 import React from "react";
 import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 
-type Props = {
-  title?: string;
-  subtitle?: string;
-  action?: JSX.Element | any;
-  footer?: JSX.Element;
-  cardheading?: string | JSX.Element;
-  headtitle?: string | JSX.Element;
-  headsubtitle?: string | JSX.Element;
-  children?: JSX.Element;
-  middlecontent?: string | JSX.Element;
-};
-
 const DashboardCard = ({
   title,
   subtitle,
@@ -23,7 +11,7 @@ const DashboardCard = ({
   headtitle,
   headsubtitle,
   middlecontent,
-}: Props) => {
+}) => {
   return (
     <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
       {cardheading ? (

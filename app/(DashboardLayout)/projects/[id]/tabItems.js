@@ -1,27 +1,27 @@
 const items = [
   {
     path: "",
-    label: "Overview",
+    label: "Tổng quan",
   },
   {
     path: "tasks",
-    label: "Tasks",
+    label: "Công việc",
   },
   {
     path: "comments",
-    label: "Comments",
+    label: "Bình luận",
   },
   {
     path: "items",
-    label: "Items",
+    label: "Đồ nội thất",
   },
   {
     path: "documents",
-    label: "Documents",
+    label: "Tài liệu",
   },
   {
     path: "payment",
-    label: "Payment",
+    label: "Thanh toán",
   },
 ];
 

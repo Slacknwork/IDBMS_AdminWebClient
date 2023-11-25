@@ -13,23 +13,25 @@ export default function ProjectDetailTabs({ uriPos, tabs }) {
 
   paths[uriPos] = paths[uriPos] || "";
 
-  const [activeTab, setActiveTab] = useState(
-    tabs.findIndex((p) => paths[uriPos] === p.path)
-  );
+  const [activeTab, setActiveTab] = useState(() => {
+    const itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
+    return itemIndex < 0 ? 0 : itemIndex;
+  });
 
   useEffect(() => {
     const itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
-    setActiveTab(itemIndex);
+    setActiveTab(itemIndex < 0 ? 0 : itemIndex);
   }, [paths, tabs, uriPos]);
 
   const handleTabChange = (event, index) => {
+    console.log(urlBuild);
     router.push(`${urlBuild}/${tabs[index].path}`);
   };
 
   return (
     <Tabs value={activeTab} onChange={handleTabChange}>
       {tabs.map((tab) => {
-        return <Tab label={tab.label} key={tab.id}></Tab>;
+        return <Tab label={tab.label} key={tab.path}></Tab>;
       })}
     </Tabs>
   );

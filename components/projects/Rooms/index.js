@@ -16,12 +16,13 @@ import {
   TableRow,
 } from "@mui/material";
 
-const sites = [
+const rooms = [
   {
     id: "1",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    usePurpose: "to live in and do stuffs",
+    roomNo: 1,
+    roomTypeId: 1,
+    usePurpose: "Sleep ZZZZZZZZZ",
+    pricePerArea: 10,
     area: 200,
   },
 ];
@@ -45,13 +46,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ProjectList() {
+export default function RoomList() {
   const params = useParams();
-
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Typography sx={{ mt: 2 }}>Công trình</Typography>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2 }}>
+        <Link href={`/projects/${params.id}`}>
+          <Typography>Công trình</Typography>
+        </Link>
+        <Link href={`/projects/${params.id}/sites/${params.siteId}`}>
+          <Typography>Tầng</Typography>
+        </Link>
+        <Typography>Phòng</Typography>
       </Breadcrumbs>
       <Table
         aria-label="simple table"
@@ -64,12 +70,12 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên
+                Phòng số
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Địa chỉ
+                Loại phòng
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -79,33 +85,53 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
+                Đơn giá
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
                 Diện tích
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Tổng giá
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {sites.map((site) => (
-            <StyledTableRow key={site.id}>
+          {rooms.map((room) => (
+            <StyledTableRow key={room.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.name}
+                  {room.roomNo}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.address}
+                  {room.roomTypeId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.usePurpose}
+                  {room.usePurpose}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.area}m2
+                  {room.pricePerArea}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {room.area}m2
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {room.pricePerArea * room.area}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -114,7 +140,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${params.id}/sites/${site.id}`}
+                  href={`/projects/${params.id}/sites/${params.siteId}/floors/${params.floorId}/rooms/${params.roomId}`}
                 >
                   Chi tiết
                 </Button>

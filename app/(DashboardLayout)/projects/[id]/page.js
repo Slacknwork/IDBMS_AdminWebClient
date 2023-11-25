@@ -3,5 +3,9 @@
 import ProjectSites from "/components/projects/Sites";
 
 export default function ProjectDetailsPage() {
-  return <ProjectSites></ProjectSites>;
+  return (
+    <div>
+      <ProjectSites></ProjectSites>
+    </div>
+  );
 }

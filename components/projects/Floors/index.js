@@ -16,12 +16,17 @@ import {
   TableRow,
 } from "@mui/material";
 
-const sites = [
+const floors = [
   {
     id: "1",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    usePurpose: "to live in and do stuffs",
+    floorNo: 1,
+    usePurpose: "Kitchen & Living room",
+    area: 200,
+  },
+  {
+    id: "2",
+    floorNo: 2,
+    usePurpose: "Bedrooms & Balcony",
     area: 200,
   },
 ];
@@ -50,8 +55,11 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Typography sx={{ mt: 2 }}>Công trình</Typography>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2 }}>
+        <Link href={`/projects/${params.id}`}>
+          <Typography>Công trình</Typography>
+        </Link>
+        <Typography>Tầng</Typography>
       </Breadcrumbs>
       <Table
         aria-label="simple table"
@@ -62,14 +70,9 @@ export default function ProjectList() {
       >
         <TableHead>
           <TableRow>
-            <StyledTableCell>
+            <StyledTableCell size="small">
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Địa chỉ
+                Tầng
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -86,26 +89,21 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sites.map((site) => (
-            <StyledTableRow key={site.id}>
-              <TableCell>
+          {floors.map((floor) => (
+            <StyledTableRow key={floor.id}>
+              <TableCell align="right" size="small">
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.name}
+                  {floor.floorNo}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.address}
+                  {floor.usePurpose}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.usePurpose}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {site.area}m2
+                  {floor.area}m2
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -114,7 +112,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${params.id}/sites/${site.id}`}
+                  href={`/projects/${params.id}/sites/${params.siteId}/floors/${floor.id}`}
                 >
                   Chi tiết
                 </Button>
