@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -22,16 +22,16 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const projects = [
+import ProjectParticipantModal from "./Modal";
+
+const participants = [
   {
     id: "1",
-    name: "COOLNAME Building",
-    companyName: "COOLNAME Co.",
-    projectType: 0,
-    language: 0,
+    name: "Architect Merlot",
+    email: "merlot@something.com",
+    role: 1,
     status: 0,
-    estimatePrice: 200,
-    finalPrice: 200,
+    language: 0,
   },
 ];
 
@@ -54,7 +54,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ProjectList() {
+export default function ProjectParticipants() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -72,14 +76,35 @@ export default function ProjectList() {
             }}
           />
         </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
+        <FormControl sx={{ ml: 2, mt: 2, minWidth: 150 }} size="small">
+          <InputLabel>Vai trò</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
         </FormControl>
+        <FormControl sx={{ ml: 2, mt: 2, minWidth: 150 }} size="small">
+          <InputLabel>Trạng thái</InputLabel>
+          <Select labelId="demo-simple-select-label" label="Age">
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          sx={{ ml: 2, mt: 2 }}
+          variant="contained"
+          disableElevation
+          color="primary"
+          onClick={handleModalOpen}
+        >
+          Thêm thành viên
+        </Button>
+        <ProjectParticipantModal
+          open={modalOpen}
+          onClose={handleModalClose}
+        ></ProjectParticipantModal>
       </Box>
       <Table
         aria-label="simple table"
@@ -92,12 +117,12 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên dự án
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại dự án
+                Vai trò
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -110,17 +135,12 @@ export default function ProjectList() {
                 Trạng thái
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Giá ước tính / Quyết toán
-              </Typography>
-            </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {projects.map((project) => (
-            <StyledTableRow key={project.name}>
+          {participants.map((participant) => (
+            <StyledTableRow key={participant.name}>
               <TableCell>
                 <Box
                   sx={{
@@ -130,7 +150,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {project.name}
+                      {participant.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -138,45 +158,35 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {project.companyName}
+                      {participant.email}
                     </Typography>
                   </Box>
                 </Box>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.projectType}
+                  {participant.role}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.language}
+                  {participant.language}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
-                  label={project.status}
+                  label={participant.status}
                 ></Chip>
               </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.estimatePrice}
-                </Typography>
-              </TableCell>
               <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/projects/${project.id}`}
-                >
-                  Thông tin
+                <Button variant="contained" disableElevation color="error">
+                  Xóa
                 </Button>
               </TableCell>
             </StyledTableRow>

@@ -20,7 +20,7 @@ const items = [
     label: "Tài liệu",
   },
   {
-    path: "participations",
+    path: "participants",
     label: "Thành viên",
   },
   {
