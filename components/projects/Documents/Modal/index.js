@@ -63,19 +63,23 @@ export default function ProjectDocumentModal({ open, onClose }) {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={12}>
+            <Box>
+              <Button
+                sx={{ mr: 2 }}
+                variant="contained"
+                disableElevation
+                component="label"
+              >
+                Chọn file <input type="file" hidden />
+              </Button>
+              Tên file
+            </Box>
+          </Grid>
+          <Grid item xs={12} lg={8}>
             <FormControlLabel control={<Checkbox />} label="Công khai" />
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <Button
-              variant="contained"
-              disableElevation
-              color="primary"
-              fullWidth
-            >
-              Chọn file
-            </Button>
-          </Grid>
+
           <Grid item xs={12} lg={4}>
             <Button
               variant="contained"
