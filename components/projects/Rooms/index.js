@@ -19,7 +19,6 @@ import {
 const rooms = [
   {
     id: "1",
-    roomNo: 1,
     roomTypeId: 1,
     usePurpose: "Sleep ZZZZZZZZZ",
     pricePerArea: 10,
@@ -70,11 +69,6 @@ export default function RoomList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Phòng số
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Loại phòng
               </Typography>
             </StyledTableCell>
@@ -104,11 +98,6 @@ export default function RoomList() {
         <TableBody>
           {rooms.map((room) => (
             <StyledTableRow key={room.id}>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {room.roomNo}
-                </Typography>
-              </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {room.roomTypeId}

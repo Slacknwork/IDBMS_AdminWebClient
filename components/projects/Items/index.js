@@ -80,7 +80,6 @@ export default function ProjectList() {
           </Select>
         </FormControl>
       </Box>
-
       <Table
         aria-label="simple table"
         sx={{
