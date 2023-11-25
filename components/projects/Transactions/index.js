@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -23,13 +24,20 @@ import { IconSearch } from "@tabler/icons-react";
 
 import ProjectDocumentModal from "./Modal";
 
-const documents = [
+const transactions = [
   {
     id: "1",
-    name: "Contract",
+    project: {
+      name: "COOLNAME Building",
+    },
+    type: 1,
+    amount: 500,
     createdDate: "1/1/2023",
-    category: 1,
-    url: "asdfasdfasdf",
+    status: 0,
+    user: {
+      name: "Some random guy",
+      email: "random@mail.com",
+    },
   },
 ];
 
@@ -89,7 +97,7 @@ export default function ProjectList() {
           color="primary"
           onClick={handleModalOpen}
         >
-          Thêm tài liệu
+          Tạo giao dịch
         </Button>
         <ProjectDocumentModal
           open={modalOpen}
@@ -107,7 +115,22 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên
+                Dự án
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Loại giao dịch
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Số tiền
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Người tạo
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -117,19 +140,15 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại tài liệu
+                Trạng thái
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tải xuống
-              </Typography>
-            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {documents.map((document) => (
-            <StyledTableRow key={document.id}>
+          {transactions.map((transaction) => (
+            <StyledTableRow key={transaction.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -137,22 +156,66 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {document.name}
+                  {transaction.project.name}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.createdDate}
-                </Typography>
+                <Chip
+                  sx={{
+                    px: "4px",
+                    backgroundColor: "primary.main",
+                    color: "#fff",
+                  }}
+                  size="small"
+                  label={`${transaction.type}`}
+                ></Chip>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {document.category}
+                  {transaction.amount}
                 </Typography>
+              </TableCell>
+              <TableCell>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      {transaction.user.name}
+                    </Typography>
+                    <Typography
+                      color="textSecondary"
+                      sx={{
+                        fontSize: "13px",
+                      }}
+                    >
+                      {transaction.user.email}
+                    </Typography>
+                  </Box>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {transaction.createdDate}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Chip
+                  sx={{
+                    px: "4px",
+                    backgroundColor: "primary.main",
+                    color: "#fff",
+                  }}
+                  size="small"
+                  label={`${transaction.status}`}
+                ></Chip>
               </TableCell>
               <TableCell align="right">
                 <Button variant="contained" disableElevation color="primary">
-                  Tải xuống
+                  Chi tiết
                 </Button>
               </TableCell>
             </StyledTableRow>

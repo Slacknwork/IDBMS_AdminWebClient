@@ -21,16 +21,17 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
+import { useSearchParams } from "next/navigation";
 
-const products = [
+const stages = [
   {
     id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
+    stageNo: 1,
+    name: "Pre-order",
+    pricePercentage: 30,
+    status: 0,
+    isPrepaid: true,
+    endTimePayment: "1/1/2023",
   },
 ];
 
@@ -53,34 +54,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ProjectList() {
+export default function ProjectPayments() {
+  const params = useSearchParams();
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ mt: 2 }}>
-        <FormControl sx={{ mt: 2, minWidth: 300 }}>
-          <TextField
-            label="Tìm kiếm"
-            size="small"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconSearch />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-
       <Table
         aria-label="simple table"
         sx={{
@@ -92,34 +69,40 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
+                Giai đoạn
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Phần trăm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Trạng thái
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Đã trả trước
               </Typography>
             </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Thời hạn
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {stages.map((stage) => (
+            <StyledTableRow key={stage.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -127,47 +110,45 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {stage.stageNo}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
+                  {stage.name}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                      {product.post}
-                    </Typography>
-                  </Box>
-                </Box>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {stage.pricePercentage}
+                </Typography>
               </TableCell>
-
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.priority}
+                  label={stage.status}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Chip
+                  sx={{
+                    px: "4px",
+                    backgroundColor: "primary.main",
+                    color: "#fff",
+                  }}
+                  size="small"
+                  label={stage.isPrepaid}
+                ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {stage.endTimePayment}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -175,9 +156,9 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/projects/${params.id}/payment/${stage.id}`}
                 >
-                  Thông tin
+                  Chi tiết
                 </Button>
               </TableCell>
             </StyledTableRow>

@@ -1,9 +1,16 @@
 import {
+  IconArmchair,
+  IconCategory,
+  IconCategory2,
+  IconDoor,
+  IconHome,
   IconLayoutDashboard,
+  IconListDetails,
   IconFile,
   IconFileReport,
   IconUser,
   IconUserStar,
+  IconPalette,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -38,19 +45,20 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: "Đồ nội thất",
-    icon: IconFile,
+    icon: IconArmchair,
     href: "/items",
   },
   {
     id: uniqueId(),
-    title: "Màu sắc",
-    icon: IconFile,
+    title: "Màu",
+    icon: IconPalette,
     href: "/items/colors",
   },
+
   {
     id: uniqueId(),
     title: "Loại đồ dùng",
-    icon: IconFile,
+    icon: IconCategory,
     href: "/items/categories",
   },
   {
@@ -60,31 +68,31 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: "Loại phòng",
-    icon: IconFile,
+    icon: IconDoor,
     href: "/system/room-type",
   },
   {
     id: uniqueId(),
     title: "Phân loại dự án",
-    icon: IconFile,
+    icon: IconCategory,
     href: "/system/project-categories",
   },
   {
     id: uniqueId(),
     title: "Thiết kế dự án",
-    icon: IconFile,
+    icon: IconHome,
     href: "/system/project-designs",
   },
   {
     id: uniqueId(),
     title: "Phân loại công việc",
-    icon: IconFile,
+    icon: IconCategory2,
     href: "/system/task-categories",
   },
   {
     id: uniqueId(),
     title: "Thiết kế công việc",
-    icon: IconFile,
+    icon: IconListDetails,
     href: "/system/task-designs",
   },
   {
