@@ -7,7 +7,6 @@ import {
   Typography,
   Breadcrumbs,
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -92,7 +91,6 @@ export default function RoomList() {
                 Tổng giá
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -122,17 +120,6 @@ export default function RoomList() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {room.pricePerArea * room.area}
                 </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/projects/${params.id}/sites/${params.siteId}/floors/${params.floorId}/rooms/${room.id}`}
-                >
-                  Chi tiết
-                </Button>
               </TableCell>
             </StyledTableRow>
           ))}

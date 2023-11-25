@@ -20,6 +20,10 @@ const items = [
     label: "Tài liệu",
   },
   {
+    path: "participations",
+    label: "Thành viên",
+  },
+  {
     path: "payment",
     label: "Thanh toán",
   },

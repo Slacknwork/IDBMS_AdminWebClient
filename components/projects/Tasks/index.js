@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
+import { useSearchParams } from "next/navigation";
 import {
   Typography,
   Box,
@@ -22,15 +23,20 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 
-const products = [
+const tasks = [
   {
     id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
+    code: "FILL01",
+    name: "Filling cement",
+    percentage: 50,
+    pricePerUnit: 5,
+    unitInContract: 5,
+    unitUsed: 6,
+    paymentStage: {
+      name: "Final payment section",
+    },
+    startedDate: "1/1/2023",
+    endDate: "1/1/2023",
   },
 ];
 
@@ -54,6 +60,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const params = useSearchParams();
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -92,34 +99,35 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
+                Mã
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Tên công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Tiến độ
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Giai đoạn thanh toán
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Tổng tiền
               </Typography>
             </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {tasks.map((task) => (
+            <StyledTableRow key={task.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -127,47 +135,35 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {task.code}
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                      {product.post}
-                    </Typography>
-                  </Box>
-                </Box>
               </TableCell>
 
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {task.name}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
+                    backgroundColor: "blue",
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.priority}
+                  label={`${task.percentage}%`}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {task.paymentStage.name}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {task.pricePerUnit * task.unitUsed}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -175,7 +171,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/projects/${params.id}/tasks/${task.id}`}
                 >
                   Thông tin
                 </Button>

@@ -22,15 +22,16 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const products = [
+const projects = [
   {
     id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
+    name: "COOLNAME Building",
+    companyName: "COOLNAME Co.",
+    projectType: 0,
+    language: 0,
+    status: 0,
+    estimatePrice: 200,
+    finalPrice: 200,
   },
 ];
 
@@ -91,49 +92,35 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
+                Tên dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Loại dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Ngôn ngữ
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Trạng thái
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Giá ước tính / Quyết toán
               </Typography>
             </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {product.id}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
-                </Typography>
-              </TableCell>
+          {projects.map((project) => (
+            <StyledTableRow key={project.name}>
               <TableCell>
                 <Box
                   sx={{
@@ -143,7 +130,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
+                      {project.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -151,22 +138,35 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {product.post}
+                      {project.companyName}
                     </Typography>
                   </Box>
                 </Box>
               </TableCell>
-
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.projectType}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.language}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.priority}
+                  label={project.status}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.estimatePrice}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -174,7 +174,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/projects/${project.id}`}
                 >
                   Thông tin
                 </Button>
