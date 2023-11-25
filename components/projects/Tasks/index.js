@@ -32,6 +32,7 @@ const tasks = [
     pricePerUnit: 5,
     unitInContract: 5,
     unitUsed: 6,
+    status: 0,
     paymentStage: {
       name: "Final payment section",
     },
@@ -122,6 +123,11 @@ export default function ProjectList() {
                 Tổng tiền
               </Typography>
             </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Trạng thái
+              </Typography>
+            </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
@@ -148,7 +154,7 @@ export default function ProjectList() {
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: "blue",
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
@@ -164,6 +170,17 @@ export default function ProjectList() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {task.pricePerUnit * task.unitUsed}
                 </Typography>
+              </TableCell>
+              <TableCell>
+                <Chip
+                  sx={{
+                    px: "4px",
+                    backgroundColor: "primary.main",
+                    color: "#fff",
+                  }}
+                  size="small"
+                  label={`${task.status}`}
+                ></Chip>
               </TableCell>
               <TableCell align="right">
                 <Button

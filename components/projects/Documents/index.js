@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Typography,
@@ -12,7 +12,6 @@ import {
   tableCellClasses,
   TableHead,
   TableRow,
-  Chip,
   FormControl,
   TextField,
   InputAdornment,
@@ -22,15 +21,15 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 
-const products = [
+import ProjectDocumentModal from "./Modal";
+
+const documents = [
   {
     id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
+    name: "Contract",
+    createdDate: "1/1/2023",
+    category: 1,
+    url: "asdfasdfasdf",
   },
 ];
 
@@ -54,6 +53,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -79,8 +82,20 @@ export default function ProjectList() {
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
         </FormControl>
+        <Button
+          sx={{ mt: 2 }}
+          variant="contained"
+          disableElevation
+          color="primary"
+          onClick={handleModalOpen}
+        >
+          Thêm tài liệu
+        </Button>
+        <ProjectDocumentModal
+          open={modalOpen}
+          onClose={handleModalClose}
+        ></ProjectDocumentModal>
       </Box>
-
       <Table
         aria-label="simple table"
         sx={{
@@ -92,34 +107,29 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Ngày tạo
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Loại tài liệu
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Tải xuống
               </Typography>
             </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {documents.map((document) => (
+            <StyledTableRow key={document.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -127,57 +137,22 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {document.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
+                  {document.createdDate}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                      {product.post}
-                    </Typography>
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Chip
-                  sx={{
-                    px: "4px",
-                    backgroundColor: product.pbg,
-                    color: "#fff",
-                  }}
-                  size="small"
-                  label={product.priority}
-                ></Chip>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {document.category}
+                </Typography>
               </TableCell>
               <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/projects/${product.id}`}
-                >
-                  Thông tin
+                <Button variant="contained" disableElevation color="primary">
+                  Tải xuống
                 </Button>
               </TableCell>
             </StyledTableRow>
