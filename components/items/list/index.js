@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
+import { IconSearch } from "@tabler/icons-react";
 import {
   Typography,
   Box,
@@ -13,20 +14,28 @@ import {
   TableHead,
   TableRow,
   Chip,
+  FormControl,
+  InputLabel,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { getUser } from "../../api/userServices";
+import { getProjects } from "../../../api/projectServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { getAllInteriorItems } from "../../../api/interiorItemServices";
 
-const products = [
+const projects = [
   {
     id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
+    name: "COOLNAME Building",
+    companyName: "COOLNAME Co.",
+    projectType: 0,
+    language: 0,
+    status: 0,
+    estimatePrice: 200,
+    finalPrice: 200,
   },
 ];
 
@@ -61,7 +70,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getUser();
+          const data = await getAllInteriorItems();
           console.log(data);
           setValues(data);
           setLoading(false);
@@ -74,9 +83,32 @@ export default function ProjectList() {
     }
   }, [userId]);
 
-
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <Box sx={{ mt: 2 }}>
+        <FormControl sx={{ mt: 2, minWidth: 300 }}>
+          <TextField
+            label="Tìm kiếm"
+            size="small"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconSearch />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </FormControl>
+        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+          <InputLabel>Age</InputLabel>
+          <Select labelId="demo-simple-select-label" label="Age">
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       <Table
         aria-label="simple table"
         sx={{
@@ -88,101 +120,64 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
+                Tên sản phẩm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên
+                Loại sản phẩm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Email
+                Đơn vị tính
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Điện thoại
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Số dư
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right">
               <Typography variant="subtitle2" fontWeight={600}>
                 Trạng thái
               </Typography>
             </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Giá ước tính / Quyết toán
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((product) => (
-            <StyledTableRow key={product.name}>
+          {values.map((project) => (
+            <StyledTableRow key={project.id}>
               <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {product.id}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {product.name}
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.email}
+                  {project.interiorItemCategoryId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.phone}
+                  {project.calculationUnit}
                 </Typography>
               </TableCell>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {product.balance}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
-                  </Box>
-                </Box>
-              </TableCell>
-
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.status}
+                  label={project.status}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.estimatePrice.toLocaleString('en-US') + ' VND'}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -190,7 +185,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/projects/${project.id}`}
                 >
                   Thông tin
                 </Button>

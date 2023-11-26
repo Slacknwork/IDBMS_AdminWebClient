@@ -14,6 +14,9 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
+import { getAdmins } from "../../api/adminServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const products = [
   {
@@ -47,6 +50,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+
+  const [values, setValues] = useState([]);
+  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getAdmins();
+          console.log(data);
+          setValues(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Error fetching data");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [userId]);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Table
@@ -65,28 +92,28 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Tên người dùng 
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Email
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Người tạo
               </Typography>
             </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
+          {values.map((product) => (
             <StyledTableRow key={product.name}>
               <TableCell>
                 <Typography
@@ -100,7 +127,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
+                  {product.name}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -112,7 +139,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
+                      {product.username}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -120,22 +147,19 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {product.post}
                     </Typography>
                   </Box>
                 </Box>
               </TableCell>
-
               <TableCell>
-                <Chip
-                  sx={{
-                    px: "4px",
-                    backgroundColor: product.pbg,
-                    color: "#fff",
-                  }}
-                  size="small"
-                  label={product.priority}
-                ></Chip>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {product.email}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {product.creatorId}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button
