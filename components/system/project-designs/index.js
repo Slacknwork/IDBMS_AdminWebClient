@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import getInteriorItemCategories from "../../../../api/interiorItemCategoryServices";
+import { getAllProjectDesigns } from "../../../api/projectDesignServices";
 
 const projects = [
   {
@@ -69,7 +69,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getInteriorItemCategories();
+          const data = await getAllProjectDesigns();
           console.log(data);
           setValues(data);
           setLoading(false);
@@ -119,7 +119,7 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên loại sản phẩm
+                Tên 
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -129,22 +129,22 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Ảnh banner
+                Loại dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Icon
+                Giá tối thiểu
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại nội thất
+                Giá tối đa
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại sản phẩm liên quan
+                Ngày làm việc (Ước tính)
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
@@ -152,11 +152,27 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {values.map((project) => (
-            <StyledTableRow key={project.id}>
+            <StyledTableRow key={project.name}>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.name}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      {project.name}
+                    </Typography>
+                    <Typography
+                      color="textSecondary"
+                      sx={{
+                        fontSize: "13px",
+                      }}
+                    >
+                    </Typography>
+                  </Box>
+                </Box>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
@@ -165,22 +181,22 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.bannerImageUrl}
+                  {project.projectType}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.iconImageUrl}
+                  {project.minBudget.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.interiorItemType}
+                  {project.maxBudget.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.parentCategoryId}
+                  {project.estimateBusinessDay}
                 </Typography>
               </TableCell>
               <TableCell align="right">

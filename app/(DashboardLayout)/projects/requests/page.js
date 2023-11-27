@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import DashboardCard from "/components/shared/DashboardCard";
 import PageContainer from "/components/container/PageContainer";
-import ProjectPending from "/components/projects/Pending";
+import ProjectPending from "/components/projects/list/requests";
 
 export default function ProjectRequestsPage() {
   const projectName = "Dự án đang chờ duyệt";

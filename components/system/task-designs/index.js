@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import getInteriorItemCategories from "../../../../api/interiorItemCategoryServices";
+import { getAllTaskDesigns } from "../../../api/taskDesignServices";
 
 const projects = [
   {
@@ -69,7 +69,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getInteriorItemCategories();
+          const data = await getAllTaskDesigns();
           console.log(data);
           setValues(data);
           setLoading(false);
@@ -119,32 +119,32 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên loại sản phẩm
+                Mã 
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Mô tả
+                Tên 
+              </Typography>
+            </StyledTableCell> 
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Tính theo
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Ảnh banner
+                Giá uóc tính/đơn vị
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Icon
+                Loại đồ nội thất
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại nội thất
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại sản phẩm liên quan
+                Loại công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
@@ -152,35 +152,51 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {values.map((project) => (
-            <StyledTableRow key={project.id}>
+            <StyledTableRow key={project.name}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.name}
+                  {project.code}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      {project.name}
+                    </Typography>
+                    <Typography
+                      color="textSecondary"
+                      sx={{
+                        fontSize: "13px",
+                      }}
+                    >
+                    </Typography>
+                  </Box>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {project.calculationUnit}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.description}
+                  {project.estimatePricePerUnit.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.bannerImageUrl}
+                  {project.interiorItemCategoryId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.iconImageUrl}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.interiorItemType}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.parentCategoryId}
+                  {project.taskCategoryId}
                 </Typography>
               </TableCell>
               <TableCell align="right">

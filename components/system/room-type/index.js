@@ -1,8 +1,6 @@
-"use client";
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import { IconSearch } from "@tabler/icons-react";
 import {
   Typography,
   Box,
@@ -14,27 +12,21 @@ import {
   TableHead,
   TableRow,
   Chip,
-  FormControl,
-  InputLabel,
-  TextField,
-  InputAdornment,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import getInteriorItemCategories from "../../../../api/interiorItemCategoryServices";
+import { getAllRoomTypes } from "../../../api/roomTypeServices";
+import Image from "next/image";
 
-const projects = [
+const products = [
   {
     id: "1",
-    name: "COOLNAME Building",
-    companyName: "COOLNAME Co.",
-    projectType: 0,
-    language: 0,
-    status: 0,
-    estimatePrice: 200,
-    finalPrice: 200,
+    name: "Sunil Joshi",
+    post: "Web Designer",
+    pname: "Elite Admin",
+    priority: "Low",
+    pbg: "primary.main",
+    budget: "3.9",
   },
 ];
 
@@ -69,7 +61,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getInteriorItemCategories();
+          const data = await getAllRoomTypes();
           console.log(data);
           setValues(data);
           setLoading(false);
@@ -84,30 +76,6 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ mt: 2 }}>
-        <FormControl sx={{ mt: 2, minWidth: 300 }}>
-          <TextField
-            label="Tìm kiếm"
-            size="small"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconSearch />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
       <Table
         aria-label="simple table"
         sx={{
@@ -119,7 +87,17 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên loại sản phẩm
+                Id
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Tên
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Ảnh 
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -129,7 +107,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Ảnh banner
+                Giá mỗi diện tích
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -137,51 +115,51 @@ export default function ProjectList() {
                 Icon
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại nội thất
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại sản phẩm liên quan
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.id}>
+          {values.map((product) => (
+            <StyledTableRow key={product.name}>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.name}
+                <Typography
+                  sx={{
+                    fontSize: "15px",
+                    fontWeight: "500",
+                  }}
+                >
+                  {product.id}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.description}
+                  {product.name}
+                </Typography>
+              </TableCell>
+              <TableCell>
+              <Image src={product.imageUrl}
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
+                    unoptimized={true}/>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {product.description}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.bannerImageUrl}
+                  {product.pricePerArea.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.iconImageUrl}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.interiorItemType}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {project.parentCategoryId}
-                </Typography>
+              <Image src={product.iconImageUrl}
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
+                    unoptimized={true}/>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -189,7 +167,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/projects/${product.id}`}
                 >
                   Thông tin
                 </Button>
