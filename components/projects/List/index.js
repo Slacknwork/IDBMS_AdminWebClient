@@ -147,7 +147,7 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {values.map((project) => (
-            <StyledTableRow key={project.name}>
+            <StyledTableRow key={project.id}>
               <TableCell>
                 <Box
                   sx={{
@@ -192,7 +192,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.estimatedPrice.toLocaleString('en-US') + ' VND'}
+                  {project?.estimatedPrice?.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
