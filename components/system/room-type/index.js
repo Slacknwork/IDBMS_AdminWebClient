@@ -1,4 +1,3 @@
-"use client";
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
@@ -14,9 +13,10 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
-import { getUser } from "../../api/userServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { getAllRoomTypes } from "../../../api/roomTypeServices";
+import Image from "next/image";
 
 const products = [
   {
@@ -61,7 +61,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getUser();
+          const data = await getAllRoomTypes();
           console.log(data);
           setValues(data);
           setLoading(false);
@@ -73,7 +73,6 @@ export default function ProjectList() {
       fetchDataFromApi();
     }
   }, [userId]);
-
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -98,22 +97,22 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Email
+                Ảnh 
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Điện thoại
+                Mô tả
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Số dư
+                Giá mỗi diện tích
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
+                Icon
               </Typography>
             </StyledTableCell>
           </TableRow>
@@ -132,57 +131,35 @@ export default function ProjectList() {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
+                <Typography variant="subtitle2" fontWeight={400}>
                   {product.name}
                 </Typography>
               </TableCell>
               <TableCell>
+              <Image src={product.imageUrl}
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
+                    unoptimized={true}/>
+              </TableCell>
+              <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.email}
+                  {product.description}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.phone}
+                  {product.pricePerArea.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {product.balance}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Chip
-                  sx={{
-                    px: "4px",
-                    backgroundColor: product.pbg,
-                    color: "#fff",
-                  }}
-                  size="small"
-                  label={product.status}
-                ></Chip>
+              <Image src={product.iconImageUrl}
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
+                    unoptimized={true}/>
               </TableCell>
               <TableCell align="right">
                 <Button

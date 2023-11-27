@@ -21,6 +21,9 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { getProjects } from "../../../api/projectServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const projects = [
   {
@@ -55,6 +58,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+
+  const [values, setValues] = useState([]);
+  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getProjects();
+          console.log(data);
+          setValues(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Error fetching data");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [userId]);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -119,7 +146,7 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {projects.map((project) => (
+          {values.map((project) => (
             <StyledTableRow key={project.name}>
               <TableCell>
                 <Box
@@ -145,7 +172,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.projectType}
+                  {project.type}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -165,7 +192,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.estimatePrice}
+                  {project.estimatedPrice.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
