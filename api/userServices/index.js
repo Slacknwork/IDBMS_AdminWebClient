@@ -25,4 +25,24 @@ const getUser = async () => {
         throw error;
     }
 };
-export { getUserById, getUser };
+
+const updateUser = async (id, updateData) => {
+    try {
+        const promise = await axios.put(`https://localhost:7062/api/Users/${id}`, updateData);
+        toast.promise(
+            promise,
+            {
+                pending: 'Đang chỉnh sửa...',
+                success: 'Chỉnh sửa thành công!',
+                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
+            },
+            { toastId: 'updateUserToast' }
+        );
+        const response = await promise;
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+export { getUserById, getUser, updateUser };
