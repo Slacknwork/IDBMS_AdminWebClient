@@ -154,11 +154,6 @@ export default function ProjectParticipants() {
                 Vai trò
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
@@ -196,17 +191,6 @@ export default function ProjectParticipants() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {participant.role}
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  sx={{
-                    px: "4px",
-                    backgroundColor: "primary.main",
-                    color: "#fff",
-                  }}
-                  size="small"
-                  label={participant.isDeleted}
-                ></Chip>
               </TableCell>
               <TableCell align="right">
                 <Button variant="contained" disableElevation color="error">

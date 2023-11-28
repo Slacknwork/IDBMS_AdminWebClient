@@ -198,7 +198,7 @@ export default function ProjectList() {
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: comment.pbg,
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
