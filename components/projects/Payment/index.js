@@ -21,7 +21,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
+import { getPaymentStagesByProjectId } from "../../../api/paymentStageServices";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const stages = [
   {
@@ -56,6 +59,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectPayments() {
   const params = useSearchParams();
+
+  const [payments, setPayments] = useState([]);
+  const [projectId, setProjectId] = useState("8b84897a-5a93-429c-a5b0-b11ae7483dd3");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getPaymentStagesByProjectId(projectId);
+          console.log(data);
+          setPayments(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+  
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Table

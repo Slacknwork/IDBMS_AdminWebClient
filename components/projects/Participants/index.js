@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -21,8 +21,9 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-
+import { getParticipationByProjectId } from "../../../api/projectParticipationServices";
 import ProjectParticipantModal from "./Modal";
+import { toast } from "react-toastify";
 
 const participants = [
   {
@@ -58,6 +59,29 @@ export default function ProjectParticipants() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
+  const [participants, setParticipants] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getParticipationByProjectId(projectId);
+          console.log(data);
+          setParticipants(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -117,17 +141,17 @@ export default function ProjectParticipants() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên
+                Tên người tham gia
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Dự án tham gia
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Vai trò
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Ngôn ngữ
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -140,7 +164,7 @@ export default function ProjectParticipants() {
         </TableHead>
         <TableBody>
           {participants.map((participant) => (
-            <StyledTableRow key={participant.name}>
+            <StyledTableRow key={participant.id}>
               <TableCell>
                 <Box
                   sx={{
@@ -150,7 +174,7 @@ export default function ProjectParticipants() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {participant.name}
+                      {participant.userId}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -165,12 +189,12 @@ export default function ProjectParticipants() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {participant.role}
+                  {participant.projectId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {participant.language}
+                  {participant.role}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -181,7 +205,7 @@ export default function ProjectParticipants() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={participant.status}
+                  label={participant.isDeleted}
                 ></Chip>
               </TableCell>
               <TableCell align="right">

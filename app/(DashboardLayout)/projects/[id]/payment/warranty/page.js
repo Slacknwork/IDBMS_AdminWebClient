@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectTransactions from "/components/projects/Transactions";
+import ProjectWarrantys from "/components/projects/Warranty";
 
 export default function ProjectDetailsPage() {
-  return <ProjectTransactions></ProjectTransactions>;
+  return <ProjectWarrantys></ProjectWarrantys>;
 }

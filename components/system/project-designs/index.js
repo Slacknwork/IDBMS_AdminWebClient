@@ -59,8 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [projectDesigns, setProjectDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -71,16 +70,16 @@ export default function ProjectList() {
         try {
           const data = await getAllProjectDesigns();
           console.log(data);
-          setValues(data);
+          setProjectDesigns(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -151,8 +150,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.id}>
+          {projectDesigns.map((projectDesign) => (
+            <StyledTableRow key={projectDesign.id}>
               <TableCell>
                 <Box
                   sx={{
@@ -162,7 +161,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {project.name}
+                      {projectDesign.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -176,27 +175,27 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.description}
+                  {projectDesign.description}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.projectType}
+                  {projectDesign.projectType}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.minBudget.toLocaleString('en-US') + ' VND'}
+                  {projectDesign.minBudget.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.maxBudget.toLocaleString('en-US') + ' VND'}
+                  {projectDesign.maxBudget.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.estimateBusinessDay}
+                  {projectDesign.estimateBusinessDay}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -205,7 +204,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/ProjectDesigns/${projectDesign.id}`}
                 >
                   Thông tin
                 </Button>

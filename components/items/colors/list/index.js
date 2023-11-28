@@ -21,7 +21,6 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { getProjects } from "../../../../api/projectServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllColors } from "../../../../api/interiorItemColorServices";
@@ -60,8 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [itemColors, setitemColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -72,16 +70,16 @@ export default function ProjectList() {
         try {
           const data = await getAllColors();
           console.log(data);
-          setValues(data);
+          setitemColors(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -142,8 +140,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.name}>
+          {itemColors.map((itemColor) => (
+            <StyledTableRow key={itemColor.name}>
               <TableCell>
                 <Box
                   sx={{
@@ -153,7 +151,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {project.name}
+                      {itemColor.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -167,17 +165,17 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.type}
+                  {itemColor.type}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.primaryColor}
+                  {itemColor.primaryColor}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.secondaryColor}
+                  {itemColor.secondaryColor}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -186,7 +184,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/InteriorItemColors/${itemColor.id}`}
                 >
                   Thông tin
                 </Button>

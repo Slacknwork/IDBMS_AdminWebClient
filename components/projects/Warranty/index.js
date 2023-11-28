@@ -1,40 +1,44 @@
 "use client";
 
-import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
-import { IconSearch } from "@tabler/icons-react";
 import {
   Typography,
   Box,
   Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
   tableCellClasses,
   TableHead,
   TableRow,
-  Chip,
   FormControl,
-  InputLabel,
   TextField,
   InputAdornment,
+  InputLabel,
   Select,
   MenuItem,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { IconSearch } from "@tabler/icons-react";
+import ProjectDocumentModal from "./Modal";
 import { toast } from "react-toastify";
-import { getAllInteriorItems } from "../../../api/interiorItemServices";
+import { getWarrantyClaimsByProjectId } from "../../../api/warrantyClaimServices";
 
-const projects = [
+const warrantys = [
   {
     id: "1",
-    name: "COOLNAME Building",
-    companyName: "COOLNAME Co.",
-    projectType: 0,
-    language: 0,
+    project: {
+      name: "COOLNAME Building",
+    },
+    type: 1,
+    amount: 500,
+    createdDate: "1/1/2023",
     status: 0,
-    estimatePrice: 200,
-    finalPrice: 200,
+    user: {
+      name: "Some random guy",
+      email: "random@mail.com",
+    },
   },
 ];
 
@@ -58,8 +62,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
 
-  const [items, setItems] = useState([]);
+  const [warrantys, setWarrantys] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -68,9 +76,9 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getAllInteriorItems();
+          const data = await getWarrantyClaimsByProjectId(projectId);
           console.log(data);
-          setItems(data);
+          setWarrantys(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -79,7 +87,7 @@ export default function ProjectList() {
       };
       fetchDataFromApi();
     }
-  }, []);
+  }, [projectId]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -99,13 +107,26 @@ export default function ProjectList() {
           />
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
+          <InputLabel>Loại tài liệu</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
         </FormControl>
+        <Button
+          sx={{ mt: 2 }}
+          variant="contained"
+          disableElevation
+          color="primary"
+          onClick={handleModalOpen}
+        >
+          Tạo giao dịch
+        </Button>
+        <ProjectDocumentModal
+          open={modalOpen}
+          onClose={handleModalClose}
+        ></ProjectDocumentModal>
       </Box>
       <Table
         aria-label="simple table"
@@ -118,74 +139,84 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên sản phẩm
+                Tên bảo hiểm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại sản phẩm
+                Lý do
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Đơn vị tính
+                Giải pháp
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
+                Tên dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá ước tính / Quyết toán
+                Tên người bảo hiểm
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Tài liệu
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
-            <StyledTableRow key={item.id}>
+          {warrantys.map((warranty) => (
+            <StyledTableRow key={warranty.id}>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {item.name}
+                <Typography
+                  sx={{
+                    fontSize: "15px",
+                    fontWeight: "500",
+                  }}
+                >
+                  {warranty?.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.interiorItemCategoryId}
+                  {warranty.reason}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.calculationUnit}
+                  {warranty.solution}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {warranty.projectId}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {warranty.userId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
-                  label={item.status}
+                  label={`${warranty.confirmationDocument ?? 'Không có'}`}
                 ></Chip>
               </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
-                </Typography>
-              </TableCell>
               <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/InteriorItems/${item.id}`}
-                >
-                  Thông tin
+                <Button variant="contained" disableElevation color="primary">
+                  Chi tiết
                 </Button>
               </TableCell>
             </StyledTableRow>

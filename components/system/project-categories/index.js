@@ -60,8 +60,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [projectCategories, setProjectCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -72,16 +71,16 @@ export default function ProjectList() {
         try {
           const data = await getAllProjectCategories();
           console.log(data);
-          setValues(data);
+          setProjectCategories(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -137,11 +136,11 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.id}>
+          {projectCategories.map((projectCategory) => (
+            <StyledTableRow key={projectCategory.id}>
             <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.id}
+                  {projectCategory.id}
                 </Typography>
             </TableCell>
               <TableCell>
@@ -153,7 +152,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {project.name}
+                      {projectCategory.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -166,7 +165,7 @@ export default function ProjectList() {
                 </Box>
               </TableCell>
               <TableCell>
-              <Image src={project.iconImageUrl}
+              <Image src={projectCategory.iconImageUrl}
                     alt=""
                     width={0}
                     height={0}
@@ -179,7 +178,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/ProjectCategories/${projectCategory.id}`}
                 >
                   Thông tin
                 </Button>
