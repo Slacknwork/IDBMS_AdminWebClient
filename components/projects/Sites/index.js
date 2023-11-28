@@ -15,6 +15,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { getSitesByProjectId } from "../../../api/siteServices";
 
 const sites = [
   {
@@ -47,6 +50,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
   const params = useParams();
+
+  const [sites, setSites] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getSitesByProjectId(projectId);
+          console.log(data);
+          setSites(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>

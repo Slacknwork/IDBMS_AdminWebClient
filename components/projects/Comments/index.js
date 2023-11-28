@@ -120,11 +120,6 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Tên Công việc
               </Typography>
             </StyledTableCell>
@@ -158,16 +153,6 @@ export default function ProjectList() {
         <TableBody>
           {comments.map((comment) => (
             <StyledTableRow key={comment.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {comment.id}
-                </Typography>
-              </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {comment.projectTaskId}

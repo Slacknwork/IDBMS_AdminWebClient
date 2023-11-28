@@ -86,11 +86,6 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Tên
               </Typography>
             </StyledTableCell>
@@ -114,17 +109,7 @@ export default function ProjectList() {
         <TableBody>
           {admins.map((admin) => (
             <StyledTableRow key={admin.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {admin.id}
-                </Typography>
-              </TableCell>
-              <TableCell>
+              <TableCell> 
                 <Typography variant="subtitle2" fontWeight={400}>
                   {admin.name}
                 </Typography>
@@ -157,7 +142,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {admin.creatorId}
+                  {admin.creatorId ?? 'Không có'}
                 </Typography>
               </TableCell>
               <TableCell align="right">

@@ -189,7 +189,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {projectCategory.description}
+                  {projectCategory.description ?? 'Không có'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
