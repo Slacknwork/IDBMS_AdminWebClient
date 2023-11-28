@@ -32,8 +32,8 @@ const style = {
   p: 4,
 };
 
-export default function ProjectDocumentModal({ open, onClose }) {
-
+export default function ProjectDocumentModal({ open, onClose, projectId }) {
+  console.log(projectId)
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,7 @@ export default function ProjectDocumentModal({ open, onClose }) {
   const handleAddParticipation = async () => {
     const newParticipation = {
       userId: selectedUser.id,
-      projectId: "EEA1C3D5-5C70-4D57-874F-3B22732C6F4B",
+      projectId: projectId,
       role: parseInt(selectedRole, 10),
     };
     console.log(newParticipation)

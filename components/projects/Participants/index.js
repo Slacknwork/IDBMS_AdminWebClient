@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -58,31 +59,38 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectParticipants() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
-  const handleModalClose = () => setModalOpen(false);
+
+  const params = useParams();
+  console.log(params.id)
 
   const [participants, setParticipants] = useState([]);
-  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [projectId, setProjectId] = useState(params.id);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
+
+  const fetchDataFromApi = async (projectId) => {
+    try {
+      const data = await getParticipationByProjectId(projectId);
+      console.log(data);
+      setParticipants(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
+  };
 
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      const fetchDataFromApi = async () => {
-        try {
-          const data = await getParticipationByProjectId(projectId);
-          console.log(data);
-          setParticipants(data);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
-        }
-      };
-      fetchDataFromApi();
+
+      fetchDataFromApi(projectId);
     }
   }, [projectId]);
-
+  const handleModalClose = () => {
+    setModalOpen(false);
+    fetchDataFromApi(projectId)
+  }
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -128,6 +136,7 @@ export default function ProjectParticipants() {
         <ProjectParticipantModal
           open={modalOpen}
           onClose={handleModalClose}
+          projectId={params.id}
         ></ProjectParticipantModal>
       </Box>
       <Table
