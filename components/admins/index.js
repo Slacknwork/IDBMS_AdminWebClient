@@ -18,7 +18,7 @@ import { getAdmins } from "../../api/adminServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-const products = [
+const admins = [
   {
     id: "1",
     name: "Sunil Joshi",
@@ -51,8 +51,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -63,16 +62,16 @@ export default function ProjectList() {
         try {
           const data = await getAdmins();
           console.log(data);
-          setValues(data);
+          setAdmins(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -113,8 +112,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((product) => (
-            <StyledTableRow key={product.id}>
+          {admins.map((admin) => (
+            <StyledTableRow key={admin.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -122,12 +121,12 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {admin.id}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.name}
+                  {admin.name}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -139,7 +138,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {product.username}
+                      {admin.username}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -153,12 +152,12 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.email}
+                  {admin.email}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.creatorId}
+                  {admin.creatorId}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -167,7 +166,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/Admins/${admin.id}`}
                 >
                   Thông tin
                 </Button>

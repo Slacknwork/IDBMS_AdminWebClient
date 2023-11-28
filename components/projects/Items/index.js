@@ -21,6 +21,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const products = [
   {
@@ -54,6 +56,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+
+  const [items, setItems] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getProjectitemsByProjectId(projectId);
+          console.log(data);
+          setItems(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -106,7 +132,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                items
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
@@ -117,8 +143,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {items.map((item) => (
+            <StyledTableRow key={item.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -126,12 +152,12 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {item.id}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
+                  {item.pname}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -143,7 +169,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
+                      {item.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -151,7 +177,7 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {product.post}
+                      {item.post}
                     </Typography>
                   </Box>
                 </Box>
@@ -161,11 +187,11 @@ export default function ProjectList() {
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
+                    backgroundColor: item.pbg,
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.priority}
+                  label={item.priority}
                 ></Chip>
               </TableCell>
               <TableCell align="right">
@@ -174,7 +200,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/InteriorItems/${item.id}`}
                 >
                   Thông tin
                 </Button>

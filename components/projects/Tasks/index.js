@@ -22,6 +22,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { getProjectTasksByProjectId } from "../../../api/projectTaskServices";
 
 const tasks = [
   {
@@ -62,6 +65,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
   const params = useSearchParams();
+
+  const [tasks, setTasks] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getProjectTasksByProjectId(projectId);
+          console.log(data);
+          setTasks(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -163,7 +190,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {task.paymentStage.name}
+                  {task.paymentStage?.name}
                 </Typography>
               </TableCell>
               <TableCell>

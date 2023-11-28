@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Typography,
@@ -21,8 +21,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
-
+import { getTransactionsByProjectId } from "../../../api/transactionServices";
 import ProjectDocumentModal from "./Modal";
+import { toast } from "react-toastify";
 
 const transactions = [
   {
@@ -64,6 +65,29 @@ export default function ProjectList() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
+  const [transactions, setTransactions] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getTransactionsByProjectId(projectId);
+          console.log(data);
+          setTransactions(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -156,7 +180,7 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {transaction.project.name}
+                  {transaction?.projectId}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -184,7 +208,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {transaction.user.name}
+                      {transaction.userId}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -192,7 +216,7 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {transaction.user.email}
+                      {transaction.user?.email}
                     </Typography>
                   </Box>
                 </Box>

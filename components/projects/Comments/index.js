@@ -21,6 +21,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
+import { getCommentsByProjectId } from "../../../api/commentServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const products = [
   {
@@ -54,6 +57,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+
+  const [comments, setComments] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getCommentsByProjectId(projectId);
+          console.log(data);
+          setComments(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -97,29 +125,39 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Tên Công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Tên Dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tasks
+                Người đăng
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <Typography variant="subtitle2" fontWeight={600}>
+                Tệp
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Ngày đăng/chỉnh sửa gần nhất
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell align="right">
+              <Typography variant="subtitle2" fontWeight={600}>
+                Trạng thái
               </Typography>
             </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {comments.map((comment) => (
+            <StyledTableRow key={comment.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -127,12 +165,17 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {comment.id}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pname}
+                  {comment.projectTaskId}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {comment.projectId}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -144,7 +187,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {product.name}
+                      {comment.userId}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -152,21 +195,29 @@ export default function ProjectList() {
                         fontSize: "13px",
                       }}
                     >
-                      {product.post}
                     </Typography>
                   </Box>
                 </Box>
               </TableCell>
-
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {comment.fileUrl ?? 'Không có'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {comment?.lastModifiedTime ?? comment.createdTime}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: product.pbg,
+                    backgroundColor: comment.pbg,
                     color: "#fff",
                   }}
                   size="small"
-                  label={product.priority}
+                  label={comment.status}
                 ></Chip>
               </TableCell>
               <TableCell align="right">
@@ -175,7 +226,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/Comments/${comment.id}`}
                 >
                   Thông tin
                 </Button>

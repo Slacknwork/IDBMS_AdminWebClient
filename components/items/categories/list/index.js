@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import getInteriorItemCategories from "../../../../api/interiorItemCategoryServices";
+import { getInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
 
 const projects = [
   {
@@ -59,8 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [itemCategories, setItemCategory] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -71,16 +70,16 @@ export default function ProjectList() {
         try {
           const data = await getInteriorItemCategories();
           console.log(data);
-          setValues(data);
+          setItemCategory(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -151,36 +150,36 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.id}>
+          {itemCategories.map((itemCategory) => (
+            <StyledTableRow key={itemCategory.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.name}
+                  {itemCategory.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.description}
+                  {itemCategory.description}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.bannerImageUrl}
+                  {itemCategory.bannerImageUrl}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.iconImageUrl}
+                  {itemCategory.iconImageUrl}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.interiorItemType}
+                  {itemCategory.interiorItemType}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.parentCategoryId}
+                  {itemCategory?.parentCategoryId}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -189,7 +188,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/InteriorItemCategories/${itemCategory.id}`}
                 >
                   Thông tin
                 </Button>
