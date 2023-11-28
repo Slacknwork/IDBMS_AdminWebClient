@@ -26,4 +26,28 @@ const getParticipationByUserId = async (userId) => {
     }
 };
 
-export { getParticipationByProjectId, getParticipationByUserId };
+const createParticipation = async (request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectParticipations`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching create project participation:', error);
+        throw error;
+    }
+};
+
+export { getParticipationByProjectId, getParticipationByUserId, createParticipation };

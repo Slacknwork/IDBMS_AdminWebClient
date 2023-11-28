@@ -12,7 +12,15 @@ import {
   Select,
   Button,
   MenuItem,
+  IconButton,
 } from "@mui/material";
+import participationRole from "../../../../constants/enums/participationRole";
+
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { getUser } from "../../../../api/userServices";
+import { createParticipation } from "../../../../api/projectParticipationServices";
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
   position: "absolute",
@@ -24,17 +32,88 @@ const style = {
   p: 4,
 };
 
-const users = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-  { label: "The Dark Knight", year: 2008 },
-  { label: "12 Angry Men", year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: "Pulp Fiction", year: 1994 },
-];
-
 export default function ProjectDocumentModal({ open, onClose }) {
+
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getUser();
+          console.log(data);
+          setUsers(data);
+          setFilteredUsers(data)
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+
+  }, []);
+
+  const handleAddParticipation = async () => {
+    const newParticipation = {
+      userId: selectedUser.id,
+      projectId: "EEA1C3D5-5C70-4D57-874F-3B22732C6F4B",
+      role: parseInt(selectedRole, 10),
+    };
+    console.log(newParticipation)
+    try {
+      const response = await createParticipation(newParticipation);
+      console.log(response);
+      if (response.data != null) {
+        toast.success("Thêm thành công!");
+      } else {
+        throw new Error("Create failed!");
+      }
+    } catch (error) {
+      console.error("Error login :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const [selectedRole, setSelectedRole] = useState(1);
+
+  const handleRoleChange = (event) => {
+    setSelectedRole(event.target.value)
+    console.log(event.target.value)
+    const filterRole = event.target.value;
+
+    const allowedAllRoles = ["Chủ dự án", "Người xem"];
+    const allowedDecorRoles = ["Kĩ sư thiết kế trưởng", "Kĩ sư thiết kế"];
+    const allowedConstructionRoles = ["Quản lý công trình"];
+
+    if (!allowedAllRoles.includes(participationRole[filterRole])) {
+
+      if (allowedDecorRoles.includes(participationRole[filterRole])) {
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 1)));
+      }
+
+      if (allowedConstructionRoles.includes(participationRole[filterRole])) {
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 2)));
+      }
+
+    } else {
+      setFilteredUsers(users)
+    }
+  };
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleUserChange = (event, newValue) => {
+    console.log(newValue)
+    setSelectedUser(newValue);
+
+  };
+
   return (
     <Modal
       open={open}
@@ -46,13 +125,28 @@ export default function ProjectDocumentModal({ open, onClose }) {
         <Typography variant="h6" component="h2">
           Thêm thành viên
         </Typography>
+        <IconButton
+          aria-label="close"
+          sx={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+          }}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={6}>
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={users}
+              options={filteredUsers}
+              getOptionLabel={(option) => option.name}
               sx={{ mt: 2, width: 1 }}
+              noOptionsText="Không tìm thấy"
+              value={selectedUser}
+              onChange={handleUserChange}
               renderInput={(params) => (
                 <TextField {...params} label="Người dùng" />
               )}
@@ -61,10 +155,14 @@ export default function ProjectDocumentModal({ open, onClose }) {
           <Grid item xs={12} lg={6}>
             <FormControl sx={{ mt: 2, width: 1 }}>
               <InputLabel>Vai trò</InputLabel>
-              <Select labelId="demo-simple-select-label" label="Age">
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+              <Select labelId="demo-simple-select-label" label="Age"
+                value={selectedRole} onChange={handleRoleChange}
+              >
+                {Object.entries(participationRole).map(([label, value]) => (
+                  <MenuItem key={label} value={label}>
+                    {value}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -75,6 +173,7 @@ export default function ProjectDocumentModal({ open, onClose }) {
               disableElevation
               color="primary"
               fullWidth
+              onClick={handleAddParticipation}
             >
               Thêm
             </Button>
