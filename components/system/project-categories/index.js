@@ -138,7 +138,7 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {values.map((project) => (
-            <StyledTableRow key={project.name}>
+            <StyledTableRow key={project.id}>
             <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {project.id}

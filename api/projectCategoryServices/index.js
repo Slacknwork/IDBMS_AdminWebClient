@@ -26,4 +26,64 @@ const getProjectCategoryById = async (categoryId) => {
     }
 };
 
-export { getAllProjectCategories, getProjectCategoryById };
+const createProjectCategory = async (createData) => {
+    try {
+        const promise = await axios.post('https://localhost:7062/api/ProjectCategories', createData);
+        toast.promise(
+            promise,
+            {
+                pending: 'Đang thêm...',
+                success: 'Thêm thành công!',
+                error: 'Thêm không thành công! Vui lòng thử lại!',
+            },
+            { toastId: 'createProjectCategoriesToast' }
+        );
+
+        const response = await promise;
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+const updateProjectCategory = async (id, updateData) => {
+    try {
+        const promise = await axios.put(`https://localhost:7062/api/ProjectCategories/${id}`, updateData);
+        toast.promise(
+            promise,
+            {
+                pending: 'Đang chỉnh sửa...',
+                success: 'Chỉnh sửa thành công!',
+                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
+            },
+            { toastId: 'updateProjectCategoriesToast' }
+        );
+        const response = await promise;
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+const hideProjectCategory = async (id, status) => {
+    try {
+        const promise = await axios.delete(`https://localhost:7062/api/ProjectCategories/${id}/isHidden?isHidden=${status}`);
+        toast.promise(
+            promise,
+            {
+                pending: 'Đang chỉnh sửa...',
+                success: 'Chỉnh sửa thành công!',
+                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
+            },
+            { toastId: 'hideProjectCategoriesToast' }
+        );
+        const response = await promise;
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+export { getAllProjectCategories, getProjectCategoryById, createProjectCategory, updateProjectCategory, hideProjectCategory};
