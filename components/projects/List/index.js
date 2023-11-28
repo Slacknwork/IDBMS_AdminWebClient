@@ -199,12 +199,10 @@ export default function ProjectList() {
                 </Typography>
               </TableCell>
               <TableCell align="right">
-                <Link href ={`/projects/${project.id}`}>
                 <Button
                   variant="contained"
                   disableElevation
                   color="success"
-                  onClick={handleAccept}
                 >
                   Chấp nhận
                 </Button>
@@ -219,8 +217,6 @@ export default function ProjectList() {
                 >
                   Thông tin
                 </Button>
-                </Link>
-                
               </TableCell>
             </StyledTableRow>
           ))}
