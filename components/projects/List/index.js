@@ -59,8 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -71,7 +70,7 @@ export default function ProjectList() {
         try {
           const data = await getProjects();
           console.log(data);
-          setValues(data);
+          setProjects(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -80,7 +79,7 @@ export default function ProjectList() {
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -146,7 +145,7 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
+          {projects.map((project) => (
             <StyledTableRow key={project.id}>
               <TableCell>
                 <Box
