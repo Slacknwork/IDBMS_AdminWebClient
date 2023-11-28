@@ -23,6 +23,7 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { getProjectTasksByProjectId } from "../../../api/projectTaskServices";
 
 const products = [
   {
@@ -67,9 +68,11 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getProjectitemsByProjectId(projectId);
+          const data = await getProjectTasksByProjectId(projectId);
           console.log(data);
-          setItems(data);
+          const listTaskHasItem = data.filter(item => item.interiorItemId !== null);
+          console.log(listTaskHasItem)
+          setItems(listTaskHasItem);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
