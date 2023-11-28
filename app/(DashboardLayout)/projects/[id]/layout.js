@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumbs, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
 import DashboardCard from "/components/shared/DashboardCard";
@@ -22,6 +22,15 @@ export default function ClientLayout({ children }) {
         </Link>
         <Typography fontWeight={600}>Thông tin dự án</Typography>
       </Breadcrumbs>
+      <Box display="flex" justifyContent="right" alignItems="center" padding={2}>
+        <Button
+          variant="contained"
+          disableElevation
+          color="error"
+        >
+          Từ chối dự án
+        </Button>
+      </Box>
       <DashboardCard title={projectName}>
         <Tabs uriPos={3} tabs={TabItems}></Tabs>
         {children}

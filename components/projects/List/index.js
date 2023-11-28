@@ -81,6 +81,10 @@ export default function ProjectList() {
     }
   }, []);
 
+  const handleAccept = () => {
+    console.log("accept")
+  };
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -196,6 +200,16 @@ export default function ProjectList() {
               </TableCell>
               <TableCell align="right">
                 <Link href ={`/projects/${project.id}`}>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="success"
+                  onClick={handleAccept}
+                >
+                  Chấp nhận
+                </Button>
+              </TableCell>
+              <TableCell align="right">
                 <Button
                   component={Link}
                   variant="contained"

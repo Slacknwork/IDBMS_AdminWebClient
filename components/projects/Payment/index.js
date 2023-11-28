@@ -23,8 +23,10 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import { getPaymentStagesByProjectId } from "../../../api/paymentStageServices";
 import { useSearchParams } from "next/navigation";
+import PaymentStageModal from "./Modal";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+
 
 const stages = [
   {
@@ -60,6 +62,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectPayments() {
   const params = useSearchParams();
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
+  const handleStartStage = () => {
+    console.log("start")
+    console.log(stages);
+  };
+
   const [payments, setPayments] = useState([]);
   const [projectId, setProjectId] = useState("8b84897a-5a93-429c-a5b0-b11ae7483dd3");
   const [loading, setLoading] = useState(true);
@@ -83,8 +94,23 @@ export default function ProjectPayments() {
     }
   }, [projectId]);
   
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant="contained"
+          disableElevation
+          color="primary"
+          onClick={handleModalOpen}
+        >
+          Thêm giai đoạn
+        </Button>
+        <PaymentStageModal
+          open={modalOpen}
+          onClose={handleModalClose}
+        ></PaymentStageModal>
+      </Box>
       <Table
         aria-label="simple table"
         sx={{
@@ -116,7 +142,7 @@ export default function ProjectPayments() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Đã trả trước
+                Cần trả trước
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -124,6 +150,7 @@ export default function ProjectPayments() {
                 Thời hạn
               </Typography>
             </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
@@ -169,13 +196,23 @@ export default function ProjectPayments() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={stage.isPrepaid}
+                  label={stage.isPrepaid ? "Có" : "Không"}
                 ></Chip>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {stage.endTimePayment}
                 </Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="success"
+                  onClick={handleStartStage}
+                >
+                  Bắt đầu giai đoạn
+                </Button>
               </TableCell>
               <TableCell align="right">
                 <Button
