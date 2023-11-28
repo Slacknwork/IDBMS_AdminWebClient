@@ -81,6 +81,10 @@ export default function ProjectList() {
     }
   }, []);
 
+  const handleAccept = () => {
+    console.log("accept")
+  };
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -193,6 +197,16 @@ export default function ProjectList() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {project?.estimatedPrice?.toLocaleString('en-US') + ' VND'}
                 </Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="success"
+                  onClick={handleAccept}
+                >
+                  Chấp nhận
+                </Button>
               </TableCell>
               <TableCell align="right">
                 <Button

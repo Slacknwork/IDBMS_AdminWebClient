@@ -61,6 +61,12 @@ export default function ProjectPayments() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
+  const handleStartStage = () => {
+    console.log("start")
+    console.log(stages);
+  };
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
@@ -117,6 +123,7 @@ export default function ProjectPayments() {
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -168,6 +175,16 @@ export default function ProjectPayments() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {stage.endTimePayment}
                 </Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="success"
+                  onClick={handleStartStage}
+                >
+                  Bắt đầu giai đoạn
+                </Button>
               </TableCell>
               <TableCell align="right">
                 <Button
