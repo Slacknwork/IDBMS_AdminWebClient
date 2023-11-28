@@ -21,7 +21,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { getProjects } from "../../../../api/projectServices";
+import { getProjects, updateProjectStatus } from "../../../../api/projectServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -71,7 +71,8 @@ export default function ProjectList() {
         try {
           const data = await getProjects();
           console.log(data);
-          setValues(data);
+          const requestPj = data.filter(pj => pj.status === 1);
+          setValues(requestPj);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -81,6 +82,19 @@ export default function ProjectList() {
       fetchDataFromApi();
     }
   }, [userId]);
+
+  const handleAcceptProject = async (projectId) => {
+    console.log(projectId)
+    try {
+      const response = await updateProjectStatus(projectId, 2);
+      console.log(response);
+      toast.success("Chấp nhận thành công!");
+      initialized.current = false;
+    } catch (error) {
+      console.error("Error update :", error);
+      toast.error("Lỗi!");
+    }
+  };
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -139,10 +153,10 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá ước tính / Quyết toán
+                Giá ước tính
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -194,6 +208,16 @@ export default function ProjectList() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {project?.estimatedPrice?.toLocaleString('en-US') + ' VND'}
                 </Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="success"
+                  onClick={() => handleAcceptProject(project.id)}
+                >
+                  Chấp nhận
+                </Button>
               </TableCell>
               <TableCell align="right">
                 <Button

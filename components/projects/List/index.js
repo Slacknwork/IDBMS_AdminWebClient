@@ -200,15 +200,6 @@ export default function ProjectList() {
               </TableCell>
               <TableCell align="right">
                 <Button
-                  variant="contained"
-                  disableElevation
-                  color="success"
-                >
-                  Chấp nhận
-                </Button>
-              </TableCell>
-              <TableCell align="right">
-                <Button
                   component={Link}
                   variant="contained"
                   disableElevation
