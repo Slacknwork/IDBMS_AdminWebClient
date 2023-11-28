@@ -120,7 +120,7 @@ export default function ProjectList() {
         </TableHead>
         <TableBody>
           {values.map((product) => (
-            <StyledTableRow key={product.name}>
+            <StyledTableRow key={product.id}>
               <TableCell>
                 <Typography
                   sx={{
