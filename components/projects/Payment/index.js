@@ -22,6 +22,8 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import PaymentStageModal from "./Modal";
 
 const stages = [
   {
@@ -56,8 +58,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectPayments() {
   const params = useSearchParams();
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant="contained"
+          disableElevation
+          color="primary"
+          onClick={handleModalOpen}
+        >
+          Thêm giai đoạn
+        </Button>
+        <PaymentStageModal
+          open={modalOpen}
+          onClose={handleModalClose}
+        ></PaymentStageModal>
+      </Box>
       <Table
         aria-label="simple table"
         sx={{
@@ -89,7 +108,7 @@ export default function ProjectPayments() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Đã trả trước
+                Cần trả trước
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -142,7 +161,7 @@ export default function ProjectPayments() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={stage.isPrepaid}
+                  label={stage.isPrepaid ? "Có" : "Không"}
                 ></Chip>
               </TableCell>
               <TableCell>

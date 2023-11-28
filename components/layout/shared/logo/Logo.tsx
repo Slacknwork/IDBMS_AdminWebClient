@@ -7,12 +7,14 @@ const LinkStyled = styled(Link)(() => ({
   width: "180px",
   overflow: "hidden",
   display: "block",
+  justifyContent: "center",
+  alignItems: "center",
 }));
 
 const Logo = () => {
   return (
     <LinkStyled href="/">
-      <Image src="/images/logos/dark-logo.svg" alt="logo" height={70} width={174} priority />
+      <Image src="/images/logos/IDTco_logo.jpg" alt="logo" height={150} width={150} priority />
     </LinkStyled>
   );
 };

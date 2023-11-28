@@ -11,5 +11,28 @@ const getPaymentStagesByProjectId = async (projectId) => {
         throw error;
     }
 };
+const createPaymentStage = async (request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/PaymentStages`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
 
-export { getPaymentStagesByProjectId };
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching create payment stage:', error);
+        throw error;
+    }
+};
+
+export { getPaymentStagesByProjectId, createPaymentStage };
