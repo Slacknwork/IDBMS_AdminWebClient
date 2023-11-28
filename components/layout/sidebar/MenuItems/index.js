@@ -11,6 +11,8 @@ import {
   IconUser,
   IconUserStar,
   IconPalette,
+  IconFileExport,
+  IconReportMoney
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -37,6 +39,18 @@ const Menuitems = [
     title: "Danh sách dự án",
     icon: IconFile,
     href: "/projects",
+  },
+  {
+    id: uniqueId(),
+    title: "Giao dịch",
+    icon: IconReportMoney,
+    href: "/projects/transactions",
+  },
+  {
+    id: uniqueId(),
+    title: "Tài liệu",
+    icon: IconFileExport,
+    href: "/projects/documents",
   },
   {
     navlabel: true,
