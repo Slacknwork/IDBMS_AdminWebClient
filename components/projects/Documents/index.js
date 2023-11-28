@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Typography,
@@ -20,8 +20,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
-
+import { getProjectDocumentsByProjectId } from "../../../api/projectDocumentServices";
 import ProjectDocumentModal from "./Modal";
+import { toast } from "react-toastify";
 
 const documents = [
   {
@@ -57,6 +58,29 @@ export default function ProjectList() {
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
+  const [documents, setDocuments] = useState([]);
+  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getProjectDocumentsByProjectId(projectId);
+          console.log(data);
+          setDocuments(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+  
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -112,6 +136,11 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
+                Url
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
                 Ngày tạo
               </Typography>
             </StyledTableCell>
@@ -120,7 +149,17 @@ export default function ProjectList() {
                 Loại tài liệu
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Dự án
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Bản mẫu
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell >
               <Typography variant="subtitle2" fontWeight={600}>
                 Tải xuống
               </Typography>
@@ -142,12 +181,27 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
+                  {document.Url ?? 'Không có'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
                   {document.createdDate}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {document.category}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {document.projectId}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {document.projectDocumentTemplateId ?? 'Không có'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
