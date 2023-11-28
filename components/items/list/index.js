@@ -21,7 +21,6 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { getProjects } from "../../../api/projectServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllInteriorItems } from "../../../api/interiorItemServices";
@@ -60,8 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -72,16 +70,16 @@ export default function ProjectList() {
         try {
           const data = await getAllInteriorItems();
           console.log(data);
-          setValues(data);
+          setItems(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -147,21 +145,21 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((project) => (
-            <StyledTableRow key={project.id}>
+          {items.map((item) => (
+            <StyledTableRow key={item.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.name}
+                  {item.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.interiorItemCategoryId}
+                  {item.interiorItemCategoryId}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.calculationUnit}
+                  {item.calculationUnit}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -171,12 +169,12 @@ export default function ProjectList() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={project.status}
+                  label={item.status}
                 ></Chip>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.estimatePrice.toLocaleString('en-US') + ' VND'}
+                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -185,7 +183,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${project.id}`}
+                  href={`/InteriorItems/${item.id}`}
                 >
                   Thông tin
                 </Button>

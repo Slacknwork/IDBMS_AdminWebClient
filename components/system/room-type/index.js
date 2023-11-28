@@ -51,8 +51,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
 
-  const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
+  const [roomTypes, setRoomTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -63,16 +62,16 @@ export default function ProjectList() {
         try {
           const data = await getAllRoomTypes();
           console.log(data);
-          setValues(data);
+          setRoomTypes(data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Error fetching data");
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -118,8 +117,8 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((product) => (
-            <StyledTableRow key={product.id}>
+          {roomTypes.map((roomType) => (
+            <StyledTableRow key={roomType.id}>
               <TableCell>
                 <Typography
                   sx={{
@@ -127,16 +126,16 @@ export default function ProjectList() {
                     fontWeight: "500",
                   }}
                 >
-                  {product.id}
+                  {roomType.id}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.name}
+                  {roomType.name}
                 </Typography>
               </TableCell>
               <TableCell>
-              <Image src={product.imageUrl}
+              <Image src={roomType.imageUrl}
                     alt=""
                     width={0}
                     height={0}
@@ -145,16 +144,16 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.description}
+                  {roomType.description}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {product.pricePerArea.toLocaleString('en-US') + ' VND'}
+                  {roomType.pricePerArea.toLocaleString('en-US') + ' VND'}
                 </Typography>
               </TableCell>
               <TableCell>
-              <Image src={product.iconImageUrl}
+              <Image src={roomType.iconImageUrl}
                     alt=""
                     width={0}
                     height={0}
@@ -167,7 +166,7 @@ export default function ProjectList() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${product.id}`}
+                  href={`/RoomTypes/${roomType.id}`}
                 >
                   Thông tin
                 </Button>
