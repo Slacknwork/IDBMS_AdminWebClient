@@ -23,9 +23,11 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import { getAllTransactions } from "/api/transactionServices";
 import ProjectDocumentModal from "./Modal";
+import TransactionConfirmUpdateModal from "./confirmationModal";
 import { toast } from "react-toastify";
 import transactionStatus from "/constants/enums/transactionStatus";
 import transactionType from "/constants/enums/transactionType";
+import { ConfirmationNumber } from "@mui/icons-material";
 
 const transactions = [
     {
@@ -67,6 +69,10 @@ export default function ProjectList() {
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const handleConfirmModalOpen = () => setConfirmModalOpen(true);
+    const handleConfirmModalClose = () => setConfirmModalOpen(false);
 
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -128,6 +134,10 @@ export default function ProjectList() {
                     open={modalOpen}
                     onClose={handleModalClose}
                 ></ProjectDocumentModal>
+                <TransactionConfirmUpdateModal
+                    open={confirmModalOpen}
+                    onClose={handleConfirmModalClose}
+                ></TransactionConfirmUpdateModal>
             </Box>
             <Table
                 aria-label="simple table"
@@ -239,9 +249,17 @@ export default function ProjectList() {
                                 ></Chip>
                             </TableCell>
                             <TableCell align="right">
+                                <Button
+                                    variant="contained" disableElevation color="success"
+                                    onClick={handleConfirmModalOpen}
+                                >
+                                    Duyệt
+                                </Button>
+
                                 <Button variant="contained" disableElevation color="primary">
                                     Chi tiết
                                 </Button>
+
                             </TableCell>
                         </StyledTableRow>
                     ))}

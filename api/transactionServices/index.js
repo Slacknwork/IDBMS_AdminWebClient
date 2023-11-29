@@ -54,4 +54,24 @@ const getAllTransactions = async () => {
     }
 };
 
-export { getTransactionById, getTransactionsByProjectId, getTransactionsByUserId, getAllTransactions };
+const updateTransactionStatus = async (transactionId, status) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Transactions/${transactionId}/status?status=${status}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        console.log(response)
+        const transaction = await response.json();
+        return transaction;
+    } catch (error) {
+        console.error('Error fetching update transactions status:', error);
+        throw error;
+    }
+};
+
+export { getTransactionById, getTransactionsByProjectId, getTransactionsByUserId, getAllTransactions, updateTransactionStatus };
