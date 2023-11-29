@@ -40,4 +40,18 @@ const getTransactionsByUserId = async (userId) => {
     }
 };
 
-export { getTransactionById, getTransactionsByProjectId, getTransactionsByUserId };
+const getAllTransactions = async () => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Transactions/`,
+            { cache: 'no-store' }
+        );
+        const transaction = await response.json();
+        return transaction;
+    } catch (error) {
+        console.error('Error fetching transaction:', error);
+        throw error;
+    }
+};
+
+export { getTransactionById, getTransactionsByProjectId, getTransactionsByUserId, getAllTransactions };
