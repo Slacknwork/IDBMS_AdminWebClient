@@ -21,6 +21,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUsername, setUserLoginState } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export default userSlice.reducer;

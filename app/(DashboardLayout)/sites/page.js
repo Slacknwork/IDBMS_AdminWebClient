@@ -18,7 +18,7 @@ export default function SitesPage() {
         <Link underline="hover" color="inherit" href="/">
           Trang chủ
         </Link>
-        <Typography color="text.primary">Danh sách dự án</Typography>
+        <Typography color="text.primary">Khu công trình</Typography>
       </Breadcrumbs>
       <DashboardCard title={pageTitle}>
         <Sites></Sites>
