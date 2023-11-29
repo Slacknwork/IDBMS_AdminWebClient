@@ -1,5 +1,5 @@
 export default {
-    0: "Active",
-    1: "New",
-    2: "Hidden",
+    0: "Đang hoạt động",
+    1: "Mới",
+    2: "Đã ẩn",
 };

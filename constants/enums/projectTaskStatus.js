@@ -1,7 +1,7 @@
 export default {
-    0: "Pending",
-    1: "Confirmed",
-    2: "Ongoing",
-    3: "Done",
-    4: "Cancelled",
+    0: "Đang chờ",
+    1: "Xác nhận",
+    2: "Đang thực hiện",
+    3: "Hoàn thành",
+    4: "Hủy",
 };

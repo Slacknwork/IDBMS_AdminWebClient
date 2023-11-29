@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import { getPaymentStagesByProjectId } from "../../../api/paymentStageServices";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import PaymentStageModal from "./Modal";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -60,7 +60,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectPayments() {
-  const params = useSearchParams();
+  const params = useParams();
 
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
@@ -72,7 +72,7 @@ export default function ProjectPayments() {
   };
 
   const [payments, setPayments] = useState([]);
-  const [projectId, setProjectId] = useState("8b84897a-5a93-429c-a5b0-b11ae7483dd3");
+  const [projectId, setProjectId] = useState(params.id);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -93,7 +93,7 @@ export default function ProjectPayments() {
       fetchDataFromApi();
     }
   }, [projectId]);
-  
+
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -137,7 +137,7 @@ export default function ProjectPayments() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
+                Đã trả tiền
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -155,7 +155,7 @@ export default function ProjectPayments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {stages.map((stage) => (
+          {payments && payments?.map((stage) => (
             <StyledTableRow key={stage.id}>
               <TableCell>
                 <Typography
@@ -185,7 +185,7 @@ export default function ProjectPayments() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={stage.status}
+                  label={stage.isPaid ? "Đã trả" : "Chưa"}
                 ></Chip>
               </TableCell>
               <TableCell>
@@ -201,7 +201,7 @@ export default function ProjectPayments() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {stage.endTimePayment}
+                  {new Date(stage?.endTimePayment).toLocaleDateString("en-GB")}
                 </Typography>
               </TableCell>
               <TableCell align="right">

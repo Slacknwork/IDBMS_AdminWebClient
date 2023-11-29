@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
+import { useParams } from "next/navigation";
 import {
   Typography,
   Box,
@@ -23,6 +24,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { getProjectDocumentsByProjectId } from "../../../api/projectDocumentServices";
 import ProjectDocumentModal from "./Modal";
 import { toast } from "react-toastify";
+import projectDocumentCategory from "../../../constants/enums/projectDocumentCategory";
 
 const documents = [
   {
@@ -54,6 +56,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const params = useParams();
+
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
@@ -80,7 +84,7 @@ export default function ProjectList() {
       fetchDataFromApi();
     }
   }, [projectId]);
-  
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ mt: 2 }}>
@@ -100,10 +104,12 @@ export default function ProjectList() {
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
           <InputLabel>Loại tài liệu</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+          <Select labelId="demo-simple-select-label" label="projectDocumentCategory">
+            {Object.entries(projectDocumentCategory).map(([label, value]) => (
+              <MenuItem key={label} value={label}>
+                {value}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Button
@@ -149,20 +155,7 @@ export default function ProjectList() {
                 Loại tài liệu
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Dự án
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Bản mẫu
-              </Typography>
-            </StyledTableCell>
             <StyledTableCell >
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tải xuống
-              </Typography>
             </StyledTableCell>
           </TableRow>
         </TableHead>
@@ -186,22 +179,12 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {document.createdDate}
+                  {new Date(document?.createdDate).toLocaleDateString("en-GB")}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {document.category}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.projectId}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.projectDocumentTemplateId ?? 'Không có'}
+                  {projectDocumentCategory[document?.category] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell align="right">

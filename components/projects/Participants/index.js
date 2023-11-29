@@ -25,6 +25,7 @@ import {
 import { getParticipationByProjectId } from "../../../api/projectParticipationServices";
 import ProjectParticipantModal from "./Modal";
 import { toast } from "react-toastify";
+import participationRole from "../../../constants/enums/participationRole";
 
 const participants = [
   {
@@ -155,11 +156,6 @@ export default function ProjectParticipants() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Dự án tham gia
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Vai trò
               </Typography>
             </StyledTableCell>
@@ -175,35 +171,13 @@ export default function ProjectParticipants() {
           {participants.map((participant) => (
             <StyledTableRow key={participant.id}>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {participant.userId}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                      {participant.email}
-                    </Typography>
-                  </Box>
-                </Box>
-              </TableCell>
-              <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {participant.projectId}
+                  {participant?.user?.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {participant.role}
+                  {participationRole[participant?.role] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -214,7 +188,7 @@ export default function ProjectParticipants() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={participant.isDeleted}
+                  label={participant.isDeleted ? "Đang hoạt động" : "Đã xóa" ?? "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell align="right">

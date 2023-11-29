@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
+import { useParams } from "next/navigation";
 import {
   Typography,
   Box,
@@ -24,6 +25,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { getCommentsByProjectId } from "../../../api/commentServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import commentStatus from "../../../constants/enums/commentStatus";
 
 const products = [
   {
@@ -57,9 +59,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const params = useParams();
 
   const [comments, setComments] = useState([]);
-  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [projectId, setProjectId] = useState(params.id);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -99,14 +102,14 @@ export default function ProjectList() {
             }}
           />
         </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+        {/* <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
           <InputLabel>Age</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
       </Box>
 
       <Table
@@ -120,17 +123,12 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Tên Công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên Dự án
+                Tên công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -145,7 +143,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell align="right">
               <Typography variant="subtitle2" fontWeight={600}>
-                Ngày đăng/chỉnh sửa gần nhất
+                Ngày đăng/chỉnh sửa
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
@@ -159,23 +157,13 @@ export default function ProjectList() {
           {comments.map((comment) => (
             <StyledTableRow key={comment.id}>
               <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {comment.id}
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {comment.content}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {comment.projectTaskId}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {comment.projectId}
+                  {comment.projectTask?.name}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -187,7 +175,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {comment.userId}
+                      {comment.user?.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -206,18 +194,18 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {comment?.lastModifiedTime ?? comment.createdTime}
+                  {new Date(comment?.lastModifiedTime ?? comment?.createdTime).toLocaleDateString("en-GB")}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: comment.pbg,
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
-                  label={comment.status}
+                  label={commentStatus[comment.status] || "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell align="right">
