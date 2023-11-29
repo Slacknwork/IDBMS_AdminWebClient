@@ -120,7 +120,7 @@ export default function ProjectList() {
                                 Loại tài liệu
                             </Typography>
                         </StyledTableCell>
-                        <StyledTableCell align="right">
+                        <StyledTableCell align="left">
                             <Typography variant="subtitle2" fontWeight={600}>
                                 Tải xuống
                             </Typography>
