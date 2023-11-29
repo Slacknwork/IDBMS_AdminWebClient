@@ -1,7 +1,7 @@
-export default {
-    0: "CashDeposit",
-    1: "BankDeposit",
-    2: "Warranty",
-    3: "Withdraw",
-    4: "StagePayment",
-};
+export default [
+  "Tiền mặt",
+  "Chuyển khoản ngân hàng",
+  "Bảo hiểm",
+  "Rút tiền",
+  "Trừ tiền giai đoạn",
+];

@@ -21,26 +21,11 @@ import {
   MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
-import { getTransactionsByProjectId } from "../../../api/transactionServices";
-import ProjectDocumentModal from "./Modal";
+import { getTransactionsByProjectId } from "/api/transactionServices";
 import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
 
-const transactions = [
-  {
-    id: "1",
-    project: {
-      name: "COOLNAME Building",
-    },
-    type: 1,
-    amount: 500,
-    createdDate: "1/1/2023",
-    status: 0,
-    user: {
-      name: "Some random guy",
-      email: "random@mail.com",
-    },
-  },
-];
+import TransactionModal from "./Modal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -62,12 +47,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
+  const params = useParams();
+
   const [modalOpen, setModalOpen] = useState(false);
-  const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const [modalTransaction, setModalTransaction] = useState({});
+  const onModalOpen = (transaction) => {
+    handleModalOpen();
+    setModalTransaction(transaction);
+    console.log("set");
+  };
 
   const [transactions, setTransactions] = useState([]);
-  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -76,8 +68,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getTransactionsByProjectId(projectId);
-          console.log(data);
+          const data = await getTransactionsByProjectId(params.id);
           setTransactions(data);
           setLoading(false);
         } catch (error) {
@@ -87,10 +78,15 @@ export default function ProjectList() {
       };
       fetchDataFromApi();
     }
-  }, [projectId]);
+  }, []);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <TransactionModal
+        open={modalOpen}
+        onClose={handleModalClose}
+        modalTransaction={modalTransaction}
+      ></TransactionModal>
       <Box sx={{ mt: 2 }}>
         <FormControl sx={{ mt: 2, minWidth: 300 }}>
           <TextField
@@ -119,14 +115,10 @@ export default function ProjectList() {
           variant="contained"
           disableElevation
           color="primary"
-          onClick={handleModalOpen}
+          onClick={() => onModalOpen({})}
         >
           Tạo giao dịch
         </Button>
-        <ProjectDocumentModal
-          open={modalOpen}
-          onClose={handleModalClose}
-        ></ProjectDocumentModal>
       </Box>
       <Table
         aria-label="simple table"
@@ -137,11 +129,6 @@ export default function ProjectList() {
       >
         <TableHead>
           <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Dự án
-              </Typography>
-            </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Loại giao dịch
@@ -174,16 +161,6 @@ export default function ProjectList() {
           {transactions.map((transaction) => (
             <StyledTableRow key={transaction.id}>
               <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {transaction?.projectId}
-                </Typography>
-              </TableCell>
-              <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
@@ -196,7 +173,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {transaction.amount}
+                  {transaction.amount.toLocaleString("vi-VN")} VND
                 </Typography>
               </TableCell>
               <TableCell>
@@ -208,7 +185,7 @@ export default function ProjectList() {
                 >
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      {transaction.userId}
+                      {transaction.user?.name}
                     </Typography>
                     <Typography
                       color="textSecondary"
@@ -238,7 +215,12 @@ export default function ProjectList() {
                 ></Chip>
               </TableCell>
               <TableCell align="right">
-                <Button variant="contained" disableElevation color="primary">
+                <Button
+                  variant="contained"
+                  onClick={() => onModalOpen(transaction)}
+                  disableElevation
+                  color="primary"
+                >
                   Chi tiết
                 </Button>
               </TableCell>
