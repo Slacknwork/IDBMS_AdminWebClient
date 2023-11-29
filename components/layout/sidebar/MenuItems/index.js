@@ -12,7 +12,7 @@ import {
   IconUserStar,
   IconPalette,
   IconFileExport,
-  IconReportMoney
+  IconReportMoney,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -30,9 +30,9 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Dự án đang chờ duyệt",
-    icon: IconFileReport,
-    href: "/projects/requests",
+    title: "Khu công trình",
+    icon: IconHome,
+    href: "/sites",
   },
   {
     id: uniqueId(),

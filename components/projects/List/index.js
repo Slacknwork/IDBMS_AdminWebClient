@@ -61,7 +61,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
@@ -72,8 +71,8 @@ export default function ProjectList() {
       const fetchDataFromApi = async () => {
         try {
           const data = await getProjects();
-          console.log(data);
-          setProjects(data);
+          const projs = data.filter((pj) => pj.status > 1);
+          setProjects(projs);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -85,7 +84,7 @@ export default function ProjectList() {
   }, []);
 
   const handleAccept = () => {
-    console.log("accept")
+    console.log("accept");
   };
 
   return (
@@ -199,7 +198,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project?.estimatedPrice?.toLocaleString('en-US') + ' VND'}
+                  {project?.estimatedPrice?.toLocaleString("en-US") + " VND"}
                 </Typography>
               </TableCell>
               <TableCell align="right">
