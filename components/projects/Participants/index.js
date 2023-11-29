@@ -183,7 +183,7 @@ export default function ProjectParticipants() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={participant.isDeleted ? "Đang hoạt động" : "Đã xóa" ?? "Không xác định"}
+                  label={participant.isDeleted ? "Đã xóa" : "Đang hoạt động" ?? "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell align="right">
@@ -195,6 +195,6 @@ export default function ProjectParticipants() {
           ))}
         </TableBody>
       </Table>
-    </Box>
+    </Box >
   );
 }
