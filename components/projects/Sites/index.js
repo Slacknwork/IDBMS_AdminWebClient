@@ -84,7 +84,7 @@ export default function ProjectList() {
       const response = await updateProjectStatus(projectId, 2);
       console.log(response);
       toast.success("Chấp nhận thành công!");
-      initialized.current = false;
+      setPendingConfirm(false)
     } catch (error) {
       console.error("Error update :", error);
       toast.error("Lỗi!");
@@ -97,7 +97,6 @@ export default function ProjectList() {
       const response = await updateProjectStatus(projectId, 6);
       console.log(response);
       toast.success("Từ chối thành công!");
-      initialized.current = false;
     } catch (error) {
       console.error("Error update :", error);
       toast.error("Lỗi!");
