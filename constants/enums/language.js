@@ -1,4 +1,4 @@
 export default {
-    0: "English",
-    1: "Vietnamese",
+    0: "Tiếng Anh",
+    1: "Tiếng Việt",
 };

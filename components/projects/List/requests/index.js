@@ -22,8 +22,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import { getProjects, updateProjectStatus } from "../../../../api/projectServices";
+import projectType from "../../../../constants/enums/projectType";
+import language from "../../../../constants/enums/language";
+import projectStatus from "../../../../constants/enums/projectStatus";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+
 
 const projects = [
   {
@@ -100,14 +104,14 @@ export default function ProjectList() {
             }}
           />
         </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
+        {/* <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+          <InputLabel></InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
       </Box>
       <Table
         aria-label="simple table"
@@ -173,12 +177,12 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.type}
+                  {projectType[project?.type] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {project.language}
+                  {language[project?.language] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -189,7 +193,7 @@ export default function ProjectList() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={project.status}
+                  label={projectStatus[project?.status] || "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell>
