@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
     Typography,
@@ -21,8 +21,11 @@ import {
     MenuItem,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
-
+import { getAllTransactions } from "/api/transactionServices";
 import ProjectDocumentModal from "./Modal";
+import { toast } from "react-toastify";
+import transactionStatus from "/constants/enums/transactionStatus";
+import transactionType from "/constants/enums/transactionType";
 
 const transactions = [
     {
@@ -65,6 +68,28 @@ export default function ProjectList() {
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
 
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const initialized = useRef(false);
+
+    useEffect(() => {
+        if (!initialized.current) {
+            initialized.current = true;
+            const fetchDataFromApi = async () => {
+                try {
+                    const data = await getAllTransactions();
+                    console.log(data)
+                    setTransactions(data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                    toast.error("Lỗi nạp dữ liệu từ hệ thống");
+                }
+            };
+            fetchDataFromApi();
+        }
+    }, []);
+
     return (
         <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
             <Box sx={{ mt: 2 }}>
@@ -83,7 +108,7 @@ export default function ProjectList() {
                     />
                 </FormControl>
                 <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-                    <InputLabel>Loại tài liệu</InputLabel>
+                    <InputLabel>Loại giao dịch</InputLabel>
                     <Select labelId="demo-simple-select-label" label="Age">
                         <MenuItem value={10}>Ten</MenuItem>
                         <MenuItem value={20}>Twenty</MenuItem>
@@ -125,7 +150,7 @@ export default function ProjectList() {
                         </StyledTableCell>
                         <StyledTableCell>
                             <Typography variant="subtitle2" fontWeight={600}>
-                                Số tiền
+                                Số tiền (VND)
                             </Typography>
                         </StyledTableCell>
                         <StyledTableCell>
@@ -156,7 +181,7 @@ export default function ProjectList() {
                                         fontWeight: "500",
                                     }}
                                 >
-                                    {transaction.project.name}
+                                    {transaction?.project?.name}
                                 </Typography>
                             </TableCell>
                             <TableCell>
@@ -167,12 +192,12 @@ export default function ProjectList() {
                                         color: "#fff",
                                     }}
                                     size="small"
-                                    label={`${transaction.type}`}
+                                    label={transactionType[transaction?.type] || "Không xác định"}
                                 ></Chip>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={400}>
-                                    {transaction.amount}
+                                    {transaction?.amount}
                                 </Typography>
                             </TableCell>
                             <TableCell>
@@ -184,7 +209,7 @@ export default function ProjectList() {
                                 >
                                     <Box>
                                         <Typography variant="subtitle2" fontWeight={600}>
-                                            {transaction.user.name}
+                                            {transaction?.user?.name}
                                         </Typography>
                                         <Typography
                                             color="textSecondary"
@@ -192,14 +217,14 @@ export default function ProjectList() {
                                                 fontSize: "13px",
                                             }}
                                         >
-                                            {transaction.user.email}
+                                            {transaction?.user?.email}
                                         </Typography>
                                     </Box>
                                 </Box>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={400}>
-                                    {transaction.createdDate}
+                                    {new Date(transaction?.createdDate).toLocaleDateString("en-GB")}
                                 </Typography>
                             </TableCell>
                             <TableCell>
@@ -210,7 +235,7 @@ export default function ProjectList() {
                                         color: "#fff",
                                     }}
                                     size="small"
-                                    label={`${transaction.status}`}
+                                    label={transactionStatus[transaction?.status] || "Không xác định"}
                                 ></Chip>
                             </TableCell>
                             <TableCell align="right">
