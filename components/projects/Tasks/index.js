@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   Typography,
   Box,
@@ -25,6 +25,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getProjectTasksByProjectId } from "../../../api/projectTaskServices";
+import projectTaskStatus from "../../../constants/enums/projectTaskStatus";
 
 const tasks = [
   {
@@ -64,10 +65,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-  const params = useSearchParams();
+  const params = useParams();
 
   const [tasks, setTasks] = useState([]);
-  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+  const [projectId, setProjectId] = useState(params.id);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -107,11 +108,13 @@ export default function ProjectList() {
           />
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+          <InputLabel>Trạng thái</InputLabel>
+          <Select labelId="demo-simple-select-label" label="Status">
+            {Object.entries(projectTaskStatus).map(([label, value]) => (
+              <MenuItem key={label} value={label}>
+                {value}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -190,7 +193,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {task.paymentStageId}
+                  {task.paymentStage?.name || "Chưa xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -206,7 +209,7 @@ export default function ProjectList() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={`${task.status}`}
+                  label={projectTaskStatus[task.status] || "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell align="right">

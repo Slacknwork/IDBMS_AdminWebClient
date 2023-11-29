@@ -60,7 +60,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectList() {
 
   const [values, setValues] = useState([]);
-  const [userId, setUserId] = useState("A3C81D01-8CF6-46B7-84DF-DCF39EB7D4CF");
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -81,20 +80,8 @@ export default function ProjectList() {
       };
       fetchDataFromApi();
     }
-  }, [userId]);
+  }, []);
 
-  const handleAcceptProject = async (projectId) => {
-    console.log(projectId)
-    try {
-      const response = await updateProjectStatus(projectId, 2);
-      console.log(response);
-      toast.success("Chấp nhận thành công!");
-      initialized.current = false;
-    } catch (error) {
-      console.error("Error update :", error);
-      toast.error("Lỗi!");
-    }
-  };
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
@@ -209,16 +196,6 @@ export default function ProjectList() {
                 <Typography variant="subtitle2" fontWeight={400}>
                   {project?.estimatedPrice?.toLocaleString('en-US') + ' VND'}
                 </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  variant="contained"
-                  disableElevation
-                  color="success"
-                  onClick={() => handleAcceptProject(project.id)}
-                >
-                  Chấp nhận
-                </Button>
               </TableCell>
               <TableCell align="right">
                 <Button

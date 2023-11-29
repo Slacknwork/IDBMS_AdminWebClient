@@ -15,9 +15,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { getProjectById, updateProjectStatus } from "../../../api/projectServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getSitesByProjectId } from "../../../api/siteServices";
 
 const sites = [
   {
@@ -51,8 +51,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectList() {
   const params = useParams();
 
-  const [sites, setSites] = useState([]);
-  const [projectId, setProjectId] = useState("ff090f51-e6e7-4854-8f3f-0402ee32c9f8");
+
+  const [project, setProject] = useState([]);
+  const [pending, setPendingConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
@@ -61,30 +62,69 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getSitesByProjectId(projectId);
+          const data = await getProjectById(params.id);
           console.log(data);
-          setSites(data);
+          setProject(data);
+          if (data.status === 1) {
+            setPendingConfirm(true);
+          }
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+          toast.error("Error fetching data");
         }
       };
       fetchDataFromApi();
     }
-  }, [projectId]);
+  }, []);
+
+  const handleAcceptProject = async (projectId) => {
+    console.log(projectId)
+    try {
+      const response = await updateProjectStatus(projectId, 2);
+      console.log(response);
+      toast.success("Chấp nhận thành công!");
+      initialized.current = false;
+    } catch (error) {
+      console.error("Error update :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const handleRejectProject = async (projectId) => {
+    console.log(projectId)
+    try {
+      const response = await updateProjectStatus(projectId, 6);
+      console.log(response);
+      toast.success("Từ chối thành công!");
+      initialized.current = false;
+    } catch (error) {
+      console.error("Error update :", error);
+      toast.error("Lỗi!");
+    }
+  };
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      {/* <Box display="flex" justifyContent="right" alignItems="center" padding={2}>
+      {pending && <Box display="flex" justifyContent="right" alignItems="center" padding={2}>
+        <Button
+          variant="contained"
+          disableElevation
+          color="success"
+          onClick={() => handleAcceptProject(project.id)}
+        >
+          Chấp nhận
+        </Button>
         <Button
           variant="contained"
           disableElevation
           color="error"
+          onClick={() => handleRejectProject(project.id)}
         >
           Từ chối dự án
         </Button>
-      </Box> */}
+      </Box>}
+
       <Breadcrumbs aria-label="breadcrumb">
         <Typography sx={{ mt: 2 }}>Công trình</Typography>
       </Breadcrumbs>
@@ -121,7 +161,7 @@ export default function ProjectList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sites.map((site) => (
+          {project?.sites?.map((site) => (
             <StyledTableRow key={site.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>

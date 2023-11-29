@@ -1,4 +1,4 @@
 export default {
-    0: "Sent",
-    1: "Edited",
+    0: "Đã gửi",
+    1: "Đã chỉnh sửa",
 };
