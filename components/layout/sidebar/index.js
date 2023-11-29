@@ -31,12 +31,15 @@ const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
               height: "100%",
             }}
           >
-            <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" >
-              <Logo />
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+            >
+              <Logo sx={{ mb: 0 }} />
             </Box>
-            <Box>
-              <SidebarItems />
-            </Box>
+            <SidebarItems />
           </Box>
         </Drawer>
       </Box>
