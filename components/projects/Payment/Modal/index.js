@@ -24,8 +24,8 @@ import { getUser } from "../../../../api/userServices";
 import { createParticipation } from "../../../../api/projectParticipationServices";
 import CloseIcon from '@mui/icons-material/Close';
 import { createPaymentStage } from "../../../../api/paymentStageServices";
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+// import { DatePicker } from 'react-datepicker'
+// import 'react-datepicker/dist/react-datepicker.css'
 
 const style = {
   position: "absolute",

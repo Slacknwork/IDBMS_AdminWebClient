@@ -122,10 +122,10 @@ export default function ProjectList() {
         }}
       >
         <TableHead>
-          <TableRow>
+        <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên nội thất
+                Tên sản phẩm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -138,11 +138,12 @@ export default function ProjectList() {
                 Ngày tạo
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Hành động
               </Typography>
             </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -167,7 +168,6 @@ export default function ProjectList() {
                   </Box>
                 </Box>
               </TableCell>
-
               <TableCell>
                 <Chip
                   sx={{
@@ -178,6 +178,11 @@ export default function ProjectList() {
                   size="small"
                   label={new Date(item?.createdDate).toLocaleDateString("en-GB")}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button

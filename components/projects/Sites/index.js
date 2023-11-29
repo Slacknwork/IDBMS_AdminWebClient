@@ -51,6 +51,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectList() {
   const params = useParams();
 
+
   const [project, setProject] = useState([]);
   const [pending, setPendingConfirm] = useState(false);
   const [loading, setLoading] = useState(true);

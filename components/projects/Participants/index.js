@@ -159,11 +159,6 @@ export default function ProjectParticipants() {
                 Vai trò
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>

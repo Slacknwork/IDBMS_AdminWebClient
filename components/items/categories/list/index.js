@@ -179,7 +179,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory?.parentCategoryId}
+                  {itemCategory?.parentCategoryId ?? 'Không có'}
                 </Typography>
               </TableCell>
               <TableCell align="right">
