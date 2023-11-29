@@ -50,6 +50,15 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      {/* <Box display="flex" justifyContent="right" alignItems="center" padding={2}>
+        <Button
+          variant="contained"
+          disableElevation
+          color="error"
+        >
+          Từ chối dự án
+        </Button>
+      </Box> */}
       <Breadcrumbs aria-label="breadcrumb">
         <Typography sx={{ mt: 2 }}>Công trình</Typography>
       </Breadcrumbs>

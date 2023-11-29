@@ -25,4 +25,24 @@ const getProjects = async () => {
         throw error;
     }
 };
-export { getProjectById, getProjects };
+
+const updateProjectStatus = async (projectId, status) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Projects/${projectId}/status?status=${status}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        console.log(response)
+        const project = await response.json();
+        return project;
+    } catch (error) {
+        console.error('Error fetching update project status:', error);
+        throw error;
+    }
+};
+export { getProjectById, getProjects, updateProjectStatus };
