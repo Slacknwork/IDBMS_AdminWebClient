@@ -146,7 +146,7 @@ export default function ProjectList() {
                 Ngày đăng/chỉnh sửa
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell align="left">
               <Typography variant="subtitle2" fontWeight={600}>
                 Trạng thái
               </Typography>

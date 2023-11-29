@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
+import interiorItemTypeEnum from "/constants/enums/interiorItemType";
 
 const projects = [
   {
@@ -174,7 +175,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory.interiorItemType}
+                  {interiorItemTypeEnum[itemCategory?.interiorItemType] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
