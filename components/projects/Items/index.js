@@ -117,85 +117,68 @@ export default function ProjectList() {
         }}
       >
         <TableHead>
-          <TableRow>
+        <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Name
+                Tên sản phẩm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Owner
+                Loại sản phẩm
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                items
+                Đơn vị tính
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Actions
+                Trạng thái
               </Typography>
             </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Giá ước tính / Quyết toán
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {items.map((item) => (
             <StyledTableRow key={item.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {item.id}
+                            <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {item.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.pname}
+                  {item.interiorItemCategoryId}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {item.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                      {item.post}
-                    </Typography>
-                  </Box>
-                </Box>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {item.calculationUnit}
+                </Typography>
               </TableCell>
-
               <TableCell>
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: item.pbg,
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"
-                  label={item.priority}
+                  label={item.status}
                 ></Chip>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
+                </Typography>
               </TableCell>
               <TableCell align="right">
                 <Button

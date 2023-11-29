@@ -190,7 +190,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {task.paymentStage?.name}
+                  {task.paymentStageId}
                 </Typography>
               </TableCell>
               <TableCell>

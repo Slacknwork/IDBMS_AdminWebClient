@@ -87,11 +87,6 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
                 Tên
               </Typography>
             </StyledTableCell>
@@ -110,7 +105,7 @@ export default function ProjectList() {
                 Số dư
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
+            <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Trạng thái
               </Typography>
@@ -120,16 +115,6 @@ export default function ProjectList() {
         <TableBody>
           {users.map((user) => (
             <StyledTableRow key={user.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {user.id}
-                </Typography>
-              </TableCell>
               <TableCell>
                 <Typography
                   sx={{
@@ -176,7 +161,7 @@ export default function ProjectList() {
                 <Chip
                   sx={{
                     px: "4px",
-                    backgroundColor: user.pbg,
+                    backgroundColor:  "primary.main",
                     color: "#fff",
                   }}
                   size="small"

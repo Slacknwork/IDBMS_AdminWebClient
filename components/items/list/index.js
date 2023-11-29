@@ -24,6 +24,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllInteriorItems } from "../../../api/interiorItemServices";
+import { calculationUnit } from "../../../constants/enums/calculationUnit";
+
 
 const projects = [
   {
@@ -166,6 +168,7 @@ export default function ProjectList() {
                 <Chip
                   sx={{
                     px: "4px",
+                    backgroundColor: "primary.main",
                     color: "#fff",
                   }}
                   size="small"

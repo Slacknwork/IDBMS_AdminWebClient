@@ -175,7 +175,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {itemColor.secondaryColor}
+                  {itemColor.secondaryColor ?? ''}
                 </Typography>
               </TableCell>
               <TableCell align="right">
