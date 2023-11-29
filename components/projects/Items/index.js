@@ -122,7 +122,7 @@ export default function ProjectList() {
         }}
       >
         <TableHead>
-        <TableRow>
+          <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Tên sản phẩm
@@ -140,7 +140,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Hành động
+                Giá
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
@@ -181,7 +181,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
+                  {item?.interiorItem?.estimatePrice ? item?.interiorItem?.estimatePrice?.toLocaleString('en-US') + ' VND' : ""}
                 </Typography>
               </TableCell>
               <TableCell align="right">
