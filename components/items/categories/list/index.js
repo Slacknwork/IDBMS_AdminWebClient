@@ -98,14 +98,14 @@ export default function ProjectList() {
             }}
           />
         </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+        {/* <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
           <InputLabel>Age</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
       </Box>
       <Table
         aria-label="simple table"

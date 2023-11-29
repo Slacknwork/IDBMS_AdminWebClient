@@ -24,7 +24,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllInteriorItems } from "../../../api/interiorItemServices";
-import { calculationUnit } from "../../../constants/enums/calculationUnit";
+import calculationUnitEnum from "/constants/enums/calculationUnit";
+import interiorItemStatus from "/constants/enums/interiorItemStatus";
 
 
 const projects = [
@@ -101,7 +102,7 @@ export default function ProjectList() {
           />
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
+          <InputLabel>Phân loại</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
@@ -140,7 +141,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá ước tính / Quyết toán
+                Giá ước tính / Quyết toán (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
@@ -151,17 +152,17 @@ export default function ProjectList() {
             <StyledTableRow key={item.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.name}
+                  {item?.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.interiorItemCategoryId}
+                  {item?.interiorItemCategory?.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.calculationUnit}
+                  {calculationUnitEnum[item?.calculationUnit] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -172,12 +173,12 @@ export default function ProjectList() {
                     color: "#fff",
                   }}
                   size="small"
-                  label={item.status}
+                  label={interiorItemStatus[item?.status] || "Không xác định"}
                 ></Chip>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {item.estimatePrice.toLocaleString('en-US') + ' VND'}
+                  {item?.estimatePrice?.toLocaleString('en-US')}
                 </Typography>
               </TableCell>
               <TableCell align="right">

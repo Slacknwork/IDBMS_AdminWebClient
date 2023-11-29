@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllColors } from "../../../../api/interiorItemColorServices";
+import colorType from "/constants/enums/colorType";
 
 const projects = [
   {
@@ -99,7 +100,7 @@ export default function ProjectList() {
           />
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
+          <InputLabel>Loại màu</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
@@ -165,7 +166,7 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {itemColor.type}
+                  {colorType[itemColor?.type] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>

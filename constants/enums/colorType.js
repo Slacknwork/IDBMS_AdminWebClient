@@ -1,5 +1,5 @@
 export default {
-    0: "MixColor",
-    1: "SingleColor",
-    2: "CustomColor",
+    0: "Màu gộp",
+    1: "Màu đơn",
+    2: "Màu tự thiết kế",
 };

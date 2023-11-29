@@ -25,6 +25,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { getAllTaskCategories } from "../../../api/taskCategoryServices";
+import projectType from "../../../constants/enums/projectType";
 
 const projects = [
   {
@@ -124,7 +125,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên 
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -148,11 +149,11 @@ export default function ProjectList() {
         <TableBody>
           {projectCategories.map((projectCategory) => (
             <StyledTableRow key={projectCategory.id}>
-            <TableCell>
+              <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {projectCategory.id}
                 </Typography>
-            </TableCell>
+              </TableCell>
               <TableCell>
                 <Box
                   sx={{
@@ -175,16 +176,16 @@ export default function ProjectList() {
                 </Box>
               </TableCell>
               <TableCell>
-              <Image src={projectCategory.iconImageUrl}
-                    alt=""
-                    width={0}
-                    height={0}
-                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true}/>
+                <Image src={projectCategory.iconImageUrl}
+                  alt=""
+                  width={0}
+                  height={0}
+                  style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
+                  unoptimized={true} />
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {projectCategory.projectType}
+                  {projectType[projectCategory?.projectType] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
