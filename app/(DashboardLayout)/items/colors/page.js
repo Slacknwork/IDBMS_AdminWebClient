@@ -9,14 +9,14 @@ import PageContainer from "/components/container/PageContainer";
 
 export default function ProjectsPage() {
   return (
-    <PageContainer title="Danh sách dự án" description="">
+    <PageContainer title="Danh sách màu" description="">
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link underline="hover" color="inherit" href="/">
           Trang chủ
         </Link>
-        <Typography color="text.primary">Danh sách dự án</Typography>
+        <Typography color="text.primary">Danh sách màu</Typography>
       </Breadcrumbs>
-      <DashboardCard title="Danh sách dự án">
+      <DashboardCard title="Danh sách màu">
         <ProjectList></ProjectList>
       </DashboardCard>
     </PageContainer>

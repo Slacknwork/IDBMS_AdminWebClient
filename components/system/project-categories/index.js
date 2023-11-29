@@ -99,14 +99,14 @@ export default function ProjectList() {
             }}
           />
         </FormControl>
-        <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
+        {/* <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
           <InputLabel>Age</InputLabel>
           <Select labelId="demo-simple-select-label" label="Age">
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
       </Box>
       <Table
         aria-label="simple table"
@@ -138,11 +138,11 @@ export default function ProjectList() {
         <TableBody>
           {projectCategories.map((projectCategory) => (
             <StyledTableRow key={projectCategory.id}>
-            <TableCell>
+              <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
                   {projectCategory.id}
                 </Typography>
-            </TableCell>
+              </TableCell>
               <TableCell>
                 <Box
                   sx={{
@@ -165,12 +165,12 @@ export default function ProjectList() {
                 </Box>
               </TableCell>
               <TableCell>
-              <Image src={projectCategory.iconImageUrl}
-                    alt=""
-                    width={0}
-                    height={0}
-                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true}/>
+                <Image src={projectCategory.iconImageUrl}
+                  alt=""
+                  width={0}
+                  height={0}
+                  style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
+                  unoptimized={true} />
               </TableCell>
               <TableCell align="right">
                 <Button

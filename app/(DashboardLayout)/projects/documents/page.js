@@ -9,7 +9,7 @@ import PageContainer from "/components/container/PageContainer";
 
 export default function DocumentsPage() {
     return (
-        <PageContainer title="Danh sách dự án" description="">
+        <PageContainer title="Danh sách tài liệu dự án" description="">
             <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
                 <Link underline="hover" color="inherit" href="/">
                     Trang chủ

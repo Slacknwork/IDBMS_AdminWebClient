@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllProjectDesigns } from "../../../api/projectDesignServices";
+import projectType from "../../../constants/enums/projectType";
 
 const projects = [
   {
@@ -99,11 +100,10 @@ export default function ProjectList() {
           />
         </FormControl>
         <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+          <InputLabel>Loại project</InputLabel>
+          <Select labelId="demo-simple-select-label" label="ProjectType">
+            <MenuItem value={10}>Thiết kế</MenuItem>
+            <MenuItem value={20}>Thi công</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -133,12 +133,12 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá tối thiểu
+                Giá tối thiểu (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá tối đa
+                Giá tối đa (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -180,17 +180,17 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {projectDesign.projectType}
+                  {projectType[projectDesign?.projectType] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {projectDesign.minBudget.toLocaleString('en-US') + ' VND'}
+                  {projectDesign.minBudget.toLocaleString('en-US')}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {projectDesign.maxBudget.toLocaleString('en-US') + ' VND'}
+                  {projectDesign.maxBudget.toLocaleString('en-US')}
                 </Typography>
               </TableCell>
               <TableCell>

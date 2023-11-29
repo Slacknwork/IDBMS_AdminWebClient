@@ -24,6 +24,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllTaskDesigns } from "../../../api/taskDesignServices";
+import calculationUnit from "../../../constants/enums/calculationUnit";
 
 const projects = [
   {
@@ -118,14 +119,14 @@ export default function ProjectList() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Mã 
+                Mã
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên 
+                Tên
               </Typography>
-            </StyledTableCell> 
+            </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
                 Tính theo
@@ -133,7 +134,7 @@ export default function ProjectList() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá uóc tính/đơn vị
+                Giá uóc tính/đơn vị (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -180,22 +181,22 @@ export default function ProjectList() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {taskDesign.calculationUnit}
+                  {calculationUnit[taskDesign?.calculationUnit] || "Không xác định"}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {taskDesign.estimatePricePerUnit.toLocaleString('en-US') + ' VND'}
+                  {taskDesign?.estimatePricePerUnit.toLocaleString('en-US')}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {taskDesign.interiorItemCategoryId}
+                  {taskDesign?.interiorItemCategory?.name}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {taskDesign.taskCategoryId}
+                  {taskDesign?.taskCategory.name}
                 </Typography>
               </TableCell>
               <TableCell align="right">
