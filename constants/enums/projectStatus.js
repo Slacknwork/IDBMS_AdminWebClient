@@ -1,10 +1,10 @@
 export default {
-    0: "Draft",
-    1: "PendingConfirmation",
-    2: "Negotiating",
-    3: "PendingDeposit",
-    4: "Ongoing",
-    5: "Suspended",
-    6: "Canceled",
-    7: "Done",
+    0: "Lưu trữ",
+    1: "Chờ xác nhận",
+    2: "Trao đổi",
+    3: "Chờ trả tiền",
+    4: "Đang hoạt động",
+    5: "Tạm hoãn",
+    6: "Hủy",
+    7: "Hoàn thành",
 };

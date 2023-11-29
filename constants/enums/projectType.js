@@ -1,4 +1,4 @@
 export default {
-    0: "Decor",
-    1: "Construction",
+    0: "Thiết kế",
+    1: "Thi công nội thất",
 };
