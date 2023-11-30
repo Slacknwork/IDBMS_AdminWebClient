@@ -267,6 +267,7 @@ export default function SiteModal({ children }) {
                   </Grid>
                 </Grid>
               </Grid>
+            </Grid>
 
               {/* ADDRESS */}
               <Grid item xs={12} lg={12}>
@@ -291,6 +292,7 @@ export default function SiteModal({ children }) {
                   </Grid>
                 </Grid>
               </Grid>
+            </Grid>
 
               {/* CONTACT NAME */}
               <Grid item xs={12} lg={12}>
@@ -315,6 +317,7 @@ export default function SiteModal({ children }) {
                   </Grid>
                 </Grid>
               </Grid>
+            </Grid>
 
               {/* CONTACT PHONE */}
               <Grid item xs={12} lg={12}>
@@ -389,56 +392,62 @@ export default function SiteModal({ children }) {
                   </Grid>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* COMPANY CODE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{companyCodeLabel}</Typography>
-                    <Typography variant="p">{companyCodeSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={companyCodeError.hasError}
-                        variant="outlined"
-                        value={companyCode}
-                        helperText={companyCodeError.label}
-                        onChange={onCompanyCodeChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* COMPANY CODE */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{companyCodeLabel}</Typography>
+                  <Typography variant="p">{companyCodeSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={companyCodeError.hasError}
+                      variant="outlined"
+                      value={companyCode}
+                      helperText={companyCodeError.label}
+                      onChange={onCompanyCodeChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{descriptionLabel}</Typography>
-                    <Typography variant="p">{descriptionSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4} // You can adjust the number of rows as needed
-                        variant="outlined"
-                        value={description}
-                        error={descriptionError.hasError}
-                        helperText={descriptionError.label}
-                        onChange={onDescriptionChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{descriptionLabel}</Typography>
+                  <Typography variant="p">{descriptionSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      multiline
+                      rows={4} // You can adjust the number of rows as needed
+                      variant="outlined"
+                      value={description}
+                      error={descriptionError.hasError}
+                      helperText={descriptionError.label}
+                      onChange={onDescriptionChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* SUBMIT */}
-              <Grid item xs={12} lg={12}>
-                <Box
-                  sx={{ display: "flex", justifyContent: "flex-end" }}
-                  spacing={2}
+            {/* SUBMIT */}
+            <Grid item xs={12} lg={12}>
+              <Box
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={handleClose}
                 >
                   <Button
                     variant="contained"
@@ -450,8 +459,8 @@ export default function SiteModal({ children }) {
                 </Box>
               </Grid>
             </Grid>
-          </Box>
-        </PageContainer>
+          </Grid>
+        </Box>
       </Modal>
     </Box>
   );

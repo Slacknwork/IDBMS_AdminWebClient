@@ -1,5 +1,7 @@
-export default {
-    0: "Chưa đồng ý",
-    1: "Đồng ý",
-    2: "Đang công khai",
-};
+const projectAdvertisementStatusOptions = [
+  "Chưa đồng ý",
+  "Đồng ý",
+  "Đang công khai",
+];
+
+export default projectAdvertisementStatusOptions;

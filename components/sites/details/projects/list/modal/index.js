@@ -34,9 +34,6 @@ const style = {
   boxShadow: 24,
 };
 
-const pageTitle = "Tạo dự án";
-const pageDescription = "Tạo dự án mới cho khu công trình";
-
 const modalTitle = "Tạo dự án mới";
 
 export default function SiteModal({ children }) {
@@ -172,228 +169,226 @@ export default function SiteModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <PageContainer title={pageTitle} description={pageDescription}>
-          <Box sx={{ ...style }}>
-            <Grid
-              container
-              sx={{
-                pt: 2,
-                position: "sticky",
-                top: 0,
-                backgroundColor: "white",
-                zIndex: 1,
-              }}
-            >
-              <Grid item xs={12} lg={12}>
-                <Typography
-                  variant="h4"
-                  id="child-modal-title"
-                  sx={{ py: 2, borderBottom: 1 }}
-                >
-                  {modalTitle}
-                </Typography>
-              </Grid>
+        <Box sx={{ ...style }}>
+          <Grid
+            container
+            sx={{
+              pt: 2,
+              position: "sticky",
+              top: 0,
+              backgroundColor: "white",
+              zIndex: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12}>
+              <Typography
+                variant="h4"
+                id="child-modal-title"
+                sx={{ py: 2, borderBottom: 1 }}
+              >
+                {modalTitle}
+              </Typography>
             </Grid>
-            <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
-              {/* NAME */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{nameLabel}</Typography>
-                    <Typography variant="p">{nameSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={nameError.hasError}
-                        variant="outlined"
-                        value={name}
-                        helperText={nameError.label}
-                        onChange={onNameChange}
-                      />
-                    </FormControl>
-                  </Grid>
+          </Grid>
+          <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
+            {/* NAME */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{nameLabel}</Typography>
+                  <Typography variant="p">{nameSubLabel}</Typography>
                 </Grid>
-              </Grid>
-
-              {/* PROJECT TYPE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{projectTypeLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={projectType}
-                        onChange={onProjectTypeChange}
-                        error={projectTypeError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          {projectTypeDefaultOptionLabel}
-                        </MenuItem>
-                        {projectTypeOptions.map((type, index) => (
-                          <MenuItem key={type} value={index}>
-                            {type}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PROJECT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{projectStatusLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={projectStatus}
-                        onChange={onProjectStatusChange}
-                        error={projectStatusError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          {projectStatusDefaultOptionLabel}
-                        </MenuItem>
-                        {projectStatusOptions.map((status, index) => (
-                          <MenuItem key={status} value={index}>
-                            {status}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* LANGUAGE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{languageLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={language}
-                        onChange={onLanguageChange}
-                        error={languageError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          {languageDefaultOptionLabel}
-                        </MenuItem>
-                        {languageOptions.map((option, index) => (
-                          <MenuItem key={option} value={index}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PROJECT CATEGORY */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{projectCategoryLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={projectCategory}
-                        onChange={onProjectCategoryChange}
-                        error={projectCategoryError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          {projectCategoryDefaultOptionLabel}
-                        </MenuItem>
-                        {projectCategories.map((category, index) => (
-                          <MenuItem key={category.id} value={category.id}>
-                            {category.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{descriptionLabel}</Typography>
-                    <Typography variant="p">{descriptionSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4} // You can adjust the number of rows as needed
-                        variant="outlined"
-                        value={description}
-                        error={descriptionError.hasError}
-                        helperText={descriptionError.label}
-                        onChange={onDescriptionChange}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* ADVERTISEMENT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {advertisementStatusLabel}
-                    </Typography>
-                    <Typography variant="p">
-                      {advertisementStatusSubLabel}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={advertisementStatus}
-                          onChange={handleAdvertisementStatusChange}
-                          color="primary" // Use your preferred color
-                        />
-                      }
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={nameError.hasError}
+                      variant="outlined"
+                      value={name}
+                      helperText={nameError.label}
+                      onChange={onNameChange}
                     />
-                  </Grid>
+                  </FormControl>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* SUBMIT */}
-              <Grid item xs={12} lg={12}>
-                <Box
-                  sx={{ display: "flex", justifyContent: "flex-end" }}
-                  spacing={2}
-                >
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={handleClose}
-                  >
-                    Tạo
-                  </Button>
-                </Box>
+            {/* PROJECT TYPE */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{projectTypeLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Select
+                      variant="outlined"
+                      value={projectType}
+                      onChange={onProjectTypeChange}
+                      error={projectTypeError.hasError}
+                    >
+                      <MenuItem disabled value={-1}>
+                        {projectTypeDefaultOptionLabel}
+                      </MenuItem>
+                      {projectTypeOptions.map((type, index) => (
+                        <MenuItem key={type} value={index}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
             </Grid>
-          </Box>
-        </PageContainer>
+
+            {/* PROJECT STATUS */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{projectStatusLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Select
+                      variant="outlined"
+                      value={projectStatus}
+                      onChange={onProjectStatusChange}
+                      error={projectStatusError.hasError}
+                    >
+                      <MenuItem disabled value={-1}>
+                        {projectStatusDefaultOptionLabel}
+                      </MenuItem>
+                      {projectStatusOptions.map((status, index) => (
+                        <MenuItem key={status} value={index}>
+                          {status}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* LANGUAGE */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{languageLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Select
+                      variant="outlined"
+                      value={language}
+                      onChange={onLanguageChange}
+                      error={languageError.hasError}
+                    >
+                      <MenuItem disabled value={-1}>
+                        {languageDefaultOptionLabel}
+                      </MenuItem>
+                      {languageOptions.map((option, index) => (
+                        <MenuItem key={option} value={index}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* PROJECT CATEGORY */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{projectCategoryLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Select
+                      variant="outlined"
+                      value={projectCategory}
+                      onChange={onProjectCategoryChange}
+                      error={projectCategoryError.hasError}
+                    >
+                      <MenuItem disabled value={-1}>
+                        {projectCategoryDefaultOptionLabel}
+                      </MenuItem>
+                      {projectCategories.map((category, index) => (
+                        <MenuItem key={category.id} value={category.id}>
+                          {category.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{descriptionLabel}</Typography>
+                  <Typography variant="p">{descriptionSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      multiline
+                      rows={4} // You can adjust the number of rows as needed
+                      variant="outlined"
+                      value={description}
+                      error={descriptionError.hasError}
+                      helperText={descriptionError.label}
+                      onChange={onDescriptionChange}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* ADVERTISEMENT STATUS */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {advertisementStatusLabel}
+                  </Typography>
+                  <Typography variant="p">
+                    {advertisementStatusSubLabel}
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={advertisementStatus}
+                        onChange={handleAdvertisementStatusChange}
+                        color="primary" // Use your preferred color
+                      />
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* SUBMIT */}
+            <Grid item xs={12} lg={12}>
+              <Box
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={handleClose}
+                >
+                  Tạo
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
       </Modal>
     </Box>
   );

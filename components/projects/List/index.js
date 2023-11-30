@@ -41,7 +41,7 @@ const projects = [
     status: 2,
   },
   {
-    id: "1",
+    id: "2",
     name: "Construction",
     type: 1,
     status: 2,
@@ -185,7 +185,9 @@ export default function Sites() {
             </FormControl>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <SiteModal>{createProjectLabel}</SiteModal>
+            <SiteModal>
+              <span>{createProjectLabel}</span>
+            </SiteModal>
           </Box>
         </Box>
         <Table
