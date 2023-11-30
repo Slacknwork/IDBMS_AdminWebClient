@@ -189,7 +189,7 @@ export default function SiteModal({ children }) {
       console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");
-        // setOpen(false);
+        setOpen(false);
       } else {
         throw new Error("Create failed!");
       }

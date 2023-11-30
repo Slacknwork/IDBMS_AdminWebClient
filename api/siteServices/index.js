@@ -78,4 +78,29 @@ const createSite = async (request) => {
     }
 };
 
-export { getSitesByProjectId, getSitesByUserId, createSite, getSiteById, getSites };
+const updateSite = async (id, request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Sites/${id}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
+
+        if (!response.ok) {
+            console.log(response)
+            throw new Error('Update failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching update site:', error);
+        throw error;
+    }
+};
+
+export { getSitesByProjectId, getSitesByUserId, createSite, getSiteById, getSites, updateSite };
