@@ -269,127 +269,124 @@ export default function SiteModal({ children }) {
               </Grid>
             </Grid>
 
-              {/* ADDRESS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {addressLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{addressSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={addressError.hasError}
-                        variant="outlined"
-                        value={address}
-                        helperText={addressError.label}
-                        onChange={onAddressChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* ADDRESS */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {addressLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">{addressSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={addressError.hasError}
+                      variant="outlined"
+                      value={address}
+                      helperText={addressError.label}
+                      onChange={onAddressChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
 
-              {/* CONTACT NAME */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {contactNameLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{contactNameSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={contactNameError.hasError}
-                        variant="outlined"
-                        value={contactName}
-                        helperText={contactNameError.label}
-                        onChange={onContactNameChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* CONTACT NAME */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {contactNameLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">{contactNameSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={contactNameError.hasError}
+                      variant="outlined"
+                      value={contactName}
+                      helperText={contactNameError.label}
+                      onChange={onContactNameChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
 
-              {/* CONTACT PHONE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {contactPhoneLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{contactPhoneSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={contactPhoneError.hasError}
-                        variant="outlined"
-                        value={contactPhone}
-                        helperText={contactPhoneError.label}
-                        onChange={onContactPhoneChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* CONTACT PHONE */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {contactPhoneLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">{contactPhoneSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={contactPhoneError.hasError}
+                      variant="outlined"
+                      value={contactPhone}
+                      helperText={contactPhoneError.label}
+                      onChange={onContactPhoneChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* CONTACT EMAIL */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {contactEmailLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{contactEmailSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={contactEmailError.hasError}
-                        variant="outlined"
-                        value={contactEmail}
-                        helperText={contactEmailError.label}
-                        onChange={onContactEmailChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* CONTACT EMAIL */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {contactEmailLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">{contactEmailSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={contactEmailError.hasError}
+                      variant="outlined"
+                      value={contactEmail}
+                      helperText={contactEmailError.label}
+                      onChange={onContactEmailChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
+            </Grid>
 
-              {/* CONTACT LOCATION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {contactLocationLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">
-                      {contactLocationSubLabel}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={contactLocationError.hasError}
-                        variant="outlined"
-                        value={contactLocation}
-                        helperText={contactLocationError.label}
-                        onChange={onContactLocationChange}
-                      />
-                    </FormControl>
-                  </Grid>
+            {/* CONTACT LOCATION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {contactLocationLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">
+                    {contactLocationSubLabel}
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={contactLocationError.hasError}
+                      variant="outlined"
+                      value={contactLocation}
+                      helperText={contactLocationError.label}
+                      onChange={onContactLocationChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
@@ -447,21 +444,15 @@ export default function SiteModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleCreateSite}
                 >
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={handleCreateSite}
-                  >
-                    Tạo
-                  </Button>
-                </Box>
-              </Grid>
+                  Tạo
+                </Button>
+              </Box>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        </PageContainer>
       </Modal>
-    </Box>
+    </Box >
   );
 }
