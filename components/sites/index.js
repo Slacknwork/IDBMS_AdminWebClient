@@ -92,6 +92,7 @@ export default function Sites() {
             size="small"
             variant="outlined"
             value={search}
+            onChange={onSearchChange}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

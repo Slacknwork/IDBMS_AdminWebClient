@@ -6,6 +6,7 @@ import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
+  Chip,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -23,42 +24,26 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import { debounce } from "@mui/material/utils";
 
-import projectType from "/constants/enums/projectType";
+import projectType, {
+  projectTypeChipColors,
+} from "/constants/enums/projectType";
 import projectStatus from "/constants/enums/projectStatus";
 
 import SiteModal from "./modal";
 
-const sites = [
+const projects = [
   {
     id: "1",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    companyName: "ABC Company",
-    area: 200,
+    name: "Design",
+    type: 0,
+    status: 2,
   },
   {
-    id: "2",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    companyName: "ABC Company",
-    area: 200,
-  },
-  {
-    id: "3",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    companyName: "ABC Company",
-    area: 200,
-  },
-  {
-    id: "4",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    companyName: "ABC Company",
-    area: 200,
+    id: "1",
+    name: "Construction",
+    type: 1,
+    status: 2,
   },
 ];
 
@@ -125,58 +110,65 @@ export default function Sites() {
   };
 
   return (
-    <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ display: "flex" }}>
-        <FormControl sx={{ minWidth: 300, mt: 3 }}>
-          <TextField
-            label="Tìm kiếm"
-            size="small"
-            variant="outlined"
-            value={search}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconSearch />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-        <FormControl sx={{ mt: 3, ml: 2, minWidth: 120 }} size="small">
-          <InputLabel id="project-type-label">{projectTypeLabel}</InputLabel>
-          <Select
-            labelId="project-type-label"
-            id="project-type"
-            value={type}
-            label={projectTypeLabel}
-            onChange={onTypeChange}
-          >
-            <MenuItem value={-1}>Tất cả</MenuItem>
-            {projectType?.map((type, index) => (
-              <MenuItem value={index} key={type}>
-                {type}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ mt: 3, ml: 2, minWidth: 120 }} size="small">
-          <InputLabel id="project-type-label">{projectStatusLabel}</InputLabel>
-          <Select
-            labelId="project-type-label"
-            id="project-type"
-            value={status}
-            label={projectStatusLabel}
-            onChange={onStatusChange}
-          >
-            <MenuItem value={-1}>Tất cả</MenuItem>
-            {projectStatus?.map((status, index) => (
-              <MenuItem value={index} key={status}>
-                {status}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <SiteModal>Tạo công trình</SiteModal>
+    <Box sx={{ overflow: "auto" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <FormControl sx={{ minWidth: 300 }}>
+            <TextField
+              label="Tìm kiếm"
+              size="small"
+              variant="outlined"
+              value={search}
+              onChange={onSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconSearch />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+          <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
+            <InputLabel id="project-type-label">{projectTypeLabel}</InputLabel>
+            <Select
+              labelId="project-type-label"
+              id="project-type"
+              value={type}
+              label={projectTypeLabel}
+              onChange={onTypeChange}
+            >
+              <MenuItem value={-1}>Tất cả</MenuItem>
+              {projectType?.map((type, index) => (
+                <MenuItem value={index} key={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
+            <InputLabel id="project-type-label">
+              {projectStatusLabel}
+            </InputLabel>
+            <Select
+              labelId="project-type-label"
+              id="project-type"
+              value={status}
+              label={projectStatusLabel}
+              onChange={onStatusChange}
+            >
+              <MenuItem value={-1}>Tất cả</MenuItem>
+              {projectStatus?.map((status, index) => (
+                <MenuItem value={index} key={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <SiteModal>Tạo công trình</SiteModal>
+        </Box>
       </Box>
       <Table
         aria-label="simple table"
@@ -193,34 +185,37 @@ export default function Sites() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Địa chỉ
+                Loại dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tên công ty
+                Trạng thái
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {sites?.map((site) => (
-            <StyledTableRow key={site.id}>
+          {projects?.map((project) => (
+            <StyledTableRow key={project.id}>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {site.name}
+                  {project.name}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {site.address}
-                </Typography>
+                <Chip
+                  label={projectType[project.type]}
+                  color={projectTypeChipColors[project.type]}
+                  fontWeight={400}
+                ></Chip>
               </TableCell>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {site.companyName}
-                </Typography>
+                <Chip
+                  label={projectStatus[project.status]}
+                  fontWeight={400}
+                ></Chip>
               </TableCell>
               <TableCell align="right">
                 <Button
@@ -228,7 +223,7 @@ export default function Sites() {
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/sites/${site.id}`}
+                  href={`/sites/${params.id}/projects/${project.id}`}
                 >
                   Chi tiết
                 </Button>

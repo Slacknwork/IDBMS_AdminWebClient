@@ -1,3 +1,7 @@
-const servicesArray = ["Thiết kế", "Thi công nội thất"];
+const projectTypeChipColors = ["primary", "secondary"];
 
-export default servicesArray;
+const typeArray = ["Thiết kế", "Thi công nội thất"];
+
+export { projectTypeChipColors };
+
+export default typeArray;
