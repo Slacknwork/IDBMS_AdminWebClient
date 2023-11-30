@@ -1,7 +1,5 @@
 export default {
-    0: "None",
-    1: "PendingRequest",
-    2: "NotAllowed",
-    3: "Allowed",
-    4: "Public",
+    0: "Chưa đồng ý",
+    1: "Đồng ý",
+    2: "Đang công khai",
 };
