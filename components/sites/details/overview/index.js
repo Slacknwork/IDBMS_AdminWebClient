@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveSiteModal from "./modal";
+import { getSiteById } from "../../../../api/siteServices";
+import { toast } from "react-toastify";
 
 export default function Sites() {
   const router = useRouter();
@@ -54,7 +56,7 @@ export default function Sites() {
 
   // ADDRESS
   const addressLabel = "Địa chỉ";
-  const addressSubLabel = "Địa chỉ của khu công trình";
+  const addressSubLabel = "Địa chỉ công trình";
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState({
     hasError: false,
@@ -68,36 +70,68 @@ export default function Sites() {
     handleAddressError(e.target.value);
   };
 
-  // COMPANY NAME
-  const companyNameLabel = "Tên công ty";
-  const companyNameSubLabel = "Tên hợp pháp của công ty";
-  const [companyName, setCompanyName] = useState("");
-  const [companyNameError, setCompanyNameError] = useState({
+  // CONTACT NAME
+  const contactNameLabel = "Họ và tên";
+  const contactNameSubLabel = "Họ và tên người đại diện";
+  const [contactName, setContactName] = useState("");
+  const [contactNameError, setContactNameError] = useState({
     hasError: false,
     label: "",
   });
-  const handleCompanyNameError = (value) => {
-    setCompanyNameError({ hasError: false, label: "" });
+  const handleContactNameError = (value) => {
+    setContactNameError({ hasError: false, label: "" });
   };
-  const onCompanyNameChange = (e) => {
-    setCompanyName(e.target.value);
-    handleCompanyNameError(e.target.value);
+  const onContactNameChange = (e) => {
+    setContactName(e.target.value);
+    handleContactNameError(e.target.value);
   };
 
-  // COMPANY ADDRESS
-  const companyAddressLabel = "Địa chỉ công ty";
-  const companyAddressSubLabel = "Địa chỉ trụ sở chính của công ty";
-  const [companyAddress, setCompanyAddress] = useState("");
-  const [companyAddressError, setCompanyAddressError] = useState({
+  // CONTACT LOCATION
+  const contactLocationLabel = "Địa chỉ liên hệ";
+  const contactLocationSubLabel = "Địa chỉ liên hệ với người đại diện";
+  const [contactLocation, setContactLocation] = useState("");
+  const [contactLocationError, setContactLocationError] = useState({
     hasError: false,
     label: "",
   });
-  const handleCompanyAddressError = (value) => {
-    setCompanyAddressError({ hasError: false, label: "" });
+  const handleContactLocationError = (value) => {
+    setContactLocationError({ hasError: false, label: "" });
   };
-  const onCompanyAddressChange = (e) => {
-    setCompanyAddress(e.target.value);
-    handleCompanyAddressError(e.target.value);
+  const onContactLocationChange = (e) => {
+    setContactLocation(e.target.value);
+    handleContactLocationError(e.target.value);
+  };
+
+  // CONTACT PHONE
+  const contactPhoneLabel = "Số điện thoại";
+  const contactPhoneSubLabel = "Số điện thoại liên hệ";
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactPhoneError, setContactPhoneError] = useState({
+    hasError: false,
+    label: "",
+  });
+  const handleContactPhoneError = (value) => {
+    setContactPhoneError({ hasError: false, label: "" });
+  };
+  const onContactPhoneChange = (e) => {
+    setContactPhone(e.target.value);
+    handleContactPhoneError(e.target.value);
+  };
+
+  // CONTACT EMAIL
+  const contactEmailLabel = "Email";
+  const contactEmailSubLabel = "Email liên hệ";
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactEmailError, setContactEmailError] = useState({
+    hasError: false,
+    label: "",
+  });
+  const handleContactEmailError = (value) => {
+    setContactEmailError({ hasError: false, label: "" });
+  };
+  const onContactEmailChange = (e) => {
+    setContactEmail(e.target.value);
+    handleContactEmailError(e.target.value);
   };
 
   // COMPANY CODE
@@ -140,6 +174,41 @@ export default function Sites() {
 
   // CONTACT
   const contactLabel = "Thông tin liên hệ";
+
+  const [siteId, setSiteId] = useState("C83D510A-448C-4479-B35D-618BB17FA1BB");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getSiteById(siteId);
+          console.log(data);
+          mapData(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [siteId]);
+
+  const mapData = (data) => {
+
+    setName(data.name ?? "")
+    setDescription(data.description ?? "")
+    setContactLocation(data.contactLocation ?? "")
+    setCompanyCode(data.companyCode ?? "")
+    setContactName(data.contactName ?? "")
+    setAddress(data.address ?? "")
+    setContactPhone(data.contactPhone ?? "")
+    setContactEmail(data.contactEmail ?? "")
+
+  };
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
@@ -190,7 +259,10 @@ export default function Sites() {
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{addressLabel}</Typography>
+                    <Typography variant="h5">
+                      {addressLabel}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
                     <Typography variant="p">{addressSubLabel}</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
@@ -207,44 +279,98 @@ export default function Sites() {
                 </Grid>
               </Grid>
 
-              {/* COMPANY NAME */}
+              {/* CONTACT NAME */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{companyNameLabel}</Typography>
-                    <Typography variant="p">{companyNameSubLabel}</Typography>
+                    <Typography variant="h5">
+                      {contactNameLabel}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <Typography variant="p">{contactNameSubLabel}</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        error={companyNameError.hasError}
+                        error={contactNameError.hasError}
                         variant="outlined"
-                        value={companyName}
-                        helperText={companyNameError.label}
-                        onChange={onCompanyNameChange}
+                        value={contactName}
+                        helperText={contactNameError.label}
+                        onChange={onContactNameChange}
                       />
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
 
-              {/* COMPANY ADDRESS */}
+              {/* CONTACT PHONE */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{companyAddressLabel}</Typography>
+                    <Typography variant="h5">
+                      {contactPhoneLabel}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <Typography variant="p">{contactPhoneSubLabel}</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        error={contactPhoneError.hasError}
+                        variant="outlined"
+                        value={contactPhone}
+                        helperText={contactPhoneError.label}
+                        onChange={onContactPhoneChange}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* CONTACT EMAIL */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {contactEmailLabel}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <Typography variant="p">{contactEmailSubLabel}</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        error={contactEmailError.hasError}
+                        variant="outlined"
+                        value={contactEmail}
+                        helperText={contactEmailError.label}
+                        onChange={onContactEmailChange}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* CONTACT LOCATION */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {contactLocationLabel}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
                     <Typography variant="p">
-                      {companyAddressSubLabel}
+                      {contactLocationSubLabel}
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        error={companyAddressError.hasError}
+                        error={contactLocationError.hasError}
                         variant="outlined"
-                        value={companyAddress}
-                        helperText={companyAddressError.label}
-                        onChange={onCompanyAddressChange}
+                        value={contactLocation}
+                        helperText={contactLocationError.label}
+                        onChange={onContactLocationChange}
                       />
                     </FormControl>
                   </Grid>
@@ -271,6 +397,7 @@ export default function Sites() {
                   </Grid>
                 </Grid>
               </Grid>
+
               {/* DESCRIPTION */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
@@ -304,12 +431,18 @@ export default function Sites() {
                 {contactLabel}
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>U</Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
                   <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@gmail.com</Typography>
+                  <Typography variant="p">{contactEmail}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{contactPhone}</Typography>
+                  <br />
+                </Box>
+              </Box>
+              <Box sx={{ display: "flex", mt: 2 }}>
+                <Box sx={{ my: "auto", mx: 2 }}>
+                  <Typography variant="h8">{contactLocation}</Typography>
                 </Box>
               </Box>
             </Card>
