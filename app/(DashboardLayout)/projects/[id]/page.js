@@ -1,11 +1,7 @@
 "use client";
 
-import ProjectSites from "/components/projects/Sites";
+import ProjectSites from "/components/projects/details/overview";
 
 export default function ProjectDetailsPage() {
-  return (
-    <div>
-      <ProjectSites></ProjectSites>
-    </div>
-  );
+  return <ProjectSites></ProjectSites>;
 }
