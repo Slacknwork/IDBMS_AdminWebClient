@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectTasks from "/components/projects/Tasks";
+import TaskList from "/components/projects/details/tasks/list";
 
 export default function ProjectDetailsPage() {
-  return <ProjectTasks></ProjectTasks>;
+  return <TaskList></TaskList>;
 }
