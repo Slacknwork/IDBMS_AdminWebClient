@@ -26,4 +26,56 @@ const getSitesByUserId = async (userId) => {
     }
 };
 
-export { getSitesByProjectId, getSitesByUserId };
+const getSiteById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Sites/${id}`,
+            { cache: 'no-store' }
+        );
+        const sites = await response.json();
+        return sites;
+    } catch (error) {
+        console.error('Error fetching site by ID:', error);
+        throw error;
+    }
+};
+
+const getSites = async () => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Sites/`,
+            { cache: 'no-store' }
+        );
+        const sites = await response.json();
+        return sites;
+    } catch (error) {
+        console.error('Error fetching sites:', error);
+        throw error;
+    }
+};
+
+const createSite = async (request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Sites`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching create site:', error);
+        throw error;
+    }
+};
+
+export { getSitesByProjectId, getSitesByUserId, createSite, getSiteById, getSites };

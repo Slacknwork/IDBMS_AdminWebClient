@@ -25,6 +25,8 @@ import { useEffect, useRef, useState } from "react";
 import PageContainer from "/components/container/PageContainer";
 import DashboardCard from "/components/shared/DashboardCard";
 import SiteModal from "./modal";
+import { toast } from "react-toastify";
+import { getSites } from "../../../api/siteServices";
 
 const sites = [
   {
@@ -87,6 +89,25 @@ export default function Sites() {
     router.push(`/sites?page=1`);
   };
 
+  const [values, setValues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const data = await getSites();
+        console.log(data);
+        setValues(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
       {/* MAIN SECTION */}
@@ -121,7 +142,7 @@ export default function Sites() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Tên
+                  Tên công trình
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
@@ -131,14 +152,14 @@ export default function Sites() {
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Tên công ty
+                  Tên người đại diện
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {sites?.map((site) => (
+            {values?.map((site) => (
               <StyledTableRow key={site.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -152,7 +173,7 @@ export default function Sites() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {site.companyName}
+                    {site.contactName}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
