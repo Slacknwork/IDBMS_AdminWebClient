@@ -26,6 +26,9 @@ const style = {
   pb: 3,
 };
 
+const modalTitle = "Lưu";
+const modalMessage = "Lưu thông tin công trình?";
+
 export default function SiteModal({ children }) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
@@ -36,20 +39,9 @@ export default function SiteModal({ children }) {
     setOpen(false);
   };
 
-  // NAME
-  const [name, setName] = useState("");
-  const onNameChange = (e) => {
-    setName(e.target.value);
-  };
-
   return (
     <Box>
-      <Button
-        sx={{ mt: 2, mx: 2 }}
-        variant="contained"
-        disableElevation
-        onClick={handleOpen}
-      >
+      <Button variant="contained" disableElevation onClick={handleOpen}>
         {children}
       </Button>
       <Modal
@@ -59,10 +51,10 @@ export default function SiteModal({ children }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Lưu</h2>
+          <h2 id="child-modal-title">{modalTitle}</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin khu công trình?</p>
+              <p>{modalMessage}</p>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box

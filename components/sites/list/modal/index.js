@@ -1,51 +1,54 @@
 "use client";
 
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import {
-  Avatar,
   Box,
-  Card,
+  Button,
   FormControl,
   Grid,
-  TextareaAutosize,
+  Modal,
   TextField,
   Typography,
 } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
-import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
-import SaveSiteModal from "./modal";
 
-export default function Sites() {
-  const router = useRouter();
-  const params = useParams();
-  const searchParams = useSearchParams();
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  px: 3,
+  maxHeight: "35rem",
+  overflowY: "scroll",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+};
+
+const pageTitle = "Tạo khu công trình";
+const pageDescription = "Tạo một khu công trình mới";
+
+export default function SiteModal({ children }) {
+  // MODAL TOGGLE
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // NAME
-  const nameLabel = "Tên khu công trình";
-  const nameSubLabel = "Tên của khu công trình";
-  const nameMin = 8;
-  const nameMax = 50;
+  const nameLabel = "Tên";
+  const nameSubLabel = "Họ và tên của bạn";
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState({
     hasError: false,
     label: "",
   });
   const handleNameError = (value) => {
-    if (value?.length <= 0) {
-      setNameError({
-        hasError: true,
-        label: "Tên khu công trình là cần thiết.",
-      });
-    } else if (value?.length < nameMin || value?.length > nameMax) {
-      setNameError({
-        hasError: true,
-        label: `Tên phải từ ${nameMin} đến ${nameMax} ký tự`,
-      });
-    } else {
-      setNameError({ hasError: false, label: "" });
-    }
+    setNameError({ hasError: false, label: "" });
   };
   const onNameChange = (e) => {
     setName(e.target.value);
@@ -54,7 +57,7 @@ export default function Sites() {
 
   // ADDRESS
   const addressLabel = "Địa chỉ";
-  const addressSubLabel = "Địa chỉ của khu công trình";
+  const addressSubLabel = "Địa chỉ của bạn";
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState({
     hasError: false,
@@ -132,44 +135,45 @@ export default function Sites() {
     handleDescriptionError(e.target.value);
   };
 
-  // GET SITE DETAILS
-  const [pageName, setPageName] = useState("Tên khu công trình");
-  const [pageDescription, setPageDescription] = useState(
-    "Mô tả khu công trình"
-  );
-
-  // CONTACT
-  const contactLabel = "Thông tin liên hệ";
-
   return (
-    <PageContainer title={pageName} description={pageDescription}>
-      <Box sx={{ overflow: "auto" }}>
-        <Grid container columnSpacing={4} rowSpacing={4} sx={{ mt: 1 }}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{ borderBottom: 1, borderColor: "grey.500", py: 3 }}
-          >
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between" }}
-              spacing={2}
+    <Box>
+      <Button variant="contained" disableElevation onClick={handleOpen}>
+        {children}
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        <PageContainer title={pageTitle} description={pageDescription}>
+          <Box sx={{ ...style }}>
+            <Grid
+              container
+              sx={{
+                pt: 2,
+                position: "sticky",
+                top: 0,
+                backgroundColor: "white",
+                zIndex: 1,
+              }}
             >
-              <Typography variant="h2" sx={{ my: "auto" }}>
-                Tên
-              </Typography>
-              <SaveSiteModal>Lưu</SaveSiteModal>
-            </Box>
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <Grid container columnSpacing={2} rowSpacing={4}>
+              <Grid item xs={12} lg={12}>
+                <Typography
+                  variant="h4"
+                  id="child-modal-title"
+                  sx={{ py: 2, borderBottom: 1 }}
+                >
+                  Tạo công trình mới
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
               {/* NAME */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {nameLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
+                    <Typography variant="h5">{nameLabel}</Typography>
                     <Typography variant="p">{nameSubLabel}</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
@@ -271,6 +275,7 @@ export default function Sites() {
                   </Grid>
                 </Grid>
               </Grid>
+
               {/* DESCRIPTION */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
@@ -293,29 +298,26 @@ export default function Sites() {
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <Card
-              variant="outlined"
-              sx={{ p: 3, border: 1, borderColor: "gray" }}
-            >
-              <Typography variant="h5" sx={{ my: "auto" }}>
-                {contactLabel}
-              </Typography>
-              <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@gmail.com</Typography>
-                  <br />
-                  <Typography variant="p">0123456789</Typography>
+
+              {/* SUBMIT */}
+              <Grid item xs={12} lg={12}>
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                  spacing={2}
+                >
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    onClick={handleClose}
+                  >
+                    Tạo
+                  </Button>
                 </Box>
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
-    </PageContainer>
+              </Grid>
+            </Grid>
+          </Box>
+        </PageContainer>
+      </Modal>
+    </Box>
   );
 }

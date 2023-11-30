@@ -1,6 +1,13 @@
 "use client";
 
-import { styled, Container, Box } from "@mui/material";
+import {
+  styled,
+  Container,
+  Box,
+  Breadcrumbs,
+  Link,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import Header from "/components/layout/header/Header";
 import Sidebar from "/components/layout/sidebar";
@@ -38,7 +45,15 @@ export default function RootLayout({ children }) {
             maxWidth: "1200px",
           }}
         >
-          <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+          <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
+            <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+              <Link underline="hover" color="inherit" href="/">
+                Trang chủ
+              </Link>
+              <Typography color="text.primary">Khu công trình</Typography>
+            </Breadcrumbs>
+            {children}
+          </Box>
         </Container>
       </PageWrapper>
     </MainWrapper>
