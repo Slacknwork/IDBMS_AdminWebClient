@@ -12,6 +12,8 @@ import React, { useState } from "react";
 import Header from "/components/layout/header/Header";
 import Sidebar from "/components/layout/sidebar";
 
+import 'react-toastify/dist/ReactToastify.css';
+
 const MainWrapper = styled("div")(() => ({
   display: "flex",
   minHeight: "100vh",
