@@ -210,6 +210,14 @@ export default function Sites() {
 
   };
 
+  const getAvatarContent = (name) => {
+    const words = name.split(' ');
+    const lastWord = words.length > 0 ? words[words.length - 1] : '';
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+
+    return firstCharacter;
+  };
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <Box sx={{ overflow: "auto" }}>
@@ -225,9 +233,21 @@ export default function Sites() {
               spacing={2}
             >
               <Typography variant="h2" sx={{ my: "auto" }}>
-                Tên
+                {name}
               </Typography>
-              <SaveSiteModal>Lưu</SaveSiteModal>
+              <SaveSiteModal
+                request={{
+                  name: name,
+                  description: description,
+                  companyCode: companyCode,
+                  contactName: contactName,
+                  contactEmail: contactEmail,
+                  contactPhone: contactPhone,
+                  contactLocation: contactLocation,
+                  address: address,
+                }}
+                siteId={siteId}
+              >Lưu</SaveSiteModal>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>
@@ -431,9 +451,9 @@ export default function Sites() {
                 {contactLabel}
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>U</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}> {getAvatarContent(contactName)}</Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
+                  <Typography variant="h6">{contactName}</Typography>
                   <Typography variant="p">{contactEmail}</Typography>
                   <br />
                   <Typography variant="p">{contactPhone}</Typography>

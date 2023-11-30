@@ -12,6 +12,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import { updateSite } from "../../../../../api/siteServices";
 
 const style = {
   position: "absolute",
@@ -29,7 +31,7 @@ const style = {
 const modalTitle = "Lưu";
 const modalMessage = "Lưu thông tin công trình?";
 
-export default function SiteModal({ children }) {
+export default function SiteModal({ children, siteId, request }) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -37,6 +39,19 @@ export default function SiteModal({ children }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleUpdateSite = async () => {
+    console.log(request)
+    try {
+      const response = await updateSite(siteId, request);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      handleClose();
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -64,7 +79,7 @@ export default function SiteModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleUpdateSite}
                 >
                   Lưu
                 </Button>
