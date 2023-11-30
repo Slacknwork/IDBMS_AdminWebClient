@@ -18,7 +18,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
+  width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
   pt: 2,
@@ -45,7 +45,7 @@ export default function SiteModal({ children }) {
   return (
     <Box>
       <Button
-        sx={{ mt: 3, ml: 2 }}
+        sx={{ mt: 2, mx: 2 }}
         variant="contained"
         disableElevation
         onClick={handleOpen}
@@ -59,37 +59,10 @@ export default function SiteModal({ children }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Tạo công trình mới</h2>
+          <h2 id="child-modal-title">Lưu</h2>
           <Grid container spacing={2}>
-            <Grid item xs={12} lg={6}>
-              <FormControl fullWidth>
-                <TextField
-                  label="Tên"
-                  variant="outlined"
-                  value={name}
-                  onChange={onNameChange}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <FormControl fullWidth>
-                <TextField
-                  label="Tên"
-                  variant="outlined"
-                  value={name}
-                  onChange={onNameChange}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <FormControl fullWidth>
-                <InputLabel>Age</InputLabel>
-                <Select label="Age">
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid item xs={12} lg={12}>
+              <p>Lưu thông tin khu công trình?</p>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box
@@ -101,7 +74,7 @@ export default function SiteModal({ children }) {
                   disableElevation
                   onClick={handleClose}
                 >
-                  Tạo
+                  Lưu
                 </Button>
               </Box>
             </Grid>

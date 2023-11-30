@@ -14,7 +14,7 @@ import {
 import { deepOrange } from "@mui/material/colors";
 import { useEffect, useRef, useState } from "react";
 
-import DashboardCard from "/components/shared/DashboardCard";
+import SaveSiteModal from "./modal";
 
 export default function Sites() {
   const router = useRouter();
@@ -34,16 +34,16 @@ export default function Sites() {
           item
           xs={12}
           lg={12}
-          sx={{ borderBottom: 1, borderColor: "grey.500", mt: 1, py: 3 }}
+          sx={{ borderBottom: 1, borderColor: "grey.500", py: 3 }}
         >
           <Box
             sx={{ display: "flex", justifyContent: "space-between" }}
             spacing={2}
           >
-            <Typography variant="h2">Tên</Typography>
-            <Button variant="contained" disableElevation>
-              Tạo
-            </Button>
+            <Typography variant="h2" sx={{ my: "auto" }}>
+              Tên
+            </Typography>
+            <SaveSiteModal>Lưu</SaveSiteModal>
           </Box>
         </Grid>
         <Grid item xs={12} lg={8}>

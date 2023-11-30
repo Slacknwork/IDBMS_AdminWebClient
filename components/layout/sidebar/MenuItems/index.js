@@ -41,18 +41,6 @@ const Menuitems = [
     href: "/projects",
   },
   {
-    id: uniqueId(),
-    title: "Giao dịch",
-    icon: IconReportMoney,
-    href: "/projects/transactions",
-  },
-  {
-    id: uniqueId(),
-    title: "Tài liệu",
-    icon: IconFileExport,
-    href: "/projects/documents",
-  },
-  {
     navlabel: true,
     subheader: "Quản lý sản phẩm mẫu",
   },

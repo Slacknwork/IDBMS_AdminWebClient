@@ -7,8 +7,10 @@ import {
   Box,
   Button,
   FormControl,
-  Grid,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -23,6 +25,9 @@ import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { debounce } from "@mui/material/utils";
+
+import projectType from "/constants/enums/projectType";
+import projectStatus from "/constants/enums/projectStatus";
 
 import SiteModal from "./modal";
 
@@ -58,6 +63,8 @@ const sites = [
 ];
 
 const pageQuery = "page";
+const projectTypeLabel = "Loại dự án";
+const projectStatusLabel = "Trạng thái";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -89,6 +96,18 @@ export default function Sites() {
     setSearch(e.target.value);
   };
 
+  // PROJECT TYPE FIELD
+  const [type, setType] = useState(-1);
+  const onTypeChange = (e) => {
+    setType(parseInt(e.target.value));
+  };
+
+  // PROJECT STATUS FIELD
+  const [status, setStatus] = useState(-1);
+  const onStatusChange = (e) => {
+    setStatus(parseInt(e.target.value));
+  };
+
   // PAGINATION
   const [count, setCount] = useState(6);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -97,18 +116,18 @@ export default function Sites() {
   );
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    router.push(`/sites?page=${newPage + 1}`);
+    router.push(`/sites/${params.id}/projects?page=${newPage + 1}`);
   };
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    router.push(`/sites?page=1`);
+    router.push(`/sites/${params.id}/projects?page=1`);
   };
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ display: "flex" }}>
-        <FormControl sx={{ mt: 2, minWidth: 300 }}>
+        <FormControl sx={{ minWidth: 300, mt: 3 }}>
           <TextField
             label="Tìm kiếm"
             size="small"
@@ -123,13 +142,46 @@ export default function Sites() {
             }}
           />
         </FormControl>
+        <FormControl sx={{ mt: 3, ml: 2, minWidth: 120 }} size="small">
+          <InputLabel id="project-type-label">{projectTypeLabel}</InputLabel>
+          <Select
+            labelId="project-type-label"
+            id="project-type"
+            value={type}
+            label={projectTypeLabel}
+            onChange={onTypeChange}
+          >
+            <MenuItem value={-1}>Tất cả</MenuItem>
+            {projectType?.map((type, index) => (
+              <MenuItem value={index} key={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ mt: 3, ml: 2, minWidth: 120 }} size="small">
+          <InputLabel id="project-type-label">{projectStatusLabel}</InputLabel>
+          <Select
+            labelId="project-type-label"
+            id="project-type"
+            value={status}
+            label={projectStatusLabel}
+            onChange={onStatusChange}
+          >
+            <MenuItem value={-1}>Tất cả</MenuItem>
+            {projectStatus?.map((status, index) => (
+              <MenuItem value={index} key={status}>
+                {status}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <SiteModal>Tạo công trình</SiteModal>
       </Box>
       <Table
         aria-label="simple table"
         sx={{
           whiteSpace: "nowrap",
-          my: 2,
         }}
       >
         <TableHead>

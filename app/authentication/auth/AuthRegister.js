@@ -5,13 +5,7 @@ import Link from "next/link";
 import CustomTextField from "/components/forms/theme-elements/CustomTextField";
 import { Stack } from "@mui/system";
 
-interface registerType {
-  title?: string;
-  subtitle?: JSX.Element | JSX.Element[];
-  subtext?: JSX.Element | JSX.Element[];
-}
-
-const AuthRegister = ({ title, subtitle, subtext }: registerType) => (
+const AuthRegister = ({ title, subtitle, subtext }) => (
   <>
     {title ? (
       <Typography fontWeight="700" variant="h2" mb={1}>
