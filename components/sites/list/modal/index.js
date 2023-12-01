@@ -9,13 +9,12 @@ import {
   Modal,
   TextField,
   Typography,
-  IconButton
+  IconButton,
 } from "@mui/material";
 
-import PageContainer from "/components/container/PageContainer";
 import { toast } from "react-toastify";
-import { createSite } from "../../../../api/siteServices";
-import CloseIcon from '@mui/icons-material/Close';
+import { createSite } from "/api/siteServices";
+import CloseIcon from "@mui/icons-material/Close";
 
 const style = {
   position: "absolute",
@@ -23,10 +22,8 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  px: 3,
-  maxHeight: "35rem",
-  overflowY: "scroll",
   bgcolor: "background.paper",
+  overflowY: "auto",
   boxShadow: 24,
 };
 
@@ -180,9 +177,9 @@ export default function SiteModal({ children }) {
       contactEmail: contactEmail,
       contactPhone: contactPhone,
       contactLocation: contactLocation,
-      address: address
+      address: address,
     };
-    console.log(createRequest)
+    console.log(createRequest);
 
     try {
       const response = await createSite(createRequest);
@@ -210,61 +207,60 @@ export default function SiteModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <PageContainer title={pageTitle} description={pageDescription}>
-          <Box sx={{ ...style }}>
-            <Grid
-              container
+        <Box sx={{ ...style }} container component="div">
+          <Box
+            container
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              pt: 2,
+              mx: 3,
+              height: "5rem",
+              position: "sticky",
+              top: 0,
+              backgroundColor: "white",
+              borderBottom: 1,
+              zIndex: 1,
+            }}
+          >
+            <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
+              Tạo công trình mới
+            </Typography>
+            <IconButton
+              aria-label="close"
               sx={{
-                pt: 2,
-                position: "sticky",
-                top: 0,
-                backgroundColor: "white",
-                zIndex: 1,
+                my: "auto",
               }}
+              onClick={handleClose}
             >
-              <Grid item xs={12} lg={12}>
-                <Typography
-                  variant="h4"
-                  id="child-modal-title"
-                  sx={{ py: 2, borderBottom: 1 }}
-                >
-                  Tạo công trình mới
-                </Typography>
-              </Grid>
-              <IconButton
-                aria-label="close"
-                sx={{
-                  position: 'absolute',
-                  right: 0,
-                  top: 0,
-                }}
-                onClick={handleClose}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Grid>
-            <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
-              {/* NAME */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {nameLabel}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{nameSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={nameError.hasError}
-                        variant="outlined"
-                        value={name}
-                        helperText={nameError.label}
-                        onChange={onNameChange}
-                      />
-                    </FormControl>
-                  </Grid>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Grid
+            sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
+            container
+            spacing={3}
+          >
+            {/* NAME */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {nameLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
+                  <Typography variant="p">{nameSubLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={nameError.hasError}
+                      variant="outlined"
+                      value={name}
+                      helperText={nameError.label}
+                      onChange={onNameChange}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
@@ -373,9 +369,7 @@ export default function SiteModal({ children }) {
                     {contactLocationLabel}
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
-                  <Typography variant="p">
-                    {contactLocationSubLabel}
-                  </Typography>
+                  <Typography variant="p">{contactLocationSubLabel}</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -437,10 +431,7 @@ export default function SiteModal({ children }) {
 
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-                spacing={2}
-              >
+              <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   variant="contained"
                   disableElevation
@@ -450,9 +441,9 @@ export default function SiteModal({ children }) {
                 </Button>
               </Box>
             </Grid>
-          </Box>
-        </PageContainer>
+          </Grid>
+        </Box>
       </Modal>
-    </Box >
+    </Box>
   );
 }

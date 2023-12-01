@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectComments from "/components/projects/Comments";
+import CommentList from "/components/projects/details/comments/list";
 
 export default function ProjectDetailsPage() {
-  return <ProjectComments></ProjectComments>;
+  return <CommentList></CommentList>;
 }

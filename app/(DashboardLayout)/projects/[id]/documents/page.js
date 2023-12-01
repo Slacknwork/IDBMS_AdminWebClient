@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectDocuments from "/components/projects/Documents";
+import DocumentList from "/components/projects/details/documents/list";
 
 export default function ProjectDetailsPage() {
-  return <ProjectDocuments></ProjectDocuments>;
+  return <DocumentList></DocumentList>;
 }

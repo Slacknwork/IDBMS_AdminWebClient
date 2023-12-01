@@ -1,5 +1,3 @@
-export default {
-    0: "Đang hoạt động",
-    1: "Mới",
-    2: "Đã ẩn",
-};
+const interiorItemStatusOptions = ["Đang hoạt động", "Mới", "Đã ẩn"];
+
+export default interiorItemStatusOptions;

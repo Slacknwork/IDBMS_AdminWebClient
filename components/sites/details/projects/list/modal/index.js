@@ -8,18 +8,18 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   MenuItem,
   Modal,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
-
-import PageContainer from "/components/container/PageContainer";
 
 const style = {
   position: "absolute",
@@ -27,10 +27,8 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  px: 3,
-  maxHeight: "35rem",
-  overflowY: "scroll",
   bgcolor: "background.paper",
+  overflowY: "auto",
   boxShadow: 24,
 };
 
@@ -148,7 +146,7 @@ export default function SiteModal({ children }) {
     handleDescriptionError(e.target.value);
   };
 
-  // Advertisement Status
+  // ADVERTISEMENT STATUS
   const advertisementStatusLabel = "Quảng cáo dự án";
   const advertisementStatusSubLabel =
     "Dùng dự án này để quảng cáo trên trang chủ";
@@ -169,28 +167,41 @@ export default function SiteModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style }}>
-          <Grid
+        <Box sx={{ ...style }} component="div">
+          <Box
             container
             sx={{
+              display: "flex",
+              justifyContent: "space-between",
               pt: 2,
+              mx: 3,
+              height: "5rem",
               position: "sticky",
               top: 0,
               backgroundColor: "white",
+              borderBottom: 1,
               zIndex: 1,
             }}
           >
-            <Grid item xs={12} lg={12}>
-              <Typography
-                variant="h4"
-                id="child-modal-title"
-                sx={{ py: 2, borderBottom: 1 }}
-              >
-                {modalTitle}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
+            <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
+              Tạo dự án mới
+            </Typography>
+            <IconButton
+              aria-label="close"
+              sx={{
+                my: "auto",
+              }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Grid
+            sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
+            component={"div"}
+            container
+            spacing={3}
+          >
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
@@ -370,22 +381,22 @@ export default function SiteModal({ children }) {
                   />
                 </Grid>
               </Grid>
-            </Grid>
 
-            {/* SUBMIT */}
-            <Grid item xs={12} lg={12}>
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-                spacing={2}
-              >
-                <Button
-                  variant="contained"
-                  disableElevation
-                  onClick={handleClose}
+              {/* SUBMIT */}
+              <Grid item xs={12} lg={12}>
+                <Box
+                  sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
+                  spacing={2}
                 >
-                  Tạo
-                </Button>
-              </Box>
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    onClick={handleClose}
+                  >
+                    Tạo
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
