@@ -19,8 +19,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Tab,
-  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,7 +28,7 @@ import { useEffect, useRef, useState } from "react";
 import taskStatuses from "/constants/enums/projectTaskStatus";
 
 import PageContainer from "/components/container/PageContainer";
-import DashboardCard from "/components/shared/DashboardCard";
+import TaskModal from "./modal";
 
 const tasks = [
   {
@@ -82,6 +80,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const pageTitle = "Danh sách công việc";
 const pageDescription = "Danh sách các công việc trong dự án";
 
+const createTaskLabel = "Tạo công việc";
+
 const codeHeaderLabel = "Mã";
 const nameHeaderLabel = "Tên";
 const percentageHeaderLabel = "Tiến độ";
@@ -93,12 +93,6 @@ export default function Sites() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-
-  // TABS
-  const [activeTab, setActiveTab] = useState(0);
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
 
   // SEARCH FORM
   const [search, setSearch] = useState("");
@@ -147,186 +141,181 @@ export default function Sites() {
 
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
-      <DashboardCard title={pageTitle}>
-        <Box sx={{ overflow: "auto" }}>
-          {/* Tabs */}
-          <Tabs value={activeTab} onChange={handleTabChange}>
-            <Tab label="Stage 1" />
-            <Tab label="Stage 2" />
-          </Tabs>
+      <Box sx={{ overflow: "auto" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          <Box sx={{ display: "flex" }}>
+            {/* Search Text Field */}
+            <FormControl sx={{ minWidth: 300 }}>
+              <TextField
+                label="Tìm kiếm"
+                size="small"
+                variant="outlined"
+                value={search}
+                onChange={onSearchChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconSearch />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <Box sx={{ display: "flex" }}>
-              {/* Search Text Field */}
-              <FormControl sx={{ minWidth: 300 }}>
-                <TextField
-                  label="Tìm kiếm"
-                  size="small"
-                  variant="outlined"
-                  value={search}
-                  onChange={onSearchChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconSearch />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </FormControl>
+            {/* Task Category Select Box */}
+            <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
+              <InputLabel id="task-category-label">
+                {taskCategoryLabel}
+              </InputLabel>
+              <Select
+                labelId="task-category-label"
+                id="task-category"
+                value={taskCategory}
+                label={taskCategoryLabel}
+                onChange={onTaskCategoryChange}
+              >
+                <MenuItem value={-1}>Tất cả</MenuItem>
+                {/* Example taskCategories array */}
+                {taskCategories?.map((category) => (
+                  <MenuItem value={category.id} key={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-              {/* Task Category Select Box */}
-              <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-                <InputLabel id="task-category-label">
-                  {taskCategoryLabel}
-                </InputLabel>
-                <Select
-                  labelId="task-category-label"
-                  id="task-category"
-                  value={taskCategory}
-                  label={taskCategoryLabel}
-                  onChange={onTaskCategoryChange}
-                >
-                  <MenuItem value={-1}>Tất cả</MenuItem>
-                  {/* Example taskCategories array */}
-                  {taskCategories?.map((category) => (
-                    <MenuItem value={category.id} key={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Task Status Select Box */}
-              <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-                <InputLabel id="task-status-label">
-                  {taskStatusLabel}
-                </InputLabel>
-                <Select
-                  labelId="task-status-label"
-                  id="task-status"
-                  value={taskStatus}
-                  label={taskStatusLabel}
-                  onChange={onTaskStatusChange}
-                >
-                  <MenuItem value={-1}>Tất cả</MenuItem>
-                  {/* Example taskStatuses array */}
-                  {taskStatuses?.map((status, index) => (
-                    <MenuItem value={index} key={status}>
-                      {status}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+            {/* Task Status Select Box */}
+            <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
+              <InputLabel id="task-status-label">{taskStatusLabel}</InputLabel>
+              <Select
+                labelId="task-status-label"
+                id="task-status"
+                value={taskStatus}
+                label={taskStatusLabel}
+                onChange={onTaskStatusChange}
+              >
+                <MenuItem value={-1}>Tất cả</MenuItem>
+                {/* Example taskStatuses array */}
+                {taskStatuses?.map((status, index) => (
+                  <MenuItem value={index} key={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-          <Table
-            aria-label="simple table"
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {codeHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {nameHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {percentageHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {pricePerUnitHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {startDateHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {endDateHeaderLabel}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tasks?.map((task) => (
-                <StyledTableRow key={task.id}>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {task.code}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {task.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <LinearProgress
-                      variant="determinate"
-                      value={task.percentage}
-                    />
-                    <Typography variant="body2" fontWeight={400}>
-                      {`${task.percentage}%`}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {(task.pricePerUnit * task.unitInContract).toLocaleString(
-                        "vi-VN"
-                      )}{" "}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {new Date(task.startDate).toLocaleDateString("vi-VN")}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {new Date(task.endDate).toLocaleDateString("vi-VN")}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      component={Link}
-                      variant="contained"
-                      disableElevation
-                      color="primary"
-                      href={`/projects/${params.id}/tasks/${task.id}`}
-                    >
-                      {projectDetailsLabel}
-                    </Button>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={count}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage={labelRowsPerPage}
-          />
+          <Box sx={{ display: "flex" }}>
+            <TaskModal>
+              <span>{createTaskLabel}</span>
+            </TaskModal>
+          </Box>
         </Box>
-      </DashboardCard>
+        <Table
+          aria-label="simple table"
+          sx={{
+            whiteSpace: "nowrap",
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {codeHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {nameHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {percentageHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {pricePerUnitHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {startDateHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {endDateHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tasks?.map((task) => (
+              <StyledTableRow key={task.id}>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {task.code}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {task.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <LinearProgress
+                    variant="determinate"
+                    value={task.percentage}
+                  />
+                  <Typography variant="body2" fontWeight={400}>
+                    {`${task.percentage}%`}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {(task.pricePerUnit * task.unitInContract).toLocaleString(
+                      "vi-VN"
+                    )}{" "}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {new Date(task.startDate).toLocaleDateString("vi-VN")}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {new Date(task.endDate).toLocaleDateString("vi-VN")}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/projects/${params.id}/tasks/${task.id}`}
+                  >
+                    {projectDetailsLabel}
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          component="div"
+          count={count}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage={labelRowsPerPage}
+        />
+      </Box>
     </PageContainer>
   );
 }
