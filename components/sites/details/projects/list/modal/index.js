@@ -560,21 +560,20 @@ export default function CreateModal({ children }) {
             </Grid>
 
 
-              {/* SUBMIT */}
-              <Grid item xs={12} lg={12}>
-                <Box
-                  sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
-                  spacing={2}
+            {/* SUBMIT */}
+            <Grid item xs={12} lg={12}>
+              <Box
+                sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={handleCreate}
                 >
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={handleCreate}
-                  >
-                    Tạo
-                  </Button>
-                </Box>
-              </Grid>
+                  Tạo
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </Box>
