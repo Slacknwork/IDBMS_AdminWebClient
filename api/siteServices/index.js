@@ -115,7 +115,7 @@ const deleteSiteById = async (id) => {
             throw new Error('Delete failed');
         }
 
-        return true; // You can return true or handle the response as needed
+        return await response.json();
     } catch (error) {
         console.error('Error fetching delete site:', error);
         throw error;

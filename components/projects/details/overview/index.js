@@ -19,15 +19,18 @@ import { deepOrange } from "@mui/material/colors";
 import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
+import SaveModal from "./modal";
 import DashboardCard from "/components/shared/DashboardCard";
-import SaveSiteModal from "./modal";
 
 import projectLanguageOptions from "/constants/enums/language";
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import projectAdvertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { getProjectById, getProjectsBySiteId, updateProject } from "../../../../api/projectServices";
+import { getProjectCategories } from "../../../../api/projectCategoryServices";
+import { toast } from "react-toastify";
 
-export default function Sites() {
+export default function ProjectDetails() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -86,16 +89,12 @@ export default function Sites() {
 
   // PROJECT CATEGORY
   const projectCategoryLabel = "Hạng mục dự án";
-  const [projectCategory, setProjectCategory] = useState(null); // Initialize as null for the first option
+  const [projectCategory, setProjectCategory] = useState([]);
   const [projectCategoryError, setProjectCategoryError] = useState({
     hasError: false,
     label: "",
   });
-  const projectCategoryOptions = [
-    { id: 1, name: "Category A" },
-    { id: 2, name: "Category B" },
-    { id: 3, name: "Category C" },
-  ];
+
   const handleProjectCategoryError = (value) => {
     if (!value) {
       setProjectCategoryError({
@@ -272,14 +271,14 @@ export default function Sites() {
 
   // PROJECT STATUS
   const projectStatusLabel = "Trạng thái dự án";
-  const [projectStatus, setProjectStatus] = useState(-1);
+  const [projectStatus, setProjectStatus] = useState("");
   const [projectStatusError, setProjectStatusError] = useState({
     hasError: false,
     label: "",
   });
 
   const handleProjectStatusError = (value) => {
-    if (value === -1) {
+    if (value === "") {
       setProjectStatusError({
         hasError: true,
         label: "Chọn một trạng thái dự án.",
@@ -334,7 +333,7 @@ export default function Sites() {
 
   // BASED ON DECOR PROJECT
   const basedOnDecorProjectLabel = "Dựa trên dự án thiết kế nội thất";
-  const [basedOnDecorProject, setBasedOnDecorProject] = useState(null);
+  const [basedOnDecorProject, setBasedOnDecorProject] = useState([]);
   const [basedOnDecorProjectError, setBasedOnDecorProjectError] = useState({
     hasError: false,
     label: "",
@@ -353,40 +352,6 @@ export default function Sites() {
     setBasedOnDecorProject(value);
     handleBasedOnDecorProjectError(value);
   };
-  // Sample list for Based on Decor Project
-  const basedOnDecorProjectList = [
-    { id: 1, name: "Project A" },
-    { id: 2, name: "Project B" },
-    // Add more projects as needed
-  ];
-
-  // PROJECT DESIGN
-  const projectDesignLabel = "Thiết kế dự án";
-  const [projectDesign, setProjectDesign] = useState(-1);
-  const [projectDesignError, setProjectDesignError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleProjectDesignError = (value) => {
-    if (value === -1) {
-      setProjectDesignError({
-        hasError: true,
-        label: "Chọn một kiểu dự án.",
-      });
-    } else {
-      setProjectDesignError({ hasError: false, label: "" });
-    }
-  };
-  const onProjectDesignChange = (e) => {
-    setProjectDesign(e.target.value);
-    handleProjectDesignError(e.target.value);
-  };
-  // Sample list for Project Design
-  const projectDesignList = [
-    { id: 1, name: "Design A" },
-    { id: 2, name: "Design B" },
-    // Add more designs as needed
-  ];
 
   // GET SITE DETAILS
   const [pageName, setPageName] = useState("Tên khu công trình");
@@ -395,7 +360,77 @@ export default function Sites() {
   );
 
   // CONTACT
-  const contactLabel = "Thông tin liên hệ";
+  const contactLabel = "Thông tin liên hệ chủ dự án";
+
+  const [projectId, setProjectId] = useState(params.id);
+  const [siteId, setSiteId] = useState("");
+  const [adminId, setAdminId] = useState("");
+  const [adminUsername, setAdminUsername] = useState("");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  const [projectCategories, setProjectCategories] = useState([]);
+  const [decorProjects, setDecorProjects] = useState([]);
+  const [projectOwner, setProjectOwner] = useState("");
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const project = await getProjectById(projectId);
+          console.log(project);
+          mapData(project);
+
+          const listCategories = await getProjectCategories();
+          console.log(listCategories);
+          setProjectCategories(listCategories);
+
+          const listProjectsBySiteId = await getProjectsBySiteId(project?.siteId);
+          console.log(listProjectsBySiteId);
+
+          setDecorProjects(listProjectsBySiteId.filter(project => project.type === 0));
+          const participation = project?.projectParticipations.find(par => par.role === 0)
+          setProjectOwner(participation.user ?? "")
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+
+  const mapData = (data) => {
+
+    setName(data.name ?? "")
+    setProjectType(data.type ?? "")
+    setDescription(data.description ?? "")
+    setAdvertisementStatus(data.advertisementStatus ?? "")
+    setArea(data.area ?? "")
+    setBasedOnDecorProject(data?.basedOnDecorProject?.id ?? "")
+    setEstimateBusinessDay(data.estimateBusinessDay ?? 0)
+    setEstimatedPrice(data.estimatedPrice ?? 0)
+    setFinalPrice(data.finalPrice ?? 0)
+    setProjectCategory(data.projectCategory.id ?? "")
+    setProjectStatus(data.status ?? "")
+    setTotalWarrantyPaid(data.totalWarrantyPaid ?? 0)
+    setLanguage(data.language ?? "")
+    setSiteId(data.siteId ?? "")
+    setAdminId(data.CreatedByAdminId ?? "")
+    setAdminUsername(data.CreatedAdminUsername ?? "")
+
+  };
+
+  const getAvatarContent = (name) => {
+    const words = name.split(' ');
+    const lastWord = words.length > 0 ? words[words.length - 1] : '';
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+
+    return firstCharacter;
+  };
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
@@ -408,35 +443,52 @@ export default function Sites() {
               lg={12}
               sx={{ borderBottom: 1, borderColor: "grey.500", py: 3, mt: 1 }}
             >
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="h2" sx={{ my: "auto" }}>
-                  Tên
-                </Typography>
-                <SaveSiteModal>Lưu</SaveSiteModal>
-              </Box>
-            </Grid>
-            <Grid item xs={12} lg={8}>
-              <Grid container columnSpacing={2} rowSpacing={4}>
-                {/* NAME */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {nameLabel} <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                      <Typography variant="p">{nameSubLabel}</Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          error={nameError.hasError}
-                          variant="outlined"
-                          value={name}
-                          helperText={nameError.label}
-                          onChange={onNameChange}
-                        />
-                      </FormControl>
-                    </Grid>
+              <Typography variant="h2" sx={{ my: "auto" }}>
+                Tên
+              </Typography>
+              <SaveModal
+                request={{
+                  name: name,
+                  description: description,
+                  type: projectType,
+                  projectCategoryId: projectCategory,
+                  createdAdminUsername: adminUsername,
+                  createdByAdminId: adminId,
+                  estimatedPrice: estimatedPrice,
+                  finalPrice: finalPrice,
+                  totalWarrantyPaid: totalWarrantyPaid,
+                  area: area,
+                  estimateBusinessDay: estimateBusinessDay,
+                  language: language,
+                  status: projectStatus,
+                  advertisementStatus: advertisementStatus,
+                  basedOnDecorProjectId: basedOnDecorProject?.id ?? "",
+                  siteId: siteId
+                }}
+              >Lưu</SaveModal>
+            </Box>
+          </Grid>
+          <Grid item xs={12} lg={8}>
+            <Grid container columnSpacing={2} rowSpacing={4}>
+              {/* NAME */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {nameLabel} <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <Typography variant="p">{nameSubLabel}</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        error={nameError.hasError}
+                        variant="outlined"
+                        value={name}
+                        helperText={nameError.label}
+                        onChange={onNameChange}
+                      />
+                    </FormControl>
                   </Grid>
                 </Grid>
 
@@ -514,26 +566,30 @@ export default function Sites() {
                   </Grid>
                 </Grid>
 
-                {/* PROJECT CATEGORY */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {projectCategoryLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Select
-                          value={projectCategory}
-                          onChange={onProjectCategoryChange}
-                          error={projectCategoryError.hasError}
-                          displayEmpty
-                          variant="outlined"
-                        >
-                          <MenuItem disabled value="">
-                            Chọn hạng mục
+              {/* PROJECT CATEGORY */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {projectCategoryLabel}{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Select
+                        value={projectCategory}
+                        onChange={onProjectCategoryChange}
+                        error={projectCategoryError.hasError}
+                        displayEmpty
+                        variant="outlined"
+                      >
+                        <MenuItem disabled value="">
+                          Chọn hạng mục
+                        </MenuItem>
+                        {projectCategories.map((category) => (
+                          <MenuItem key={category.id} value={category.id}>
+                            {category.name}
                           </MenuItem>
                           {projectCategoryOptions.map((category) => (
                             <MenuItem key={category.id} value={category.id}>
@@ -551,96 +607,86 @@ export default function Sites() {
                   </Grid>
                 </Grid>
 
-                {/* ESTIMATED PRICE */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {estimatedPriceLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          type="number"
-                          error={estimatedPriceError.hasError}
-                          variant="outlined"
-                          value={estimatedPrice}
-                          helperText={estimatedPriceError.label}
-                          onChange={onEstimatedPriceChange}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                VNĐ
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
+              {/* ESTIMATED PRICE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {estimatedPriceLabel}{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        type="number"
+                        error={estimatedPriceError.hasError}
+                        variant="outlined"
+                        value={estimatedPrice}
+                        helperText={estimatedPriceError.label}
+                        onChange={onEstimatedPriceChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">VND</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </FormControl>
                   </Grid>
                 </Grid>
 
-                {/* FINAL PRICE */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {finalPriceLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          type="number"
-                          error={finalPriceError.hasError}
-                          variant="outlined"
-                          value={finalPrice}
-                          helperText={finalPriceError.label}
-                          onChange={onFinalPriceChange}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                VNĐ
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
+              {/* FINAL PRICE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {finalPriceLabel} <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        type="number"
+                        error={finalPriceError.hasError}
+                        variant="outlined"
+                        value={finalPrice}
+                        helperText={finalPriceError.label}
+                        onChange={onFinalPriceChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">VND</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </FormControl>
                   </Grid>
                 </Grid>
 
-                {/* TOTAL WARRANTY PAID */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {totalWarrantyPaidLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          type="number"
-                          error={totalWarrantyPaidError.hasError}
-                          variant="outlined"
-                          value={totalWarrantyPaid}
-                          helperText={totalWarrantyPaidError.label}
-                          onChange={onTotalWarrantyPaidChange}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                VNĐ
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
+              {/* TOTAL WARRANTY PAID */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {totalWarrantyPaidLabel}{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        type="number"
+                        error={totalWarrantyPaidError.hasError}
+                        variant="outlined"
+                        value={totalWarrantyPaid}
+                        helperText={totalWarrantyPaidError.label}
+                        onChange={onTotalWarrantyPaidChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">VND</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </FormControl>
                   </Grid>
                 </Grid>
 
@@ -703,24 +749,28 @@ export default function Sites() {
                   </Grid>
                 </Grid>
 
-                {/* LANGUAGE */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {languageLabel} <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Select
-                          variant="outlined"
-                          value={language}
-                          onChange={onLanguageChange}
-                          error={languageError.hasError}
-                        >
-                          <MenuItem disabled value="">
-                            Chọn ngôn ngữ
+              {/* LANGUAGE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {languageLabel} <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Select
+                        variant="outlined"
+                        value={language}
+                        onChange={onLanguageChange}
+                        error={languageError.hasError}
+                      >
+                        <MenuItem disabled value="">
+                          Chọn ngôn ngữ
+                        </MenuItem>
+                        {projectLanguageOptions.map((label, value) => (
+                          <MenuItem key={label} value={value}>
+                            {label}
                           </MenuItem>
                           {projectLanguageOptions.map((lang) => (
                             <MenuItem key={lang} value={lang}>
@@ -733,25 +783,29 @@ export default function Sites() {
                   </Grid>
                 </Grid>
 
-                {/* ADVERTISEMENT STATUS */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {advertisementStatusLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Select
-                          variant="outlined"
-                          value={advertisementStatus}
-                          onChange={onAdvertisementStatusChange}
-                          error={advertisementStatusError.hasError}
-                        >
-                          <MenuItem disabled value="">
-                            Chọn trạng thái quảng cáo
+              {/* ADVERTISEMENT STATUS */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {advertisementStatusLabel}{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Select
+                        variant="outlined"
+                        value={advertisementStatus}
+                        onChange={onAdvertisementStatusChange}
+                        error={advertisementStatusError.hasError}
+                      >
+                        <MenuItem disabled value="">
+                          Chọn trạng thái quảng cáo
+                        </MenuItem>
+                        {projectAdvertisementStatusOptions.map((label, value) => (
+                          <MenuItem key={label} value={value}>
+                            {label}
                           </MenuItem>
                           {projectAdvertisementStatusOptions.map((status) => (
                             <MenuItem key={status} value={status}>
@@ -764,55 +818,58 @@ export default function Sites() {
                   </Grid>
                 </Grid>
 
-                {/* BASED ON DECOR PROJECT (Autocomplete) */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {basedOnDecorProjectLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Autocomplete
-                          options={basedOnDecorProjectList}
-                          getOptionLabel={(option) => option.name}
-                          value={basedOnDecorProject}
-                          onChange={onBasedOnDecorProjectChange}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              error={basedOnDecorProjectError.hasError}
-                              variant="outlined"
-                              helperText={basedOnDecorProjectError.label}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </Grid>
+              {/* BASED ON DECOR PROJECT (Autocomplete) */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {basedOnDecorProjectLabel}{" "}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        options={decorProjects}
+                        getOptionLabel={(option) => option?.name ?? ""}
+                        value={basedOnDecorProject}
+                        onChange={onBasedOnDecorProjectChange}
+                        noOptionsText="Không tìm thấy"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            error={basedOnDecorProjectError.hasError}
+                            variant="outlined"
+                            helperText={basedOnDecorProjectError.label}
+                          />
+                        )}
+                      />
+                    </FormControl>
                   </Grid>
                 </Grid>
 
-                {/* PROJECT DESIGN (Select) */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        {projectDesignLabel}{" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Select
-                          variant="outlined"
-                          value={projectDesign}
-                          onChange={onProjectDesignChange}
-                          error={projectDesignError.hasError}
-                        >
-                          <MenuItem disabled value={-1}>
-                            Chọn dự án thiết kế
+              {/* PROJECT DESIGN (Select) 
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      {projectDesignLabel}{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Select
+                        variant="outlined"
+                        value={projectDesign}
+                        onChange={onProjectDesignChange}
+                        error={projectDesignError.hasError}
+                      >
+                        <MenuItem disabled value={-1}>
+                          Chọn dự án thiết kế
+                        </MenuItem>
+                        {projectDesignList.map((design) => (
+                          <MenuItem key={design.id} value={design.id}>
+                            {design.name}
                           </MenuItem>
                           {projectDesignList.map((design) => (
                             <MenuItem key={design.id} value={design.id}>
@@ -824,6 +881,8 @@ export default function Sites() {
                     </Grid>
                   </Grid>
                 </Grid>
+              </Grid>
+              */}
 
                 {/* DESCRIPTION */}
                 <Grid item xs={12} lg={12}>
@@ -849,24 +908,24 @@ export default function Sites() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} lg={4}>
-              <Card
-                variant="outlined"
-                sx={{ p: 3, border: 1, borderColor: "gray" }}
-              >
-                <Typography variant="h5" sx={{ my: "auto" }}>
-                  {contactLabel}
-                </Typography>
-                <Box sx={{ display: "flex", mt: 2 }}>
-                  <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                    N
-                  </Avatar>
-                  <Box sx={{ my: "auto", mx: 2 }}>
-                    <Typography variant="h6">Anthony N</Typography>
-                    <Typography variant="p">anthony@gmail.com</Typography>
-                    <br />
-                    <Typography variant="p">0123456789</Typography>
-                  </Box>
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <Card
+              variant="outlined"
+              sx={{ p: 3, border: 1, borderColor: "gray" }}
+            >
+              <Typography variant="h5" sx={{ my: "auto" }}>
+                {contactLabel}
+                {console.log(projectOwner)}
+              </Typography>
+              <Box sx={{ display: "flex", mt: 2 }}>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}> {getAvatarContent(projectOwner.name ?? "E")}</Avatar>
+                <Box sx={{ my: "auto", mx: 2 }}>
+                  <Typography variant="h6">{projectOwner.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectOwner.email ?? "..."}</Typography>
+                  <br />
+                  <Typography variant="p">{projectOwner.phone ?? "..."}</Typography>
+                  <br />
                 </Box>
               </Card>
             </Grid>

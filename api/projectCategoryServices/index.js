@@ -1,89 +1,92 @@
-const getAllProjectCategories = async () => {
+const getProjectCategories = async () => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/ProjectCategories',
+            `https://localhost:7062/api/ProjectCategories`,
             { cache: 'no-store' }
         );
         const projectCategories = await response.json();
         return projectCategories;
     } catch (error) {
-        console.error('Error fetching all project categories:', error);
+        console.error('Error fetching project categories:', error);
         throw error;
     }
 };
 
-const getProjectCategoryById = async (categoryId) => {
+const createProjectCategory = async (request) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/ProjectCategories/${categoryId}`,
-            { cache: 'no-store' }
-        );
-        const projectCategory = await response.json();
-        return projectCategory;
-    } catch (error) {
-        console.error('Error fetching project category by ID:', error);
-        throw error;
-    }
-};
-
-const createProjectCategory = async (createData) => {
-    try {
-        const promise = await axios.post('https://localhost:7062/api/ProjectCategories', createData);
-        toast.promise(
-            promise,
+            `https://localhost:7062/api/ProjectCategories`,
             {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createProjectCategoriesToast' }
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching create project category:', error);
         throw error;
     }
 };
 
-const updateProjectCategory = async (id, updateData) => {
+const updateProjectCategory = async (id, request) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/ProjectCategories/${id}`, updateData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectCategories/${id}`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateProjectCategoriesToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching update project category:', error);
         throw error;
     }
 };
 
-const hideProjectCategory = async (id, status) => {
+const updateProjectCategoryHiddenStatus = async (id, isHidden) => {
     try {
-        const promise = await axios.delete(`https://localhost:7062/api/ProjectCategories/${id}/isHidden?isHidden=${status}`);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectCategories/${id}/hidden-status`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'hideProjectCategoriesToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isHidden }),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update hidden status failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching update project category hidden status:', error);
         throw error;
     }
 };
-export { getAllProjectCategories, getProjectCategoryById, createProjectCategory, updateProjectCategory, hideProjectCategory};
+
+export {
+    getProjectCategories,
+    createProjectCategory,
+    updateProjectCategory,
+    updateProjectCategoryHiddenStatus,
+};
