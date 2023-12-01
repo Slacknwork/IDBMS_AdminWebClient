@@ -33,7 +33,8 @@ const interiorItems = [
     id: 1,
     code: "ITEM001",
     name: "Sofa",
-    imageUrl: "https://example.com/sofa.jpg",
+    imageUrl:
+      "https://i.pinimg.com/originals/be/d8/c2/bed8c28f7c314f30b6657297911cfc15.jpg",
     interiorItemCategory: { id: 1, name: "Furniture" },
     interiorItemStatus: 0,
   },
@@ -41,7 +42,8 @@ const interiorItems = [
     id: 2,
     code: "ITEM002",
     name: "Table",
-    imageUrl: "https://example.com/table.jpg",
+    imageUrl:
+      "https://zago-store.vn/wp-content/uploads/2021/03/loft-coffee-square-table-90x90x45h-cm_1-750x750.jpg",
     interiorItemCategory: { id: 2, name: "Decor" },
     interiorItemStatus: 1,
   },
@@ -240,7 +242,7 @@ export default function InteriorItems() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/sites/${params.id}/interior-items/${item.id}`}
+                    href={`/projects/${params.id}/items/${item.id}`}
                   >
                     Chi tiết
                   </Button>
