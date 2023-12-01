@@ -43,10 +43,10 @@ export default function SiteModal({ children, request }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Lưu</h2>
+          <h2 id="child-modal-title">Xóa</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin tầng?</p>
+              <p>Xóa tầng?</p>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

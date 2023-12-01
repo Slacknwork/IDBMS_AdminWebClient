@@ -66,17 +66,17 @@ export default function Floors() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Floor No
+                Tầng số
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Description
+                Mục đích
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Use Purpose
+                Mô tả
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
@@ -98,12 +98,12 @@ export default function Floors() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {floor.description}
+                    {floor.usePurpose}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {floor.usePurpose}
+                    {floor.description}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

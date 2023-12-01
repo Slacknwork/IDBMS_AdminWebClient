@@ -28,12 +28,7 @@ export default function SiteModal({ children, request }) {
 
   return (
     <Box>
-      <Button
-        sx={{ mr: 2 }}
-        variant="outlined"
-        disableElevation
-        onClick={handleOpen}
-      >
+      <Button variant="contained" disableElevation onClick={handleOpen}>
         {children}
       </Button>
       <Modal
@@ -53,7 +48,6 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="outlined"
                   disableElevation
-                  color="error"
                   onClick={handleClose}
                   sx={{ mr: 2 }}
                 >
@@ -62,10 +56,9 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  color="error"
                   onClick={handleClose}
                 >
-                  Xóa
+                  Lưu
                 </Button>
               </Box>
             </Grid>

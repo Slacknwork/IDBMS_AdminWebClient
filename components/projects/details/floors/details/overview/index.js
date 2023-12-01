@@ -63,7 +63,7 @@ export default function FloorOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Floor Details
+              Tầng số N
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>Xóa</DeleteModal>
@@ -77,7 +77,7 @@ export default function FloorOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Floor Number
+                      Tầng số
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -103,7 +103,7 @@ export default function FloorOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Use Purpose
+                      Mục đích
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -128,7 +128,7 @@ export default function FloorOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Description
+                      Mô tả
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>

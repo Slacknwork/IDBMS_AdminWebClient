@@ -53,7 +53,7 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="outlined"
                   disableElevation
-                  color="danger"
+                  color="error"
                   onClick={handleClose}
                   sx={{ mr: 2 }}
                 >
@@ -62,7 +62,7 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  color="danger"
+                  color="error"
                   onClick={handleClose}
                 >
                   Xóa

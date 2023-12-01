@@ -90,7 +90,7 @@ export default function Rooms() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Room Type
+                Loại phòng
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">

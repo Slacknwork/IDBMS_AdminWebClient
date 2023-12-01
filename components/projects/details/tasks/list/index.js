@@ -12,6 +12,7 @@ import {
   LinearProgress,
   MenuItem,
   Select,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +20,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -94,6 +96,12 @@ export default function Sites() {
   const params = useParams();
   const searchParams = useSearchParams();
 
+  // TABS
+  const [activeTab, setActiveTab] = useState(0);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
   // SEARCH FORM
   const [search, setSearch] = useState("");
   const onSearchChange = (e) => {
@@ -141,6 +149,10 @@ export default function Sites() {
 
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
+      <Tabs value={activeTab} onChange={handleTabChange}>
+        <Tab label="Stage 1" />
+        <Tab label="Stage 2" />
+      </Tabs>
       <Box sx={{ overflow: "auto" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Box sx={{ display: "flex" }}>
