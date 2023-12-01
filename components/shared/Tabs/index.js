@@ -14,12 +14,25 @@ export default function ProjectDetailTabs({ uriPos, tabs }) {
   paths[uriPos] = paths[uriPos] || "";
 
   const [activeTab, setActiveTab] = useState(() => {
-    const itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
+    let itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
+    if (itemIndex < 0) {
+      itemIndex = tabs.findIndex(
+        (p) => p.subPaths && p.subPaths.includes(paths[uriPos])
+      );
+    }
     return itemIndex < 0 ? 0 : itemIndex;
   });
 
   useEffect(() => {
-    const itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
+    const itemIndex = () => {
+      let itemIndex = tabs.findIndex((p) => paths[uriPos] === p.path);
+      if (itemIndex < 0) {
+        itemIndex = tabs.findIndex(
+          (p) => p.subPaths && p.subPaths.includes(paths[uriPos])
+        );
+      }
+      return itemIndex < 0 ? 0 : itemIndex;
+    };
     setActiveTab(itemIndex < 0 ? 0 : itemIndex);
   }, [paths, tabs, uriPos]);
 

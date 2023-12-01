@@ -6,6 +6,7 @@ const items = [
   {
     path: "floors",
     label: "Kiến trúc",
+    subPaths: ["rooms"],
   },
   {
     path: "tasks",
