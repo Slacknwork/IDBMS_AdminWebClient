@@ -30,7 +30,8 @@ import projectType, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
 import languageType, {
-  languageTypeChipColors, languageTypeChipImages
+  languageTypeChipColors,
+  languageTypeChipImages,
 } from "/constants/enums/language";
 import projectStatus from "/constants/enums/projectStatus";
 
@@ -140,20 +141,20 @@ export default function Sites() {
 
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [siteId, setSiteId] = useState(params.id);
+
+  const fetchDataFromApi = async () => {
+    try {
+      const data = await getProjectsBySiteId(params.id);
+      console.log(data);
+      setValues(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
+  };
 
   useEffect(() => {
-    const fetchDataFromApi = async () => {
-      try {
-        const data = await getProjectsBySiteId(siteId);
-        console.log(data);
-        setValues(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      }
-    };
     fetchDataFromApi();
   }, []);
 
@@ -218,9 +219,9 @@ export default function Sites() {
             </FormControl>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <CreateModal
-              projects={values}
-            >{createProjectLabel}</CreateModal>
+            <CreateModal projects={values} onSubmit={fetchDataFromApi}>
+              {createProjectLabel}
+            </CreateModal>
           </Box>
         </Box>
         <Table
@@ -273,7 +274,9 @@ export default function Sites() {
                   <Chip
                     label={languageType[project.language]}
                     color={languageTypeChipColors[project.language]}
-                    avatar={<Avatar src={languageTypeChipImages[project.language]} />}
+                    avatar={
+                      <Avatar src={languageTypeChipImages[project.language]} />
+                    }
                     variant="outlined"
                     fontWeight={400}
                   ></Chip>
