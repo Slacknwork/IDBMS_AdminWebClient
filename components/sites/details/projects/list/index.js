@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -28,10 +29,15 @@ import { useEffect, useRef, useState } from "react";
 import projectType, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
+import languageType, {
+  languageTypeChipColors, languageTypeChipImages
+} from "/constants/enums/language";
 import projectStatus from "/constants/enums/projectStatus";
 
 import PageContainer from "/components/container/PageContainer";
-import SiteModal from "./modal";
+import CreateModal from "./modal";
+import { toast } from "react-toastify";
+import { getProjectsBySiteId } from "/api/projectServices";
 
 const projects = [
   {
@@ -41,7 +47,7 @@ const projects = [
     status: 2,
   },
   {
-    id: "1",
+    id: "2",
     name: "Construction",
     type: 1,
     status: 2,
@@ -49,6 +55,7 @@ const projects = [
 ];
 
 const projectTypeLabel = "Loại dự án";
+const projectLanguageLabel = "Ngôn ngữ sử dụng";
 const projectStatusLabel = "Trạng thái";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -75,6 +82,7 @@ const pageDescription = "Danh sách các dự án trong công trình";
 
 const nameHeaderLabel = "Tên";
 const projectTypeHeaderLabel = "Kiểu dự án";
+const projectLanguageHeaderLabel = "Ngôn ngữ";
 const projectStatusHeaderLabel = "Trạng thái";
 
 export default function Sites() {
@@ -92,6 +100,12 @@ export default function Sites() {
   const [type, setType] = useState(-1);
   const onTypeChange = (e) => {
     setType(parseInt(e.target.value));
+  };
+
+  // PROJECT TYPE FIELD
+  const [language, setLanguage] = useState(-1);
+  const onLanguageChange = (e) => {
+    setLanguage(parseInt(e.target.value));
   };
 
   // PROJECT STATUS FIELD
@@ -123,6 +137,25 @@ export default function Sites() {
 
   // PROJECT DETAILS
   const projectDetailsLabel = "Chi tiết";
+
+  const [values, setValues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [siteId, setSiteId] = useState(params.id);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const data = await getProjectsBySiteId(siteId);
+        console.log(data);
+        setValues(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    fetchDataFromApi();
+  }, []);
 
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
@@ -185,7 +218,9 @@ export default function Sites() {
             </FormControl>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <SiteModal>{createProjectLabel}</SiteModal>
+            <CreateModal
+              projects={values}
+            >{createProjectLabel}</CreateModal>
           </Box>
         </Box>
         <Table
@@ -208,6 +243,11 @@ export default function Sites() {
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
+                  {projectLanguageHeaderLabel}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
                   {projectStatusHeaderLabel}
                 </Typography>
               </StyledTableCell>
@@ -215,7 +255,7 @@ export default function Sites() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects?.map((project) => (
+            {values?.map((project) => (
               <StyledTableRow key={project.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -226,6 +266,15 @@ export default function Sites() {
                   <Chip
                     label={projectType[project.type]}
                     color={projectTypeChipColors[project.type]}
+                    fontWeight={400}
+                  ></Chip>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label={languageType[project.language]}
+                    color={languageTypeChipColors[project.language]}
+                    avatar={<Avatar src={languageTypeChipImages[project.language]} />}
+                    variant="outlined"
                     fontWeight={400}
                   ></Chip>
                 </TableCell>

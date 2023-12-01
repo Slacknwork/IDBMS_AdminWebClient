@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -20,6 +21,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
+import advertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { createProject, getProjectsBySiteId } from "../../../../../../api/projectServices";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
+import { getProjectCategories } from "../../../../../../api/projectCategoryServices";
 
 const style = {
   position: "absolute",
@@ -34,7 +40,8 @@ const style = {
 
 const modalTitle = "Tạo dự án mới";
 
-export default function SiteModal({ children }) {
+export default function CreateModal({ children }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -79,7 +86,7 @@ export default function SiteModal({ children }) {
   // PROJECT STATUS
   const projectStatusLabel = "Trạng thái dự án";
   const projectStatusDefaultOptionLabel = "Chọn trạng thái";
-  const [projectStatus, setProjectStatus] = useState(-1);
+  const [projectStatus, setProjectStatus] = useState(0);
   const [projectStatusError, setProjectStatusError] = useState({
     hasError: false,
     label: "",
@@ -109,10 +116,6 @@ export default function SiteModal({ children }) {
   };
 
   // PROJECT CATEGORY
-  const [projectCategories, setProjectCategories] = useState([
-    { id: "1", name: "Ngân hàng" },
-  ]);
-
   const projectCategoryLabel = "Danh mục";
   const projectCategoryDefaultOptionLabel = "Chọn danh mục";
   const [projectCategory, setProjectCategory] = useState(-1); // Use -1 for the default disabled option
@@ -149,12 +152,103 @@ export default function SiteModal({ children }) {
   // ADVERTISEMENT STATUS
   const advertisementStatusLabel = "Quảng cáo dự án";
   const advertisementStatusSubLabel =
-    "Dùng dự án này để quảng cáo trên trang chủ";
-  const [advertisementStatus, setAdvertisementStatus] = useState(false);
+    "Quảng cáo trên trang chủ";
+  const advertisementStatusOptionLabel = "Trạng thái quảng cáo";
+  const [advertisementStatus, setAdvertisementStatus] = useState(0);
 
   const handleAdvertisementStatusChange = (e) => {
     setAdvertisementStatus(e.target.checked);
   };
+
+  // BASED ON DECOR PROJECT
+  const basedOnDecorProjectLabel = "Dự án thiết kế";
+  const basedOnDecorProjectSubLabel = "Dự án thiết kế nội thất dựa vào làm mẫu"
+  const [basedOnDecorProject, setBasedOnDecorProject] = useState([]);
+  const [basedOnDecorProjectError, setBasedOnDecorProjectError] = useState({
+    hasError: false,
+    label: "",
+  });
+  const handleBasedOnDecorProjectError = (value) => {
+    if (!value) {
+      setBasedOnDecorProjectError({
+        hasError: true,
+        label: "Chọn một dự án thiết kế nội thất.",
+      });
+    } else {
+      setBasedOnDecorProjectError({ hasError: false, label: "" });
+    }
+  };
+  const onBasedOnDecorProjectChange = (event, value) => {
+    setBasedOnDecorProject(value);
+    handleBasedOnDecorProjectError(value);
+  };
+
+  const [decorProjects, setDecorProjects] = useState([]);
+  const [siteId, setSiteId] = useState(params.id);
+  const initialized = useRef(false);
+
+  const [loading, setLoading] = useState(true);
+  const [projectCategories, setProjectCategories] = useState([]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const listCategories = await getProjectCategories();
+          console.log(listCategories);
+          setProjectCategories(listCategories);
+
+          const projects = await getProjectsBySiteId(siteId);
+          console.log(projects)
+          setDecorProjects(projects.filter(project => project.type === 0))
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, []);
+
+  const handleCreate = async () => {
+    const createRequest = {
+      name: name,
+      description: description,
+      type: projectType,
+      projectCategoryId: projectCategory,
+      createdAdminUsername: "admin.username",
+      createdByAdminId: "7C2B4371-E768-4D01-9E15-648091A7D9B7",
+      estimatedPrice: null,
+      finalPrice: null,
+      totalWarrantyPaid: null,
+      area: 0,
+      estimateBusinessDay: null,
+      language: language,
+      status: projectStatus,
+      advertisementStatus: advertisementStatus,
+      basedOnDecorProjectId: basedOnDecorProject?.id ?? null,
+      siteId: siteId
+    };
+    console.log(createRequest);
+
+    try {
+      const response = await createProject(createRequest);
+      console.log(response);
+      if (response.data != null) {
+        toast.success("Thêm thành công!");
+        // handleClose();
+      } else {
+        throw new Error("Create failed!");
+      }
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
 
   return (
     <Box>
@@ -206,7 +300,9 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{nameLabel}</Typography>
+                  <Typography variant="h5">{nameLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
                   <Typography variant="p">{nameSubLabel}</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
@@ -227,7 +323,9 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectTypeLabel}</Typography>
+                  <Typography variant="h5">{projectTypeLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -255,7 +353,9 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectStatusLabel}</Typography>
+                  <Typography variant="h5">{projectStatusLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -283,7 +383,9 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{languageLabel}</Typography>
+                  <Typography variant="h5">{languageLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -311,7 +413,9 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectCategoryLabel}</Typography>
+                  <Typography variant="h5">{projectCategoryLabel}
+                    <span style={{ color: "red" }}>*</span>
+                  </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -358,29 +462,71 @@ export default function SiteModal({ children }) {
               </Grid>
             </Grid>
 
+            {/* BASED ON DECOR PROJECT */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    {basedOnDecorProjectLabel}
+                  </Typography>
+                  <Typography variant="p">
+                    {basedOnDecorProjectSubLabel}
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      options={decorProjects}
+                      getOptionLabel={(option) => option?.name ?? ""}
+                      value={basedOnDecorProject}
+                      onChange={onBasedOnDecorProjectChange}
+                      noOptionsText="Không tìm thấy"
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={basedOnDecorProjectError.hasError}
+                          variant="outlined"
+                          helperText={basedOnDecorProjectError.label}
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
             {/* ADVERTISEMENT STATUS */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
                   <Typography variant="h5">
-                    {advertisementStatusLabel}
+                    {advertisementStatusLabel}<span style={{ color: "red" }}>*</span>
                   </Typography>
                   <Typography variant="p">
                     {advertisementStatusSubLabel}
                   </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={advertisementStatus}
-                        onChange={handleAdvertisementStatusChange}
-                        color="primary" // Use your preferred color
-                      />
-                    }
-                  />
+                  <FormControl fullWidth>
+                    <Select
+                      variant="outlined"
+                      value={advertisementStatus}
+                      onChange={handleAdvertisementStatusChange}
+                    >
+                      <MenuItem disabled value={-1}>
+                        {advertisementStatusOptionLabel}
+                      </MenuItem>
+                      {advertisementStatusOptions.map((option, index) => (
+                        <MenuItem key={option} value={index}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
+
+
 
               {/* SUBMIT */}
               <Grid item xs={12} lg={12}>
@@ -391,7 +537,7 @@ export default function SiteModal({ children }) {
                   <Button
                     variant="contained"
                     disableElevation
-                    onClick={handleClose}
+                    onClick={handleCreate}
                   >
                     Tạo
                   </Button>

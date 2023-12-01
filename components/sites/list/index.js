@@ -91,7 +91,6 @@ export default function Sites() {
 
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
 
   useEffect(() => {
     const fetchDataFromApi = async () => {

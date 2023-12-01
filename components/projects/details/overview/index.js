@@ -361,14 +361,16 @@ export default function ProjectDetails() {
   // CONTACT
   const contactLabel = "Thông tin liên hệ chủ dự án";
 
-  // const [projectId, setProjectId] = useState("FF090F51-E6E7-4854-8F3F-0402EE32C9F8");
   const [projectId, setProjectId] = useState(params.id);
   const [siteId, setSiteId] = useState("");
+  const [adminId, setAdminId] = useState("");
+  const [adminUsername, setAdminUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
   const [projectCategories, setProjectCategories] = useState([]);
   const [decorProjects, setDecorProjects] = useState([]);
+  const [projectOwner, setProjectOwner] = useState("");
 
   useEffect(() => {
     if (!initialized.current) {
@@ -385,7 +387,10 @@ export default function ProjectDetails() {
 
           const listProjectsBySiteId = await getProjectsBySiteId(project?.siteId);
           console.log(listProjectsBySiteId);
+
           setDecorProjects(listProjectsBySiteId.filter(project => project.type === 0));
+          const participation = project?.projectParticipations.find(par => par.role === 0)
+          setProjectOwner(participation.user ?? "")
 
           setLoading(false);
         } catch (error) {
@@ -413,12 +418,17 @@ export default function ProjectDetails() {
     setTotalWarrantyPaid(data.totalWarrantyPaid ?? 0)
     setLanguage(data.language ?? "")
     setSiteId(data.siteId ?? "")
+    setAdminId(data.CreatedByAdminId ?? "")
+    setAdminUsername(data.CreatedAdminUsername ?? "")
 
   };
 
-  const admin = {
-    id: "7C2B4371-E768-4D01-9E15-648091A7D9B7",
-    username: "tuantn2235",
+  const getAvatarContent = (name) => {
+    const words = name.split(' ');
+    const lastWord = words.length > 0 ? words[words.length - 1] : '';
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+
+    return firstCharacter;
   };
 
   return (
@@ -444,8 +454,8 @@ export default function ProjectDetails() {
                   description: description,
                   type: projectType,
                   projectCategoryId: projectCategory,
-                  createdAdminUsername: admin.username,
-                  createdByAdminId: admin.id,
+                  createdAdminUsername: adminUsername,
+                  createdByAdminId: adminId,
                   estimatedPrice: estimatedPrice,
                   finalPrice: finalPrice,
                   totalWarrantyPaid: totalWarrantyPaid,
@@ -892,14 +902,16 @@ export default function ProjectDetails() {
             >
               <Typography variant="h5" sx={{ my: "auto" }}>
                 {contactLabel}
+                {console.log(projectOwner)}
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}> {getAvatarContent(projectOwner.name ?? "E")}</Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@gmail.com</Typography>
+                  <Typography variant="h6">{projectOwner.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectOwner.email ?? "..."}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{projectOwner.phone ?? "..."}</Typography>
+                  <br />
                 </Box>
               </Box>
             </Card>
