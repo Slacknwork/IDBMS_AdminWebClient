@@ -405,37 +405,39 @@ export default function CreateModal({ children, onSubmit }) {
             </Grid>
 
             {/* BASED ON DECOR PROJECT */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Dựa trên dự án thiết kế</Typography>
-                  <Typography variant="p">
-                    Chọn dự án thiết kế mà dự án này được dựa trên
-                  </Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      options={decorProjects}
-                      getOptionLabel={(option) => option?.name ?? ""}
-                      value={formData.basedOnDecorProject}
-                      onChange={(event, value) =>
-                        handleInputChange("basedOnDecorProject", value)
-                      }
-                      noOptionsText="Không tìm thấy"
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={formData.basedOnDecorProjectError.hasError}
-                          variant="outlined"
-                          helperText={formData.basedOnDecorProjectError.label}
-                        />
-                      )}
-                    />
-                  </FormControl>
+            {formData.projectType && formData.projectType === 1 ? (
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Dựa trên dự án thiết kế</Typography>
+                    <Typography variant="p">
+                      Chọn dự án thiết kế mà dự án này được dựa trên
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        options={decorProjects}
+                        getOptionLabel={(option) => option?.name ?? ""}
+                        value={formData.basedOnDecorProject}
+                        onChange={(event, value) =>
+                          handleInputChange("basedOnDecorProject", value)
+                        }
+                        noOptionsText="Không tìm thấy"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            error={formData.basedOnDecorProjectError.hasError}
+                            variant="outlined"
+                            helperText={formData.basedOnDecorProjectError.label}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            ) : null}
 
             {/* ADVERTISEMENT STATUS */}
             <Grid item xs={12} lg={12}>
