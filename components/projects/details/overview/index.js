@@ -129,7 +129,7 @@ export default function ProjectDetails() {
           const participation = project?.projectParticipations.find(
             (par) => par.role === 0
           );
-          setProjectOwner(participation.user ?? "");
+          setProjectOwner(participation?.user ?? "");
 
           setLoading(false);
         } catch (error) {

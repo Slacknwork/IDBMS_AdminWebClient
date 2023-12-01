@@ -15,6 +15,7 @@ import {
 import { toast } from "react-toastify";
 import { createSite } from "/api/siteServices";
 import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -31,6 +32,7 @@ const pageTitle = "Tạo khu công trình";
 const pageDescription = "Tạo một khu công trình mới";
 
 export default function SiteModal({ children }) {
+  const router = useRouter();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -186,7 +188,8 @@ export default function SiteModal({ children }) {
       console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");
-        setOpen(false);
+        router.push(`/sites/${response.data.id}`);
+        // setOpen(false);
       } else {
         throw new Error("Create failed!");
       }
