@@ -9,8 +9,6 @@ import {
   Button,
   FormControl,
   Grid,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -20,8 +18,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import {
+  IconTrashFilled,
+  IconDownload,
+  IconDeviceFloppy,
+  IconUpload,
+} from "@tabler/icons-react";
 
-import calculationUnitOptions from "/constants/enums/calculationUnit";
 import DashboardCard from "/components/shared/DashboardCard";
 import DocumentModal from "./modal";
 
@@ -94,14 +97,46 @@ export default function ReportDetails() {
   return (
     <DashboardCard title={"Báo cáo"}>
       <Box sx={{ overflow: "auto", mt: 3 }}>
-        <Grid container spacing={1}>
+        <Grid container>
           <Grid item xs={12} lg={6}>
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              sx={{ pr: 2, borderRight: 1, borderColor: "gray" }}
+            >
+              <Grid
+                item
+                xs={12}
+                lg={12}
+                sx={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <Typography variant="h4">Thông tin</Typography>
+                <Box>
+                  <Button
+                    sx={{ mr: 2 }}
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                  >
+                    <IconDeviceFloppy></IconDeviceFloppy>
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color="error"
+                  >
+                    <IconTrashFilled></IconTrashFilled>
+                  </Button>
+                </Box>
+              </Grid>
               {/* NAME */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Tên công việc</Typography>
+                    <Typography variant="h5">Tên báo cáo</Typography>
+                    <Typography variant="p">Tên gọi của báo cáo này</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
@@ -114,36 +149,6 @@ export default function ReportDetails() {
                           handleInputChange("name", e.target.value)
                         }
                       />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* CALCULATION UNIT */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Đơn vị</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={formData.calculationUnit}
-                        onChange={(e) =>
-                          handleInputChange("calculationUnit", e.target.value)
-                        }
-                        error={formData.calculationUnitError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          Chọn đơn vị
-                        </MenuItem>
-                        {calculationUnitOptions.map((unit, index) => (
-                          <MenuItem key={unit} value={index}>
-                            {unit}
-                          </MenuItem>
-                        ))}
-                      </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -200,11 +205,14 @@ export default function ReportDetails() {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} lg={6}>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+
+          {/* TABLE */}
+          <Grid item xs={12} lg={6} sx={{ pl: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h4">Tài liệu</Typography>
               <Box sx={{ display: "flex" }}>
                 <DocumentModal>
-                  <span>Tạo báo cáo</span>
+                  <IconUpload></IconUpload>
                 </DocumentModal>
               </Box>
             </Box>
@@ -218,17 +226,7 @@ export default function ReportDetails() {
                 <TableRow>
                   <StyledTableCell>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Tên Báo cáo
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Thực hiện
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Ngày Tạo
+                      Tên file
                     </Typography>
                   </StyledTableCell>
                   <StyledTableCell align="right"></StyledTableCell>
@@ -242,29 +240,25 @@ export default function ReportDetails() {
                         {taskReport.name}
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" fontWeight={400}>
-                        {`${taskReport.unitUsed} ${
-                          calculationUnitOptions[taskReport.calculationUnit]
-                        }`}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" fontWeight={400}>
-                        {new Date(taskReport.createdTime).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </Typography>
-                    </TableCell>
                     <TableCell align="right">
                       <Button
-                        component={Link}
+                        sx={{ mr: 2 }}
+                        size="small"
                         variant="contained"
                         disableElevation
                         color="primary"
                         href={`/projects/${params.id}/tasks/${params.taskId}/reports/${taskReport.id}`}
                       >
-                        Xem Chi Tiết
+                        <IconDownload></IconDownload>
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        disableElevation
+                        color="error"
+                        href={`/projects/${params.id}/tasks/${params.taskId}/reports/${taskReport.id}`}
+                      >
+                        <IconTrashFilled></IconTrashFilled>
                       </Button>
                     </TableCell>
                   </StyledTableRow>
