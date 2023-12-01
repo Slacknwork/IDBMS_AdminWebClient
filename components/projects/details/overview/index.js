@@ -19,6 +19,7 @@ import { deepOrange } from "@mui/material/colors";
 import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
+import DashboardCard from "/components/shared/DashboardCard";
 import SaveSiteModal from "./modal";
 
 import projectLanguageOptions from "/constants/enums/language";
@@ -398,469 +399,480 @@ export default function Sites() {
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
-      <Box sx={{ overflow: "auto" }}>
-        <Grid container columnSpacing={4} rowSpacing={4} sx={{ mt: 1 }}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{ borderBottom: 1, borderColor: "grey.500", py: 3 }}
-          >
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between" }}
-              spacing={2}
+      <DashboardCard>
+        <Box sx={{ overflow: "auto" }}>
+          <Grid container columnSpacing={4} rowSpacing={4}>
+            <Grid
+              item
+              xs={12}
+              lg={12}
+              sx={{ borderBottom: 1, borderColor: "grey.500", py: 3, mt: 1 }}
             >
-              <Typography variant="h2" sx={{ my: "auto" }}>
-                Tên
-              </Typography>
-              <SaveSiteModal>Lưu</SaveSiteModal>
-            </Box>
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <Grid container columnSpacing={2} rowSpacing={4}>
-              {/* NAME */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {nameLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <Typography variant="p">{nameSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={nameError.hasError}
-                        variant="outlined"
-                        value={name}
-                        helperText={nameError.label}
-                        onChange={onNameChange}
-                      />
-                    </FormControl>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography variant="h2" sx={{ my: "auto" }}>
+                  Tên
+                </Typography>
+                <SaveSiteModal>Lưu</SaveSiteModal>
+              </Box>
+            </Grid>
+            <Grid item xs={12} lg={8}>
+              <Grid container columnSpacing={2} rowSpacing={4}>
+                {/* NAME */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {nameLabel} <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                      <Typography variant="p">{nameSubLabel}</Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          error={nameError.hasError}
+                          variant="outlined"
+                          value={name}
+                          helperText={nameError.label}
+                          onChange={onNameChange}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* PROJECT TYPE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectTypeLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        value={projectType}
-                        onChange={onProjectTypeChange}
-                        error={projectTypeError.hasError}
-                        displayEmpty
-                        variant="outlined"
-                      >
-                        <MenuItem disabled value="">
-                          Chọn loại dự án
-                        </MenuItem>
-                        {projectTypeOptions.map((type, index) => (
-                          <MenuItem key={type} value={index}>
-                            {type}
+                {/* PROJECT TYPE */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectTypeLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          value={projectType}
+                          onChange={onProjectTypeChange}
+                          error={projectTypeError.hasError}
+                          displayEmpty
+                          variant="outlined"
+                        >
+                          <MenuItem disabled value="">
+                            Chọn loại dự án
                           </MenuItem>
-                        ))}
-                      </Select>
-                      {projectTypeError.hasError && (
-                        <FormHelperText>
-                          {projectTypeError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PROJECT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectStatusLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        value={projectStatus}
-                        onChange={onProjectStatusChange}
-                        error={projectStatusError.hasError}
-                        displayEmpty
-                        variant="outlined"
-                      >
-                        <MenuItem disabled value="">
-                          Chọn trạng thái
-                        </MenuItem>
-                        {projectStatusOptions.map((status, index) => (
-                          <MenuItem key={status} value={index}>
-                            {status}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {projectStatusError.hasError && (
-                        <FormHelperText>
-                          {projectStatusError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PROJECT CATEGORY */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectCategoryLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        value={projectCategory}
-                        onChange={onProjectCategoryChange}
-                        error={projectCategoryError.hasError}
-                        displayEmpty
-                        variant="outlined"
-                      >
-                        <MenuItem disabled value="">
-                          Chọn hạng mục
-                        </MenuItem>
-                        {projectCategoryOptions.map((category) => (
-                          <MenuItem key={category.id} value={category.id}>
-                            {category.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {projectCategoryError.hasError && (
-                        <FormHelperText>
-                          {projectCategoryError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* ESTIMATED PRICE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {estimatedPriceLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={estimatedPriceError.hasError}
-                        variant="outlined"
-                        value={estimatedPrice}
-                        helperText={estimatedPriceError.label}
-                        onChange={onEstimatedPriceChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* FINAL PRICE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {finalPriceLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={finalPriceError.hasError}
-                        variant="outlined"
-                        value={finalPrice}
-                        helperText={finalPriceError.label}
-                        onChange={onFinalPriceChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* TOTAL WARRANTY PAID */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {totalWarrantyPaidLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={totalWarrantyPaidError.hasError}
-                        variant="outlined"
-                        value={totalWarrantyPaid}
-                        helperText={totalWarrantyPaidError.label}
-                        onChange={onTotalWarrantyPaidChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* AREA */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {areaLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={areaError.hasError}
-                        variant="outlined"
-                        value={area}
-                        helperText={areaError.label}
-                        onChange={onAreaChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">m²</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* ESTIMATE BUSINESS DAY */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {estimateBusinessDayLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={estimateBusinessDayError.hasError}
-                        variant="outlined"
-                        value={estimateBusinessDay}
-                        helperText={estimateBusinessDayError.label}
-                        onChange={onEstimateBusinessDayChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">days</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* LANGUAGE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {languageLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={language}
-                        onChange={onLanguageChange}
-                        error={languageError.hasError}
-                      >
-                        <MenuItem disabled value="">
-                          Chọn ngôn ngữ
-                        </MenuItem>
-                        {projectLanguageOptions.map((lang) => (
-                          <MenuItem key={lang} value={lang}>
-                            {lang}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* ADVERTISEMENT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {advertisementStatusLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={advertisementStatus}
-                        onChange={onAdvertisementStatusChange}
-                        error={advertisementStatusError.hasError}
-                      >
-                        <MenuItem disabled value="">
-                          Chọn trạng thái quảng cáo
-                        </MenuItem>
-                        {projectAdvertisementStatusOptions.map((status) => (
-                          <MenuItem key={status} value={status}>
-                            {status}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* BASED ON DECOR PROJECT (Autocomplete) */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {basedOnDecorProjectLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Autocomplete
-                        options={basedOnDecorProjectList}
-                        getOptionLabel={(option) => option.name}
-                        value={basedOnDecorProject}
-                        onChange={onBasedOnDecorProjectChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            error={basedOnDecorProjectError.hasError}
-                            variant="outlined"
-                            helperText={basedOnDecorProjectError.label}
-                          />
+                          {projectTypeOptions.map((type, index) => (
+                            <MenuItem key={type} value={index}>
+                              {type}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectTypeError.hasError && (
+                          <FormHelperText>
+                            {projectTypeError.label}
+                          </FormHelperText>
                         )}
-                      />
-                    </FormControl>
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* PROJECT DESIGN (Select) */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectDesignLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        variant="outlined"
-                        value={projectDesign}
-                        onChange={onProjectDesignChange}
-                        error={projectDesignError.hasError}
-                      >
-                        <MenuItem disabled value={-1}>
-                          Chọn dự án thiết kế
-                        </MenuItem>
-                        {projectDesignList.map((design) => (
-                          <MenuItem key={design.id} value={design.id}>
-                            {design.name}
+                {/* PROJECT STATUS */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectStatusLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          value={projectStatus}
+                          onChange={onProjectStatusChange}
+                          error={projectStatusError.hasError}
+                          displayEmpty
+                          variant="outlined"
+                        >
+                          <MenuItem disabled value="">
+                            Chọn trạng thái
                           </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                          {projectStatusOptions.map((status, index) => (
+                            <MenuItem key={status} value={index}>
+                              {status}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectStatusError.hasError && (
+                          <FormHelperText>
+                            {projectStatusError.label}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{descriptionLabel}</Typography>
-                    <Typography variant="p">{descriptionSubLabel}</Typography>
+                {/* PROJECT CATEGORY */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectCategoryLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          value={projectCategory}
+                          onChange={onProjectCategoryChange}
+                          error={projectCategoryError.hasError}
+                          displayEmpty
+                          variant="outlined"
+                        >
+                          <MenuItem disabled value="">
+                            Chọn hạng mục
+                          </MenuItem>
+                          {projectCategoryOptions.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectCategoryError.hasError && (
+                          <FormHelperText>
+                            {projectCategoryError.label}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4} // You can adjust the number of rows as needed
-                        variant="outlined"
-                        value={description}
-                        error={descriptionError.hasError}
-                        helperText={descriptionError.label}
-                        onChange={onDescriptionChange}
-                      />
-                    </FormControl>
+                </Grid>
+
+                {/* ESTIMATED PRICE */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {estimatedPriceLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={estimatedPriceError.hasError}
+                          variant="outlined"
+                          value={estimatedPrice}
+                          helperText={estimatedPriceError.label}
+                          onChange={onEstimatedPriceChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                VNĐ
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* FINAL PRICE */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {finalPriceLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={finalPriceError.hasError}
+                          variant="outlined"
+                          value={finalPrice}
+                          helperText={finalPriceError.label}
+                          onChange={onFinalPriceChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                VNĐ
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* TOTAL WARRANTY PAID */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {totalWarrantyPaidLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={totalWarrantyPaidError.hasError}
+                          variant="outlined"
+                          value={totalWarrantyPaid}
+                          helperText={totalWarrantyPaidError.label}
+                          onChange={onTotalWarrantyPaidChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                VNĐ
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* AREA */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {areaLabel} <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={areaError.hasError}
+                          variant="outlined"
+                          value={area}
+                          helperText={areaError.label}
+                          onChange={onAreaChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">m²</InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* ESTIMATE BUSINESS DAY */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {estimateBusinessDayLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={estimateBusinessDayError.hasError}
+                          variant="outlined"
+                          value={estimateBusinessDay}
+                          helperText={estimateBusinessDayError.label}
+                          onChange={onEstimateBusinessDayChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                days
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* LANGUAGE */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {languageLabel} <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          variant="outlined"
+                          value={language}
+                          onChange={onLanguageChange}
+                          error={languageError.hasError}
+                        >
+                          <MenuItem disabled value="">
+                            Chọn ngôn ngữ
+                          </MenuItem>
+                          {projectLanguageOptions.map((lang) => (
+                            <MenuItem key={lang} value={lang}>
+                              {lang}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* ADVERTISEMENT STATUS */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {advertisementStatusLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          variant="outlined"
+                          value={advertisementStatus}
+                          onChange={onAdvertisementStatusChange}
+                          error={advertisementStatusError.hasError}
+                        >
+                          <MenuItem disabled value="">
+                            Chọn trạng thái quảng cáo
+                          </MenuItem>
+                          {projectAdvertisementStatusOptions.map((status) => (
+                            <MenuItem key={status} value={status}>
+                              {status}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* BASED ON DECOR PROJECT (Autocomplete) */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {basedOnDecorProjectLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Autocomplete
+                          options={basedOnDecorProjectList}
+                          getOptionLabel={(option) => option.name}
+                          value={basedOnDecorProject}
+                          onChange={onBasedOnDecorProjectChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              error={basedOnDecorProjectError.hasError}
+                              variant="outlined"
+                              helperText={basedOnDecorProjectError.label}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* PROJECT DESIGN (Select) */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectDesignLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          variant="outlined"
+                          value={projectDesign}
+                          onChange={onProjectDesignChange}
+                          error={projectDesignError.hasError}
+                        >
+                          <MenuItem disabled value={-1}>
+                            Chọn dự án thiết kế
+                          </MenuItem>
+                          {projectDesignList.map((design) => (
+                            <MenuItem key={design.id} value={design.id}>
+                              {design.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* DESCRIPTION */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">{descriptionLabel}</Typography>
+                      <Typography variant="p">{descriptionSubLabel}</Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          multiline
+                          rows={4} // You can adjust the number of rows as needed
+                          variant="outlined"
+                          value={description}
+                          error={descriptionError.hasError}
+                          helperText={descriptionError.label}
+                          onChange={onDescriptionChange}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <Card
-              variant="outlined"
-              sx={{ p: 3, border: 1, borderColor: "gray" }}
-            >
-              <Typography variant="h5" sx={{ my: "auto" }}>
-                {contactLabel}
-              </Typography>
-              <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@gmail.com</Typography>
-                  <br />
-                  <Typography variant="p">0123456789</Typography>
+            <Grid item xs={12} lg={4}>
+              <Card
+                variant="outlined"
+                sx={{ p: 3, border: 1, borderColor: "gray" }}
+              >
+                <Typography variant="h5" sx={{ my: "auto" }}>
+                  {contactLabel}
+                </Typography>
+                <Box sx={{ display: "flex", mt: 2 }}>
+                  <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                    N
+                  </Avatar>
+                  <Box sx={{ my: "auto", mx: 2 }}>
+                    <Typography variant="h6">Anthony N</Typography>
+                    <Typography variant="p">anthony@gmail.com</Typography>
+                    <br />
+                    <Typography variant="p">0123456789</Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Card>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </DashboardCard>
     </PageContainer>
   );
 }
