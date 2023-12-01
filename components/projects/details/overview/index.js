@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveModal from "./modal";
+import DashboardCard from "/components/shared/DashboardCard";
 
 import projectLanguageOptions from "/constants/enums/language";
 import projectTypeOptions from "/constants/enums/projectType";
@@ -433,17 +434,14 @@ export default function ProjectDetails() {
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
-      <Box sx={{ overflow: "auto" }}>
-        <Grid container columnSpacing={4} rowSpacing={4} sx={{ mt: 1 }}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{ borderBottom: 1, borderColor: "grey.500", py: 3 }}
-          >
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between" }}
-              spacing={2}
+      <DashboardCard>
+        <Box sx={{ overflow: "auto" }}>
+          <Grid container columnSpacing={4} rowSpacing={4}>
+            <Grid
+              item
+              xs={12}
+              lg={12}
+              sx={{ borderBottom: 1, borderColor: "grey.500", py: 3, mt: 1 }}
             >
               <Typography variant="h2" sx={{ my: "auto" }}>
                 Tên
@@ -493,80 +491,80 @@ export default function ProjectDetails() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* PROJECT TYPE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectTypeLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        value={projectType}
-                        onChange={onProjectTypeChange}
-                        error={projectTypeError.hasError}
-                        displayEmpty
-                        variant="outlined"
-                      >
-                        <MenuItem disabled value="">
-                          Chọn loại dự án
-                        </MenuItem>
-                        {projectTypeOptions.map((type, index) => (
-                          <MenuItem key={type} value={index}>
-                            {type}
+                {/* PROJECT TYPE */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectTypeLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          value={projectType}
+                          onChange={onProjectTypeChange}
+                          error={projectTypeError.hasError}
+                          displayEmpty
+                          variant="outlined"
+                        >
+                          <MenuItem disabled value="">
+                            Chọn loại dự án
                           </MenuItem>
-                        ))}
-                      </Select>
-                      {projectTypeError.hasError && (
-                        <FormHelperText>
-                          {projectTypeError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
+                          {projectTypeOptions.map((type, index) => (
+                            <MenuItem key={type} value={index}>
+                              {type}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectTypeError.hasError && (
+                          <FormHelperText>
+                            {projectTypeError.label}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* PROJECT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {projectStatusLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <Select
-                        value={projectStatus}
-                        onChange={onProjectStatusChange}
-                        error={projectStatusError.hasError}
-                        displayEmpty
-                        variant="outlined"
-                      >
-                        <MenuItem disabled value="">
-                          Chọn trạng thái
-                        </MenuItem>
-                        {projectStatusOptions.map((status, index) => (
-                          <MenuItem key={status} value={index}>
-                            {status}
+                {/* PROJECT STATUS */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {projectStatusLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <Select
+                          value={projectStatus}
+                          onChange={onProjectStatusChange}
+                          error={projectStatusError.hasError}
+                          displayEmpty
+                          variant="outlined"
+                        >
+                          <MenuItem disabled value="">
+                            Chọn trạng thái
                           </MenuItem>
-                        ))}
-                      </Select>
-                      {projectStatusError.hasError && (
-                        <FormHelperText>
-                          {projectStatusError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
+                          {projectStatusOptions.map((status, index) => (
+                            <MenuItem key={status} value={index}>
+                              {status}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectStatusError.hasError && (
+                          <FormHelperText>
+                            {projectStatusError.label}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* PROJECT CATEGORY */}
               <Grid item xs={12} lg={12}>
@@ -593,17 +591,21 @@ export default function ProjectDetails() {
                           <MenuItem key={category.id} value={category.id}>
                             {category.name}
                           </MenuItem>
-                        ))}
-                      </Select>
-                      {projectCategoryError.hasError && (
-                        <FormHelperText>
-                          {projectCategoryError.label}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
+                          {projectCategoryOptions.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {projectCategoryError.hasError && (
+                          <FormHelperText>
+                            {projectCategoryError.label}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* ESTIMATED PRICE */}
               <Grid item xs={12} lg={12}>
@@ -632,7 +634,6 @@ export default function ProjectDetails() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* FINAL PRICE */}
               <Grid item xs={12} lg={12}>
@@ -660,7 +661,6 @@ export default function ProjectDetails() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* TOTAL WARRANTY PAID */}
               <Grid item xs={12} lg={12}>
@@ -689,64 +689,65 @@ export default function ProjectDetails() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* AREA */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {areaLabel} <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={areaError.hasError}
-                        variant="outlined"
-                        value={area}
-                        helperText={areaError.label}
-                        onChange={onAreaChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">m²</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
+                {/* AREA */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {areaLabel} <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={areaError.hasError}
+                          variant="outlined"
+                          value={area}
+                          helperText={areaError.label}
+                          onChange={onAreaChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">m²</InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              {/* ESTIMATE BUSINESS DAY */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      {estimateBusinessDayLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={estimateBusinessDayError.hasError}
-                        variant="outlined"
-                        value={estimateBusinessDay}
-                        helperText={estimateBusinessDayError.label}
-                        onChange={onEstimateBusinessDayChange}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">days</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </FormControl>
+                {/* ESTIMATE BUSINESS DAY */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">
+                        {estimateBusinessDayLabel}{" "}
+                        <span style={{ color: "red" }}>*</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          type="number"
+                          error={estimateBusinessDayError.hasError}
+                          variant="outlined"
+                          value={estimateBusinessDay}
+                          helperText={estimateBusinessDayError.label}
+                          onChange={onEstimateBusinessDayChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                days
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* LANGUAGE */}
               <Grid item xs={12} lg={12}>
@@ -771,12 +772,16 @@ export default function ProjectDetails() {
                           <MenuItem key={label} value={value}>
                             {label}
                           </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                          {projectLanguageOptions.map((lang) => (
+                            <MenuItem key={lang} value={lang}>
+                              {lang}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* ADVERTISEMENT STATUS */}
               <Grid item xs={12} lg={12}>
@@ -802,12 +807,16 @@ export default function ProjectDetails() {
                           <MenuItem key={label} value={value}>
                             {label}
                           </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                          {projectAdvertisementStatusOptions.map((status) => (
+                            <MenuItem key={status} value={status}>
+                              {status}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* BASED ON DECOR PROJECT (Autocomplete) */}
               <Grid item xs={12} lg={12}>
@@ -837,7 +846,6 @@ export default function ProjectDetails() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
 
               {/* PROJECT DESIGN (Select) 
               <Grid item xs={12} lg={12}>
@@ -863,33 +871,39 @@ export default function ProjectDetails() {
                           <MenuItem key={design.id} value={design.id}>
                             {design.name}
                           </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                          {projectDesignList.map((design) => (
+                            <MenuItem key={design.id} value={design.id}>
+                              {design.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
               */}
 
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">{descriptionLabel}</Typography>
-                    <Typography variant="p">{descriptionSubLabel}</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4} // You can adjust the number of rows as needed
-                        variant="outlined"
-                        value={description}
-                        error={descriptionError.hasError}
-                        helperText={descriptionError.label}
-                        onChange={onDescriptionChange}
-                      />
-                    </FormControl>
+                {/* DESCRIPTION */}
+                <Grid item xs={12} lg={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} lg={4}>
+                      <Typography variant="h5">{descriptionLabel}</Typography>
+                      <Typography variant="p">{descriptionSubLabel}</Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                      <FormControl fullWidth>
+                        <TextField
+                          multiline
+                          rows={4} // You can adjust the number of rows as needed
+                          variant="outlined"
+                          value={description}
+                          error={descriptionError.hasError}
+                          helperText={descriptionError.label}
+                          onChange={onDescriptionChange}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -913,11 +927,11 @@ export default function ProjectDetails() {
                   <Typography variant="p">{projectOwner.phone ?? "..."}</Typography>
                   <br />
                 </Box>
-              </Box>
-            </Card>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </DashboardCard>
     </PageContainer>
   );
 }

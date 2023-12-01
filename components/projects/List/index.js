@@ -31,7 +31,6 @@ import projectType, {
 import projectStatus from "/constants/enums/projectStatus";
 
 import PageContainer from "/components/container/PageContainer";
-import SiteModal from "./modal";
 
 const projects = [
   {
@@ -183,11 +182,6 @@ export default function Sites() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <SiteModal>
-              <span>{createProjectLabel}</span>
-            </SiteModal>
           </Box>
         </Box>
         <Table

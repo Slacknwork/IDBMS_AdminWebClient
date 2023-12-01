@@ -6,26 +6,15 @@ import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
-  FormControl,
-  InputAdornment,
-  InputLabel,
   LinearProgress,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
   tableCellClasses,
   TableHead,
-  TablePagination,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
-import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-
-import taskStatuses from "/constants/enums/projectTaskStatus";
 
 import PageContainer from "/components/container/PageContainer";
 import TaskModal from "./modal";
@@ -90,51 +79,7 @@ const startDateHeaderLabel = "Ngày bắt đầu";
 const endDateHeaderLabel = "Ngày kết thúc";
 
 export default function Sites() {
-  const router = useRouter();
   const params = useParams();
-  const searchParams = useSearchParams();
-
-  // SEARCH FORM
-  const [search, setSearch] = useState("");
-  const onSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
-
-  // TASK CATEGORY FIELD
-  const taskCategoryLabel = "Danh mục";
-  const taskCategories = [
-    { id: 1, name: "Category A" },
-    { id: 2, name: "Category B" },
-  ];
-  const [taskCategory, setTaskCategory] = useState(-1);
-  const onTaskCategoryChange = (e) => {
-    setTaskCategory(parseInt(e.target.value));
-  };
-
-  // TASK STATUS FIELD
-  const taskStatusLabel = "Trạng thái";
-  const [taskStatus, setTaskStatus] = useState(-1);
-  const onTaskStatusChange = (e) => {
-    setTaskStatus(parseInt(e.target.value));
-  };
-
-  // PAGINATION
-  const pageQuery = "page";
-  const labelRowsPerPage = "Số dự án hiển thị:";
-  const [count, setCount] = useState(6);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [page, setPage] = useState(
-    Math.max(searchParams.get(pageQuery) - 1, 0)
-  );
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-    router.push(`/sites/${params.id}/projects?page=${newPage + 1}`);
-  };
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-    router.push(`/sites/${params.id}/projects?page=1`);
-  };
 
   // PROJECT DETAILS
   const projectDetailsLabel = "Chi tiết";
@@ -142,73 +87,10 @@ export default function Sites() {
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
       <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-          <Box sx={{ display: "flex" }}>
-            {/* Search Text Field */}
-            <FormControl sx={{ minWidth: 300 }}>
-              <TextField
-                label="Tìm kiếm"
-                size="small"
-                variant="outlined"
-                value={search}
-                onChange={onSearchChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconSearch />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
-
-            {/* Task Category Select Box */}
-            <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-              <InputLabel id="task-category-label">
-                {taskCategoryLabel}
-              </InputLabel>
-              <Select
-                labelId="task-category-label"
-                id="task-category"
-                value={taskCategory}
-                label={taskCategoryLabel}
-                onChange={onTaskCategoryChange}
-              >
-                <MenuItem value={-1}>Tất cả</MenuItem>
-                {/* Example taskCategories array */}
-                {taskCategories?.map((category) => (
-                  <MenuItem value={category.id} key={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {/* Task Status Select Box */}
-            <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-              <InputLabel id="task-status-label">{taskStatusLabel}</InputLabel>
-              <Select
-                labelId="task-status-label"
-                id="task-status"
-                value={taskStatus}
-                label={taskStatusLabel}
-                onChange={onTaskStatusChange}
-              >
-                <MenuItem value={-1}>Tất cả</MenuItem>
-                {/* Example taskStatuses array */}
-                {taskStatuses?.map((status, index) => (
-                  <MenuItem value={index} key={status}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <TaskModal>
-              <span>{createTaskLabel}</span>
-            </TaskModal>
-          </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+          <TaskModal>
+            <span>{createTaskLabel}</span>
+          </TaskModal>
         </Box>
         <Table
           aria-label="simple table"
@@ -305,16 +187,6 @@ export default function Sites() {
             ))}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={count}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage={labelRowsPerPage}
-        />
       </Box>
     </PageContainer>
   );

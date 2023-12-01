@@ -9,14 +9,12 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  IconButton,
   MenuItem,
   Modal,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
@@ -33,8 +31,10 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
+  px: 3,
+  maxHeight: "35rem",
+  overflowY: "scroll",
   bgcolor: "background.paper",
-  overflowY: "auto",
   boxShadow: 24,
 };
 
@@ -124,13 +124,23 @@ export default function CreateModal({ children }) {
     label: "",
   });
 
-  const handleProjectCategoryError = (value) => {
-    setProjectCategoryError({ hasError: false, label: "" });
+  const validateInput = (field, value) => {
+    switch (field) {
+      case "name":
+        return value.trim() === "" ? "Name cannot be empty" : "";
+      // Add validation for other fields as needed
+      default:
+        return "";
+    }
   };
 
-  const onProjectCategoryChange = (e) => {
-    setProjectCategory(e.target.value);
-    handleProjectCategoryError(e.target.value);
+  const handleInputChange = (field, value) => {
+    const errorLabel = validateInput(field, value);
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
+    }));
   };
 
   // DESCRIPTION
@@ -261,41 +271,28 @@ export default function CreateModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style }} component="div">
-          <Box
+        <Box sx={{ ...style }}>
+          <Grid
             container
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
               pt: 2,
-              mx: 3,
-              height: "5rem",
               position: "sticky",
               top: 0,
               backgroundColor: "white",
-              borderBottom: 1,
               zIndex: 1,
             }}
           >
-            <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
-              Tạo dự án mới
-            </Typography>
-            <IconButton
-              aria-label="close"
-              sx={{
-                my: "auto",
-              }}
-              onClick={handleClose}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-          <Grid
-            sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
-            component={"div"}
-            container
-            spacing={3}
-          >
+            <Grid item xs={12} lg={12}>
+              <Typography
+                variant="h4"
+                id="child-modal-title"
+                sx={{ py: 2, borderBottom: 1 }}
+              >
+                Tạo dự án
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
@@ -308,11 +305,38 @@ export default function CreateModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <TextField
-                      error={nameError.hasError}
+                      error={formData.nameError.hasError}
                       variant="outlined"
-                      value={name}
-                      helperText={nameError.label}
-                      onChange={onNameChange}
+                      value={formData.name}
+                      helperText={formData.nameError.label}
+                      onChange={(e) =>
+                        handleInputChange("name", e.target.value)
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">Mô tả</Typography>
+                  <Typography variant="p">Mô tả dự án</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      multiline
+                      rows={4}
+                      variant="outlined"
+                      value={formData.description}
+                      error={formData.descriptionError.hasError}
+                      helperText={formData.descriptionError.label}
+                      onChange={(e) =>
+                        handleInputChange("description", e.target.value)
+                      }
                     />
                   </FormControl>
                 </Grid>
@@ -331,12 +355,14 @@ export default function CreateModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={projectType}
-                      onChange={onProjectTypeChange}
-                      error={projectTypeError.hasError}
+                      value={formData.projectType}
+                      onChange={(e) =>
+                        handleInputChange("projectType", e.target.value)
+                      }
+                      error={formData.projectTypeError.hasError}
                     >
                       <MenuItem disabled value={-1}>
-                        {projectTypeDefaultOptionLabel}
+                        Chọn loại dự án
                       </MenuItem>
                       {projectTypeOptions.map((type, index) => (
                         <MenuItem key={type} value={index}>
@@ -361,12 +387,14 @@ export default function CreateModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={projectStatus}
-                      onChange={onProjectStatusChange}
-                      error={projectStatusError.hasError}
+                      value={formData.projectStatus}
+                      onChange={(e) =>
+                        handleInputChange("projectStatus", e.target.value)
+                      }
+                      error={formData.projectStatusError.hasError}
                     >
                       <MenuItem disabled value={-1}>
-                        {projectStatusDefaultOptionLabel}
+                        Chọn trạng thái
                       </MenuItem>
                       {projectStatusOptions.map((status, index) => (
                         <MenuItem key={status} value={index}>
@@ -391,12 +419,14 @@ export default function CreateModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={language}
-                      onChange={onLanguageChange}
-                      error={languageError.hasError}
+                      value={formData.language}
+                      onChange={(e) =>
+                        handleInputChange("language", e.target.value)
+                      }
+                      error={formData.languageError.hasError}
                     >
                       <MenuItem disabled value={-1}>
-                        {languageDefaultOptionLabel}
+                        Chọn ngôn ngữ
                       </MenuItem>
                       {languageOptions.map((option, index) => (
                         <MenuItem key={option} value={index}>
@@ -421,14 +451,16 @@ export default function CreateModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={projectCategory}
-                      onChange={onProjectCategoryChange}
-                      error={projectCategoryError.hasError}
+                      value={formData.projectCategory}
+                      onChange={(e) =>
+                        handleInputChange("projectCategory", e.target.value)
+                      }
+                      error={formData.projectCategoryError.hasError}
                     >
                       <MenuItem disabled value={-1}>
-                        {projectCategoryDefaultOptionLabel}
+                        Chọn hạng mục
                       </MenuItem>
-                      {projectCategories.map((category, index) => (
+                      {projectCategories.map((category) => (
                         <MenuItem key={category.id} value={category.id}>
                           {category.name}
                         </MenuItem>
@@ -503,7 +535,7 @@ export default function CreateModal({ children }) {
                     {advertisementStatusLabel}<span style={{ color: "red" }}>*</span>
                   </Typography>
                   <Typography variant="p">
-                    {advertisementStatusSubLabel}
+                    Dùng dự án này để quảng cáo trên trang chủ
                   </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
@@ -525,7 +557,7 @@ export default function CreateModal({ children }) {
                   </FormControl>
                 </Grid>
               </Grid>
-
+            </Grid>
 
 
               {/* SUBMIT */}

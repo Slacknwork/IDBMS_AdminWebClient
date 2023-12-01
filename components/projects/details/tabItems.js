@@ -4,6 +4,11 @@ const items = [
     label: "Tổng quan",
   },
   {
+    path: "floors",
+    label: "Kiến trúc",
+    subPaths: ["rooms"],
+  },
+  {
     path: "tasks",
     label: "Công việc",
   },
