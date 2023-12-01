@@ -92,7 +92,6 @@ const updateSite = async (id, request) => {
         );
 
         if (!response.ok) {
-            console.log(response)
             throw new Error('Update failed');
         }
 
@@ -103,4 +102,24 @@ const updateSite = async (id, request) => {
     }
 };
 
-export { getSitesByProjectId, getSitesByUserId, createSite, getSiteById, getSites, updateSite };
+const deleteSiteById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Sites/${id}`,
+            {
+                method: 'DELETE',
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Delete failed');
+        }
+
+        return true; // You can return true or handle the response as needed
+    } catch (error) {
+        console.error('Error fetching delete site:', error);
+        throw error;
+    }
+};
+
+export { getSitesByProjectId, getSitesByUserId, createSite, getSiteById, getSites, updateSite, deleteSiteById };
