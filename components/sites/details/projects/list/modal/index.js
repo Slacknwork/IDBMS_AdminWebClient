@@ -5,9 +5,7 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
   MenuItem,
   Modal,
@@ -20,13 +18,10 @@ import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
-import {
-  createProject,
-  getProjectsBySiteId,
-} from "../../../../../../api/projectServices";
+import { createProject, getProjectsBySiteId } from "/api/projectServices";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import { getProjectCategories } from "../../../../../../api/projectCategoryServices";
+import { getProjectCategories } from "/api/projectCategoryServices";
 
 const style = {
   position: "absolute",
@@ -43,7 +38,7 @@ const style = {
 
 const modalTitle = "Tạo dự án mới";
 
-export default function CreateModal({ children }) {
+export default function CreateModal({ children, onSubmit }) {
   const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
@@ -116,7 +111,7 @@ export default function CreateModal({ children }) {
           console.log(listCategories);
           setProjectCategories(listCategories);
 
-          const projects = await getProjectsBySiteId(siteId);
+          const projects = await getProjectsBySiteId(params.id);
           console.log(projects);
           setDecorProjects(projects.filter((project) => project.type === 0));
 
@@ -156,7 +151,8 @@ export default function CreateModal({ children }) {
       console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");
-        // handleClose();
+        onSubmit();
+        handleClose();
       } else {
         throw new Error("Create failed!");
       }

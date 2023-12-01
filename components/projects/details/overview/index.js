@@ -113,7 +113,6 @@ export default function ProjectDetails() {
       const fetchDataFromApi = async () => {
         try {
           const project = await getProjectById(projectId);
-          console.log(project);
           mapData(project);
 
           const listCategories = await getProjectCategories();
@@ -123,8 +122,7 @@ export default function ProjectDetails() {
           const listProjectsBySiteId = await getProjectsBySiteId(
             project?.siteId
           );
-          console.log(listProjectsBySiteId);
-
+          console.log(project);
           setDecorProjects(
             listProjectsBySiteId.filter((project) => project.type === 0)
           );
@@ -163,8 +161,8 @@ export default function ProjectDetails() {
       totalWarrantyPaid: data.totalWarrantyPaid ?? prevData.totalWarrantyPaid,
       language: data.language ?? prevData.language,
       siteId: data.siteId ?? prevData.siteId,
-      adminId: data.CreatedByAdminId ?? prevData.adminId,
-      adminUsername: data.CreatedAdminUsername ?? prevData.adminUsername,
+      adminId: data.createdByAdminId ?? prevData.adminId,
+      adminUsername: data.createdAdminUsername ?? prevData.adminUsername,
       nameError: { ...prevData.nameError },
       projectTypeError: { ...prevData.projectTypeError },
       descriptionError: { ...prevData.descriptionError },
@@ -203,8 +201,8 @@ export default function ProjectDetails() {
                   description: formData.description,
                   type: formData.projectType,
                   projectCategoryId: formData.projectCategory,
-                  createdAdminUsername: adminUsername,
-                  createdByAdminId: adminId,
+                  createdAdminUsername: formData.adminUsername,
+                  createdByAdminId: formData.adminId,
                   estimatedPrice: formData.estimatedPrice,
                   finalPrice: formData.finalPrice,
                   totalWarrantyPaid: formData.totalWarrantyPaid,
@@ -214,7 +212,7 @@ export default function ProjectDetails() {
                   status: formData.projectStatus,
                   advertisementStatus: formData.advertisementStatus,
                   basedOnDecorProjectId: formData.basedOnDecorProject?.id ?? "",
-                  siteId: siteId,
+                  siteId: formData.siteId,
                 }}
               >
                 Lưu
@@ -524,8 +522,8 @@ export default function ProjectDetails() {
                           <MenuItem disabled value="">
                             Select language
                           </MenuItem>
-                          {projectLanguageOptions.map((lang) => (
-                            <MenuItem key={lang} value={lang}>
+                          {projectLanguageOptions.map((lang, index) => (
+                            <MenuItem key={lang} value={index}>
                               {lang}
                             </MenuItem>
                           ))}
@@ -565,11 +563,13 @@ export default function ProjectDetails() {
                           <MenuItem disabled value="">
                             Select advertisement status
                           </MenuItem>
-                          {projectAdvertisementStatusOptions.map((status) => (
-                            <MenuItem key={status} value={status}>
-                              {status}
-                            </MenuItem>
-                          ))}
+                          {projectAdvertisementStatusOptions.map(
+                            (status, index) => (
+                              <MenuItem key={status} value={index}>
+                                {status}
+                              </MenuItem>
+                            )
+                          )}
                         </Select>
                         {formData.advertisementStatusError.hasError && (
                           <FormHelperText>
