@@ -175,7 +175,7 @@ export default function Sites() {
   // CONTACT
   const contactLabel = "Thông tin liên hệ";
 
-  const [siteId, setSiteId] = useState("C83D510A-448C-4479-B35D-618BB17FA1BB");
+  const [siteId, setSiteId] = useState(params.id);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
 
