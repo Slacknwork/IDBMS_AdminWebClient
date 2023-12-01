@@ -20,7 +20,10 @@ import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
-import { createProject, getProjectsBySiteId } from "../../../../../../api/projectServices";
+import {
+  createProject,
+  getProjectsBySiteId,
+} from "../../../../../../api/projectServices";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { getProjectCategories } from "../../../../../../api/projectCategoryServices";
@@ -51,83 +54,38 @@ export default function CreateModal({ children }) {
     setOpen(false);
   };
 
-  // NAME
-  const nameLabel = "Tên";
-  const nameSubLabel = "Họ và tên của bạn";
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleNameError = (value) => {
-    setNameError({ hasError: false, label: "" });
-  };
-  const onNameChange = (e) => {
-    setName(e.target.value);
-    handleNameError(e.target.value);
-  };
-
-  // PROJECT TYPE
-  const projectTypeLabel = "Loại dự án";
-  const projectTypeDefaultOptionLabel = "Chọn loại dự án";
-  const [projectType, setProjectType] = useState(-1);
-  const [projectTypeError, setProjectTypeError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleProjectTypeError = (value) => {
-    setProjectTypeError({ hasError: false, label: "" });
-  };
-  const onProjectTypeChange = (e) => {
-    setProjectType(e.target.value);
-    handleProjectTypeError(e.target.value);
-  };
-
-  // PROJECT STATUS
-  const projectStatusLabel = "Trạng thái dự án";
-  const projectStatusDefaultOptionLabel = "Chọn trạng thái";
-  const [projectStatus, setProjectStatus] = useState(0);
-  const [projectStatusError, setProjectStatusError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleProjectStatusError = (value) => {
-    setProjectStatusError({ hasError: false, label: "" });
-  };
-  const onProjectStatusChange = (e) => {
-    setProjectStatus(e.target.value);
-    handleProjectStatusError(e.target.value);
-  };
-
-  // LANGUAGE
-  const languageLabel = "Ngôn ngữ";
-  const languageDefaultOptionLabel = "Chọn ngôn ngữ";
-  const [language, setLanguage] = useState(-1);
-  const [languageError, setLanguageError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleLanguageError = (value) => {
-    setLanguageError({ hasError: false, label: "" });
-  };
-  const onLanguageChange = (e) => {
-    setLanguage(e.target.value);
-    handleLanguageError(e.target.value);
-  };
-
-  // PROJECT CATEGORY
-  const projectCategoryLabel = "Danh mục";
-  const projectCategoryDefaultOptionLabel = "Chọn danh mục";
-  const [projectCategory, setProjectCategory] = useState(-1); // Use -1 for the default disabled option
-  const [projectCategoryError, setProjectCategoryError] = useState({
-    hasError: false,
-    label: "",
+  const [formData, setFormData] = useState({
+    name: "",
+    nameError: { hasError: false, label: "" },
+    projectType: -1,
+    projectTypeError: { hasError: false, label: "" },
+    projectStatus: -1,
+    projectStatusError: { hasError: false, label: "" },
+    language: -1,
+    languageError: { hasError: false, label: "" },
+    projectCategory: -1,
+    projectCategoryError: { hasError: false, label: "" },
+    description: "",
+    descriptionError: { hasError: false, label: "" },
+    advertisementStatus: -1,
+    basedOnDecorProject: [],
+    basedOnDecorProjectError: { hasError: false, label: "" },
+    estimatedPrice: 0,
+    estimatedPriceError: { hasError: false, label: "" },
+    finalPrice: 0,
+    finalPriceError: { hasError: false, label: "" },
+    totalWarrantyPaid: 0,
+    totalWarrantyPaidError: { hasError: false, label: "" },
+    area: 0,
+    areaError: { hasError: false, label: "" },
+    estimateBusinessDay: 0,
+    estimateBusinessDayError: { hasError: false, label: "" },
   });
 
   const validateInput = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Name cannot be empty" : "";
+        return value.trim() === "" ? "Tên không thể để trống" : "";
       // Add validation for other fields as needed
       default:
         return "";
@@ -143,58 +101,7 @@ export default function CreateModal({ children }) {
     }));
   };
 
-  // DESCRIPTION
-  const descriptionLabel = "Mô tả";
-  const descriptionSubLabel = "Mô tả chi tiết";
-  const [description, setDescription] = useState("");
-  const [descriptionError, setDescriptionError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleDescriptionError = (value) => {
-    setDescriptionError({ hasError: false, label: "" });
-  };
-  const onDescriptionChange = (e) => {
-    setDescription(e.target.value);
-    handleDescriptionError(e.target.value);
-  };
-
-  // ADVERTISEMENT STATUS
-  const advertisementStatusLabel = "Quảng cáo dự án";
-  const advertisementStatusSubLabel =
-    "Quảng cáo trên trang chủ";
-  const advertisementStatusOptionLabel = "Trạng thái quảng cáo";
-  const [advertisementStatus, setAdvertisementStatus] = useState(0);
-
-  const handleAdvertisementStatusChange = (e) => {
-    setAdvertisementStatus(e.target.checked);
-  };
-
-  // BASED ON DECOR PROJECT
-  const basedOnDecorProjectLabel = "Dự án thiết kế";
-  const basedOnDecorProjectSubLabel = "Dự án thiết kế nội thất dựa vào làm mẫu"
-  const [basedOnDecorProject, setBasedOnDecorProject] = useState([]);
-  const [basedOnDecorProjectError, setBasedOnDecorProjectError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleBasedOnDecorProjectError = (value) => {
-    if (!value) {
-      setBasedOnDecorProjectError({
-        hasError: true,
-        label: "Chọn một dự án thiết kế nội thất.",
-      });
-    } else {
-      setBasedOnDecorProjectError({ hasError: false, label: "" });
-    }
-  };
-  const onBasedOnDecorProjectChange = (event, value) => {
-    setBasedOnDecorProject(value);
-    handleBasedOnDecorProjectError(value);
-  };
-
   const [decorProjects, setDecorProjects] = useState([]);
-  const [siteId, setSiteId] = useState(params.id);
   const initialized = useRef(false);
 
   const [loading, setLoading] = useState(true);
@@ -210,8 +117,8 @@ export default function CreateModal({ children }) {
           setProjectCategories(listCategories);
 
           const projects = await getProjectsBySiteId(siteId);
-          console.log(projects)
-          setDecorProjects(projects.filter(project => project.type === 0))
+          console.log(projects);
+          setDecorProjects(projects.filter((project) => project.type === 0));
 
           setLoading(false);
         } catch (error) {
@@ -225,10 +132,10 @@ export default function CreateModal({ children }) {
 
   const handleCreate = async () => {
     const createRequest = {
-      name: name,
-      description: description,
-      type: projectType,
-      projectCategoryId: projectCategory,
+      name: formData.name,
+      description: formData.description,
+      type: formData.projectType,
+      projectCategoryId: formData.projectCategory,
       createdAdminUsername: "admin.username",
       createdByAdminId: "7C2B4371-E768-4D01-9E15-648091A7D9B7",
       estimatedPrice: null,
@@ -236,11 +143,11 @@ export default function CreateModal({ children }) {
       totalWarrantyPaid: null,
       area: 0,
       estimateBusinessDay: null,
-      language: language,
-      status: projectStatus,
-      advertisementStatus: advertisementStatus,
-      basedOnDecorProjectId: basedOnDecorProject?.id ?? null,
-      siteId: siteId
+      language: formData.language,
+      status: formData.projectStatus,
+      advertisementStatus: formData.advertisementStatus,
+      basedOnDecorProjectId: formData.basedOnDecorProject?.id ?? null,
+      siteId: params.id,
     };
     console.log(createRequest);
 
@@ -258,7 +165,6 @@ export default function CreateModal({ children }) {
       toast.error("Lỗi!");
     }
   };
-
 
   return (
     <Box>
@@ -297,10 +203,11 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{nameLabel}
+                  <Typography variant="h5">
+                    Tên
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
-                  <Typography variant="p">{nameSubLabel}</Typography>
+                  <Typography variant="p">Tên dự án</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -347,7 +254,8 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectTypeLabel}
+                  <Typography variant="h5">
+                    Loại dự án
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
                 </Grid>
@@ -379,7 +287,8 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectStatusLabel}
+                  <Typography variant="h5">
+                    Trạng thái
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
                 </Grid>
@@ -411,7 +320,8 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{languageLabel}
+                  <Typography variant="h5">
+                    Ngôn ngữ
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
                 </Grid>
@@ -443,7 +353,8 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{projectCategoryLabel}
+                  <Typography variant="h5">
+                    Danh mục
                     <span style={{ color: "red" }}>*</span>
                   </Typography>
                 </Grid>
@@ -475,19 +386,21 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{descriptionLabel}</Typography>
-                  <Typography variant="p">{descriptionSubLabel}</Typography>
+                  <Typography variant="h5">Mô tả</Typography>
+                  <Typography variant="p">Mô tả sơ lược về dự án</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <TextField
                       multiline
-                      rows={4} // You can adjust the number of rows as needed
+                      rows={4}
                       variant="outlined"
-                      value={description}
-                      error={descriptionError.hasError}
-                      helperText={descriptionError.label}
-                      onChange={onDescriptionChange}
+                      value={formData.description}
+                      error={formData.descriptionError.hasError}
+                      helperText={formData.descriptionError.label}
+                      onChange={(e) =>
+                        handleInputChange("description", e.target.value)
+                      }
                     />
                   </FormControl>
                 </Grid>
@@ -498,11 +411,9 @@ export default function CreateModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">
-                    {basedOnDecorProjectLabel}
-                  </Typography>
+                  <Typography variant="h5">Dựa trên dự án thiết kế</Typography>
                   <Typography variant="p">
-                    {basedOnDecorProjectSubLabel}
+                    Chọn dự án thiết kế mà dự án này được dựa trên
                   </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
@@ -510,15 +421,17 @@ export default function CreateModal({ children }) {
                     <Autocomplete
                       options={decorProjects}
                       getOptionLabel={(option) => option?.name ?? ""}
-                      value={basedOnDecorProject}
-                      onChange={onBasedOnDecorProjectChange}
+                      value={formData.basedOnDecorProject}
+                      onChange={(event, value) =>
+                        handleInputChange("basedOnDecorProject", value)
+                      }
                       noOptionsText="Không tìm thấy"
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          error={basedOnDecorProjectError.hasError}
+                          error={formData.basedOnDecorProjectError.hasError}
                           variant="outlined"
-                          helperText={basedOnDecorProjectError.label}
+                          helperText={formData.basedOnDecorProjectError.label}
                         />
                       )}
                     />
@@ -532,7 +445,8 @@ export default function CreateModal({ children }) {
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
                   <Typography variant="h5">
-                    {advertisementStatusLabel}<span style={{ color: "red" }}>*</span>
+                    Quảng cáo
+                    <span style={{ color: "red" }}>*</span>
                   </Typography>
                   <Typography variant="p">
                     Dùng dự án này để quảng cáo trên trang chủ
@@ -542,11 +456,13 @@ export default function CreateModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={advertisementStatus}
-                      onChange={handleAdvertisementStatusChange}
+                      value={formData.advertisementStatus}
+                      onChange={(e) =>
+                        handleInputChange("advertisementStatus", e.target.value)
+                      }
                     >
                       <MenuItem disabled value={-1}>
-                        {advertisementStatusOptionLabel}
+                        Chọn một...
                       </MenuItem>
                       {advertisementStatusOptions.map((option, index) => (
                         <MenuItem key={option} value={index}>
@@ -559,22 +475,20 @@ export default function CreateModal({ children }) {
               </Grid>
             </Grid>
 
-
-              {/* SUBMIT */}
-              <Grid item xs={12} lg={12}>
-                <Box
-                  sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
-                  spacing={2}
+            {/* SUBMIT */}
+            <Grid item xs={12} lg={12}>
+              <Box
+                sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
+                spacing={2}
+              >
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={handleCreate}
                 >
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={handleCreate}
-                  >
-                    Tạo
-                  </Button>
-                </Box>
-              </Grid>
+                  Tạo
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </Box>
