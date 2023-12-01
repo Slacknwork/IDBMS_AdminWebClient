@@ -21,18 +21,14 @@ import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 
-import PageContainer from "/components/container/PageContainer";
-
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  px: 3,
-  maxHeight: "35rem",
-  overflowY: "scroll",
   bgcolor: "background.paper",
+  overflowY: "auto",
   boxShadow: 24,
 };
 
@@ -171,13 +167,15 @@ export default function SiteModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style }}>
+        <Box sx={{ ...style }} component="div">
           <Box
             container
             sx={{
               display: "flex",
               justifyContent: "space-between",
               pt: 2,
+              mx: 3,
+              height: "5rem",
               position: "sticky",
               top: 0,
               backgroundColor: "white",
@@ -198,7 +196,12 @@ export default function SiteModal({ children }) {
               <CloseIcon />
             </IconButton>
           </Box>
-          <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
+          <Grid
+            sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
+            component={"div"}
+            container
+            spacing={3}
+          >
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
@@ -378,22 +381,22 @@ export default function SiteModal({ children }) {
                   />
                 </Grid>
               </Grid>
-            </Grid>
 
-            {/* SUBMIT */}
-            <Grid item xs={12} lg={12}>
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-                spacing={2}
-              >
-                <Button
-                  variant="contained"
-                  disableElevation
-                  onClick={handleClose}
+              {/* SUBMIT */}
+              <Grid item xs={12} lg={12}>
+                <Box
+                  sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
+                  spacing={2}
                 >
-                  Tạo
-                </Button>
-              </Box>
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    onClick={handleClose}
+                  >
+                    Tạo
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
