@@ -1,89 +1,92 @@
-const getAdminsById = async (userId) => {
+
+const apiUrl = "https://localhost:7062/api";
+
+const getAllAdmins = async () => {
     try {
-        const res = await fetch(
-            `https://localhost:7062/api/Admins/${userId}`,
-            { cache: 'no-store' }
-        );
-        const resObj = await res.json();
-        return resObj;
+        const response = await fetch(`${apiUrl}/admins`);
+        const admins = await response.json();
+        return admins;
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching admins:", error);
         throw error;
     }
 };
 
-const getAdmins = async () => {
+const getAdminById = async (adminId) => {
     try {
-        const res = await fetch(
-            `https://localhost:7062/api/Admins`,
-            { cache: 'no-store' }
-        );
-        const resObj = await res.json();
-        return resObj;
+        const response = await fetch(`${apiUrl}/admins/${adminId}`);
+        const admin = await response.json();
+        return admin;
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching admin by ID:", error);
         throw error;
     }
 };
 
-const createAdmin = async (createData) => {
+const updateAdmin = async (adminId, updatedAdmin) => {
     try {
-        const promise = await axios.post('https://localhost:7062/api/Admins', createData);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
+        const response = await fetch(`${apiUrl}/admins/${adminId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
             },
-            { toastId: 'createAdminToast' }
-        );
+            body: JSON.stringify(updatedAdmin),
+        });
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error("Update failed");
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error("Error updating admin:", error);
         throw error;
     }
 };
 
-const updateAdmin = async (id, updateData) => {
+const deleteAdmin = async (adminId) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/Admins/${id}`, updateData);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateAdminToast' }
-        );
-        const response = await promise;
-        return response.data;
+        const response = await fetch(`${apiUrl}/admins/${adminId}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Delete failed");
+        }
+
+        return true; // You can return true or handle the response as needed
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting admin:", error);
         throw error;
     }
 };
 
-const deleteAdmin = async (id) => {
+const createAdmin = async (newAdmin) => {
     try {
-        const promise = await axios.delete(`https://localhost:7062/api/Admins/${id}`);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang xoá...',
-                success: 'Xoá thành công!',
-                error: 'Xoá không thành công! Vui lòng thử lại!',
+        const response = await fetch(`${apiUrl}/admins`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-            { toastId: 'deleteAdminToast' }
-        );
-        const response = await promise;
-        return response.data;
+            body: JSON.stringify(newAdmin),
+        });
+
+        if (!response.ok) {
+            throw new Error("Create admin failed");
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error("Error creating admin:", error);
         throw error;
     }
 };
-export {getAdminsById, getAdmins, createAdmin, updateAdmin, deleteAdmin};
+
+export {
+    getAllAdmins,
+    getAdminById,
+    updateAdmin,
+    deleteAdmin,
+    createAdmin,
+};
+

@@ -14,9 +14,14 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
-import { getUser } from "../../api/userServices";
+import { getAllUsers } from "../../api/userServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import PageContainer from "/components/container/PageContainer";
+import CreateModal from "./createModal";
+import UpdateModal from "./updateModal";
+import UpdateStatusModal from "./updateStatusModal";
+import userStatus from "/constants/enums/userStatus";
 
 const products = [
   {
@@ -60,7 +65,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getUser();
+          const data = await getAllUsers();
           console.log(data);
           setUsers(data);
           setLoading(false);
@@ -75,114 +80,155 @@ export default function ProjectList() {
 
 
   return (
-    <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Table
-        aria-label="simple table"
-        sx={{
-          whiteSpace: "nowrap",
-          mt: 2,
+    <PageContainer title={"PageContainer"} description={"PageContainer"}>
+      <CreateModal
+        request={{
+          name: "John Doe",
+          bio: "A software engineer",
+          companyName: "ABC Corporation",
+          address: "123 Main St, Cityville",
+          email: "john.doe@example.com",
+          password: "securepassword",
+          phone: "1234567890",
+          dateOfBirth: "2023-12-01T14:22:42.565Z",
+          language: 0,
+          externalId: "",
         }}
       >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Email
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Điện thoại
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Số dư
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((user) => (
-            <StyledTableRow key={user.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {user.name}
+        Lưu
+      </CreateModal>
+      <UpdateModal
+        id={"7A2B1D40-1169-41BB-8062-06AD22F91744"}
+        request={{
+          name: "nam kun",
+          bio: "A software engineer",
+          companyName: "ABC Corporation",
+          address: "123 Main St, Cityville",
+          email: "john.doe@example.com",
+          password: "securepassword",
+          phone: "1234567890",
+          dateOfBirth: "2023-12-01T14:22:42.565Z",
+          language: 0,
+          externalId: "",
+        }}
+      >
+        Cập nhật
+      </UpdateModal>
+      <UpdateStatusModal
+        id={"7A2B1D40-1169-41BB-8062-06AD22F91744"}
+        status={1}
+      >
+        Cập nhật status
+      </UpdateStatusModal>
+      <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+        <Table
+          aria-label="simple table"
+          sx={{
+            whiteSpace: "nowrap",
+            mt: 2,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {user.email}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Email
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {user.phone}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Điện thoại
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {user.balance}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Số dư
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((user) => (
+              <StyledTableRow key={user.id}>
+                <TableCell>
+                  <Typography
+                    sx={{
+                      fontSize: "15px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {user.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {user.email}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {user.phone}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {user.balance}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          fontSize: "13px",
+                        }}
+                      >
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </TableCell>
+                </TableCell>
 
-              <TableCell>
-                <Chip
-                  sx={{
-                    px: "4px",
-                    backgroundColor:  "primary.main",
-                    color: "#fff",
-                  }}
-                  size="small"
-                  label={user.status}
-                ></Chip>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/users/${user.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Box>
+                <TableCell>
+                  <Chip
+                    sx={{
+                      px: "4px",
+                      backgroundColor: "primary.main",
+                      color: "#fff",
+                    }}
+                    size="small"
+                    label={userStatus[user.status]}
+                  ></Chip>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/users/${user.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </PageContainer>
   );
 }

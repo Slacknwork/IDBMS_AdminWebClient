@@ -1,6 +1,6 @@
 export default {
-    0: "Active",
-    1: "Unverified",
-    2: "Suspended",
-    3: "Locked",
+    0: "Đang hoạt động",
+    1: "Chưa xác nhận",
+    2: "Bị kiểm soát",
+    3: "Khóa",
 };
