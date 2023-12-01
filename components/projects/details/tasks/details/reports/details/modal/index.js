@@ -7,15 +7,11 @@ import {
   FormControl,
   Grid,
   IconButton,
-  MenuItem,
   Modal,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
-import calculationUnitOptions from "/constants/enums/calculationUnit";
 
 const style = {
   position: "absolute",
@@ -51,10 +47,6 @@ export default function SiteModal({ children }) {
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    calculationUnit: "",
-    calculationUnitError: { hasError: false, label: "" },
-    unitUsed: 0,
-    unitUsedError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
   });
@@ -72,7 +64,12 @@ export default function SiteModal({ children }) {
 
   return (
     <Box>
-      <Button variant="contained" disableElevation onClick={handleOpen}>
+      <Button
+        size="small"
+        variant="contained"
+        disableElevation
+        onClick={handleOpen}
+      >
         {children}
       </Button>
       <Modal
@@ -131,62 +128,6 @@ export default function SiteModal({ children }) {
                       helperText={formData.nameError.label}
                       onChange={(e) =>
                         handleInputChange("name", e.target.value)
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* CALCULATION UNIT */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Đơn vị</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <Select
-                      variant="outlined"
-                      value={formData.calculationUnit}
-                      onChange={(e) =>
-                        handleInputChange("calculationUnit", e.target.value)
-                      }
-                      error={formData.calculationUnitError.hasError}
-                    >
-                      <MenuItem disabled value={-1}>
-                        Chọn đơn vị
-                      </MenuItem>
-                      {calculationUnitOptions.map((unit, index) => (
-                        <MenuItem key={unit} value={index}>
-                          {unit}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* UNIT USED */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Đã thực hiện</Typography>
-                  <Typography variant="p">
-                    Khối lượng đã thực hiện (theo số đơn vị)
-                  </Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <TextField
-                      error={formData.unitUsedError.hasError}
-                      variant="outlined"
-                      type="number"
-                      value={formData.unitUsed}
-                      helperText={formData.unitUsedError.label}
-                      onChange={(e) =>
-                        handleInputChange("unitUsed", e.target.value)
                       }
                     />
                   </FormControl>
