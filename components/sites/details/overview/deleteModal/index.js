@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { deleteSiteById } from "../../../../../api/siteServices";
+import { useRouter } from "next/navigation";
 
 const style = {
     position: "absolute",
@@ -32,6 +33,7 @@ const modalTitle = "Xóa";
 const modalMessage = "Xóa thông tin công trình?";
 
 export default function SiteModal({ children, siteId }) {
+    const router = useRouter();
     // MODAL TOGGLE
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
@@ -47,6 +49,7 @@ export default function SiteModal({ children, siteId }) {
             const response = await deleteSiteById(siteId);
             console.log(response);
             toast.success("Xóa thành công!");
+            router.push(`/sites`);
             // handleClose();
         } catch (error) {
             console.error("Error :", error);

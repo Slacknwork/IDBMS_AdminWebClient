@@ -19,7 +19,7 @@ import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
 import { createProject, getProjectsBySiteId } from "/api/projectServices";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { getProjectCategories } from "/api/projectCategoryServices";
 
@@ -40,6 +40,7 @@ const modalTitle = "Tạo dự án mới";
 
 export default function CreateModal({ children, onSubmit }) {
   const params = useParams();
+  const router = useRouter();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -54,7 +55,7 @@ export default function CreateModal({ children, onSubmit }) {
     nameError: { hasError: false, label: "" },
     projectType: -1,
     projectTypeError: { hasError: false, label: "" },
-    projectStatus: -1,
+    projectStatus: 0,
     projectStatusError: { hasError: false, label: "" },
     language: -1,
     languageError: { hasError: false, label: "" },
@@ -62,7 +63,7 @@ export default function CreateModal({ children, onSubmit }) {
     projectCategoryError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
-    advertisementStatus: -1,
+    advertisementStatus: 0,
     basedOnDecorProject: [],
     basedOnDecorProjectError: { hasError: false, label: "" },
     estimatedPrice: 0,
@@ -80,7 +81,7 @@ export default function CreateModal({ children, onSubmit }) {
   const validateInput = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Tên không thể để trống" : "";
+        return value.trim() === "" ? "Không thể để trống" : "";
       // Add validation for other fields as needed
       default:
         return "";
@@ -152,7 +153,7 @@ export default function CreateModal({ children, onSubmit }) {
       if (response.data != null) {
         toast.success("Thêm thành công!");
         onSubmit();
-        handleClose();
+        router.push(`/projects/${response.data.id}`);
       } else {
         throw new Error("Create failed!");
       }
@@ -404,37 +405,39 @@ export default function CreateModal({ children, onSubmit }) {
             </Grid>
 
             {/* BASED ON DECOR PROJECT */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Dựa trên dự án thiết kế</Typography>
-                  <Typography variant="p">
-                    Chọn dự án thiết kế mà dự án này được dựa trên
-                  </Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      options={decorProjects}
-                      getOptionLabel={(option) => option?.name ?? ""}
-                      value={formData.basedOnDecorProject}
-                      onChange={(event, value) =>
-                        handleInputChange("basedOnDecorProject", value)
-                      }
-                      noOptionsText="Không tìm thấy"
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={formData.basedOnDecorProjectError.hasError}
-                          variant="outlined"
-                          helperText={formData.basedOnDecorProjectError.label}
-                        />
-                      )}
-                    />
-                  </FormControl>
+            {formData.projectType && formData.projectType === 1 ? (
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Dựa trên dự án thiết kế</Typography>
+                    <Typography variant="p">
+                      Chọn dự án thiết kế mà dự án này được dựa trên
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        options={decorProjects}
+                        getOptionLabel={(option) => option?.name ?? ""}
+                        value={formData.basedOnDecorProject}
+                        onChange={(event, value) =>
+                          handleInputChange("basedOnDecorProject", value)
+                        }
+                        noOptionsText="Không tìm thấy"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            error={formData.basedOnDecorProjectError.hasError}
+                            variant="outlined"
+                            helperText={formData.basedOnDecorProjectError.label}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            ) : null}
 
             {/* ADVERTISEMENT STATUS */}
             <Grid item xs={12} lg={12}>

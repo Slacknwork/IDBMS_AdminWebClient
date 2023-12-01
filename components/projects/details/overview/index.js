@@ -71,7 +71,7 @@ export default function ProjectDetails() {
   const validateInput = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Tên không thể để trống" : "";
+        return value.trim() === "" ? "Không thể để trống" : "";
       // Add validation for other fields as needed
       default:
         return "";
@@ -124,12 +124,12 @@ export default function ProjectDetails() {
           );
           console.log(project);
           setDecorProjects(
-            listProjectsBySiteId.filter((project) => project.type === 0)
+            listProjectsBySiteId.filter((project) => project.type === 0 && project.id !== projectId)
           );
           const participation = project?.projectParticipations.find(
             (par) => par.role === 0
           );
-          setProjectOwner(participation.user ?? "");
+          setProjectOwner(participation?.user ?? "");
 
           setLoading(false);
         } catch (error) {
@@ -193,7 +193,7 @@ export default function ProjectDetails() {
               sx={{ borderBottom: 1, borderColor: "grey.500", py: 3, mt: 1 }}
             >
               <Typography variant="h2" sx={{ my: "auto" }}>
-                Tên
+                {formData.name ?? "Tên dự án không tìm thấy"}
               </Typography>
               <SaveModal
                 request={{
@@ -226,7 +226,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Project Type <span style={{ color: "red" }}>*</span>
+                        Phân loại dự án <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -241,7 +241,7 @@ export default function ProjectDetails() {
                           variant="outlined"
                         >
                           <MenuItem disabled value="">
-                            Select project type
+                            Chọn kiểu dự án
                           </MenuItem>
                           {projectTypeOptions.map((type, index) => (
                             <MenuItem key={type} value={index}>
@@ -264,7 +264,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Project Status <span style={{ color: "red" }}>*</span>
+                        Trạng thái <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -279,7 +279,7 @@ export default function ProjectDetails() {
                           variant="outlined"
                         >
                           <MenuItem disabled value="">
-                            Select project status
+                            Chọn trạng thái
                           </MenuItem>
                           {projectStatusOptions.map((status, index) => (
                             <MenuItem key={status} value={index}>
@@ -302,7 +302,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Project Category <span style={{ color: "red" }}>*</span>
+                        Phân loại mục đích <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -317,7 +317,7 @@ export default function ProjectDetails() {
                           variant="outlined"
                         >
                           <MenuItem disabled value="">
-                            Select project category
+                            Chọn phân loại
                           </MenuItem>
                           {projectCategories.map((category) => (
                             <MenuItem key={category.id} value={category.id}>
@@ -340,7 +340,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Estimated Price <span style={{ color: "red" }}>*</span>
+                        Giá ước tính <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -372,7 +372,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Final Price <span style={{ color: "red" }}>*</span>
+                        Giá thực tế <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -404,7 +404,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Total Warranty Paid{" "}
+                        Tổng tiền bảo hiểm khách đã trả{" "}
                         <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
@@ -440,7 +440,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Area <span style={{ color: "red" }}>*</span>
+                        Tổng diện tích <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -470,7 +470,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Estimate Business Day{" "}
+                        Ước tính số ngày làm việc để hoàn thành{" "}
                         <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
@@ -491,7 +491,7 @@ export default function ProjectDetails() {
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
-                                days
+                                ngày
                               </InputAdornment>
                             ),
                           }}
@@ -506,7 +506,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Language <span style={{ color: "red" }}>*</span>
+                        Ngôn ngữ sử dụng <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -520,7 +520,7 @@ export default function ProjectDetails() {
                           error={formData.languageError.hasError}
                         >
                           <MenuItem disabled value="">
-                            Select language
+                            Chọn ngôn ngữ
                           </MenuItem>
                           {projectLanguageOptions.map((lang, index) => (
                             <MenuItem key={lang} value={index}>
@@ -543,7 +543,7 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Advertisement Status{" "}
+                        Trạng thái quảng cáo{" "}
                         <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
@@ -561,7 +561,7 @@ export default function ProjectDetails() {
                           error={formData.advertisementStatusError.hasError}
                         >
                           <MenuItem disabled value="">
-                            Select advertisement status
+                            Chọn trạng thái
                           </MenuItem>
                           {projectAdvertisementStatusOptions.map(
                             (status, index) => (
@@ -582,44 +582,46 @@ export default function ProjectDetails() {
                 </Grid>
 
                 {/* BASED ON DECOR PROJECT (Autocomplete) */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        Based on Decor Project
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <Autocomplete
-                          options={decorProjects}
-                          getOptionLabel={(option) => option?.name ?? ""}
-                          value={formData.basedOnDecorProject}
-                          onChange={(e, newValue) =>
-                            handleInputChange("basedOnDecorProject", newValue)
-                          }
-                          noOptionsText="Not found"
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              error={formData.basedOnDecorProjectError.hasError}
-                              variant="outlined"
-                              helperText={
-                                formData.basedOnDecorProjectError.label
-                              }
-                            />
-                          )}
-                        />
-                      </FormControl>
+                {formData.type && formData.type === 1 ? (
+                  <Grid item xs={12} lg={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={4} lg={4}>
+                        <Typography variant="h5">
+                          Dựa trên thiết kế
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={8} lg={8}>
+                        <FormControl fullWidth>
+                          <Autocomplete
+                            options={decorProjects}
+                            getOptionLabel={(option) => option?.name ?? ""}
+                            value={formData.basedOnDecorProject}
+                            onChange={(e, newValue) =>
+                              handleInputChange("basedOnDecorProject", newValue)
+                            }
+                            noOptionsText="Không tìm thấy"
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={formData.basedOnDecorProjectError.hasError}
+                                variant="outlined"
+                                helperText={
+                                  formData.basedOnDecorProjectError.label
+                                }
+                              />
+                            )}
+                          />
+                        </FormControl>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
+                ) : null}
 
                 {/* DESCRIPTION */}
                 <Grid item xs={12} lg={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">Description</Typography>
+                      <Typography variant="h5">Mô tả</Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
                       <FormControl fullWidth>
