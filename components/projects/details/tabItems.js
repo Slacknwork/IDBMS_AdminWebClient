@@ -4,6 +4,10 @@ const items = [
     label: "Tổng quan",
   },
   {
+    path: "floors",
+    label: "Kiến trúc",
+  },
+  {
     path: "tasks",
     label: "Công việc",
   },
