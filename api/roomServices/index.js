@@ -1,21 +1,21 @@
-const getPaymentStagesByProjectId = async (projectId) => {
+const getRoomsByProjectId = async (projectId) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/PaymentStages/project/${projectId}`,
+            `https://localhost:7062/api/Rooms/project/${projectId}`,
             { cache: 'no-store' }
         );
-        const paymentStages = await response.json();
-        return paymentStages;
+        const rooms = await response.json();
+        return rooms;
     } catch (error) {
-        console.error('Error fetching payment stages by project ID:', error);
+        console.error('Error fetching rooms by project ID:', error);
         throw error;
     }
 };
 
-const createPaymentStage = async (request) => {
+const createRoom = async (request) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/PaymentStages`,
+            `https://localhost:7062/api/Rooms`,
             {
                 method: 'POST',
                 headers: {
@@ -31,15 +31,15 @@ const createPaymentStage = async (request) => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching create payment stage:', error);
+        console.error('Error fetching create room:', error);
         throw error;
     }
 };
 
-const updatePaymentStage = async (id, request) => {
+const updateRoom = async (id, request) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/PaymentStages/${id}`,
+            `https://localhost:7062/api/Rooms/${id}`,
             {
                 method: 'PUT',
                 headers: {
@@ -55,15 +55,15 @@ const updatePaymentStage = async (id, request) => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching update payment stage:', error);
+        console.error('Error fetching update room:', error);
         throw error;
     }
 };
 
-const updatePaymentStageIsHidden = async (id, isHidden) => {
+const updateRoomIsHidden = async (id, isHidden) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/PaymentStages/${id}/isHidden?isHidden=${isHidden}`,
+            `https://localhost:7062/api/Rooms/${id}/isHidden?isHidden=${isHidden}`,
             {
                 method: 'PUT',
             }
@@ -75,14 +75,14 @@ const updatePaymentStageIsHidden = async (id, isHidden) => {
 
         return true;
     } catch (error) {
-        console.error('Error fetching update payment stage isHidden:', error);
+        console.error('Error fetching update room isHidden:', error);
         throw error;
     }
 };
 
 export {
-    getPaymentStagesByProjectId,
-    createPaymentStage,
-    updatePaymentStage,
-    updatePaymentStageIsHidden,
+    getRoomsByProjectId,
+    createRoom,
+    updateRoom,
+    updateRoomIsHidden,
 };

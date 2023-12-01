@@ -1,13 +1,13 @@
-const getTransactionById = async (transactionId) => {
+const getAllTransactions = async () => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/${transactionId}`,
+            `https://localhost:7062/api/Transactions`,
             { cache: 'no-store' }
         );
-        const transaction = await response.json();
-        return transaction;
+        const transactions = await response.json();
+        return transactions;
     } catch (error) {
-        console.error('Error fetching transaction by ID:', error);
+        console.error('Error fetching all transactions:', error);
         throw error;
     }
 };
@@ -40,38 +40,94 @@ const getTransactionsByUserId = async (userId) => {
     }
 };
 
-const getAllTransactions = async () => {
+const getTransactionById = async (id) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/`,
+            `https://localhost:7062/api/Transactions/${id}`,
             { cache: 'no-store' }
         );
         const transaction = await response.json();
         return transaction;
     } catch (error) {
-        console.error('Error fetching transaction:', error);
+        console.error('Error fetching transaction by ID:', error);
         throw error;
     }
 };
 
-const updateTransactionStatus = async (transactionId, status) => {
+const createTransaction = async (request) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/${transactionId}/status?status=${status}`,
+            `https://localhost:7062/api/Transactions`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching create transaction:', error);
+        throw error;
+    }
+};
+
+const updateTransaction = async (id, request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Transactions/${id}`,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify(request),
             }
         );
-        console.log(response)
-        const transaction = await response.json();
-        return transaction;
+
+        if (!response.ok) {
+            throw new Error('Update failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error('Error fetching update transactions status:', error);
+        console.error('Error fetching update transaction:', error);
         throw error;
     }
 };
 
-export { getTransactionById, getTransactionsByProjectId, getTransactionsByUserId, getAllTransactions, updateTransactionStatus };
+const updateTransactionStatus = async (id, status) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Transactions/${id}/status?status=${status}`,
+            {
+                method: 'PUT',
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Update status failed');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error fetching update transaction status:', error);
+        throw error;
+    }
+};
+
+export {
+    getAllTransactions,
+    getTransactionsByProjectId,
+    getTransactionsByUserId,
+    getTransactionById,
+    createTransaction,
+    updateTransaction,
+    updateTransactionStatus,
+};

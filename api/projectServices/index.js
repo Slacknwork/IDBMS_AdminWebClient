@@ -77,7 +77,7 @@ const updateProject = async (id, request) => {
 const updateProjectStatus = async (id, status) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Projects/${id}/status/${status}`,
+            `https://localhost:7062/api/Projects/${id}/status?status=${status}`,
             {
                 method: 'PUT',
             }
