@@ -12,6 +12,9 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { updateProject } from "../../../../../api/projectServices";
+import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -29,7 +32,8 @@ const style = {
 const modalTitle = "Lưu";
 const modalMessage = "Lưu thông tin công trình?";
 
-export default function SiteModal({ children }) {
+export default function SaveModal({ children, request }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -37,6 +41,34 @@ export default function SiteModal({ children }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const transformEmptyToNull = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+      if (result[key] === "") {
+        result[key] = null;
+      }
+    }
+    return result;
+  };
+
+  // const [projectId, setProjectId] = useState("FF090F51-E6E7-4854-8F3F-0402EE32C9F8");
+  const [projectId, setProjectId] = useState(params.id);
+
+  const handleUpdate = async () => {
+    const transformedValue = transformEmptyToNull(request);
+    console.log(transformedValue)
+    try {
+      const response = await updateProject(projectId, transformedValue);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -64,7 +96,7 @@ export default function SiteModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleUpdate}
                 >
                   Lưu
                 </Button>

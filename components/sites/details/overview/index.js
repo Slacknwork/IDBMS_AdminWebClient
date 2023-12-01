@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveSiteModal from "./modal";
+import DeleteSiteModal from "./deleteModal";
 import { getSiteById } from "../../../../api/siteServices";
 import { toast } from "react-toastify";
 
@@ -248,6 +249,9 @@ export default function Sites() {
                 }}
                 siteId={siteId}
               >Lưu</SaveSiteModal>
+              <DeleteSiteModal
+                siteId={siteId}
+              >Xoá</DeleteSiteModal>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>

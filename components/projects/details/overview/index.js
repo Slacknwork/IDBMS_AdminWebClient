@@ -19,14 +19,17 @@ import { deepOrange } from "@mui/material/colors";
 import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
-import SaveSiteModal from "./modal";
+import SaveModal from "./modal";
 
 import projectLanguageOptions from "/constants/enums/language";
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import projectAdvertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { getProjectById, getProjectsBySiteId, updateProject } from "../../../../api/projectServices";
+import { getProjectCategories } from "../../../../api/projectCategoryServices";
+import { toast } from "react-toastify";
 
-export default function Sites() {
+export default function ProjectDetails() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -85,16 +88,12 @@ export default function Sites() {
 
   // PROJECT CATEGORY
   const projectCategoryLabel = "Hạng mục dự án";
-  const [projectCategory, setProjectCategory] = useState(null); // Initialize as null for the first option
+  const [projectCategory, setProjectCategory] = useState([]);
   const [projectCategoryError, setProjectCategoryError] = useState({
     hasError: false,
     label: "",
   });
-  const projectCategoryOptions = [
-    { id: 1, name: "Category A" },
-    { id: 2, name: "Category B" },
-    { id: 3, name: "Category C" },
-  ];
+
   const handleProjectCategoryError = (value) => {
     if (!value) {
       setProjectCategoryError({
@@ -271,14 +270,14 @@ export default function Sites() {
 
   // PROJECT STATUS
   const projectStatusLabel = "Trạng thái dự án";
-  const [projectStatus, setProjectStatus] = useState(-1);
+  const [projectStatus, setProjectStatus] = useState("");
   const [projectStatusError, setProjectStatusError] = useState({
     hasError: false,
     label: "",
   });
 
   const handleProjectStatusError = (value) => {
-    if (value === -1) {
+    if (value === "") {
       setProjectStatusError({
         hasError: true,
         label: "Chọn một trạng thái dự án.",
@@ -333,7 +332,7 @@ export default function Sites() {
 
   // BASED ON DECOR PROJECT
   const basedOnDecorProjectLabel = "Dựa trên dự án thiết kế nội thất";
-  const [basedOnDecorProject, setBasedOnDecorProject] = useState(null);
+  const [basedOnDecorProject, setBasedOnDecorProject] = useState([]);
   const [basedOnDecorProjectError, setBasedOnDecorProjectError] = useState({
     hasError: false,
     label: "",
@@ -352,40 +351,6 @@ export default function Sites() {
     setBasedOnDecorProject(value);
     handleBasedOnDecorProjectError(value);
   };
-  // Sample list for Based on Decor Project
-  const basedOnDecorProjectList = [
-    { id: 1, name: "Project A" },
-    { id: 2, name: "Project B" },
-    // Add more projects as needed
-  ];
-
-  // PROJECT DESIGN
-  const projectDesignLabel = "Thiết kế dự án";
-  const [projectDesign, setProjectDesign] = useState(-1);
-  const [projectDesignError, setProjectDesignError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleProjectDesignError = (value) => {
-    if (value === -1) {
-      setProjectDesignError({
-        hasError: true,
-        label: "Chọn một kiểu dự án.",
-      });
-    } else {
-      setProjectDesignError({ hasError: false, label: "" });
-    }
-  };
-  const onProjectDesignChange = (e) => {
-    setProjectDesign(e.target.value);
-    handleProjectDesignError(e.target.value);
-  };
-  // Sample list for Project Design
-  const projectDesignList = [
-    { id: 1, name: "Design A" },
-    { id: 2, name: "Design B" },
-    // Add more designs as needed
-  ];
 
   // GET SITE DETAILS
   const [pageName, setPageName] = useState("Tên khu công trình");
@@ -394,7 +359,67 @@ export default function Sites() {
   );
 
   // CONTACT
-  const contactLabel = "Thông tin liên hệ";
+  const contactLabel = "Thông tin liên hệ chủ dự án";
+
+  // const [projectId, setProjectId] = useState("FF090F51-E6E7-4854-8F3F-0402EE32C9F8");
+  const [projectId, setProjectId] = useState(params.id);
+  const [siteId, setSiteId] = useState("");
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  const [projectCategories, setProjectCategories] = useState([]);
+  const [decorProjects, setDecorProjects] = useState([]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const project = await getProjectById(projectId);
+          console.log(project);
+          mapData(project);
+
+          const listCategories = await getProjectCategories();
+          console.log(listCategories);
+          setProjectCategories(listCategories);
+
+          const listProjectsBySiteId = await getProjectsBySiteId(project?.siteId);
+          console.log(listProjectsBySiteId);
+          setDecorProjects(listProjectsBySiteId.filter(project => project.type === 0));
+
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, [projectId]);
+
+  const mapData = (data) => {
+
+    setName(data.name ?? "")
+    setProjectType(data.type ?? "")
+    setDescription(data.description ?? "")
+    setAdvertisementStatus(data.advertisementStatus ?? "")
+    setArea(data.area ?? "")
+    setBasedOnDecorProject(data?.basedOnDecorProject?.id ?? "")
+    setEstimateBusinessDay(data.estimateBusinessDay ?? 0)
+    setEstimatedPrice(data.estimatedPrice ?? 0)
+    setFinalPrice(data.finalPrice ?? 0)
+    setProjectCategory(data.projectCategory.id ?? "")
+    setProjectStatus(data.status ?? "")
+    setTotalWarrantyPaid(data.totalWarrantyPaid ?? 0)
+    setLanguage(data.language ?? "")
+    setSiteId(data.siteId ?? "")
+
+  };
+
+  const admin = {
+    id: "7C2B4371-E768-4D01-9E15-648091A7D9B7",
+    username: "tuantn2235",
+  };
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
@@ -413,7 +438,26 @@ export default function Sites() {
               <Typography variant="h2" sx={{ my: "auto" }}>
                 Tên
               </Typography>
-              <SaveSiteModal>Lưu</SaveSiteModal>
+              <SaveModal
+                request={{
+                  name: name,
+                  description: description,
+                  type: projectType,
+                  projectCategoryId: projectCategory,
+                  createdAdminUsername: admin.username,
+                  createdByAdminId: admin.id,
+                  estimatedPrice: estimatedPrice,
+                  finalPrice: finalPrice,
+                  totalWarrantyPaid: totalWarrantyPaid,
+                  area: area,
+                  estimateBusinessDay: estimateBusinessDay,
+                  language: language,
+                  status: projectStatus,
+                  advertisementStatus: advertisementStatus,
+                  basedOnDecorProjectId: basedOnDecorProject?.id ?? "",
+                  siteId: siteId
+                }}
+              >Lưu</SaveModal>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>
@@ -535,7 +579,7 @@ export default function Sites() {
                         <MenuItem disabled value="">
                           Chọn hạng mục
                         </MenuItem>
-                        {projectCategoryOptions.map((category) => (
+                        {projectCategories.map((category) => (
                           <MenuItem key={category.id} value={category.id}>
                             {category.name}
                           </MenuItem>
@@ -571,7 +615,7 @@ export default function Sites() {
                         onChange={onEstimatedPriceChange}
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
+                            <InputAdornment position="end">VND</InputAdornment>
                           ),
                         }}
                       />
@@ -599,7 +643,7 @@ export default function Sites() {
                         onChange={onFinalPriceChange}
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
+                            <InputAdornment position="end">VND</InputAdornment>
                           ),
                         }}
                       />
@@ -628,7 +672,7 @@ export default function Sites() {
                         onChange={onTotalWarrantyPaidChange}
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">VNĐ</InputAdornment>
+                            <InputAdornment position="end">VND</InputAdornment>
                           ),
                         }}
                       />
@@ -713,9 +757,9 @@ export default function Sites() {
                         <MenuItem disabled value="">
                           Chọn ngôn ngữ
                         </MenuItem>
-                        {projectLanguageOptions.map((lang) => (
-                          <MenuItem key={lang} value={lang}>
-                            {lang}
+                        {projectLanguageOptions.map((label, value) => (
+                          <MenuItem key={label} value={value}>
+                            {label}
                           </MenuItem>
                         ))}
                       </Select>
@@ -744,9 +788,9 @@ export default function Sites() {
                         <MenuItem disabled value="">
                           Chọn trạng thái quảng cáo
                         </MenuItem>
-                        {projectAdvertisementStatusOptions.map((status) => (
-                          <MenuItem key={status} value={status}>
-                            {status}
+                        {projectAdvertisementStatusOptions.map((label, value) => (
+                          <MenuItem key={label} value={value}>
+                            {label}
                           </MenuItem>
                         ))}
                       </Select>
@@ -761,16 +805,16 @@ export default function Sites() {
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
                       {basedOnDecorProjectLabel}{" "}
-                      <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <Autocomplete
-                        options={basedOnDecorProjectList}
-                        getOptionLabel={(option) => option.name}
+                        options={decorProjects}
+                        getOptionLabel={(option) => option?.name ?? ""}
                         value={basedOnDecorProject}
                         onChange={onBasedOnDecorProjectChange}
+                        noOptionsText="Không tìm thấy"
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -785,7 +829,7 @@ export default function Sites() {
                 </Grid>
               </Grid>
 
-              {/* PROJECT DESIGN (Select) */}
+              {/* PROJECT DESIGN (Select) 
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
@@ -815,6 +859,7 @@ export default function Sites() {
                   </Grid>
                 </Grid>
               </Grid>
+              */}
 
               {/* DESCRIPTION */}
               <Grid item xs={12} lg={12}>
