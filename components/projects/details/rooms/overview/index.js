@@ -89,7 +89,7 @@ export default function RoomOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Use Purpose
+                      Mục đích
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -109,39 +109,12 @@ export default function RoomOverview() {
                 </Grid>
               </Grid>
 
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      Description
-                      <span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        value={formData.description}
-                        error={formData.descriptionError.hasError}
-                        helperText={formData.descriptionError.label}
-                        onChange={(e) =>
-                          handleInputChange("description", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
               {/* AREA */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Area
+                      Diện tích
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -156,6 +129,7 @@ export default function RoomOverview() {
                         onChange={(e) =>
                           handleInputChange("area", e.target.value)
                         }
+                        InputProps={{ endAdornment: "m²" }}
                       />
                     </FormControl>
                   </Grid>
@@ -167,7 +141,7 @@ export default function RoomOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Price per Area
+                      Đơn giá / diện tích
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -182,6 +156,10 @@ export default function RoomOverview() {
                         onChange={(e) =>
                           handleInputChange("pricePerArea", e.target.value)
                         }
+                        InputProps={{
+                          startAdornment: "₫/",
+                          endAdornment: "m²",
+                        }}
                       />
                     </FormControl>
                   </Grid>
@@ -193,7 +171,7 @@ export default function RoomOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Room Type
+                      Loại phòng
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
@@ -216,6 +194,32 @@ export default function RoomOverview() {
                           </MenuItem>
                         ))}
                       </TextField>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              {/* DESCRIPTION */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      Mô tả
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        value={formData.description}
+                        error={formData.descriptionError.hasError}
+                        helperText={formData.descriptionError.label}
+                        onChange={(e) =>
+                          handleInputChange("description", e.target.value)
+                        }
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>

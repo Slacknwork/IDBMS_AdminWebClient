@@ -95,8 +95,8 @@ export default function SiteModal({ children }) {
     unitUsed: 0,
     unitUsedError: { hasError: false, label: "" },
     isIncurred: false,
-    started: new Date(),
-    end: null,
+    startedDate: new Date(),
+    endDate: null,
     noDate: 0,
     parentTask: null,
     interiorItem: null,
@@ -361,51 +361,62 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{startedLabel}</Typography>
+                  <Typography variant="h5">Started</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
-                  <TextField
-                    label="Started"
-                    type="date"
-                    variant="outlined"
-                    value={formData.started.toISOString().split("T")[0]}
-                    onChange={(e) =>
-                      handleInputChange("started", new Date(e.target.value))
-                    }
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Started"
+                      type="date"
+                      variant="outlined"
+                      value={
+                        formData.startedDate
+                          ? formData.startedDate.toISOString().split("T")[0]
+                          : ""
+                      }
+                      onChange={(e) =>
+                        handleInputChange(
+                          "startedDate",
+                          e.target.value ? new Date(e.target.value) : null
+                        )
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
 
-            {/* END (OPTIONAL) */}
+            {/* END */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{endLabel}</Typography>
+                  <Typography variant="h5">End</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
-                  <TextField
-                    label="End (Optional)"
-                    type="date"
-                    variant="outlined"
-                    value={
-                      formData.end
-                        ? formData.end.toISOString().split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      handleInputChange(
-                        "end",
-                        e.target.value ? new Date(e.target.value) : null
-                      )
-                    }
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
+                  <FormControl fullWidth>
+                    <TextField
+                      label="End (Optional)"
+                      type="date"
+                      variant="outlined"
+                      value={
+                        formData.endDate
+                          ? formData.endDate.toISOString().split("T")[0]
+                          : ""
+                      }
+                      onChange={(e) =>
+                        handleInputChange(
+                          "end",
+                          e.target.value ? new Date(e.target.value) : null
+                        )
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
             </Grid>
