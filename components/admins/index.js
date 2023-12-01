@@ -14,9 +14,13 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
-import { getAdmins } from "../../api/adminServices";
+import { getAllAdmins } from "../../api/adminServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import PageContainer from "/components/container/PageContainer";
+import CreateModal from "./createModal";
+import UpdateModal from "./updateModal";
+import adminStatus from "/constants/enums/adminStatus";
 
 const admins = [
   {
@@ -60,7 +64,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getAdmins();
+          const data = await getAllAdmins();
           console.log(data);
           setAdmins(data);
           setLoading(false);
@@ -74,92 +78,132 @@ export default function ProjectList() {
   }, []);
 
   return (
-    <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Table
-        aria-label="simple table"
-        sx={{
-          whiteSpace: "nowrap",
-          mt: 2,
+    <PageContainer title={"PageContainer"} description={"PageContainer"}>
+      <CreateModal
+        request={{
+          name: "John Doe",
+          username: "john_doe",
+          email: "john.doe@example.com",
+          password: "securepassword",
+          status: 0,
+          isDeleted: false,
+          creatorId: null,
         }}
       >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên người dùng
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Email
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Người tạo
-              </Typography>
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {admins.map((admin) => (
-            <StyledTableRow key={admin.id}>
-              <TableCell> 
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {admin.name}
+        Lưu
+      </CreateModal>
+
+      <UpdateModal
+        id={"0A93A6C1-8267-4D60-8C6D-C8E25C8F8F22"}
+        request={{
+          name: "Nam Kun",
+          username: "nam_kun",
+          email: "nam.kun@example.com",
+          password: "newsecurepassword",
+          status: 1,
+          isDeleted: false,
+          creatorId: null,
+        }}
+      >
+        Cập nhật
+      </UpdateModal>
+      <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+        <Table
+          aria-label="simple table"
+          sx={{
+            whiteSpace: "nowrap",
+            mt: 2,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {admin.username}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên người dùng
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Email
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Người tạo
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {admins.map((admin) => (
+              <StyledTableRow key={admin.id}>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {admin.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {admin.username}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          fontSize: "13px",
+                        }}
+                      >
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {admin.email}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {admin.creatorId ?? 'Không có'}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/Admins/${admin.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Box>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {admin.email}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {admin?.creator?.name ?? 'Không'}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {adminStatus[admin.status ?? 'Không xác định']}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/Admins/${admin.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </PageContainer>
   );
 }
