@@ -496,7 +496,6 @@ export default function SiteModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Select
-                      label="Task Design (Optional)"
                       variant="outlined"
                       value={formData.taskDesign}
                       onChange={(e) =>
@@ -522,7 +521,6 @@ export default function SiteModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Select
-                      label="Room (Optional)"
                       variant="outlined"
                       value={formData.room}
                       onChange={(e) =>
@@ -548,7 +546,6 @@ export default function SiteModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Select
-                      label="Status"
                       variant="outlined"
                       value={formData.status}
                       onChange={(e) =>
