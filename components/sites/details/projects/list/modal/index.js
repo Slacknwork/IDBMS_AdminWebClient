@@ -8,12 +8,14 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   MenuItem,
   Modal,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
@@ -148,7 +150,7 @@ export default function SiteModal({ children }) {
     handleDescriptionError(e.target.value);
   };
 
-  // Advertisement Status
+  // ADVERTISEMENT STATUS
   const advertisementStatusLabel = "Quảng cáo dự án";
   const advertisementStatusSubLabel =
     "Dùng dự án này để quảng cáo trên trang chủ";
@@ -170,26 +172,32 @@ export default function SiteModal({ children }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <Grid
+          <Box
             container
             sx={{
+              display: "flex",
+              justifyContent: "space-between",
               pt: 2,
               position: "sticky",
               top: 0,
               backgroundColor: "white",
+              borderBottom: 1,
               zIndex: 1,
             }}
           >
-            <Grid item xs={12} lg={12}>
-              <Typography
-                variant="h4"
-                id="child-modal-title"
-                sx={{ py: 2, borderBottom: 1 }}
-              >
-                {modalTitle}
-              </Typography>
-            </Grid>
-          </Grid>
+            <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
+              Tạo dự án mới
+            </Typography>
+            <IconButton
+              aria-label="close"
+              sx={{
+                my: "auto",
+              }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <Grid sx={{ py: 2 }} component={"div"} container spacing={3}>
             {/* NAME */}
             <Grid item xs={12} lg={12}>

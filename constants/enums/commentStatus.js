@@ -1,4 +1,3 @@
-export default {
-    0: "Đã gửi",
-    1: "Đã chỉnh sửa",
-};
+const commentStatusOptions = ["Đã gửi", "Đã chỉnh sửa"];
+
+export default commentStatusOptions;
