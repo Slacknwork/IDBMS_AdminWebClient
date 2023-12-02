@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveModal from "./modal";
-import DeleteModal from "./deleteModal";
+import HiddenModal from "./hiddenModal";
 import { getRoomById } from "../../../../../api/roomServices";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -38,7 +38,8 @@ export default function RoomOverview() {
     pricePerAreaError: { hasError: false, label: "" },
     roomType: "",
     roomTypeError: { hasError: false, label: "" },
-    floorId: ""
+    floorId: "",
+    isHidden: ""
   });
 
   const validateInput = (field, value) => {
@@ -104,6 +105,7 @@ export default function RoomOverview() {
         pricePerArea: data.pricePerArea ?? 0,
         roomType: data?.roomType?.id ?? "",
         floorId: data?.floorId ?? "",
+        isHidden: data?.isHidden ?? ""
       }));
 
       setTasks(data.task ?? "")
@@ -140,7 +142,12 @@ export default function RoomOverview() {
               Room Details
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <DeleteModal>Xóa</DeleteModal>
+              {formData && !formData.isHidden && <HiddenModal
+                isHidden={true}
+              >Ẩn</HiddenModal>}
+              {formData && formData.isHidden && <HiddenModal
+                isHidden={false}
+              >Hiển thị</HiddenModal>}
               <SaveModal
                 request={{
                   description: formData.description ?? "",
@@ -234,6 +241,32 @@ export default function RoomOverview() {
                             backgroundColor: "#EFEFEF",
                           },
                           endAdornment: "VND/m²",
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* PRICE PER AREA */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      Trạng thái
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        variant="outlined"
+                        disabled
+                        value={formData.isHidden ? "Đang ẩn" : "Đang hoạt động"}
+                        InputProps={{
+                          style: {
+                            backgroundColor: "#EFEFEF",
+                          }
                         }}
                       />
                     </FormControl>
