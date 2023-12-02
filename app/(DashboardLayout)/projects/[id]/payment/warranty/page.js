@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectWarrantys from "/components/projects/Warranty";
+import WarrantyList from "/components/projects/details/payment/warranty/list";
 
 export default function ProjectDetailsPage() {
-  return <ProjectWarrantys></ProjectWarrantys>;
+  return <WarrantyList></WarrantyList>;
 }

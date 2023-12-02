@@ -2,14 +2,11 @@
 
 import { useState } from "react";
 import {
-  Autocomplete,
   Box,
+  Checkbox,
   FormControl,
-  FormHelperText,
   Grid,
   Input,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,9 +14,6 @@ import {
 import PageContainer from "/components/container/PageContainer";
 import DeleteModal from "./deleteModal";
 import SaveModal from "./modal";
-
-import transactionTypeOptions from "/constants/enums/transactionType";
-import transactionStatusOptions from "/constants/enums/transactionStatus";
 
 const style = {
   position: "absolute",
@@ -33,35 +27,20 @@ const style = {
 };
 
 export default function StageOverview() {
-  const userList = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Doe" },
-    { id: 3, name: "Alice Johnson" },
-    { id: 4, name: "Bob Smith" },
-    // Add more users as needed
-  ];
-
-  const warrantyClaimList = [
-    { id: 1, name: "Extended Warranty" },
-    { id: 2, name: "Manufacturer's Warranty" },
-    { id: 3, name: "Limited Lifetime Warranty" },
-    { id: 4, name: "Accidental Damage Protection" },
-    // Add more warranty claims as needed
-  ];
-
   const [formData, setFormData] = useState({
-    type: "",
-    typeError: { hasError: false, label: "" },
-    amount: 0,
-    amountError: { hasError: false, label: "" },
-    user: "",
-    userError: { hasError: false, label: "" },
-    warrantyClaim: "",
-    warrantyClaimError: { hasError: false, label: "" },
-    status: "",
-    statusError: { hasError: false, label: "" },
-    transactionReceiptImage: null,
-    transactionReceiptImageError: { hasError: false, label: "" },
+    name: "",
+    nameError: { hasError: false, label: "" },
+    reason: "",
+    reasonError: { hasError: false, label: "" },
+    solution: "",
+    solutionError: { hasError: false, label: "" },
+    note: "",
+    noteError: { hasError: false, label: "" },
+    totalPaid: 0,
+    totalPaidError: { hasError: false, label: "" },
+    isCompanyCover: false,
+    endDate: null,
+    confirmationDocument: null,
   });
 
   const handleInputChange = (field, value) => {
@@ -72,31 +51,20 @@ export default function StageOverview() {
     }));
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
   const handleNumberChange = (field, value) => {
     const val = parseFloat(value);
     handleInputChange(field, val);
   };
 
-  const handleAutocompleteChange = (field, selectedOption) => {
-    handleInputChange(field, selectedOption);
+  const handleCheckboxChange = (field, checked) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: checked,
+    }));
   };
 
   const handleFileInputChange = (file) => {
-    handleInputChange("transactionReceiptImage", file);
-  };
-
-  const handleCheckboxChange = (fieldName, checked) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [fieldName]: !formData[fieldName],
-    }));
+    handleInputChange("confirmationDocument", file);
   };
 
   return (
@@ -116,7 +84,7 @@ export default function StageOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Thông tin chuyển khoản
+              Bảo hiểm
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>
@@ -129,45 +97,98 @@ export default function StageOverview() {
           </Grid>
           <Grid item xs={12} lg={8}>
             <Grid container columnSpacing={2} rowSpacing={4}>
-              {/* TYPE */}
+              {/* NAME */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Transaction Type<span style={{ color: "red" }}>*</span>
+                      Tên<span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
-                      {/* Replace 'transactionTypeOptions' with your actual options */}
-                      <Select
-                        error={formData.typeError.hasError}
-                        value={formData.type}
-                        onChange={(e) =>
-                          handleInputChange("type", e.target.value)
-                        }
+                      <TextField
                         variant="outlined"
-                      >
-                        {transactionTypeOptions.map((option, index) => (
-                          <MenuItem key={option} value={index}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formData.typeError.label}
-                      </FormHelperText>
+                        value={formData.name}
+                        error={formData.nameError.hasError}
+                        helperText={formData.nameError.label}
+                        onChange={(e) =>
+                          handleInputChange("name", e.target.value)
+                        }
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
 
-              {/* AMOUNT */}
+              {/* REASON */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Lý Do</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        variant="outlined"
+                        value={formData.reason}
+                        onChange={(e) =>
+                          handleInputChange("reason", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* SOLUTION */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Giải Pháp</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        variant="outlined"
+                        value={formData.solution}
+                        onChange={(e) =>
+                          handleInputChange("solution", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* NOTE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Ghi Chú</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        value={formData.note}
+                        onChange={(e) =>
+                          handleInputChange("note", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* TOTAL PAID */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Amount<span style={{ color: "red" }}>*</span>
+                      Tổng Số Tiền (VND)<span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
@@ -175,11 +196,11 @@ export default function StageOverview() {
                       <TextField
                         type="number"
                         variant="outlined"
-                        value={formData.amount}
-                        error={formData.amountError.hasError}
-                        helperText={formData.amountError.label}
+                        value={formData.totalPaid}
+                        error={formData.totalPaidError.hasError}
+                        helperText={formData.totalPaidError.label}
                         onChange={(e) =>
-                          handleNumberChange("amount", e.target.value)
+                          handleNumberChange("totalPaid", e.target.value)
                         }
                       />
                     </FormControl>
@@ -187,104 +208,54 @@ export default function StageOverview() {
                 </Grid>
               </Grid>
 
-              {/* USER */}
+              {/* IS COMPANY COVER */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">User</Typography>
+                    <Typography variant="h5">Bảo Hiểm Công Ty</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      {/* Replace 'userAutocompleteOptions' with your actual options */}
-                      <Autocomplete
-                        options={userList}
-                        value={formData.user}
-                        getOptionLabel={(option) => option.name}
-                        onChange={(_, value) =>
-                          handleAutocompleteChange("user", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            error={formData.userError.hasError}
-                            helperText={formData.userError.label}
-                            variant="outlined"
-                          />
-                        )}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* WARRANTY CLAIM */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Warranty Claim</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      {/* Replace 'warrantyClaimAutocompleteOptions' with your actual options */}
-                      <Autocomplete
-                        options={warrantyClaimList}
-                        value={formData.warrantyClaim}
-                        getOptionLabel={(option) => option.name}
-                        onChange={(_, value) =>
-                          handleAutocompleteChange("warrantyClaim", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            error={formData.warrantyClaimError.hasError}
-                            helperText={formData.warrantyClaimError.label}
-                            variant="outlined"
-                          />
-                        )}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* STATUS */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Status</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      {/* Replace 'transactionStatusOptions' with your actual options */}
-                      <Select
-                        error={formData.statusError.hasError}
-                        value={formData.status}
+                    <FormControl>
+                      <Checkbox
+                        checked={formData.isCompanyCover}
                         onChange={(e) =>
-                          handleInputChange("status", e.target.value)
+                          handleCheckboxChange(
+                            "isCompanyCover",
+                            e.target.checked
+                          )
                         }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* END DATE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Ngày Kết Thúc</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        type="date"
                         variant="outlined"
-                      >
-                        {transactionStatusOptions.map((option, index) => (
-                          <MenuItem key={option} value={index}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formData.statusError.label}
-                      </FormHelperText>
+                        value={formData.endDate}
+                        onChange={(e) =>
+                          handleInputChange("endDate", e.target.value)
+                        }
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
 
-              {/* TRANSACTION RECEIPT IMAGE */}
+              {/* CONFIRMATION DOCUMENT */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      Transaction Receipt Image
-                    </Typography>
+                    <Typography variant="h5">Tài Liệu Xác Nhận</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
@@ -294,9 +265,6 @@ export default function StageOverview() {
                           handleFileInputChange(e.target.files[0])
                         }
                       />
-                      <FormHelperText>
-                        {formData.transactionReceiptImageError.label}
-                      </FormHelperText>
                     </FormControl>
                   </Grid>
                 </Grid>

@@ -62,6 +62,8 @@ export default function StageOverview() {
     statusError: { hasError: false, label: "" },
     transactionReceiptImage: null,
     transactionReceiptImageError: { hasError: false, label: "" },
+    note: "",
+    noteError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
@@ -297,6 +299,30 @@ export default function StageOverview() {
                       <FormHelperText>
                         {formData.transactionReceiptImageError.label}
                       </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* NOTE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Ghi chú</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        multiline
+                        rows={4}
+                        error={formData.noteError.hasError}
+                        variant="outlined"
+                        value={formData.note}
+                        helperText={formData.noteError.label}
+                        onChange={(e) =>
+                          handleInputChange("note", e.target.value)
+                        }
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>

@@ -41,7 +41,7 @@ export default function SiteModal({ children, request }) {
           <h2 id="child-modal-title">Lưu</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin tầng?</p>
+              <p>Lưu thông tin của lần thanh toán này?</p>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

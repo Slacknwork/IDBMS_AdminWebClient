@@ -17,32 +17,26 @@ import {
 } from "@mui/material";
 import { useParams } from "next/navigation";
 
-import transactionTypeOptions from "/constants/enums/transactionType";
-import transactionStatusOptions from "/constants/enums/transactionStatus";
+import WarrantyModal from "./modal";
 
-import TransactionModal from "./modal";
-
-// Sample transaction data
-const transactions = [
+const warrantyClaims = [
   {
     id: "1",
-    type: 1,
-    amount: 1000,
+    name: "Warranty Claim 1",
+    totalPaid: 2000,
+    isCompanyCover: true,
     createdDate: "2023-01-01",
-    user: { id: "1", name: "John Doe" },
-    status: 0,
+    endDate: "2023-02-01",
   },
   {
     id: "2",
-    type: 2,
-    amount: 500,
+    name: "Warranty Claim 2",
+    totalPaid: 1500,
+    isCompanyCover: false,
     createdDate: "2023-02-01",
-    user: { id: "2", name: "Jane Doe" },
-    status: 1,
+    endDate: "2023-03-01",
   },
-  // Add more transaction objects as needed
 ];
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
@@ -64,86 +58,70 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function Transactions() {
   const params = useParams();
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  // Handle page change
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-  // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
     <Box sx={{ overflow: "auto" }}>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-        <TransactionModal>Add Transaction</TransactionModal>
+        <WarrantyModal>Thêm</WarrantyModal>
       </Box>
       {/* Table */}
       <Table aria-label="simple table" sx={{ mt: 1 }}>
-        {/* Table Head */}
         <TableHead>
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Loại
+                Tên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Số tiền (VND)
+                Tổng Số Tiền (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Ngày tạo
+                Bảo Hiểm Công Ty
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Người tạo
+                Ngày Tạo
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
+                Ngày Kết Thúc
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
-        {/* Table Body */}
         <TableBody>
-          {transactions &&
-            transactions.map((transaction) => (
-              <StyledTableRow key={transaction.id}>
+          {warrantyClaims &&
+            warrantyClaims.map((claim) => (
+              <StyledTableRow key={claim.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {transactionTypeOptions[transaction.type]}
+                    {claim.name}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {transaction.amount.toLocaleString("vi-VN")}
+                    {claim.totalPaid.toLocaleString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(transaction.createdDate).toLocaleDateString(
-                      "vi-VN"
-                    )}
+                    {claim.isCompanyCover ? "Có" : "Không"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {transaction.user?.name}
+                    {new Date(claim.createdDate).toLocaleDateString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {transactionStatusOptions[transaction.status]}
+                    {new Date(claim.endDate).toLocaleDateString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -153,9 +131,9 @@ export default function Transactions() {
                       variant="contained"
                       disableElevation
                       color="primary"
-                      href={`/projects/${params.id}/payment/transactions/${transaction.id}`}
+                      href={`/projects/${params.id}/payment/warranty/${claim.id}`}
                     >
-                      Chi tiết
+                      Chi Tiết
                     </Button>
                   </Box>
                 </TableCell>
@@ -163,15 +141,6 @@ export default function Transactions() {
             ))}
         </TableBody>
       </Table>
-      <TablePagination
-        component="div"
-        count={10}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </Box>
   );
 }
