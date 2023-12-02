@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectPayment from "/components/projects/Payment";
+import PaymentStages from "/components/projects/details/payment/stages/list";
 
-export default function ProjectDetailsPage() {
-  return <ProjectPayment></ProjectPayment>;
+export default function PaymentStagesPage() {
+  return <PaymentStages></PaymentStages>;
 }

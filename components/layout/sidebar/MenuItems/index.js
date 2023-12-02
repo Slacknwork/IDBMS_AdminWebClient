@@ -35,12 +35,6 @@ const Menuitems = [
     href: "/sites",
   },
   {
-    id: uniqueId(),
-    title: "Danh sách dự án",
-    icon: IconFile,
-    href: "/projects",
-  },
-  {
     navlabel: true,
     subheader: "Quản lý sản phẩm mẫu",
   },

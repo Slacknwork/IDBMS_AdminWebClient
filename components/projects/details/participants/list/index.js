@@ -20,11 +20,13 @@ import {
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { IconTrash } from "@tabler/icons-react";
 import { useParams } from "next/navigation";
+import LoopIcon from "@mui/icons-material/Loop";
 
 import participationRole from "/constants/enums/participationRole";
 import ParticipantModal from "./modal";
+import DeleteModal from "./deleteModal";
 
 const participants = [
   {
@@ -83,40 +85,66 @@ export default function Comments() {
         <Grid item xs={12} lg={6}>
           <Card
             variant="outlined"
-            sx={{ p: 3, border: 1, borderColor: "gray" }}
+            sx={{
+              p: 3,
+              border: 1,
+              borderColor: "gray",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
           >
-            <Typography variant="h5" sx={{ my: "auto" }}>
-              Chủ đầu tư
-            </Typography>
-            <Box sx={{ display: "flex", mt: 2 }}>
-              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
-              <Box sx={{ my: "auto", mx: 2 }}>
-                <Typography variant="h6">Anthony N</Typography>
-                <Typography variant="p">anthony@mail.com</Typography>
-                <br />
-                <Typography variant="p">0123456789</Typography>
-                <br />
+            <Box>
+              <Typography variant="h5" sx={{ my: "auto" }}>
+                Quản lý dự án
+              </Typography>
+              <Box sx={{ display: "flex", mt: 2 }}>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Box sx={{ my: "auto", mx: 2 }}>
+                  <Typography variant="h6">Anthony N</Typography>
+                  <Typography variant="p">anthony@mail.com</Typography>
+                  <br />
+                  <Typography variant="p">0123456789</Typography>
+                  <br />
+                </Box>
               </Box>
+            </Box>
+            <Box>
+              <Button variant="contained" disableElevation color="primary">
+                <LoopIcon></LoopIcon>
+              </Button>
             </Box>
           </Card>
         </Grid>
         <Grid item xs={12} lg={6}>
           <Card
             variant="outlined"
-            sx={{ p: 3, border: 1, borderColor: "gray" }}
+            sx={{
+              p: 3,
+              border: 1,
+              borderColor: "gray",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
           >
-            <Typography variant="h5" sx={{ my: "auto" }}>
-              Quản lý dự án
-            </Typography>
-            <Box sx={{ display: "flex", mt: 2 }}>
-              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
-              <Box sx={{ my: "auto", mx: 2 }}>
-                <Typography variant="h6">Anthony N</Typography>
-                <Typography variant="p">anthony@mail.com</Typography>
-                <br />
-                <Typography variant="p">0123456789</Typography>
-                <br />
+            <Box>
+              <Typography variant="h5" sx={{ my: "auto" }}>
+                Quản lý dự án
+              </Typography>
+              <Box sx={{ display: "flex", mt: 2 }}>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Box sx={{ my: "auto", mx: 2 }}>
+                  <Typography variant="h6">Anthony N</Typography>
+                  <Typography variant="p">anthony@mail.com</Typography>
+                  <br />
+                  <Typography variant="p">0123456789</Typography>
+                  <br />
+                </Box>
               </Box>
+            </Box>
+            <Box>
+              <Button variant="contained" disableElevation color="primary">
+                <LoopIcon></LoopIcon>
+              </Button>
             </Box>
           </Card>
         </Grid>
@@ -134,12 +162,7 @@ export default function Comments() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Dự án
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Người dùng
+                Thành viên
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -157,11 +180,6 @@ export default function Comments() {
               <StyledTableRow key={participant.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {participant.project?.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
                     {participant.user?.name}
                   </Typography>
                 </TableCell>
@@ -171,15 +189,11 @@ export default function Comments() {
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Button
-                    component={Link}
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    href={`/participants/${participant.id}`}
-                  >
-                    Details
-                  </Button>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <DeleteModal>
+                      <IconTrash></IconTrash>
+                    </DeleteModal>
+                  </Box>
                 </TableCell>
               </StyledTableRow>
             ))}
@@ -188,6 +202,7 @@ export default function Comments() {
       {/* Table Pagination */}
       <TablePagination
         component="div"
+        count={10}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}

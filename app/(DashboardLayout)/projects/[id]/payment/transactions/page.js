@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectTransactions from "/components/projects/Transactions";
+import TransactionList from "/components/projects/details/payment/transactions/list";
 
-export default function ProjectDetailsPage() {
-  return <ProjectTransactions></ProjectTransactions>;
+export default function TransactionListPage() {
+  return <TransactionList></TransactionList>;
 }
