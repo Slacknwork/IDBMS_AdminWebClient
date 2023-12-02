@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import {
+  Autocomplete,
   Box,
   Button,
-  Checkbox,
   FormControl,
+  FormHelperText,
   Grid,
   IconButton,
   MenuItem,
@@ -16,7 +17,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
+import participationRoleOptions from "/constants/enums/participationRole";
 
 const style = {
   position: "absolute",
@@ -29,7 +30,12 @@ const style = {
   boxShadow: 24,
 };
 
-export default function DocumentModal({ children, projectDocument }) {
+const userOptions = [
+  { id: "1", name: "User 1", email: "user1@mail.com", phone: "01234567890" },
+  { id: "2", name: "user 2", email: "user2@mail.com", phone: "01234567890" },
+];
+
+export default function DocumentModal({ children }) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -40,30 +46,11 @@ export default function DocumentModal({ children, projectDocument }) {
   };
 
   const [formData, setFormData] = useState({
-    name: projectDocument?.name || "",
-    nameError: { hasError: false, label: "" },
-    description: projectDocument?.description || "",
-    descriptionError: { hasError: false, label: "" },
-    file: null,
-    fileError: { hasError: false, label: "" },
-    url: projectDocument?.url || "",
-    category: projectDocument?.category || -1,
-    categoryError: { hasError: false, label: "" },
-    projectDocumentTemplate: projectDocument?.projectDocumentTemplate || {
-      id: 1,
-      name: "",
-    },
-    projectDocumentTemplateError: { hasError: false, label: "" },
-    isPublicAdvertisement: projectDocument?.isPublicAdvertisement || false,
-    isPublicAdvertisementError: { hasError: false, label: "" },
-    // ... other fields if needed
+    user: [],
+    userError: { hasError: false, label: "" },
+    role: -1,
+    roleError: { hasError: false, label: "" },
   });
-
-  const projectDocumentTemplateOptions = [
-    { id: 1, name: "Template1" },
-    { id: 2, name: "Template2" },
-    // Add more template options as needed
-  ];
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({
@@ -73,31 +60,9 @@ export default function DocumentModal({ children, projectDocument }) {
     }));
   };
 
-  const handleFileInputChange = (file) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      FileInput: file,
-      FileInputError: { hasError: false, label: "" }, // Reset error on change
-    }));
-  };
-
-  const handleCheckboxChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: !formData[field],
-      [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
-    }));
-  };
-
   return (
     <Box>
-      <Button
-        sx={projectDocument ? { mx: 2 } : {}}
-        size={projectDocument ? "small" : ""}
-        variant="contained"
-        disableElevation
-        onClick={handleOpen}
-      >
+      <Button variant="contained" disableElevation onClick={handleOpen}>
         {children}
       </Button>
       <Modal
@@ -123,7 +88,7 @@ export default function DocumentModal({ children, projectDocument }) {
             }}
           >
             <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
-              Thêm tài liệu
+              Thêm thành viên
             </Typography>
             <IconButton
               aria-label="close"
@@ -141,152 +106,69 @@ export default function DocumentModal({ children, projectDocument }) {
             container
             spacing={3}
           >
-            {/* NAME */}
+            {/* USER */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Tên</Typography>
-                  <Typography variant="p">Nhập tên</Typography>
+                  <Typography variant="h5">Người dùng</Typography>
+                  <Typography variant="p">Chọn người dùng</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
-                    <TextField
-                      error={formData.nameError.hasError}
-                      variant="outlined"
-                      value={formData.name}
-                      helperText={formData.nameError.label}
-                      onChange={(e) =>
-                        handleInputChange("name", e.target.value)
+                    <Autocomplete
+                      multiple
+                      options={userOptions} // Assuming you have an array of user options
+                      getOptionLabel={(option) => option.name} // Replace with the actual property for user name
+                      value={formData.user}
+                      onChange={(event, newValue) =>
+                        handleInputChange("user", newValue)
                       }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          error={formData.userError?.hasError}
+                          helperText={formData.userError?.label}
+                        />
+                      )}
                     />
+                    {/* Add error handling for user selection if needed */}
                   </FormControl>
                 </Grid>
               </Grid>
             </Grid>
 
-            {/* FILE INPUT */}
+            {/* ROLE */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Tệp đính kèm</Typography>
-                  <Typography variant="p">Chọn tệp</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <input
-                      type="file"
-                      onChange={(e) => handleFileInputChange(e.target.files[0])}
-                    />
-                    {/* Add error handling for file input if needed */}
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* PROJECT DOCUMENT CATEGORY */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Danh mục tài liệu</Typography>
+                  <Typography variant="h5">Vai trò</Typography>
+                  <Typography variant="p">Chọn vai trò</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={formData.category}
+                      value={formData.role}
                       onChange={(e) =>
-                        handleInputChange("category", e.target.value)
+                        handleInputChange("role", e.target.value)
                       }
-                      error={formData.categoryError?.hasError}
+                      error={formData.roleError?.hasError}
                     >
-                      <MenuItem disabled value={-1}>
-                        Chọn danh mục tài liệu
+                      <MenuItem disabled value="">
+                        Chọn vai trò
                       </MenuItem>
-                      {projectDocumentCategoryOptions.map((category, index) => (
-                        <MenuItem key={category} value={index}>
-                          {category}
+                      {participationRoleOptions.map((role, index) => (
+                        <MenuItem key={role} value={index}>
+                          {role}
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* PROJECT DOCUMENT TEMPLATE */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Mẫu tài liệu</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <Select
-                      variant="outlined"
-                      value={formData.projectDocumentTemplate?.id || -1}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "projectDocumentTemplate",
-                          projectDocumentTemplateOptions.find(
-                            (template) => template.id == e.target.value
-                          )
-                        )
-                      }
-                      error={formData.projectDocumentTemplateError?.hasError}
-                    >
-                      <MenuItem disabled value={-1}>
-                        Chọn mẫu tài liệu
-                      </MenuItem>
-                      {projectDocumentTemplateOptions.map((template) => (
-                        <MenuItem key={template.id} value={template.id}>
-                          {template.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* DESCRIPTION */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Mô tả</Typography>
-                  <Typography variant="p">Nhập mô tả</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <TextField
-                      multiline
-                      rows={4}
-                      error={formData.descriptionError.hasError}
-                      variant="outlined"
-                      value={formData.description}
-                      helperText={formData.descriptionError.label}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {/* IS PUBLIC ADVERTISEMENT */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Công khai</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl>
-                    <Checkbox
-                      checked={formData.isPublicAdvertisement}
-                      onChange={() =>
-                        handleCheckboxChange("isPublicAdvertisement")
-                      }
-                    />
+                    <FormHelperText>
+                      <Typography variant="subtitle2" color="error">
+                        {formData.roleError?.label}
+                      </Typography>
+                    </FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
