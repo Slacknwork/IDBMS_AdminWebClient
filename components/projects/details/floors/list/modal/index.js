@@ -12,6 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useParams } from "next/navigation";
+import { createFloor } from "../../../../../../api/floorServices";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -34,6 +37,7 @@ const initialValues = {
 };
 
 export default function CreateFloorModal({ children }) {
+  const params = useParams();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -60,6 +64,37 @@ export default function CreateFloorModal({ children }) {
       case "description":
       default:
         return "";
+    }
+  };
+
+  const transformEmptyToNull = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+      if (result[key] === "") {
+        result[key] = null;
+      }
+    }
+    return result;
+  };
+
+  const handleCreate = async () => {
+    const request = {
+      description: formData.description ?? "",
+      usePurpose: formData.usePurpose ?? "",
+      floorNo: formData.floorNo ?? "",
+      projectId: params.id ?? ""
+    }
+    const transformedValue = transformEmptyToNull(request);
+    console.log(transformedValue)
+    try {
+      const response = await createFloor(transformedValue);
+      console.log(response);
+      toast.success("Thêm thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
     }
   };
 
@@ -184,7 +219,9 @@ export default function CreateFloorModal({ children }) {
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
               <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
-                <Button variant="contained" disableElevation>
+                <Button variant="contained" disableElevation
+                  onClick={handleCreate}
+                >
                   Tạo
                 </Button>
               </Box>

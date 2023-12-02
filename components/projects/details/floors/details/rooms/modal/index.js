@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
   FormControl,
   Grid,
   IconButton,
+  MenuItem,
   Modal,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { getAllRoomTypes } from "../../../../../../../api/roomTypeServices";
+import { createRoom } from "../../../../../../../api/roomServices";
 
 const style = {
   position: "absolute",
@@ -31,9 +37,16 @@ const initialValues = {
   usePurposeError: { hasError: false, label: "" },
   description: "",
   descriptionError: { hasError: false, label: "" },
+  area: 0,
+  areaError: { hasError: false, label: "" },
+  roomType: "",
+  roomTypeError: { hasError: false, label: "" },
 };
 
-export default function CreateFloorModal({ children }) {
+
+export default function CreateFloorModal({ children, floorNo }) {
+  const params = useParams();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -63,6 +76,63 @@ export default function CreateFloorModal({ children }) {
     }
   };
 
+  const transformEmptyToNull = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+      if (result[key] === "") {
+        result[key] = null;
+      }
+    }
+    return result;
+  };
+
+  const handleCreate = async () => {
+    const request = {
+      description: formData.description ?? "",
+      usePurpose: formData.usePurpose ?? "",
+      floorId: params.floorId ?? "",
+      area: parseInt(formData.area, 10) ?? 0,
+      roomTypeId: formData.roomType ?? "",
+      projectId: params.id ?? ""
+    }
+    const transformedValue = transformEmptyToNull(request);
+    console.log(transformedValue)
+    try {
+      const response = await createRoom(transformedValue);
+      console.log(response);
+      toast.success("Thêm thành công!");
+      handleClose()
+      router.push(`/projects/${params.id}/rooms/${response.data.id}`);
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [roomtypes, setRoomTypes] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      initialized.current = true;
+      try {
+        const data = await getAllRoomTypes();
+        console.log(data);
+        setRoomTypes(data)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <Box>
       <Button variant="contained" disableElevation onClick={handleOpen}>
@@ -74,9 +144,9 @@ export default function CreateFloorModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style }} container component="div">
+        <Box sx={{ ...style }} component="div">
           <Box
-            container
+
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -109,7 +179,7 @@ export default function CreateFloorModal({ children }) {
             spacing={3}
           >
             {/* FLOOR NO */}
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
                   <Typography variant="h5">
@@ -124,6 +194,7 @@ export default function CreateFloorModal({ children }) {
                       variant="outlined"
                       value={formData.floorNo}
                       helperText={formData.floorNoError.label}
+                      disabled
                       onChange={(e) =>
                         handleInputChange("floorNo", e.target.value)
                       }
@@ -131,7 +202,7 @@ export default function CreateFloorModal({ children }) {
                   </FormControl>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
 
             {/* USE PURPOSE */}
             <Grid item xs={12} lg={12}>
@@ -181,10 +252,64 @@ export default function CreateFloorModal({ children }) {
               </Grid>
             </Grid>
 
+            {/* AREA */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    Diện tích<span style={{ color: "red" }}>*</span>
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      error={formData.areaError.hasError}
+                      variant="outlined"
+                      value={formData.area}
+                      helperText={formData.areaError.label}
+                      onChange={(e) => handleInputChange("area", e.target.value)}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* TYPE OF ROOM SELECTION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">
+                    Loại phòng<span style={{ color: "red" }}>*</span>
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <Select
+                      error={formData.roomTypeError.hasError}
+                      variant="outlined"
+                      value={formData.roomType}
+                      onChange={(e) => handleInputChange("roomType", e.target.value)}
+                    >
+                      {roomtypes?.map((value, index) => (
+                        <MenuItem value={value.id} key={value.id}>
+                          {value.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+
+                    {formData.roomTypeError.label}
+
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
               <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
-                <Button variant="contained" disableElevation>
+                <Button variant="contained" disableElevation
+                  onClick={handleCreate}
+                >
                   Tạo
                 </Button>
               </Box>
