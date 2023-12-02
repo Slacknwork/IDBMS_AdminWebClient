@@ -27,6 +27,7 @@ import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
+import ItemModal from "./modal";
 
 const interiorItems = [
   {
@@ -126,7 +127,6 @@ export default function InteriorItems() {
               }}
             />
           </FormControl>
-
           <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
             <InputLabel id="category-filter-label">Danh mục</InputLabel>
             <Select
@@ -163,6 +163,9 @@ export default function InteriorItems() {
             </Select>
           </FormControl>
         </Box>
+        <ItemModal>
+          <span>Thêm</span>
+        </ItemModal>
       </Box>
 
       <Table aria-label="simple table">

@@ -86,33 +86,30 @@ export default function Comments() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Project Task
+                Công việc
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Content
+                Nội dung
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                User
+                Người dùng
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Created Time
+                Thời gian tạo
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Status
+                Trạng thái
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
-                Details
-              </Typography>
             </StyledTableCell>
           </TableRow>
         </TableHead>

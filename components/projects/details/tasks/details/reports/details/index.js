@@ -102,7 +102,7 @@ export default function ReportDetails() {
             <Grid
               container
               spacing={2}
-              sx={{ pr: 2, borderRight: 1, borderColor: "gray" }}
+              sx={{ pr: 3, borderRight: 1, borderColor: "gray" }}
             >
               <Grid
                 item
@@ -207,7 +207,7 @@ export default function ReportDetails() {
           </Grid>
 
           {/* TABLE */}
-          <Grid item xs={12} lg={6} sx={{ pl: 2 }}>
+          <Grid item xs={12} lg={6} sx={{ pl: 3 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="h4">Tài liệu</Typography>
               <Box sx={{ display: "flex" }}>
