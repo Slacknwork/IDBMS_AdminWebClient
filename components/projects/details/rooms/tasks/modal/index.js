@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -17,8 +17,15 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import calculationUnit from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
+import { getAllInteriorItems } from "../../../../../../api/interiorItemServices";
+import { toast } from "react-toastify";
+import { getAllTaskDesigns } from "../../../../../../api/taskDesignServices";
+import { createProjectTask } from "../../../../../../api/projectTaskServices";
+import { useParams } from "next/navigation";
+import { getAllTaskCategories } from "../../../../../../api/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "../../../../../../api/paymentStageServices";
 
 const style = {
   position: "absolute",
@@ -59,17 +66,18 @@ const noDateLabel = "Số ngày";
 
 const parentTaskLabel = "Thuộc công việc";
 
-const interiorItemLabel = "Vật liệu nội thất";
+const interiorItemLabel = "Nội thất";
 
-const taskDesignLabel = "Thiết kế công việc (Tùy chọn)";
+const taskDesignLabel = "Thiết kế công việc";
 
-const roomLabel = "Phòng (Tùy chọn)";
+const roomLabel = "Phòng";
 
 const statusLabel = "Trạng thái";
 
 const modalTitle = "Tạo công việc mới";
 
-export default function SiteModal({ children }) {
+export default function CreateModal({ children, request, tasks }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -100,17 +108,21 @@ export default function SiteModal({ children }) {
     noDate: 0,
     parentTask: null,
     interiorItem: null,
-    taskDesign: "",
+    taskDesign: null,
     room: "",
     status: "",
     statusError: { hasError: false, label: "" },
+    designCategoryId: "",
+    taskCategoryId: "",
+    paymentStage: null,
+    taskCategory: null,
   });
 
   const calculationUnitOptions = ["Option1", "Option2", "Option3"];
 
   const taskOptions = [
-    { id: 1, name: "Task 1" },
-    { id: 2, name: "Task 2" },
+    { id: 1, name: "Task 1", code: "asgfh" },
+    { id: 2, name: "Task 2", code: "asefee" },
   ];
   const interiorItemOptions = [
     { id: 1, name: "Interior Item 1" },
@@ -134,8 +146,114 @@ export default function SiteModal({ children }) {
     handleInputError(
       "percentage",
       isNaN(value) || value < 0 || value > 100,
-      "Please enter a valid percentage (0-100)"
+      "Vui lòng nhập trong khoảng (0-100)"
     );
+  };
+
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  const [items, setItems] = useState([]);
+  const [taskDesigns, setTaskDesigns] = useState([]);
+  const [taskCategories, setTaskCategories] = useState([]);
+  const [stages, setStages] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const listItems = await getAllInteriorItems();
+        const furniture = listItems.filter(item => item?.interiorItemCategory?.interiorItemType === 0);
+        console.log(furniture)
+        setItems(furniture)
+
+        const listTaskDesign = await getAllTaskDesigns();
+        setTaskDesigns(listTaskDesign)
+        console.log(listTaskDesign)
+
+        const listTaskCategory = await getAllTaskCategories();
+        setTaskCategories(listTaskCategory)
+        console.log(listTaskCategory)
+
+        const listStagesByProjectId = await getPaymentStagesByProjectId(params.id);
+        setStages(listStagesByProjectId)
+        console.log(listStagesByProjectId)
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  const updateFormFields = (selectedTaskDesign) => {
+    if (selectedTaskDesign) {
+      console.log(selectedTaskDesign)
+
+      setFormData((prevData) => ({
+        ...prevData,
+        name: selectedTaskDesign.name || "",
+        description: selectedTaskDesign.description || "",
+        percentage: 0,
+        pricePerUnit: selectedTaskDesign.estimatePricePerUnit || "",
+        designCategoryId: selectedTaskDesign.interiorItemCategoryId || null,
+        taskCategoryId: selectedTaskDesign.taskCategoryId || null,
+        taskCategory: selectedTaskDesign.taskCategory || ""
+      }));
+    }
+  };
+
+  const transformEmptyToNull = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+      if (result[key] === "") {
+        result[key] = null;
+      }
+    }
+    return result;
+  };
+
+  const handleCreate = async () => {
+    console.log(formData)
+    const request = {
+      code: formData?.taskDesign?.code ?? null,
+      name: formData.name,
+      description: formData.description,
+      percentage: formData.percentage,
+      calculationUnit: formData.calculationUnit,
+      pricePerUnit: formData.pricePerUnit,
+      unitInContract: parseInt(formData.unitInContract, 10) || 0,
+      unitUsed: parseInt(formData.unitUsed, 10) || 0,
+      isIncurred: formData.isIncurred,
+      startedDate: formData.started ? formData.started.toISOString() : null,
+      endDate: formData.end ? formData.end.toISOString() : null,
+      noDate: formData.noDate,
+      parentTaskId: formData?.parentTask?.id ?? null,
+      taskCategoryId: formData.taskCategoryId,
+      projectId: params.id,
+      paymentStageId: formData?.paymentStage?.id ?? null,
+      interiorItemId: formData?.interiorItem?.id ?? null,
+      taskDesignId: formData?.taskDesign?.id ?? null,
+      roomId: params.roomId,
+      status: formData.status,
+    };
+    const transformedValue = transformEmptyToNull(request);
+    console.log(transformedValue)
+    try {
+      const response = await createProjectTask(transformedValue);
+      console.log(response);
+      toast.success("Thêm thành công!");
+      // handleClose()
+      // router.push(`/projects/${params.id}/rooms/${response.data.id}`);
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -151,7 +269,7 @@ export default function SiteModal({ children }) {
       >
         <Box sx={{ ...style }} component="div">
           <Box
-            container
+
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -184,6 +302,44 @@ export default function SiteModal({ children }) {
             container
             spacing={3}
           >
+
+            {/* TASK DESIGN (OPTIONAL) */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">{taskDesignLabel}</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <Autocomplete
+                    options={taskDesigns}
+                    getOptionLabel={(option) => `${option.code} - ${option.name}`}
+                    value={formData.taskDesign}
+                    onChange={(_, newValue) => {
+                      handleInputChange("taskDesign", newValue);
+                      if (newValue === null) {
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          designCategoryId: null,
+                        }));
+                      } else {
+                        updateFormFields(newValue);
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Chọn thiết kế"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
@@ -252,7 +408,7 @@ export default function SiteModal({ children }) {
                       <MenuItem disabled value={-1}>
                         {formData.calculationUnitDefaultOptionLabel}
                       </MenuItem>
-                      {calculationUnitOptions.map((unit, index) => (
+                      {calculationUnit.map((unit, index) => (
                         <MenuItem key={unit} value={index}>
                           {unit}
                         </MenuItem>
@@ -357,6 +513,80 @@ export default function SiteModal({ children }) {
               </Grid>
             </Grid>
 
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">Mô tả công việc</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <FormControl fullWidth>
+                    <TextField
+                      multiline
+                      rows={4}
+                      variant="outlined"
+                      value={formData.description}
+                      onChange={(e) =>
+                        handleInputChange("description", e.target.value)
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* TASK CATEGORY */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">Loại công việc</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <Autocomplete
+                    options={taskCategories}
+                    getOptionLabel={(option) => `${option?.name}`}
+                    value={formData.taskCategory}
+                    onChange={(_, newValue) =>
+                      handleInputChange("taskCategory", newValue)
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Chọn loại công việc"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* PAYMENT STAGE */}
+            <Grid item xs={12} lg={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={4} lg={4}>
+                  <Typography variant="h5">Giai đoạn thanh toán</Typography>
+                </Grid>
+                <Grid item xs={8} lg={8}>
+                  <Autocomplete
+                    options={stages ?? []}
+                    getOptionLabel={(option) => option ? `${option.name}` : ''}
+                    value={formData.paymentStage}
+                    onChange={(_, newValue) =>
+                      handleInputChange("paymentStage", newValue)
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Chọn giai đoạn thanh toán"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
             {/* STARTED */}
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
@@ -365,7 +595,7 @@ export default function SiteModal({ children }) {
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <TextField
-                    label="Started"
+                    label="Ngày bắt đầu"
                     type="date"
                     variant="outlined"
                     value={formData.started.toISOString().split("T")[0]}
@@ -388,7 +618,7 @@ export default function SiteModal({ children }) {
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <TextField
-                    label="End (Optional)"
+                    label="Ngày kết thúc"
                     type="date"
                     variant="outlined"
                     value={
@@ -419,7 +649,7 @@ export default function SiteModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <TextField
-                      label="No Date"
+                      label="Số ngày"
                       type="number"
                       variant="outlined"
                       value={formData.noDate}
@@ -443,17 +673,18 @@ export default function SiteModal({ children }) {
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <Autocomplete
-                    options={taskOptions}
-                    getOptionLabel={(option) => option.name}
+                    options={tasks}
+                    getOptionLabel={(option) => `${option.code} - ${option.name}`}
                     value={formData.parentTask}
-                    onChange={(_, newValue) =>
-                      handleInputChange("parentTask", newValue)
-                    }
+                    onChange={(_, newValue) => handleInputChange("parentTask", newValue)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Parent Task"
+                        label="Công việc phụ thuộc"
                         variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                        }}
                       />
                     )}
                   />
@@ -469,16 +700,33 @@ export default function SiteModal({ children }) {
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <Autocomplete
-                    options={interiorItemOptions}
-                    getOptionLabel={(option) => option.name}
+                    options={items}
+                    getOptionLabel={(option) => `${option.code} - ${option.name}`}
                     value={formData.interiorItem}
-                    onChange={(_, newValue) =>
-                      handleInputChange("interiorItem", newValue)
-                    }
+                    onChange={(_, newValue) => handleInputChange("interiorItem", newValue)}
+                    filterOptions={(options, { inputValue }) => {
+                      const inputValueLower = inputValue.toLowerCase();
+
+                      if (formData.designCategoryId) {
+                        console.log(formData.designCategoryId)
+                        return options.filter(
+                          (option) =>
+                            (option.code.toLowerCase().includes(inputValueLower) ||
+                              option.name.toLowerCase().includes(inputValueLower)) &&
+                            option.interiorItemCategoryId === formData.designCategoryId
+                        );
+                      } else {
+                        return options.filter(
+                          (option) =>
+                            option.code.toLowerCase().includes(inputValueLower) ||
+                            option.name.toLowerCase().includes(inputValueLower)
+                        );
+                      }
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Interior Item"
+                        label="Chọn nội thất"
                         variant="outlined"
                       />
                     )}
@@ -487,42 +735,22 @@ export default function SiteModal({ children }) {
               </Grid>
             </Grid>
 
-            {/* TASK DESIGN (OPTIONAL) */}
-            <Grid item xs={12} lg={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{taskDesignLabel}</Typography>
-                </Grid>
-                <Grid item xs={8} lg={8}>
-                  <FormControl fullWidth>
-                    <Select
-                      variant="outlined"
-                      value={formData.taskDesign}
-                      onChange={(e) =>
-                        handleInputChange("taskDesign", e.target.value)
-                      }
-                    >
-                      <MenuItem value="">None</MenuItem>
-                      <MenuItem value="Option1">Option1</MenuItem>
-                      <MenuItem value="Option2">Option2</MenuItem>
-                      <MenuItem value="Option3">Option3</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
 
             {/* ROOM (OPTIONAL) */}
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">{roomLabel}</Typography>
+                  <Typography variant="h5">
+                    {roomLabel}
+                  </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
                       value={formData.room}
+                      style={{ backgroundColor: "#EFEFEF" }}
+                      disabled
                       onChange={(e) =>
                         handleInputChange("room", e.target.value)
                       }
@@ -535,7 +763,7 @@ export default function SiteModal({ children }) {
                   </FormControl>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
 
             {/* STATUS */}
             <Grid item xs={12} lg={12}>
@@ -552,8 +780,8 @@ export default function SiteModal({ children }) {
                         handleInputChange("status", e.target.value)
                       }
                     >
-                      {projectTaskStatusOptions.map((status) => (
-                        <MenuItem key={status} value={status}>
+                      {projectTaskStatusOptions.map((status, index) => (
+                        <MenuItem key={status} value={index}>
                           {status}
                         </MenuItem>
                       ))}
@@ -572,7 +800,7 @@ export default function SiteModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleCreate}
                 >
                   Tạo
                 </Button>

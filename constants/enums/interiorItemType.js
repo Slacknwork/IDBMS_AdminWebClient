@@ -1,4 +1,5 @@
 export default {
-    0: "Furniture",
-    1: "Material",
+    0: "Nội thất",
+    1: "Vật liệu",
+    2: "Theo đặt hàng"
 };
