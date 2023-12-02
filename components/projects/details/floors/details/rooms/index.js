@@ -121,6 +121,11 @@ export default function Rooms() {
                 Loại phòng
               </Typography>
             </StyledTableCell>
+            <StyledTableCell>
+              <Typography variant="subtitle2" fontWeight={600}>
+                Trạng thái
+              </Typography>
+            </StyledTableCell>
           </TableRow>
         </TableHead>
         {/* Table Body */}
@@ -151,6 +156,11 @@ export default function Rooms() {
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {room.roomType?.name ?? "Không xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {room?.isHidden ? "Đã ẩn" : "Đang hoạt động"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
