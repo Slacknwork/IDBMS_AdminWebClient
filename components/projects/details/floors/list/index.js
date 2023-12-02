@@ -15,6 +15,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import CreateFloorModal from "./modal";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { getFloorsByProjectId } from "../../../../../api/floorServices";
 
 // Sample comments data
 const floors = [
@@ -54,6 +57,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function Floors() {
   const params = useParams();
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const projectId = params.id;
+        const data = await getFloorsByProjectId(projectId);
+        console.log(data)
+        setValues(data)
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <Box sx={{ overflow: "auto" }}>
       {/* Table */}
@@ -80,16 +108,16 @@ export default function Floors() {
               </Typography>
             </StyledTableCell>
             <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
+              {/* <Typography variant="subtitle2" fontWeight={600}>
                 Chi tiết
-              </Typography>
+              </Typography> */}
             </StyledTableCell>
           </TableRow>
         </TableHead>
         {/* Table Body */}
         <TableBody>
-          {floors &&
-            floors.map((floor) => (
+          {values &&
+            values.map((floor) => (
               <StyledTableRow key={floor.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>

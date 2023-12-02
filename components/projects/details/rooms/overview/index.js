@@ -9,11 +9,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveModal from "./modal";
 import DeleteModal from "./deleteModal";
+import { getRoomById } from "../../../../../api/roomServices";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
+import { getAllRoomTypes } from "../../../../../api/roomTypeServices";
 
 const roomTypeOptions = [
   { id: 1, name: "Single Room" },
@@ -22,6 +26,7 @@ const roomTypeOptions = [
 ];
 
 export default function RoomOverview() {
+  const params = useParams();
   const [formData, setFormData] = useState({
     usePurpose: "",
     usePurposeError: { hasError: false, label: "" },
@@ -33,6 +38,7 @@ export default function RoomOverview() {
     pricePerAreaError: { hasError: false, label: "" },
     roomType: "",
     roomTypeError: { hasError: false, label: "" },
+    floorId: ""
   });
 
   const validateInput = (field, value) => {
@@ -58,6 +64,62 @@ export default function RoomOverview() {
     }));
   };
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [task, setTasks] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [roomtypes, setRoomTypes] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      initialized.current = true;
+      try {
+        const data = await getRoomById(params.roomId);
+        console.log(data);
+        mapData(data);
+
+        const rts = await getAllRoomTypes();
+        console.log(rts);
+        setRoomTypes(rts)
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  const mapData = (data) => {
+    if (data) {
+
+      // const storedFloorId = localStorage.getItem('floorId');
+      // console.log(storedFloorId)
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        usePurpose: data.usePurpose ?? "Không xác định",
+        description: data.description ?? "",
+        area: data.area ?? 0,
+        pricePerArea: data.pricePerArea ?? 0,
+        roomType: data?.roomType?.id ?? "",
+        floorId: data?.floorId ?? "",
+      }));
+
+      setTasks(data.task ?? "")
+      // setTotal
+      const total = data.task?.reduce((acc, room) => {
+        const roomTotal = (room.pricePerArea || 0) * (room.area || 0);
+        return acc + roomTotal;
+      }, 0);
+      setTotal(total ?? 0)
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer title="Room Details" description="Details of the room">
       <Box sx={{ overflow: "auto", mt: 3 }}>
@@ -79,7 +141,16 @@ export default function RoomOverview() {
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>Xóa</DeleteModal>
-              <SaveModal>Lưu</SaveModal>
+              <SaveModal
+                request={{
+                  description: formData.description ?? "",
+                  usePurpose: formData.usePurpose ?? "",
+                  floorId: formData.floorId ?? "",
+                  area: parseInt(formData.area, 10) ?? 0,
+                  roomTypeId: formData.roomType ?? "",
+                  projectId: params.id ?? ""
+                }}
+              >Lưu</SaveModal>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>
@@ -153,12 +224,16 @@ export default function RoomOverview() {
                         value={formData.pricePerArea}
                         error={formData.pricePerAreaError.hasError}
                         helperText={formData.pricePerAreaError.label}
+                        disabled
                         onChange={(e) =>
                           handleInputChange("pricePerArea", e.target.value)
                         }
+
                         InputProps={{
-                          startAdornment: "₫/",
-                          endAdornment: "m²",
+                          style: {
+                            backgroundColor: "#EFEFEF",
+                          },
+                          endAdornment: "VND/m²",
                         }}
                       />
                     </FormControl>
@@ -177,7 +252,6 @@ export default function RoomOverview() {
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
-                      {/* Assuming roomTypeOptions is an array of objects with id and name */}
                       <TextField
                         select
                         variant="outlined"
@@ -188,7 +262,7 @@ export default function RoomOverview() {
                           handleInputChange("roomType", e.target.value)
                         }
                       >
-                        {roomTypeOptions.map((option) => (
+                        {roomtypes.map((option) => (
                           <MenuItem key={option.id} value={option.id}>
                             {option.name}
                           </MenuItem>
@@ -204,7 +278,6 @@ export default function RoomOverview() {
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
                       Mô tả
-                      <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>

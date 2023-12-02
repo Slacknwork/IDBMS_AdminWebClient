@@ -1,75 +1,92 @@
+const apiUrl = 'https://localhost:7062/api/RoomTypes';
+
 const getAllRoomTypes = async () => {
     try {
-        const response = await fetch(
-            'https://localhost:7062/api/RoomTypes',
-            { cache: 'no-store' }
-        );
+        const response = await fetch(apiUrl, { cache: 'no-store' });
+
+        if (!response.ok) {
+            throw new Error('Get room types failed');
+        }
+
         const roomTypes = await response.json();
         return roomTypes;
     } catch (error) {
-        console.error('Error fetching all room types:', error);
+        console.error('Error fetching room types:', error);
         throw error;
     }
 };
 
-const createRoomType = async (createData) => {
+const createRoomType = async (request) => {
     try {
-        const promise = await axios.post('https://localhost:7062/api/RoomTypes', createData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            apiUrl,
             {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createRoomTypessToast' }
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Create room type failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error creating room type:', error);
         throw error;
     }
 };
 
-const updateRoomType = async (id, updateData) => {
+const updateRoomType = async (id, request) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/RoomTypes/${id}`, updateData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `${apiUrl}/${id}`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateRoomTypessToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update room type failed');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error updating room type:', error);
         throw error;
     }
 };
 
-const hideRoomType = async (id, status) => {
+const deleteRoomType = async (id) => {
     try {
-        const promise = await axios.delete(`https://localhost:7062/api/RoomTypes/${id}/isHidden?isHidden=${status}`);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `${apiUrl}/${id}`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'hideRoomTypessToast' }
+                method: 'DELETE',
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Delete room type failed');
+        }
+
+        return true;
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting room type:', error);
         throw error;
     }
 };
-export { getAllRoomTypes, createRoomType, updateRoomType, hideRoomType };
+
+export {
+    getAllRoomTypes,
+    createRoomType,
+    updateRoomType,
+    deleteRoomType,
+};

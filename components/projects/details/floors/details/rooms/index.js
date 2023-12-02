@@ -13,8 +13,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
+import { useEffect, useRef, useState } from "react";
 import CreateRoomModal from "./modal"; // Adjust the import based on your modal component
+import { getRoomsByFloorId } from "../../../../../../api/roomServices";
+import { toast } from "react-toastify";
 
 // Sample rooms data
 const rooms = [
@@ -58,11 +60,37 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function Rooms() {
   const params = useParams();
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      initialized.current = true;
+      try {
+        const data = await getRoomsByFloorId(params.floorId ?? "");
+        console.log(data);
+        setValues(data)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    // localStorage.setItem('floorId', params.floorId.toString());
+    fetchDataFromApi();
+  }, []);
+
   return (
     <Box sx={{ overflow: "auto" }}>
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <CreateRoomModal>Tạo phòng</CreateRoomModal>
+        <CreateRoomModal
+          floorNo={params.floorId}
+        >Tạo phòng</CreateRoomModal>
       </Box>
       <Table aria-label="simple table" sx={{ mt: 1 }}>
         {/* Table Head */}
@@ -85,7 +113,7 @@ export default function Rooms() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Giá tiền
+                Tổng giá tiền (VND)
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -93,17 +121,12 @@ export default function Rooms() {
                 Loại phòng
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
-                Chi tiết
-              </Typography>
-            </StyledTableCell>
           </TableRow>
         </TableHead>
         {/* Table Body */}
         <TableBody>
-          {rooms &&
-            rooms.map((room) => (
+          {values &&
+            values.map((room) => (
               <StyledTableRow key={room.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -127,7 +150,7 @@ export default function Rooms() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {room.roomType?.name}
+                    {room.roomType?.name ?? "Không xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

@@ -1,13 +1,38 @@
-const getRoomsByProjectId = async (projectId) => {
+const getRoomsByFloorId = async (floorId) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Rooms/project/${projectId}`,
+            `https://localhost:7062/api/Rooms/floor/${floorId}`,
             { cache: 'no-store' }
         );
+
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
+
         const rooms = await response.json();
         return rooms;
     } catch (error) {
-        console.error('Error fetching rooms by project ID:', error);
+        console.error('Error fetching rooms by floor ID:', error);
+        throw error;
+    }
+};
+
+
+const getRoomById = async (roomId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Rooms/${roomId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get room by ID failed');
+        }
+
+        const room = await response.json();
+        return room;
+    } catch (error) {
+        console.error('Error fetching room by ID:', error);
         throw error;
     }
 };
@@ -81,7 +106,8 @@ const updateRoomIsHidden = async (id, isHidden) => {
 };
 
 export {
-    getRoomsByProjectId,
+    getRoomsByFloorId,
+    getRoomById,
     createRoom,
     updateRoom,
     updateRoomIsHidden,

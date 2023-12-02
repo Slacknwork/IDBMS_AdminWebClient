@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
+import { deleteFloorById } from "../../../../../../../api/floorServices";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -17,6 +20,7 @@ const style = {
 };
 
 export default function SiteModal({ children, request }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -24,6 +28,20 @@ export default function SiteModal({ children, request }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleDelete = async () => {
+
+    try {
+      const response = await deleteFloorById(params.floorId);
+      console.log(response);
+      toast.success("Xóa thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -43,10 +61,10 @@ export default function SiteModal({ children, request }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Lưu</h2>
+          <h2 id="child-modal-title">Xóa</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin tầng?</p>
+              <p>Xóa tầng?</p>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -63,7 +81,7 @@ export default function SiteModal({ children, request }) {
                   variant="contained"
                   disableElevation
                   color="error"
-                  onClick={handleClose}
+                  onClick={handleDelete}
                 >
                   Xóa
                 </Button>

@@ -8,13 +8,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveModal from "./modal";
 import DeleteModal from "./deleteModal";
+import { toast } from "react-toastify";
+import { getFloorsById } from "/api/floorServices";
+import { useParams, useSearchParams } from "next/navigation";
+import { floor } from "lodash";
 
 export default function FloorOverview() {
+  const params = useParams();
+
   const [formData, setFormData] = useState({
     floorNo: "",
     floorNoError: { hasError: false, label: "" },
@@ -46,6 +52,48 @@ export default function FloorOverview() {
     }));
   };
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [rooms, setRooms] = useState([]);
+  const [total, setTotal] = useState(0);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      initialized.current = true;
+      try {
+        const data = await getFloorsById(params.floorId);
+        console.log(data);
+        mapData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  const mapData = (data) => {
+    if (data) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        floorNo: data.floorNo ?? "Không xác định",
+        description: data.description ?? "",
+        usePurpose: data.usePurpose ?? "Không xác định",
+      }));
+      setRooms(data.rooms ?? "")
+      // setTotal
+      const total = data.rooms?.reduce((acc, room) => {
+        const roomTotal = (room.pricePerArea || 0) * (room.area || 0);
+        return acc + roomTotal;
+      }, 0);
+      setTotal(total ?? 0)
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer title="Floor Details" description="Details of the floor">
       <Box sx={{ overflow: "auto", mt: 3 }}>
@@ -63,11 +111,20 @@ export default function FloorOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Tầng số N
+              Tầng số {formData.floorNo}
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>Xóa</DeleteModal>
-              <SaveModal>Lưu</SaveModal>
+              <SaveModal
+                request={
+                  {
+                    description: formData.description ?? "",
+                    usePurpose: formData.usePurpose ?? "",
+                    floorNo: formData.floorNo ?? "",
+                    projectId: params.id ?? ""
+                  }
+                }
+              >Lưu</SaveModal>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>
@@ -159,18 +216,38 @@ export default function FloorOverview() {
               <Typography variant="h5" sx={{ my: "auto" }}>
                 Bảng giá
               </Typography>
+              <Typography variant="h5" sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}>
+              </Typography>
+              {rooms && rooms.map((room, index) => (
+                <Grid
+                  container
+                  key={index}
+                  sx={{ mt: 1, pt: 2 }}
+                >
+                  <Grid item xs={6} lg={5}>
+                    <Typography variant="h6" sx={{ my: "auto" }}>
+                      {room.usePurpose ?? ""}:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                    <Typography variant="p" sx={{ my: "auto" }}>
+                      {(room.pricePerArea * room.area).toLocaleString('en-US') ?? 0} VND
+                    </Typography>
+                  </Grid>
+                </Grid>
+              ))}
               <Grid
                 container
                 sx={{ mt: 2, borderTop: 1, borderColor: "gray", pt: 2 }}
               >
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
-                    Phòng 1:
+                    Tổng cộng:
                   </Typography>
                 </Grid>
-                <Grid item xs={6} lg={7}>
-                  <Typography variant="p" sx={{ my: "auto" }}>
-                    4.000.000 VND
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    {total.toLocaleString('en-US') ?? 0} VND
                   </Typography>
                 </Grid>
               </Grid>

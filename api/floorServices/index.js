@@ -4,10 +4,30 @@ const getFloorsByProjectId = async (projectId) => {
             `https://localhost:7062/api/Floors/project/${projectId}`,
             { cache: 'no-store' }
         );
+        if (!response.ok) {
+            throw new Error("Get failed");
+        }
         const floors = await response.json();
         return floors;
     } catch (error) {
         console.error('Error fetching floors by project ID:', error);
+        throw error;
+    }
+};
+
+const getFloorsById = async (floorId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Floors/${floorId}`,
+            { cache: 'no-store' }
+        );
+        if (!response.ok) {
+            throw new Error("Get failed");
+        }
+        const floors = await response.json();
+        return floors;
+    } catch (error) {
+        console.error('Error fetching floors by ID:', error);
         throw error;
     }
 };
@@ -82,6 +102,7 @@ const deleteFloorById = async (id) => {
 
 export {
     getFloorsByProjectId,
+    getFloorsById,
     createFloor,
     updateFloor,
     deleteFloorById,

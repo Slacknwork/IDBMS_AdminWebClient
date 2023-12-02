@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
+import { updateFloor } from "../../../../../../../api/floorServices";
+import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -16,7 +19,8 @@ const style = {
   pb: 3,
 };
 
-export default function SiteModal({ children, request }) {
+export default function CreateModal({ children, request }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -24,6 +28,20 @@ export default function SiteModal({ children, request }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleUpdate = async () => {
+    console.log(request);
+    try {
+      const response = await updateFloor(params.floorId ?? "", request);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -56,7 +74,7 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleUpdate}
                 >
                   Lưu
                 </Button>

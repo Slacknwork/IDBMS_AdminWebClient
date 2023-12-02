@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
+import { updateRoom } from "../../../../../../api/roomServices";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -17,6 +20,7 @@ const style = {
 };
 
 export default function SiteModal({ children, request }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -24,6 +28,20 @@ export default function SiteModal({ children, request }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleUpdate = async () => {
+    console.log(request);
+    try {
+      const response = await updateRoom(params.roomId ?? "", request);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -56,7 +74,7 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleUpdate}
                 >
                   Lưu
                 </Button>
