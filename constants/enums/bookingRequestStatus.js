@@ -1,5 +1,1 @@
-export default {
-    0: "Đang chờ xử lý",
-    1: "Từ chối",
-    2: "Đã tiếp nhận",
-};
+export default ["Đang chờ xử lý", "Từ chối", "Đã tiếp nhận"];
