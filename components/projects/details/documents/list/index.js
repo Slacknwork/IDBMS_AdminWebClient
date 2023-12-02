@@ -20,10 +20,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { IconSearch } from "@tabler/icons-react";
+import {
+  IconDownload,
+  IconPencil,
+  IconTrash,
+  IconSearch,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+import DocumentModal from "./modal";
+import DeleteModal from "./deleteModal";
 
 // Sample projectDocuments data
 const projectDocuments = [
@@ -134,6 +142,9 @@ export default function ProjectDocuments() {
             </Select>
           </FormControl>
         </Box>
+        <DocumentModal>
+          <span>Thêm</span>
+        </DocumentModal>
       </Box>
 
       {/* Table */}
@@ -160,11 +171,7 @@ export default function ProjectDocuments() {
                 Mẫu tài liệu
               </Typography>
             </StyledTableCell>
-            <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
-                Chi tiết
-              </Typography>
-            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -191,18 +198,23 @@ export default function ProjectDocuments() {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
-                  {document.projectDocumentTemplate.name}
+                  {document.projectDocumentTemplate?.name}
                 </Typography>
               </TableCell>
-              <TableCell align="right">
+              <TableCell align="right" sx={{ display: "flex" }}>
+                <DeleteModal>
+                  <IconTrash></IconTrash>
+                </DeleteModal>
+                <DocumentModal projectDocument={document}>
+                  <IconPencil></IconPencil>
+                </DocumentModal>
                 <Button
-                  component={Link}
+                  size="small"
                   variant="contained"
                   disableElevation
                   color="primary"
-                  href={`/projects/${params.id}/documents/${document.id}`}
                 >
-                  Chi tiết
+                  <IconDownload></IconDownload>
                 </Button>
               </TableCell>
             </StyledTableRow>

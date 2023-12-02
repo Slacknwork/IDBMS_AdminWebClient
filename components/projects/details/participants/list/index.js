@@ -3,9 +3,12 @@
 // Import necessary components and libraries
 import { styled } from "@mui/material/styles";
 import {
+  Avatar,
   Box,
   Button,
+  Card,
   Chip,
+  Grid,
   Table,
   TableBody,
   TableCell,
@@ -15,29 +18,26 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { deepOrange } from "@mui/material/colors";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import commentStatusOptions from "/constants/enums/commentStatus";
+import participationRole from "/constants/enums/participationRole";
+import ParticipantModal from "./modal";
 
-// Sample comments data
-const comments = [
+const participants = [
   {
     id: 1,
-    projectTask: { name: "Task 1" },
-    content: "This is the first comment.",
-    user: { name: "User A" },
-    createdTime: new Date("2023-01-15T10:30:00"),
-    status: 0,
+    project: { id: 1, name: "Project A" },
+    user: { id: 1, name: "User A" },
+    role: 0,
   },
   {
     id: 2,
-    projectTask: { name: "Task 2" },
-    content: "Another comment here.",
-    user: { name: "User B" },
-    createdTime: new Date("2023-02-05T14:45:00"),
-    status: 1,
+    project: { id: 2, name: "Project B" },
+    user: { id: 2, name: "User B" },
+    role: 1,
   },
 ];
 
@@ -79,19 +79,62 @@ export default function Comments() {
 
   return (
     <Box sx={{ overflow: "auto" }}>
+      <Grid container spacing={4}>
+        <Grid item xs={12} lg={6}>
+          <Card
+            variant="outlined"
+            sx={{ p: 3, border: 1, borderColor: "gray" }}
+          >
+            <Typography variant="h5" sx={{ my: "auto" }}>
+              Chủ đầu tư
+            </Typography>
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+              <Box sx={{ my: "auto", mx: 2 }}>
+                <Typography variant="h6">Anthony N</Typography>
+                <Typography variant="p">anthony@mail.com</Typography>
+                <br />
+                <Typography variant="p">0123456789</Typography>
+                <br />
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Card
+            variant="outlined"
+            sx={{ p: 3, border: 1, borderColor: "gray" }}
+          >
+            <Typography variant="h5" sx={{ my: "auto" }}>
+              Quản lý dự án
+            </Typography>
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+              <Box sx={{ my: "auto", mx: 2 }}>
+                <Typography variant="h6">Anthony N</Typography>
+                <Typography variant="p">anthony@mail.com</Typography>
+                <br />
+                <Typography variant="p">0123456789</Typography>
+                <br />
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
       {/* Table */}
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
+      >
+        <Typography variant="h5">Các thành viên</Typography>
+        <ParticipantModal>Thêm</ParticipantModal>
+      </Box>
       <Table aria-label="simple table">
         {/* Table Head */}
         <TableHead>
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Công việc
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Nội dung
+                Dự án
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -101,48 +144,31 @@ export default function Comments() {
             </StyledTableCell>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Thời gian tạo
+                Vai trò
               </Typography>
             </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right">
-            </StyledTableCell>
+            <StyledTableCell align="right"></StyledTableCell>
           </TableRow>
         </TableHead>
         {/* Table Body */}
         <TableBody>
-          {comments &&
-            comments.map((comment) => (
-              <StyledTableRow key={comment.id}>
+          {participants &&
+            participants.map((participant) => (
+              <StyledTableRow key={participant.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {comment.projectTask.name}
+                    {participant.project?.name}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {comment.content}
+                    {participant.user?.name}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {comment.user.name}
+                    <Chip label={participationRole[participant.role]}></Chip>
                   </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {comment.createdTime.toLocaleString("vi-VN")}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={commentStatusOptions[comment.status]}
-                    color={comment.status === 0 ? "default" : "primary"}
-                  />
                 </TableCell>
                 <TableCell align="right">
                   <Button
@@ -150,9 +176,9 @@ export default function Comments() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/projects/${params.id}/comments/${comment.id}`}
+                    href={`/participants/${participant.id}`}
                   >
-                    Chi tiết
+                    Details
                   </Button>
                 </TableCell>
               </StyledTableRow>
@@ -162,7 +188,6 @@ export default function Comments() {
       {/* Table Pagination */}
       <TablePagination
         component="div"
-        count={comments.length}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}

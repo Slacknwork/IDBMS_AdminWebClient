@@ -1,7 +1,7 @@
 "use client";
 
-import ProjectParticipants from "/components/projects/Participants";
+import ParticipantList from "/components/projects/details/participants/list";
 
 export default function ProjectDetailsPage() {
-  return <ProjectParticipants></ProjectParticipants>;
+  return <ParticipantList></ParticipantList>;
 }
