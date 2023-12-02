@@ -115,8 +115,27 @@ const createProjectTask = async (request) => {
     }
 };
 
+const getProjectTaskById = async (taskId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectTasks/${taskId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
+
+        const projectTask = await response.json();
+        return projectTask;
+    } catch (error) {
+        console.error('Error fetching project task by ID:', error);
+        throw error;
+    }
+};
+
 export {
     getProjectTasksByProjectId, getProjectTasksByPaymentStageId,
     getProjectTasksWithItemByProjectId, getProjectTasksWithItemByRoomId,
-    getProjectTasksByRoomId, createProjectTask
+    getProjectTasksByRoomId, createProjectTask, getProjectTaskById
 };
