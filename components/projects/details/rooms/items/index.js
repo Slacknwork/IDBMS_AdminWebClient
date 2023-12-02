@@ -18,6 +18,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
+import { getProjectTasksWithItemByRoomId } from "../../../../../api/projectTaskServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const interiorItems = [
   {
@@ -66,6 +69,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function InteriorItems() {
   const params = useParams();
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const data = await getProjectTasksWithItemByRoomId(params.roomId);
+        console.log(data)
+
+        const interiorItems = data?.map(task => task.interiorItem) ?? [];
+        setValues(interiorItems)
+        console.log(interiorItems)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <Box sx={{ overflow: "auto" }}>
       <Box
@@ -108,23 +136,23 @@ export default function InteriorItems() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {interiorItems &&
-            interiorItems.map((item) => (
-              <StyledTableRow key={item.id}>
+          {values &&
+            values.map((item) => (
+              <StyledTableRow key={item?.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {item.code}
+                    {item?.code ?? ""}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {item.name}
+                    {item?.name ?? ""}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={item.imageUrl}
-                    alt={item.name}
+                    src={item?.imageUrl}
+                    alt=""
                     width={50}
                     height={50}
                     objectFit="cover"
@@ -132,14 +160,14 @@ export default function InteriorItems() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {item.interiorItemCategory.name}
+                    {item?.interiorItemCategory?.name ?? ""}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Chip
-                    label={interiorItemStatusOptions[item.interiorItemStatus]}
+                    label={interiorItemStatusOptions[item?.status]}
                     color={
-                      item.interiorItemStatus === 0 ? "default" : "primary"
+                      item?.interiorItemStatus === 0 ? "default" : "primary"
                     }
                   />
                 </TableCell>
@@ -149,7 +177,7 @@ export default function InteriorItems() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/projects/${params.id}/items/${item.id}`}
+                    href={`/projects/${params.id}/items/${item?.id}`}
                   >
                     Chi tiết
                   </Button>

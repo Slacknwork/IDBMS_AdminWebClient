@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
+import { toast } from "react-toastify";
+import { updateRoomIsHidden } from "../../../../../../api/roomServices";
+import { useParams } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -16,7 +19,8 @@ const style = {
   pb: 3,
 };
 
-export default function SiteModal({ children, request }) {
+export default function HiddenModal({ children, isHidden }) {
+  const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -24,6 +28,20 @@ export default function SiteModal({ children, request }) {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleHidden = async () => {
+
+    try {
+      const response = await updateRoomIsHidden(params.roomId, isHidden);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      handleClose()
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -43,10 +61,12 @@ export default function SiteModal({ children, request }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Lưu</h2>
+          <h2 id="child-modal-title">
+            {isHidden ? <p>Ẩn</p> : <p>Hiển thị</p>}
+          </h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin tầng?</p>
+              {isHidden ? <p>Ẩn thông tin phòng?</p> : <p>Hiển thị thông tin phòng?</p>}
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -62,10 +82,11 @@ export default function SiteModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  color="error"
-                  onClick={handleClose}
+                  color={isHidden ? "error" : "primary"}
+                  onClick={handleHidden}
                 >
-                  Xóa
+                  {isHidden ? <p>Ẩn</p> : <p>Hiển thị</p>}
+
                 </Button>
               </Box>
             </Grid>

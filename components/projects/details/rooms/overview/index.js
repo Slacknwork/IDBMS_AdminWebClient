@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 
 import PageContainer from "/components/container/PageContainer";
 import SaveModal from "./modal";
-import DeleteModal from "./deleteModal";
+import HiddenModal from "./hiddenModal";
 import { getRoomById } from "../../../../../api/roomServices";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -38,7 +38,8 @@ export default function RoomOverview() {
     pricePerAreaError: { hasError: false, label: "" },
     roomType: "",
     roomTypeError: { hasError: false, label: "" },
-    floorId: ""
+    floorId: "",
+    isHidden: ""
   });
 
   const validateInput = (field, value) => {
@@ -66,7 +67,7 @@ export default function RoomOverview() {
 
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
-  const [task, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [total, setTotal] = useState(0);
   const [roomtypes, setRoomTypes] = useState([]);
 
@@ -104,15 +105,17 @@ export default function RoomOverview() {
         pricePerArea: data.pricePerArea ?? 0,
         roomType: data?.roomType?.id ?? "",
         floorId: data?.floorId ?? "",
+        isHidden: data?.isHidden ?? ""
       }));
 
-      setTasks(data.task ?? "")
-      // setTotal
-      const total = data.task?.reduce((acc, room) => {
-        const roomTotal = (room.pricePerArea || 0) * (room.area || 0);
-        return acc + roomTotal;
+      setTasks(data.tasks ?? []);
+
+      const total = data.tasks?.reduce((acc, task) => {
+        const roomTotal = (task.pricePerUnit || 0) * (task.unitInContract || 0);
+        return acc + (isNaN(roomTotal) ? 0 : roomTotal);
       }, 0);
-      setTotal(total ?? 0)
+      setTotal(total ?? 0);
+
     }
   };
 
@@ -137,10 +140,15 @@ export default function RoomOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Room Details
+              Chi tiết phòng
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <DeleteModal>Xóa</DeleteModal>
+              {formData && !formData.isHidden && <HiddenModal
+                isHidden={true}
+              >Ẩn</HiddenModal>}
+              {formData && formData.isHidden && <HiddenModal
+                isHidden={false}
+              >Hiển thị</HiddenModal>}
               <SaveModal
                 request={{
                   description: formData.description ?? "",
@@ -241,6 +249,32 @@ export default function RoomOverview() {
                 </Grid>
               </Grid>
 
+              {/* PRICE PER AREA */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">
+                      Trạng thái
+                      <span style={{ color: "red" }}>*</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        variant="outlined"
+                        disabled
+                        value={formData.isHidden ? "Đang ẩn" : "Đang hoạt động"}
+                        InputProps={{
+                          style: {
+                            backgroundColor: "#EFEFEF",
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
               {/* ROOM TYPE */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
@@ -307,18 +341,38 @@ export default function RoomOverview() {
               <Typography variant="h5" sx={{ my: "auto" }}>
                 Bảng giá
               </Typography>
+              <Typography variant="h5" sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}>
+              </Typography>
+              {tasks && tasks.map((task, index) => (
+                <Grid
+                  container
+                  key={index}
+                  sx={{ mt: 1, pt: 2 }}
+                >
+                  <Grid item xs={6} lg={5}>
+                    <Typography variant="h6" sx={{ my: "auto" }}>
+                      {task.name ?? ""}:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                    <Typography variant="p" sx={{ my: "auto" }}>
+                      {(task.unitInContract * task.pricePerUnit).toLocaleString('en-US') ?? 0} VND
+                    </Typography>
+                  </Grid>
+                </Grid>
+              ))}
               <Grid
                 container
                 sx={{ mt: 2, borderTop: 1, borderColor: "gray", pt: 2 }}
               >
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
-                    Task 1:
+                    Tổng cộng:
                   </Typography>
                 </Grid>
-                <Grid item xs={6} lg={7}>
-                  <Typography variant="p" sx={{ my: "auto" }}>
-                    200.000 VND
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    {total.toLocaleString('en-US') ?? 0} VND
                   </Typography>
                 </Grid>
               </Grid>
