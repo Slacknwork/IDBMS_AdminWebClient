@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
@@ -8,10 +7,12 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   FormControl,
   InputAdornment,
   Menu,
   MenuItem,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -27,25 +28,22 @@ import { useEffect, useState } from "react";
 import { deepOrange } from "@mui/material/colors";
 import { toast } from "react-toastify";
 
-import projectTypeOptions, {
-  projectTypeChipColors,
-} from "/constants/enums/projectType";
 import PageContainer from "/components/container/PageContainer";
 import {
-  getBookingRequests,
+  countBookingRequests,
+  getBookingRequestsFilter,
   updateBookingRequestStatus,
 } from "/api/bookingRequestServices";
-import bookingRequestStatusOptions from "/constants/enums/bookingRequestStatus";
 
-const sites = [
-  {
-    id: "1",
-    name: "Suburb house",
-    address: "123 Whatever street",
-    companyName: "ABC Company",
-    area: 200,
-  },
-];
+import projectTypeOptions, {
+  projectTypeChipColors,
+  projectTypeIndex,
+} from "/constants/enums/projectType";
+import bookingRequestStatusOptions, {
+  bookingRequestStatusButtonColors,
+  bookingRequestStatusIndex,
+  bookingRequestStatusOptionsEnglish,
+} from "/constants/enums/bookingRequestStatus";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -80,7 +78,7 @@ function MenuButton({ request, values, setValues }) {
 
   const putBookingRequest = async (request, status) => {
     try {
-      const response = await updateBookingRequestStatus(request?.id, status);
+      const response = await updateBookingRequestStatus(request?.Id, status);
       return response;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -90,12 +88,12 @@ function MenuButton({ request, values, setValues }) {
   const handleUpdateRequestStatus = (request, status) => {
     putBookingRequest(request, status);
     const updatedRequestIndex = values.findIndex(
-      (req) => req.id === request.id
+      (req) => req.Id === request.Id
     );
     const updatedValues = [...values];
     updatedValues[updatedRequestIndex] = {
       ...updatedValues[updatedRequestIndex],
-      status: status,
+      Status: bookingRequestStatusOptionsEnglish[status],
     };
     setValues(updatedValues);
     handleMenuClose();
@@ -104,17 +102,22 @@ function MenuButton({ request, values, setValues }) {
   return (
     <Box>
       <Button
+        color={
+          bookingRequestStatusButtonColors[
+            bookingRequestStatusIndex[request.Status]
+          ]
+        }
         sx={{ width: 150 }}
         disableElevation
         variant="contained"
         onClick={(event) => handleMenuOpen(event)}
-        aria-controls={`simple-menu-${request.id}`}
+        aria-controls={`simple-menu-${request.Id}`}
         aria-haspopup="true"
       >
-        {bookingRequestStatusOptions[request.status]}
+        {bookingRequestStatusOptions[bookingRequestStatusIndex[request.Status]]}
       </Button>
       <Menu
-        id={`simple-menu-${request.id}`}
+        id={`simple-menu-${request.Id}`}
         anchorEl={menuAnchor}
         keepMounted
         open={Boolean(menuAnchor)}
@@ -139,30 +142,16 @@ export default function Sites() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  // SEARCH FORM
-  const [search, setSearch] = useState("");
-  const onSearchChange = (e) => {
-    setSearch(e.target.value);
+  // SET AVATAR LETTER
+  const getAvatarContent = (name) => {
+    const words = name.split(" ");
+    const lastWord = words.length > 0 ? words[words.length - 1] : "";
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+
+    return firstCharacter;
   };
 
-  // PAGINATION
-  const pageQuery = "page";
-  const labelRowsPerPage = "Số khu công trình hiển thị:";
-  const [count, setCount] = useState(6);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [page, setPage] = useState(
-    Math.max(searchParams.get(pageQuery) - 1, 0)
-  );
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-    router.push(`/sites?page=${newPage + 1}`);
-  };
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-    router.push(`/sites?page=1`);
-  };
-
+  // GET BOOKING REQUESTS
   const [values, setValues] = useState([]);
   function onSetValues(newValue) {
     setValues(newValue);
@@ -171,30 +160,59 @@ export default function Sites() {
 
   const fetchDataFromApi = async () => {
     try {
-      const data = await getBookingRequests();
-      setValues(data);
+      const data = await getBookingRequestsFilter(search, page, rowsPerPage);
+      const dataCount = await countBookingRequests(search);
+      setValues(data.value);
+      setCount(dataCount);
       setLoading(false);
+      router.push(
+        `/requests?search=${search}&page=${page + 1}&size=${rowsPerPage}`
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
     }
   };
 
+  // PAGINATION
+  const pageQuery = "page";
+  const pageSizeQuery = "size";
+  const labelRowsPerPage = "Số khu công trình hiển thị:";
+  const [count, setCount] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(
+    parseInt(searchParams.get(pageSizeQuery)) || 5
+  );
+  const [page, setPage] = useState(
+    Math.max(searchParams.get(pageQuery) - 1, 0)
+  );
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value));
+    setPage(0);
+  };
+
+  // SEARCH FORM
+  const searchQuery = "search";
+  const [search, setSearch] = useState(searchParams.get(searchQuery) || "");
+  const onSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+  const onSearchSubmit = (e) => {
+    setPage(0);
+    fetchDataFromApi();
+  };
+
+  // ON MOUNTED
   useEffect(() => {
     fetchDataFromApi();
-  }, []);
-
-  const [menuAnchor, setMenuAnchor] = useState([]);
-  const handleMenuOpen = (e, index) => {
-    const newMenu = [];
-    newMenu[index] = e.currentTarget;
-    setMenuAnchor(newMenu);
-  };
+  }, [page, rowsPerPage]);
 
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
       {/* MAIN SECTION */}
-      <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+      <Box sx={{ overflow: "auto" }}>
         <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
           <FormControl sx={{ minWidth: 300 }}>
             <TextField
@@ -203,6 +221,10 @@ export default function Sites() {
               variant="outlined"
               value={search}
               onChange={onSearchChange}
+              onBlur={onSearchSubmit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onSearchSubmit(e);
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -213,96 +235,122 @@ export default function Sites() {
             />
           </FormControl>
         </Box>
-        <Table
-          aria-label="simple table"
-          sx={{
-            whiteSpace: "nowrap",
-            my: 2,
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Thông tin khách
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Loại dự án
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Địa chỉ
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Ghi chú
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {values?.map((request, index) => (
-              <StyledTableRow key={request.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    <Box sx={{ display: "flex" }}>
-                      <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                        N
-                      </Avatar>
-                      <Box sx={{ my: "auto", mx: 2 }}>
-                        <Typography variant="h6">
-                          {request.contactName}
-                        </Typography>
-                        <Typography variant="p">
-                          {request.contactEmail}
-                        </Typography>
-                        <br />
-                        <Typography variant="p">
-                          {request.contactPhone}
-                        </Typography>
-                        <br />
-                      </Box>
-                    </Box>
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={projectTypeOptions[request.projectType]}
-                    color={projectTypeChipColors[request.projectType]}
-                  ></Chip>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="p">{request.contactLocation}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="p">{request.note}</Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <MenuButton
-                    request={request}
-                    values={values}
-                    setValues={onSetValues}
-                  ></MenuButton>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={count}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage={labelRowsPerPage}
-        />
+        {values && values.length > 0 ? (
+          <Box>
+            <Table
+              aria-label="simple table"
+              sx={{
+                whiteSpace: "nowrap",
+                my: 2,
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Thông tin khách
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Loại dự án
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Địa chỉ
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Ghi chú
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="right"></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {values?.map((request) => (
+                  <StyledTableRow key={request.Id}>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={400}>
+                        <Box sx={{ display: "flex" }}>
+                          <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                            {getAvatarContent(request.ContactName)}
+                          </Avatar>
+                          <Box sx={{ my: "auto", mx: 2 }}>
+                            <Typography variant="h6">
+                              {request.ContactName}
+                            </Typography>
+                            <Typography variant="p">
+                              {request.ContactEmail}
+                            </Typography>
+                            <br />
+                            <Typography variant="p">
+                              {request.ContactPhone}
+                            </Typography>
+                            <br />
+                          </Box>
+                        </Box>
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        color={
+                          projectTypeChipColors[
+                            projectTypeIndex[request.ProjectType]
+                          ]
+                        }
+                        label={
+                          projectTypeOptions[
+                            projectTypeIndex[request.ProjectType]
+                          ]
+                        }
+                      ></Chip>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="p">
+                        {request.ContactLocation}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="p">
+                        {request.Note || "N/A"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <MenuButton
+                        request={request}
+                        values={values}
+                        setValues={onSetValues}
+                      ></MenuButton>
+                    </TableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              component="div"
+              count={count}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[2, 5, 10, 25, 50]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage={labelRowsPerPage}
+            />
+          </Box>
+        ) : loading ? (
+          <Stack sx={{ my: 5 }}>
+            <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+          </Stack>
+        ) : (
+          <Stack sx={{ my: 5 }}>
+            <Typography variant="p" sx={{ textAlign: "center" }}>
+              Không có yêu cầu.
+            </Typography>
+          </Stack>
+        )}
       </Box>
       {/* END OF MAIN SECTION */}
     </PageContainer>

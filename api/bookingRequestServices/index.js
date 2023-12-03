@@ -1,8 +1,42 @@
+const countBookingRequests = async (search) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/odata/BookingRequests/$count?$filter=contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}')`,
+      {
+        cache: "no-store",
+      }
+    );
+    const count = await response.text();
+    return parseInt(count, 10);
+  } catch (error) {
+    console.error("Error fetching booking requests:", error);
+    throw error;
+  }
+};
+
 const getBookingRequests = async () => {
   try {
     const response = await fetch(`https://localhost:7062/api/BookingRequests`, {
       cache: "no-store",
     });
+    const bookingRequests = await response.json();
+    return bookingRequests;
+  } catch (error) {
+    console.error("Error fetching booking requests:", error);
+    throw error;
+  }
+};
+
+const getBookingRequestsFilter = async (search, pageNo, pageSize) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/odata/BookingRequests?$filter=contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}')&$top=${pageSize}&$skip=${
+        pageNo * pageSize
+      }`,
+      {
+        cache: "no-store",
+      }
+    );
     const bookingRequests = await response.json();
     return bookingRequests;
   } catch (error) {
@@ -77,7 +111,9 @@ const updateBookingRequestStatus = async (id, status) => {
 };
 
 export {
+  countBookingRequests,
   getBookingRequests,
+  getBookingRequestsFilter,
   createBookingRequest,
   updateBookingRequest,
   updateBookingRequestStatus,
