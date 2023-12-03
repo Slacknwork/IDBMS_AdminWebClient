@@ -21,7 +21,6 @@ import { toast } from "react-toastify";
 import {
   countBookingRequestsFilter,
   getBookingRequestsFilter,
-  updateBookingRequest,
 } from "/api/bookingRequestServices";
 
 import projectTypeOptions, {
@@ -30,13 +29,12 @@ import projectTypeOptions, {
   projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import bookingRequestStatusOptions, {
+  bookingRequestStatusHistoryOptions,
   bookingRequestStatusButtonColors,
   bookingRequestStatusIndex,
 } from "/constants/enums/bookingRequestStatus";
 
 import FilterStatus from "/components/shared/FilterStatus";
-import FormText from "/components/shared/Forms/Text";
-import MessageModal from "/components/shared/Modals/Message";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import UserCard from "/components/shared/UserCard";
@@ -70,12 +68,14 @@ export default function RequestList() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
-  const defaultStatus = [1, 2];
-
   const projectTypeQuery = "type";
   const projectTypeLabel = "Loại dự án";
   const projectTypeAllValue = -1;
   const projectTypeAllLabel = "Tất cả";
+
+  const bookingRequestStatusQuery = "status";
+  const bookingRequestStatusLabel = "Trạng thái";
+  const bookingRequestStatusAllValue = [1, 2];
 
   // INIT
   const searchParams = useSearchParams();
@@ -95,6 +95,9 @@ export default function RequestList() {
           projectTypeOptionsEnglish[
             parseInt(searchParams.get(projectTypeQuery))
           ];
+        const status = parseInt(searchParams.get(bookingRequestStatusQuery))
+          ? [parseInt(searchParams.get(bookingRequestStatusQuery))]
+          : bookingRequestStatusAllValue;
         const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
         const pageSize =
           parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -102,14 +105,14 @@ export default function RequestList() {
         const data = await getBookingRequestsFilter(
           search,
           type,
-          defaultStatus,
+          status,
           page,
           pageSize
         );
         const dataCount = await countBookingRequestsFilter(
           search,
           type,
-          defaultStatus
+          status
         );
         setValues(data.value);
         setCount(dataCount);
@@ -121,10 +124,8 @@ export default function RequestList() {
       }
     };
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-
-  // UPDATE BOOKING STATUS
-  const onUpdateSubmit = (request, status) => {};
 
   return (
     <Box>
@@ -138,6 +139,11 @@ export default function RequestList() {
             label={projectTypeLabel}
             allValue={projectTypeAllValue}
             allLabel={projectTypeAllLabel}
+          ></FilterStatus>
+          <FilterStatus
+            query={bookingRequestStatusQuery}
+            options={bookingRequestStatusHistoryOptions}
+            label={bookingRequestStatusLabel}
           ></FilterStatus>
         </Box>
         <Box>
@@ -171,7 +177,16 @@ export default function RequestList() {
                       Ghi chú
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell align="right"></StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Trạng thái
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Phản hồi
+                    </Typography>
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -208,56 +223,24 @@ export default function RequestList() {
                         {request.Note || "N/A"}
                       </Typography>
                     </TableCell>
-                    <TableCell align="right">
-                      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <MessageModal
-                          sx={{ mr: 2 }}
-                          buttonLabel="Tiếp nhận"
-                          title="Tiếp nhận yêu cầu này?"
-                          color="primary"
-                          submitLabel="Tiếp nhận"
-                          onSubmit={() =>
-                            onUpdateSubmit(
-                              request,
-                              bookingRequestStatusIndex.Accepted
-                            )
-                          }
-                        >
-                          <UserCard
-                            name={request.ContactName}
-                            address={request.ContactLocation}
-                            email={request.ContactEmail}
-                            phone={request.ContactPhone}
-                          ></UserCard>
-                          <Typography sx={{ mt: 2 }} variant="subtitle2">
-                            Nhập ghi chú (nếu có)
-                          </Typography>
-                          <FormText multiline rows={4}></FormText>
-                        </MessageModal>
-                        <MessageModal
-                          color="error"
-                          buttonLabel="Từ chối"
-                          title="Từ chối yêu cầu này?"
-                          submitLabel="Từ chối"
-                          onSubmit={() =>
-                            onUpdateSubmit(
-                              request,
-                              bookingRequestStatusIndex.Rejected
-                            )
-                          }
-                        >
-                          <UserCard
-                            name={request.ContactName}
-                            address={request.ContactLocation}
-                            email={request.ContactEmail}
-                            phone={request.ContactPhone}
-                          ></UserCard>
-                          <Typography sx={{ mt: 2 }} variant="p">
-                            Nhập lý do từ chối yêu cầu
-                          </Typography>
-                          <FormText multiline rows={4}></FormText>
-                        </MessageModal>
-                      </Box>
+                    <TableCell>
+                      <Chip
+                        color={
+                          bookingRequestStatusButtonColors[
+                            bookingRequestStatusIndex[request.Status]
+                          ]
+                        }
+                        label={
+                          bookingRequestStatusOptions[
+                            bookingRequestStatusIndex[request.Status]
+                          ]
+                        }
+                      ></Chip>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="p">
+                        {request.AdminReply || "N/A"}
+                      </Typography>
                     </TableCell>
                   </StyledTableRow>
                 ))}

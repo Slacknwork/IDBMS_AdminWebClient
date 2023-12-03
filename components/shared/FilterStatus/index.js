@@ -8,8 +8,8 @@ export default function FilterStatus({
   query,
   options,
   label,
-  allValue = -1,
-  allLabel = "Tất cả",
+  allValue,
+  allLabel,
 }) {
   // INIT
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function FilterStatus({
     <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
       <InputLabel>{label || ""}</InputLabel>
       <Select value={filter} label={label || ""} onChange={onFilterChange}>
-        <MenuItem value={allValue}>{allLabel}</MenuItem>
+        {allValue && <MenuItem value={allValue}>{allLabel}</MenuItem>}
         {options?.map((option, index) => (
           <MenuItem value={index} key={option}>
             {option}
