@@ -29,7 +29,7 @@ const getBookingRequests = async () => {
 
 const countBookingRequestsFilter = async (search, type, status) => {
   const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
-  const statusQuery = `${status ? `Status eq '${status}' and ` : ``}`;
+  const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
       `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`,
@@ -49,11 +49,11 @@ const getBookingRequestsFilter = async (
   search,
   type,
   status,
-  pageNo,
-  pageSize
+  pageNo = 0,
+  pageSize = 5
 ) => {
   const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
-  const statusQuery = `${status ? `Status eq '${status}' and ` : ``}`;
+  const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
       `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))&$top=${pageSize}&$skip=${

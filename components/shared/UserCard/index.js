@@ -18,7 +18,7 @@ export default function UserCard({
   };
 
   return (
-    <Typography variant="subtitle2" sx={{ mb: 2 }}>
+    <Typography variant="subtitle2">
       <Box sx={{ display: "flex" }}>
         <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
           {getAvatarContent(name)}

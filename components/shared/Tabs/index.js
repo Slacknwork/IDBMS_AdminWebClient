@@ -37,14 +37,19 @@ export default function ProjectDetailTabs({ uriPos, tabs }) {
   }, [paths, tabs, uriPos]);
 
   const handleTabChange = (event, index) => {
-    console.log(urlBuild);
     router.push(`${urlBuild}/${tabs[index].path}`);
   };
 
   return (
-    <Tabs value={activeTab} onChange={handleTabChange}>
-      {tabs.map((tab) => {
-        return <Tab label={tab.label} key={tab.path}></Tab>;
+    <Tabs value={activeTab}>
+      {tabs.map((tab, index) => {
+        return (
+          <Tab
+            label={tab.label}
+            key={tab.path}
+            onClick={(event) => handleTabChange(event, index)}
+          ></Tab>
+        );
       })}
     </Tabs>
   );

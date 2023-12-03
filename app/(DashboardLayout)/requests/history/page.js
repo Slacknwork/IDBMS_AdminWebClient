@@ -70,7 +70,7 @@ export default function RequestList() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
-  const defaultStatus = [0];
+  const defaultStatus = [1, 2];
 
   const projectTypeQuery = "type";
   const projectTypeLabel = "Loại dự án";
