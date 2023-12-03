@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
   Avatar,
@@ -8,8 +8,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  FormControl,
-  InputAdornment,
   Menu,
   MenuItem,
   Stack,
@@ -20,15 +18,12 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
-import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { deepOrange } from "@mui/material/colors";
 import { toast } from "react-toastify";
 
-import PageContainer from "/components/container/PageContainer";
 import {
   countBookingRequests,
   getBookingRequestsFilter,
@@ -38,12 +33,17 @@ import {
 import projectTypeOptions, {
   projectTypeChipColors,
   projectTypeIndex,
+  projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import bookingRequestStatusOptions, {
   bookingRequestStatusButtonColors,
   bookingRequestStatusIndex,
   bookingRequestStatusOptionsEnglish,
 } from "/constants/enums/bookingRequestStatus";
+
+import Search from "/components/shared/Search";
+import FilterStatus from "/components/shared/FilterStatus";
+import Pagination from "/components/shared/Pagination";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -63,9 +63,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-const pageTitle = "Khu công trình";
-const pageDescription = "Danh sách các khu công trình";
 
 function MenuButton({ request, values, setValues }) {
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -137,9 +134,24 @@ function MenuButton({ request, values, setValues }) {
   );
 }
 
-export default function Sites() {
-  const router = useRouter();
-  const params = useParams();
+export default function RequestList() {
+  // CONSTANTS
+  const searchQuery = "search";
+
+  const pageQuery = "page";
+  const defaultPage = 0;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  const projectTypeQuery = "type";
+  const projectTypeLabel = "Loại dự án";
+  const projectTypeAllValue = -1;
+  const projectTypeAllLabel = "Tất cả";
+
+  const status = 0;
+
+  // INIT
   const searchParams = useSearchParams();
 
   // SET AVATAR LETTER
@@ -152,88 +164,62 @@ export default function Sites() {
   };
 
   // GET BOOKING REQUESTS
+  const [count, setCount] = useState(0);
   const [values, setValues] = useState([]);
   function onSetValues(newValue) {
     setValues(newValue);
   }
   const [loading, setLoading] = useState(true);
 
-  const fetchDataFromApi = async () => {
-    try {
-      const data = await getBookingRequestsFilter(search, page, rowsPerPage);
-      const dataCount = await countBookingRequests(search);
-      setValues(data.value);
-      setCount(dataCount);
-      setLoading(false);
-      router.push(
-        `/requests?search=${search}&page=${page + 1}&size=${rowsPerPage}`
-      );
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    }
-  };
-
-  // PAGINATION
-  const pageQuery = "page";
-  const pageSizeQuery = "size";
-  const labelRowsPerPage = "Số khu công trình hiển thị:";
-  const [count, setCount] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(
-    parseInt(searchParams.get(pageSizeQuery)) || 5
-  );
-  const [page, setPage] = useState(
-    Math.max(searchParams.get(pageQuery) - 1, 0)
-  );
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value));
-    setPage(0);
-  };
-
-  // SEARCH FORM
-  const searchQuery = "search";
-  const [search, setSearch] = useState(searchParams.get(searchQuery) || "");
-  const onSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
-  const onSearchSubmit = (e) => {
-    setPage(0);
-    fetchDataFromApi();
-  };
-
   // ON MOUNTED
   useEffect(() => {
+    const fetchDataFromApi = async () => {
+      setLoading(true);
+      setValues([]);
+      try {
+        const search = searchParams.get(searchQuery);
+        const type =
+          projectTypeOptionsEnglish[
+            parseInt(searchParams.get(projectTypeQuery))
+          ];
+        const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
+        const pageSize =
+          parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+        const data = await getBookingRequestsFilter(
+          search,
+          type,
+          bookingRequestStatusOptionsEnglish[status],
+          page,
+          pageSize
+        );
+        const dataCount = await countBookingRequests(search);
+
+        setValues(data.value);
+        setCount(dataCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchDataFromApi();
-  }, [page, rowsPerPage]);
+  }, [searchParams]);
 
   return (
-    <PageContainer title={pageTitle} description={pageDescription}>
+    <Box>
       {/* MAIN SECTION */}
       <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-          <FormControl sx={{ minWidth: 300 }}>
-            <TextField
-              label="Tìm kiếm"
-              size="small"
-              variant="outlined"
-              value={search}
-              onChange={onSearchChange}
-              onBlur={onSearchSubmit}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") onSearchSubmit(e);
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconSearch />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
+        <Box sx={{ mt: 2, display: "flex" }}>
+          <Search query={searchQuery}></Search>
+          <FilterStatus
+            query={projectTypeQuery}
+            options={projectTypeOptions}
+            label={projectTypeLabel}
+            allValue={projectTypeAllValue}
+            allLabel={projectTypeAllLabel}
+          ></FilterStatus>
         </Box>
         {values && values.length > 0 ? (
           <Box>
@@ -329,15 +315,10 @@ export default function Sites() {
                 ))}
               </TableBody>
             </Table>
-            <TablePagination
-              component="div"
+            <Pagination
+              query={pageQuery}
+              sizeQuery={pageSizeQuery}
               count={count}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              rowsPerPageOptions={[2, 5, 10, 25, 50]}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage={labelRowsPerPage}
             />
           </Box>
         ) : loading ? (
@@ -353,6 +334,6 @@ export default function Sites() {
         )}
       </Box>
       {/* END OF MAIN SECTION */}
-    </PageContainer>
+    </Box>
   );
 }

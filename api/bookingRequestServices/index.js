@@ -27,10 +27,18 @@ const getBookingRequests = async () => {
   }
 };
 
-const getBookingRequestsFilter = async (search, pageNo, pageSize) => {
+const getBookingRequestsFilter = async (
+  search,
+  type,
+  status,
+  pageNo,
+  pageSize
+) => {
+  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const statusQuery = `${status ? `Status eq '${status}' and ` : ``}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests?$filter=contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}')&$top=${pageSize}&$skip=${
+      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))&$top=${pageSize}&$skip=${
         pageNo * pageSize
       }`,
       {
