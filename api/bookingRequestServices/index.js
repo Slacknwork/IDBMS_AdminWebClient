@@ -27,6 +27,24 @@ const getBookingRequests = async () => {
   }
 };
 
+const countBookingRequestsFilter = async (search, type, status) => {
+  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const statusQuery = `${status ? `Status eq '${status}' and ` : ``}`;
+  try {
+    const response = await fetch(
+      `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`,
+      {
+        cache: "no-store",
+      }
+    );
+    const count = await response.text();
+    return parseInt(count, 10);
+  } catch (error) {
+    console.error("Error fetching booking requests:", error);
+    throw error;
+  }
+};
+
 const getBookingRequestsFilter = async (
   search,
   type,
@@ -121,6 +139,7 @@ const updateBookingRequestStatus = async (id, status) => {
 export {
   countBookingRequests,
   getBookingRequests,
+  countBookingRequestsFilter,
   getBookingRequestsFilter,
   createBookingRequest,
   updateBookingRequest,

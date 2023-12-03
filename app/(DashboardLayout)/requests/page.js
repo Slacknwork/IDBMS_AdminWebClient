@@ -1,7 +1,285 @@
 "use client";
 
-import RequestList from "/components/requests/list";
+import { useSearchParams } from "next/navigation";
+import { styled } from "@mui/material/styles";
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Menu,
+  MenuItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { deepOrange } from "@mui/material/colors";
+import { toast } from "react-toastify";
 
-export default function SitesPage() {
-  return <RequestList></RequestList>;
+import {
+  countBookingRequestsFilter,
+  getBookingRequestsFilter,
+  updateBookingRequestStatus,
+} from "/api/bookingRequestServices";
+
+import projectTypeOptions, {
+  projectTypeChipColors,
+  projectTypeIndex,
+  projectTypeOptionsEnglish,
+} from "/constants/enums/projectType";
+import bookingRequestStatusOptions, {
+  bookingRequestStatusButtonColors,
+  bookingRequestStatusIndex,
+  bookingRequestStatusOptionsEnglish,
+} from "/constants/enums/bookingRequestStatus";
+
+import FilterStatus from "/components/shared/FilterStatus";
+import FormText from "/components/shared/Forms/Text";
+import MessageModal from "/components/shared/Modals/Message";
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import UserCard from "/components/shared/UserCard";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
+export default function RequestList() {
+  // CONSTANTS
+  const searchQuery = "search";
+
+  const pageQuery = "page";
+  const defaultPage = 0;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  const defaultStatus = 0;
+
+  const projectTypeQuery = "type";
+  const projectTypeLabel = "Loại dự án";
+  const projectTypeAllValue = -1;
+  const projectTypeAllLabel = "Tất cả";
+
+  // INIT
+  const searchParams = useSearchParams();
+
+  // GET BOOKING REQUESTS
+  const [count, setCount] = useState(0);
+  const [values, setValues] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      setLoading(true);
+      setValues([]);
+      try {
+        const search = searchParams.get(searchQuery);
+        const type =
+          projectTypeOptionsEnglish[
+            parseInt(searchParams.get(projectTypeQuery))
+          ];
+        const status = bookingRequestStatusOptionsEnglish[defaultStatus];
+        const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
+        const pageSize =
+          parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+        const data = await getBookingRequestsFilter(
+          search,
+          type,
+          status,
+          page,
+          pageSize
+        );
+        const dataCount = await countBookingRequestsFilter(
+          search,
+          type,
+          status
+        );
+
+        setValues(data.value);
+        setCount(dataCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDataFromApi();
+  }, [searchParams]);
+
+  return (
+    <Box>
+      {/* MAIN SECTION */}
+      <Box sx={{ overflow: "auto" }}>
+        <Box sx={{ mt: 3, display: "flex" }}>
+          <Search query={searchQuery}></Search>
+          <FilterStatus
+            query={projectTypeQuery}
+            options={projectTypeOptions}
+            label={projectTypeLabel}
+            allValue={projectTypeAllValue}
+            allLabel={projectTypeAllLabel}
+          ></FilterStatus>
+        </Box>
+        <Box>
+          {values && values.length > 0 ? (
+            <Table
+              aria-label="simple table"
+              sx={{
+                whiteSpace: "nowrap",
+                my: 2,
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Thông tin khách
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Loại dự án
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Địa chỉ
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Ghi chú
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="right"></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {values?.map((request) => (
+                  <StyledTableRow key={request.Id}>
+                    <TableCell>
+                      <UserCard
+                        name={request.ContactName}
+                        email={request.ContactEmail}
+                        phone={request.ContactPhone}
+                      ></UserCard>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        color={
+                          projectTypeChipColors[
+                            projectTypeIndex[request.ProjectType]
+                          ]
+                        }
+                        label={
+                          projectTypeOptions[
+                            projectTypeIndex[request.ProjectType]
+                          ]
+                        }
+                      ></Chip>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="p">
+                        {request.ContactLocation}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="p">
+                        {request.Note || "N/A"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                        <MessageModal
+                          sx={{ mr: 2 }}
+                          buttonLabel="Tiếp nhận"
+                          title="Tiếp nhận yêu cầu này?"
+                          color="primary"
+                          submitLabel="Tiếp nhận"
+                        >
+                          <UserCard
+                            name={request.ContactName}
+                            address={request.ContactLocation}
+                            email={request.ContactEmail}
+                            phone={request.ContactPhone}
+                          ></UserCard>
+                          <Typography sx={{ mt: 4 }} variant="p">
+                            Nhập ghi chú (nếu có)
+                          </Typography>
+                          <FormText
+                            sx={{ mt: 2 }}
+                            multiline
+                            rows={4}
+                          ></FormText>
+                        </MessageModal>
+                        <MessageModal
+                          color="error"
+                          buttonLabel="Từ chối"
+                          title="Từ chối yêu cầu này?"
+                          submitLabel="Từ chối"
+                        >
+                          <UserCard
+                            name={request.ContactName}
+                            address={request.ContactLocation}
+                            email={request.ContactEmail}
+                            phone={request.ContactPhone}
+                          ></UserCard>
+                          <Typography variant="p">
+                            Nhập lý do từ chối yêu cầu
+                          </Typography>
+                          <FormText
+                            sx={{ mt: 2 }}
+                            multiline
+                            rows={4}
+                          ></FormText>
+                        </MessageModal>
+                      </Box>
+                    </TableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : loading ? (
+            <Stack sx={{ my: 5 }}>
+              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+            </Stack>
+          ) : (
+            <Stack sx={{ my: 5 }}>
+              <Typography variant="p" sx={{ textAlign: "center" }}>
+                Không có yêu cầu.
+              </Typography>
+            </Stack>
+          )}
+        </Box>
+
+        <Pagination query={pageQuery} sizeQuery={pageSizeQuery} count={count} />
+      </Box>
+      {/* END OF MAIN SECTION */}
+    </Box>
+  );
 }
