@@ -18,6 +18,9 @@ import {
 
 import PageContainer from "/components/container/PageContainer";
 import TaskModal from "./modal";
+import { getProjectTasksByProjectId, getProjectTasksByRoomId } from "../../../../../api/projectTaskServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const tasks = [
   {
@@ -84,11 +87,36 @@ export default function Sites() {
   // PROJECT DETAILS
   const projectDetailsLabel = "Chi tiết";
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const data = await getProjectTasksByRoomId(params.roomId);
+        console.log(data)
+        setValues(data)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer title={pageTitle} description={pageDescription}>
       <Box sx={{ overflow: "auto" }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-          <TaskModal>
+          <TaskModal
+            request={{}}
+            tasks={values}
+          >
             <span>{createTaskLabel}</span>
           </TaskModal>
         </Box>
@@ -134,7 +162,7 @@ export default function Sites() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tasks?.map((task) => (
+            {values?.map((task) => (
               <StyledTableRow key={task.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -164,7 +192,7 @@ export default function Sites() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(task.startDate).toLocaleDateString("vi-VN")}
+                    {new Date(task.startedDate).toLocaleDateString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>

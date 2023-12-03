@@ -17,6 +17,26 @@ const getProjectTasksByProjectId = async (projectId) => {
     }
 };
 
+const getProjectTasksByRoomId = async (roomId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectTasks/room/${roomId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
+
+        const projectTasks = await response.json();
+        return projectTasks;
+    } catch (error) {
+        console.error('Error fetching project tasks by room ID:', error);
+        throw error;
+    }
+};
+
+
 const getProjectTasksWithItemByProjectId = async (projectId) => {
     try {
         const response = await fetch(
@@ -73,8 +93,49 @@ const getProjectTasksByPaymentStageId = async (paymentStageId) => {
         throw error;
     }
 };
+const createProjectTask = async (request) => {
+    try {
+        const response = await fetch('https://localhost:7062/api/ProjectTasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Create failed');
+        }
+
+        const createdProjectTask = await response.json();
+        return createdProjectTask;
+    } catch (error) {
+        console.error('Error creating project task:', error);
+        throw error;
+    }
+};
+
+const getProjectTaskById = async (taskId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectTasks/${taskId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
+
+        const projectTask = await response.json();
+        return projectTask;
+    } catch (error) {
+        console.error('Error fetching project task by ID:', error);
+        throw error;
+    }
+};
 
 export {
     getProjectTasksByProjectId, getProjectTasksByPaymentStageId,
-    getProjectTasksWithItemByProjectId, getProjectTasksWithItemByRoomId
+    getProjectTasksWithItemByProjectId, getProjectTasksWithItemByRoomId,
+    getProjectTasksByRoomId, createProjectTask, getProjectTaskById
 };

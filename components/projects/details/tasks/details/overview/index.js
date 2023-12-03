@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -20,6 +20,13 @@ import SaveModal from "./modal";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
+import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
+import { getAllTaskDesigns } from "../../../../../../api/taskDesignServices";
+import { getAllInteriorItems } from "../../../../../../api/interiorItemServices";
+import { getAllTaskCategories } from "../../../../../../api/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "../../../../../../api/paymentStageServices";
+import { getProjectTaskById, getProjectTasksByRoomId } from "../../../../../../api/projectTaskServices";
 
 const style = {
   position: "absolute",
@@ -60,15 +67,16 @@ const noDateLabel = "Số ngày";
 
 const parentTaskLabel = "Thuộc công việc";
 
-const interiorItemLabel = "Vật liệu nội thất";
+const interiorItemLabel = "Nội thất";
 
 const taskDesignLabel = "Thiết kế công việc (Tùy chọn)";
 
-const roomLabel = "Phòng (Tùy chọn)";
+const roomLabel = "Phòng";
 
 const statusLabel = "Trạng thái";
 
 export default function TaskOverview() {
+  const params = useParams();
   const taskOptions = [
     { id: 0, name: "Task Option 1" },
     { id: 1, name: "Task Option 2" },
@@ -108,6 +116,11 @@ export default function TaskOverview() {
     room: "",
     status: "",
     statusError: { hasError: false, label: "" },
+    designCategoryId: "",
+    taskCategoryId: "",
+    paymentStage: null,
+    taskCategory: null,
+    roomName: ""
   });
 
   const validateInput = (field, value) => {
@@ -124,6 +137,87 @@ export default function TaskOverview() {
       [field]: value,
       [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
     }));
+  };
+
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+
+  const [items, setItems] = useState([]);
+  const [taskDesigns, setTaskDesigns] = useState([]);
+  const [taskCategories, setTaskCategories] = useState([]);
+  const [stages, setStages] = useState([]);
+  const [task, setTask] = useState([]);
+  const [listTask, setListTask] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const data = await getProjectTaskById(params.taskId)
+        console.log(data)
+        setTask(data)
+        mapData(data)
+
+        const listTasksInRoom = await getProjectTasksByRoomId(data.roomId)
+        console.log(listTasksInRoom)
+        setListTask(listTasksInRoom)
+
+        const listItems = await getAllInteriorItems();
+        const furniture = listItems.filter(item => item?.interiorItemCategory?.interiorItemType === 0);
+        console.log(furniture)
+        setItems(furniture)
+
+        const listTaskDesign = await getAllTaskDesigns();
+        setTaskDesigns(listTaskDesign)
+        console.log(listTaskDesign)
+
+        const listTaskCategory = await getAllTaskCategories();
+        setTaskCategories(listTaskCategory)
+        console.log(listTaskCategory)
+
+        const listStagesByProjectId = await getPaymentStagesByProjectId(params.id);
+        setStages(listStagesByProjectId)
+        console.log(listStagesByProjectId)
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  const mapData = (data) => {
+    console.log(data.calculationUnit)
+    if (data) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        name: data.name || "",
+        description: data.description || "",
+        percentage: data.percentage || 0,
+        calculationUnit: data?.calculationUnit ?? "",
+        pricePerUnit: data.pricePerUnit || "",
+        unitInContract: data.unitInContract || 0,
+        unitUsed: data.unitUsed || 0,
+        isIncurred: data.isIncurred || false,
+        startedDate: new Date(data.startedDate) || new Date(),
+        endDate: data.endDate ? new Date(data.endDate) : null,
+        noDate: data.noDate || 0,
+        parentTask: data.parentTask || null,
+        interiorItem: data.interiorItem || null,
+        taskDesign: data.taskDesign || "",
+        room: data.room || "",
+        status: data.status || "",
+        designCategoryId: data.designCategoryId || "",
+        taskCategoryId: data.taskCategoryId || "",
+        paymentStage: data.paymentStage || null,
+        taskCategory: data.taskCategory || null,
+        roomName: data?.room?.usePurpose || ""
+      }));
+    }
   };
 
   return (
@@ -143,7 +237,7 @@ export default function TaskOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Task: {formData.name}
+              Công việc: {formData.name}
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>
@@ -178,7 +272,7 @@ export default function TaskOverview() {
                   </Grid>
                 </Grid>
               </Grid>
-
+              {console.log(formData.calculationUnit)}
               {/* PERCENTAGE */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
@@ -230,7 +324,7 @@ export default function TaskOverview() {
                           {formData.calculationUnitDefaultOptionLabel}
                         </MenuItem>
                         {calculationUnitOptions.map((unit, index) => (
-                          <MenuItem key={unit} value={index}>
+                          <MenuItem key={index} value={index}>
                             {unit}
                           </MenuItem>
                         ))}
@@ -336,16 +430,91 @@ export default function TaskOverview() {
                 </Grid>
               </Grid>
 
-              {/* STARTED */}
+              {/* DESCRIPTION */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Started</Typography>
+                    <Typography variant="h5">Mô tả</Typography>
+                    <Typography variant="p">Mô tả chi tiết về công việc</Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        label="Started"
+                        error={formData.descriptionError.hasError}
+                        variant="outlined"
+                        value={formData.description}
+                        helperText={formData.descriptionError.label}
+                        onChange={(e) =>
+                          handleInputChange("description", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* PAYMENT STAGE */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Giai đoạn thanh toán</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <Autocomplete
+                      options={stages}
+                      getOptionLabel={(option) => `${option.name}`}
+                      value={formData.paymentStage}
+                      onChange={(_, newValue) =>
+                        handleInputChange("paymentStage", newValue)
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Chọn giai đoạn thanh toán"
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* TASK CATEGORY */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Danh mục công việc</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <Autocomplete
+                      options={taskCategories}
+                      getOptionLabel={(option) => `${option.name}`}
+                      value={formData.taskCategory}
+                      onChange={(_, newValue) =>
+                        handleInputChange("taskCategory", newValue)
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Chọn danh mục công việc"
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* STARTED */}
+              <Grid item xs={12} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4} lg={4}>
+                    <Typography variant="h5">Ngày bắt đầu</Typography>
+                  </Grid>
+                  <Grid item xs={8} lg={8}>
+                    <FormControl fullWidth>
+                      <TextField
+                        label="Ngày bắt đầu"
                         type="date"
                         variant="outlined"
                         value={
@@ -355,7 +524,7 @@ export default function TaskOverview() {
                         }
                         onChange={(e) =>
                           handleInputChange(
-                            "startedDate",
+                            "Chọn ngày bắt đầu",
                             e.target.value ? new Date(e.target.value) : null
                           )
                         }
@@ -377,7 +546,7 @@ export default function TaskOverview() {
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        label="End (Optional)"
+                        label="Ngày kết thúc"
                         type="date"
                         variant="outlined"
                         value={
@@ -409,7 +578,7 @@ export default function TaskOverview() {
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        label="No Date"
+                        label="Số ngày làm việc"
                         type="number"
                         variant="outlined"
                         value={formData.noDate}
@@ -433,7 +602,7 @@ export default function TaskOverview() {
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <Autocomplete
-                      options={taskOptions}
+                      options={listTask}
                       getOptionLabel={(option) => option.name}
                       value={formData.parentTask}
                       onChange={(_, newValue) =>
@@ -442,7 +611,7 @@ export default function TaskOverview() {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Parent Task"
+                          label="Chọn công việc phụ thuộc"
                           variant="outlined"
                         />
                       )}
@@ -459,16 +628,25 @@ export default function TaskOverview() {
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <Autocomplete
-                      options={interiorItemOptions}
-                      getOptionLabel={(option) => option.name}
+                      options={items}
+                      getOptionLabel={(option) => `${option.code} - ${option.name}`}
                       value={formData.interiorItem}
                       onChange={(_, newValue) =>
                         handleInputChange("interiorItem", newValue)
                       }
+                      filterOptions={(options, { inputValue }) => {
+                        const inputValueLower = inputValue.toLowerCase();
+                        return options.filter(
+                          (option) =>
+                            option.code.toLowerCase().includes(inputValueLower) ||
+                            option.name.toLowerCase().includes(inputValueLower)
+                        );
+
+                      }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Interior Item"
+                          label="Chọn nội thất"
                           variant="outlined"
                         />
                       )}
@@ -478,7 +656,7 @@ export default function TaskOverview() {
               </Grid>
 
               {/* TASK DESIGN (OPTIONAL) */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">{taskDesignLabel}</Typography>
@@ -500,7 +678,7 @@ export default function TaskOverview() {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
+              </Grid> */}
 
               {/* ROOM (OPTIONAL) */}
               <Grid item xs={12} lg={12}>
@@ -510,18 +688,17 @@ export default function TaskOverview() {
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
-                      <Select
+                      <TextField
                         variant="outlined"
-                        value={formData.room}
-                        onChange={(e) =>
-                          handleInputChange("room", e.target.value)
-                        }
-                      >
-                        <MenuItem value="">None</MenuItem>
-                        <MenuItem value="Option1">Option1</MenuItem>
-                        <MenuItem value="Option2">Option2</MenuItem>
-                        <MenuItem value="Option3">Option3</MenuItem>
-                      </Select>
+                        value={formData.roomName}
+                        disabled
+
+                        InputProps={{
+                          style: {
+                            backgroundColor: "#EFEFEF",
+                          },
+                        }}
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -542,8 +719,8 @@ export default function TaskOverview() {
                           handleInputChange("status", e.target.value)
                         }
                       >
-                        {projectTaskStatusOptions.map((status) => (
-                          <MenuItem key={status} value={status}>
+                        {projectTaskStatusOptions.map((status, index) => (
+                          <MenuItem key={index} value={index}>
                             {status}
                           </MenuItem>
                         ))}
