@@ -185,7 +185,7 @@ export default function ItemList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/InteriorItems/${item.id}`}
+                    href={`/items/${item.id}`}
                   >
                     Thông tin
                   </Button>

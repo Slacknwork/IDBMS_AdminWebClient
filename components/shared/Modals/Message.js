@@ -35,6 +35,11 @@ export default function MessageModal({
     setOpen(false);
   };
 
+  const handleSubmit = () => {
+    onSubmit();
+    handleClose();
+  };
+
   return (
     <Box sx={sx}>
       <Button
@@ -72,7 +77,7 @@ export default function MessageModal({
                   color={color}
                   variant="contained"
                   disableElevation
-                  onClick={onSubmit}
+                  onClick={handleSubmit}
                 >
                   {submitLabel || "Chấp nhận"}
                 </Button>
