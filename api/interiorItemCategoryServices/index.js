@@ -1,74 +1,92 @@
-const getInteriorItemCategories = async () => {
+const getAllInteriorItemCategories = async () => {
     try {
-        const res = await fetch(
+        const response = await fetch(
             'https://localhost:7062/api/InteriorItemCategories',
             { cache: 'no-store' }
         );
-        const resObj = await res.json();
-        return resObj;
-    } catch (error) {
-        console.error('Error fetching interior item categories:', error);
-        throw error;
-    }
-};
-const createInteriorItemCategory = async (createData) => {
-    try {
-        const promise = await axios.post('https://localhost:7062/api/InteriorItemCategories', createData);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createInteriorItemCategoriesToast' }
-        );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Get all interior item categories failed');
+        }
+
+        const categories = await response.json();
+        return categories;
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching all interior item categories:', error);
         throw error;
     }
 };
 
-const updateInteriorItemCategory = async (id, updateData) => {
+const createInteriorItemCategory = async (request) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/InteriorItemCategories/${id}`, updateData);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
+        const response = await fetch('https://localhost:7062/api/InteriorItemCategories', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            { toastId: 'updateInteriorItemCategoriesToast' }
-        );
-        const response = await promise;
-        return response.data;
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Create interior item category failed');
+        }
+
+        const createdCategory = await response.json();
+        return createdCategory;
     } catch (error) {
-        console.error(error);
+        console.error('Error creating interior item category:', error);
         throw error;
     }
 };
 
-const deleteInteriorItemCategory = async (id) => {
+const updateInteriorItemCategory = async (categoryId, request) => {
     try {
-        const promise = await axios.delete(`https://localhost:7062/api/InteriorItemCategories/${id}`);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItemCategories/${categoryId}`,
             {
-                pending: 'Đang xoá...',
-                success: 'Xoá thành công!',
-                error: 'Xoá không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'deleteInteriorItemCategoriesToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update interior item category failed');
+        }
+
+        const updatedCategory = await response.json();
+        return updatedCategory;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating interior item category:', error);
         throw error;
     }
 };
-export {getInteriorItemCategories, createInteriorItemCategory, updateInteriorItemCategory, deleteInteriorItemCategory} ;
+
+const deleteInteriorItemCategory = async (categoryId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItemCategories/${categoryId}`,
+            {
+                method: 'DELETE',
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Delete interior item category failed');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting interior item category:', error);
+        throw error;
+    }
+};
+
+export {
+    getAllInteriorItemCategories,
+    createInteriorItemCategory,
+    updateInteriorItemCategory,
+    deleteInteriorItemCategory,
+};

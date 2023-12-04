@@ -10,6 +10,9 @@ const countBookingRequests = async (search) => {
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Count failed');
+    }
     const count = await response.text();
     return parseInt(count, 10);
   } catch (error) {
@@ -23,6 +26,9 @@ const getBookingRequests = async () => {
     const response = await fetch(`https://localhost:7062/api/BookingRequests`, {
       cache: "no-store",
     });
+    if (!response.ok) {
+      throw new Error('Get failed');
+  }
     const bookingRequests = await response.json();
     return bookingRequests;
   } catch (error) {
@@ -42,6 +48,9 @@ const countBookingRequestsFilter = async (search, type, status) => {
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Count failed');
+  }
     const count = await response.text();
     return parseInt(count, 10);
   } catch (error) {
@@ -68,6 +77,9 @@ const getBookingRequestsFilter = async (
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Get failed');
+    }
     const bookingRequests = await response.json();
     return mapFromOdata(bookingRequests).map((req) => ({
       ...req,

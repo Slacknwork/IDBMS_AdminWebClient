@@ -4,86 +4,90 @@ const getAllTaskDesigns = async () => {
             'https://localhost:7062/api/TaskDesigns',
             { cache: 'no-store' }
         );
-        const taskDesigns = await response.json();
-        return taskDesigns;
+
+        if (!response.ok) {
+            throw new Error('Get all task designs failed');
+        }
+
+        const designs = await response.json();
+        return designs;
     } catch (error) {
-        console.error('Error fetching all task Designs:', error);
+        console.error('Error fetching all task designs:', error);
         throw error;
     }
 };
 
-const getTaskDesignById = async (designId) => {
+const createTaskDesign = async (request) => {
+    try {
+        const response = await fetch('https://localhost:7062/api/TaskDesigns', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Create task design failed');
+        }
+
+        const createdDesign = await response.json();
+        return createdDesign;
+    } catch (error) {
+        console.error('Error creating task design:', error);
+        throw error;
+    }
+};
+
+const updateTaskDesign = async (designId, request) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/TaskDesigns/${designId}`,
-            { cache: 'no-store' }
-        );
-        const taskDesign = await response.json();
-        return taskDesign;
-    } catch (error) {
-        console.error('Error fetching task design by ID:', error);
-        throw error;
-    }
-};
-
-const createTaskDesign = async (createData) => {
-    try {
-        const promise = await axios.post('https://localhost:7062/api/TaskDesigns', createData);
-        toast.promise(
-            promise,
             {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createTaskDesignToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Update task design failed');
+        }
+
+        const updatedDesign = await response.json();
+        return updatedDesign;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating task design:', error);
         throw error;
     }
 };
 
-const updateTaskDesign = async (id, updateData) => {
+const deleteTaskDesign = async (designId) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/TaskDesigns/${id}`, updateData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/TaskDesigns/${designId}`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateTaskDesignToast' }
+                method: 'DELETE',
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Delete task design failed');
+        }
+
+        // Assuming successful deletion doesn't return data, you can adjust as needed.
+        return { success: true };
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting task design:', error);
         throw error;
     }
 };
 
-const deleteTaskDesign = async (id) => {
-    try {
-        const promise = await axios.delete(`https://localhost:7062/api/TaskDesigns/${id}`);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang xoá...',
-                success: 'Xoá thành công!',
-                error: 'Xoá không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'deleteTaskDesignToast' }
-        );
-        const response = await promise;
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+export {
+    getAllTaskDesigns,
+    createTaskDesign,
+    updateTaskDesign,
+    deleteTaskDesign,
 };
-export { getAllTaskDesigns, getTaskDesignById, createTaskDesign, updateTaskDesign, deleteTaskDesign };

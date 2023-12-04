@@ -64,22 +64,26 @@ const updateRoomType = async (id, request) => {
     }
 };
 
-const deleteRoomType = async (id) => {
+const updateRoomTypeHiddenStatus = async (id, newHiddenStatus) => {
     try {
         const response = await fetch(
-            `${apiUrl}/${id}`,
+            `${apiUrl}/${id}/isHidden`,
             {
-                method: 'DELETE',
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isHidden : newHiddenStatus }),
             }
         );
 
         if (!response.ok) {
-            throw new Error('Delete room type failed');
+            throw new Error('Update hidden status failed');
         }
 
-        return true;
+        return await response.json();
     } catch (error) {
-        console.error('Error deleting room type:', error);
+        console.error('Error fetching update room type hidden status:', error);
         throw error;
     }
 };
@@ -88,5 +92,5 @@ export {
     getAllRoomTypes,
     createRoomType,
     updateRoomType,
-    deleteRoomType,
+    updateRoomTypeHiddenStatus,
 };
