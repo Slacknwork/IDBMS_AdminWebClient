@@ -18,9 +18,12 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
-import { getProjectTasksWithItemByRoomId } from "../../../../../api/projectTaskServices";
+import { getProjectTasksWithItemByRoomId } from "/api/projectTaskServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+
+import ItemModal from "./modal";
+import ExistingItemModal from "./modalExisting";
 
 const interiorItems = [
   {
@@ -77,11 +80,11 @@ export default function InteriorItems() {
     if (!initialized.current) {
       try {
         const data = await getProjectTasksWithItemByRoomId(params.roomId);
-        console.log(data)
+        console.log(data);
 
-        const interiorItems = data?.map(task => task.interiorItem) ?? [];
-        setValues(interiorItems)
-        console.log(interiorItems)
+        const interiorItems = data?.map((task) => task.interiorItem) ?? [];
+        setValues(interiorItems);
+        console.log(interiorItems);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -96,10 +99,10 @@ export default function InteriorItems() {
 
   return (
     <Box sx={{ overflow: "auto" }}>
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
-      ></Box>
-
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+        <ExistingItemModal>Thêm từ dữ liệu</ExistingItemModal>
+        <ItemModal>Tạo mới</ItemModal>
+      </Box>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>

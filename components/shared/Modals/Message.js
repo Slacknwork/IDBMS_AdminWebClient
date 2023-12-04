@@ -1,27 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import { deleteSiteById } from "../../../../../api/siteServices";
-import { useRouter } from "next/navigation";
+import { Box, Button, Grid, Modal } from "@mui/material";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 500,
   bgcolor: "background.paper",
   boxShadow: 24,
   pt: 2,
@@ -29,11 +16,16 @@ const style = {
   pb: 3,
 };
 
-const modalTitle = "Xóa";
-const modalMessage = "Xóa thông tin công trình?";
-
-export default function SiteModal({ children, siteId }) {
-  const router = useRouter();
+export default function MessageModal({
+  color = "primary",
+  sx,
+  buttonLabel,
+  onSubmit,
+  title,
+  cancelLabel,
+  submitLabel,
+  children,
+}) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -43,29 +35,15 @@ export default function SiteModal({ children, siteId }) {
     setOpen(false);
   };
 
-  const handleDeleteSite = async () => {
-    console.log(siteId);
-    try {
-      const response = await deleteSiteById(siteId);
-      console.log(response);
-      toast.success("Xóa thành công!");
-      router.push(`/sites`);
-      // handleClose();
-    } catch (error) {
-      console.error("Error :", error);
-      toast.error("Lỗi!");
-    }
-  };
-
   return (
-    <Box>
+    <Box sx={sx}>
       <Button
-        color="error"
+        color={color}
         variant="contained"
         disableElevation
         onClick={handleOpen}
       >
-        {children}
+        {buttonLabel}
       </Button>
       <Modal
         open={open}
@@ -74,32 +52,29 @@ export default function SiteModal({ children, siteId }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">{modalTitle}</h2>
+          <h2 id="child-modal-title">{title}</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>{modalMessage}</p>
+              {children}
             </Grid>
             <Grid item xs={12} lg={12}>
-              <Box
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-                spacing={2}
-              >
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
-                  sx={{ mr: 2 }}
-                  color="error"
+                  color={color}
                   variant="outlined"
                   disableElevation
                   onClick={handleClose}
+                  sx={{ mr: 2 }}
                 >
-                  Hủy
+                  {cancelLabel || "Hủy"}
                 </Button>
                 <Button
-                  color="error"
+                  color={color}
                   variant="contained"
                   disableElevation
-                  onClick={handleDeleteSite}
+                  onClick={onSubmit}
                 >
-                  Xóa
+                  {submitLabel || "Chấp nhận"}
                 </Button>
               </Box>
             </Grid>

@@ -1,19 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Grid, Modal } from "@mui/material";
 import { toast } from "react-toastify";
-import { updateSite } from "../../../../../api/siteServices";
+import { updateSite } from "/api/siteServices";
 
 const style = {
   position: "absolute",
@@ -42,7 +32,7 @@ export default function SiteModal({ children, siteId, request }) {
   };
 
   const handleUpdateSite = async () => {
-    console.log(request)
+    console.log(request);
     try {
       const response = await updateSite(siteId, request);
       console.log(response);
@@ -56,7 +46,12 @@ export default function SiteModal({ children, siteId, request }) {
 
   return (
     <Box>
-      <Button variant="contained" disableElevation onClick={handleOpen}>
+      <Button
+        sx={{ mr: 2 }}
+        variant="contained"
+        disableElevation
+        onClick={handleOpen}
+      >
         {children}
       </Button>
       <Modal
