@@ -4,86 +4,136 @@ const getAllInteriorItems = async () => {
             'https://localhost:7062/api/InteriorItems',
             { cache: 'no-store' }
         );
-        const interiorItems = await response.json();
-        return interiorItems;
+
+        if (!response.ok) {
+            throw new Error('Get all interior items failed');
+        }
+
+        const items = await response.json();
+        return items;
     } catch (error) {
         console.error('Error fetching all interior items:', error);
         throw error;
     }
 };
 
-const getInteriorItemById = async (itemId) => {
+const getItemsByInteriorItemCategoryId = async (categoryId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get items by interior item category ID failed');
+        }
+
+        const items = await response.json();
+        return items;
+    } catch (error) {
+        console.error('Error fetching items by interior item category ID:', error);
+        throw error;
+    }
+};
+
+const createInteriorItem = async (request) => {
+    try {
+        const response = await fetch('https://localhost:7062/api/InteriorItems', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Create interior item failed');
+        }
+
+        const createdItem = await response.json();
+        return createdItem;
+    } catch (error) {
+        console.error('Error creating interior item:', error);
+        throw error;
+    }
+};
+
+const updateInteriorItem = async (itemId, request) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/InteriorItems/${itemId}`,
-            { cache: 'no-store' }
-        );
-        const interiorItem = await response.json();
-        return interiorItem;
-    } catch (error) {
-        console.error('Error fetching interior item by ID:', error);
-        throw error;
-    }
-};
-
-const createInteriorItem = async (createData) => {
-    try {
-        const promise = await axios.post('https://localhost:7062/api/InteriorItems', createData);
-        toast.promise(
-            promise,
             {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createInteriorItemsToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Update interior item failed');
+        }
+
+        const updatedItem = await response.json();
+        return updatedItem;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating interior item:', error);
         throw error;
     }
 };
 
-const updateInteriorItem = async (id, updateData) => {
+const deleteInteriorItem = async (itemId) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/InteriorItems/${id}`, updateData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItems/${itemId}`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateInteriorItemsToast' }
+                method: 'DELETE',
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Delete interior item failed');
+        }
+
+        // Assuming successful deletion doesn't return data, you can adjust as needed.
+        return { success: true };
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting interior item:', error);
         throw error;
     }
 };
 
-const deleteInteriorItem = async (id) => {
+const updateInteriorItemStatus = async (itemId, newStatus) => {
     try {
-        const promise = await axios.delete(`https://localhost:7062/api/InteriorItems/${id}`);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItems/${itemId}/status`,
             {
-                pending: 'Đang xoá...',
-                success: 'Xoá thành công!',
-                error: 'Xoá không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'deleteInteriorItemsToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update interior item status failed');
+        }
+
+        const updatedItem = await response.json();
+        return updatedItem;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating interior item status:', error);
         throw error;
     }
 };
-export { getAllInteriorItems, getInteriorItemById, createInteriorItem, updateInteriorItem, deleteInteriorItem };
+
+export {
+    getAllInteriorItems,
+    getItemsByInteriorItemCategoryId,
+    createInteriorItem,
+    updateInteriorItem,
+    deleteInteriorItem,
+    updateInteriorItemStatus,
+};

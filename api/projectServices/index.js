@@ -97,7 +97,7 @@ const updateProjectStatus = async (id, status) => {
 const updateProjectAdvertisementStatus = async (id, status) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Projects/${id}/advertisementstatus/${status}`,
+            `https://localhost:7062/api/Projects/${id}/isAdvertisement/${status}`,
             {
                 method: 'PUT',
             }
