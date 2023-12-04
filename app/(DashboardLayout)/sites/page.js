@@ -93,7 +93,10 @@ export default function Sites() {
   return (
     <Box>
       <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-        <Search query={searchQuery}></Search>
+        <Search
+          query={searchQuery}
+          placeholder="Tìm kiếm theo Tên / Địa chỉ"
+        ></Search>
         <CreateSiteModal>Tạo công trình</CreateSiteModal>
       </Box>
       {values && values.length > 0 ? (
@@ -107,22 +110,27 @@ export default function Sites() {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell>
+              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600} noWrap>
                   Tên công trình
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600} noWrap>
                   Địa chỉ
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600} noWrap>
                   Tên người đại diện
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={115} align="right"></StyledTableCell>
+              <StyledTableCell width={"10%"}>
+                <Typography variant="subtitle2" fontWeight={600} noWrap>
+                  Ngày tạo
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -141,6 +149,11 @@ export default function Sites() {
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {site.contactName}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {new Date(site.createdDate).toLocaleDateString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
