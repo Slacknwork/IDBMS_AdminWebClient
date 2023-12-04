@@ -13,4 +13,4 @@ function mapFromOdata(odata) {
   return odata.value.map((item) => convertToPascalCase(item));
 }
 
-export { mapFromOdata };
+export { mapFromOdata, convertToPascalCase };
