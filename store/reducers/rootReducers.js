@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./user";
 import breadcrumbReducer from "./breadcrumb";
 
