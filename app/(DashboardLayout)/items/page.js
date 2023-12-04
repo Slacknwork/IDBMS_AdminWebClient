@@ -32,21 +32,9 @@ import {
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 
+import CreateItemModal from "./(CreateItemModal)";
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-
-const projects = [
-  {
-    id: "1",
-    name: "COOLNAME Building",
-    companyName: "COOLNAME Co.",
-    projectType: 0,
-    language: 0,
-    status: 0,
-    estimatePrice: 200,
-    finalPrice: 200,
-  },
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -111,8 +99,9 @@ export default function ItemList() {
 
   return (
     <Box>
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
         <Search query={searchQuery}></Search>
+        <CreateItemModal></CreateItemModal>
       </Box>
       {interiorItems && interiorItems.length > 0 ? (
         <Table
