@@ -1,92 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   FormGroup,
   FormControlLabel,
+  FormControl,
   Button,
   Stack,
   Checkbox,
+  TextField
 } from "@mui/material";
 import Link from "next/link";
-
+import { loginAdmin } from "/api/authenticationServices"
 import CustomTextField from "/components/forms/theme-elements/CustomTextField";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "/store/reducers/user";
+import store from "/store/reducers/user";
+import { useRouter } from "next/navigation";
 
-const AuthLogin = ({ title, subtitle, subtext }) => (
-  <>
-    {title ? (
-      <Typography fontWeight="700" variant="h2" mb={1}>
-        {title}
-      </Typography>
-    ) : null}
+const AuthLogin = ({ title, subtitle, subtext }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-    {subtext}
+  const user = useSelector((state) => state.user);
+  console.log(user);
 
-    <Stack>
-      <Box>
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="username"
-          mb="5px"
-        >
-          Username
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    const request = {
+      username: username ?? "",
+      password: password ?? "",
+    }
+
+    try {
+      const response = await loginAdmin(request);
+      console.log(response);
+      toast.success("Đăng nhập thành công!");
+      dispatch(login(response.data));
+
+      console.log(user);
+
+      // router.push(`/sites`);
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  }
+
+  return (
+    <>
+      {title ? (
+        <Typography fontWeight="700" variant="h2" mb={1}>
+          {title}
         </Typography>
-        <CustomTextField variant="outlined" fullWidth />
-      </Box>
-      <Box mt="25px">
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="password"
-          mb="5px"
-        >
-          Password
-        </Typography>
-        <CustomTextField type="password" variant="outlined" fullWidth />
-      </Box>
-      <Stack
-        justifyContent="space-between"
-        direction="row"
-        alignItems="center"
-        my={2}
-      >
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
+      ) : null}
+
+      {subtext}
+
+      <Stack component="form" onSubmit={handleFormSubmit}>
+        <FormControl fullWidth variant="outlined" margin="normal">
+          <Typography htmlFor="username">Username</Typography>
+          <TextField
+            id="username"
+            name="username"
+            value={username}
+            onChange={handleUsernameChange}
           />
-        </FormGroup>
-        <Typography
-          component={Link}
-          href="/"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
+        </FormControl>
+
+        <FormControl fullWidth variant="outlined" margin="normal">
+          <Typography htmlFor="password">Mật khẩu</Typography>
+          <TextField
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </FormControl>
+
+        <Stack
+          justifyContent="space-between"
+          direction="row"
+          alignItems="center"
+          my={2}
         >
-          Forgot Password ?
-        </Typography>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox defaultChecked />}
+              label="Remember this Device"
+            />
+          </FormGroup>
+          <Typography
+            component={Link}
+            href="/"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Quên mật khẩu?
+          </Typography>
+        </Stack>
+
+        <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+          >
+            Đăng nhập
+          </Button>
+        </Box>
       </Stack>
-    </Stack>
-    <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        href="/"
-        type="submit"
-      >
-        Sign In
-      </Button>
-    </Box>
-    {subtitle}
-  </>
-);
+      {subtitle}
+    </>
+  );
+};
 
 export default AuthLogin;
