@@ -1,3 +1,7 @@
+import { mapFromOdata } from "/utils/odata";
+import { projectTypeIndex } from "/constants/enums/projectType";
+import { bookingRequestStatusIndex } from "/constants/enums/bookingRequestStatus";
+
 const countBookingRequests = async (search) => {
   try {
     const response = await fetch(
@@ -29,7 +33,7 @@ const getBookingRequests = async () => {
 
 const countBookingRequestsFilter = async (search, type, status) => {
   const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
-  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const typeQuery = type ? `ProjectType eq '${type}' and ` : "";
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
@@ -54,19 +58,22 @@ const getBookingRequestsFilter = async (
   pageSize = 5
 ) => {
   const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
-  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const typeQuery = type ? `ProjectType eq '${type}' and ` : "";
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
+  const pagination = `$top=${pageSize}&$skip=${pageNo * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}${searchQuery}&$top=${pageSize}&$skip=${
-        pageNo * pageSize
-      }`,
+      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}${searchQuery}&${pagination}`,
       {
         cache: "no-store",
       }
     );
     const bookingRequests = await response.json();
-    return bookingRequests;
+    return mapFromOdata(bookingRequests).map((req) => ({
+      ...req,
+      status: bookingRequestStatusIndex[req.status],
+      projectType: projectTypeIndex[req.projectType],
+    }));
   } catch (error) {
     console.error("Error fetching booking requests:", error);
     throw error;

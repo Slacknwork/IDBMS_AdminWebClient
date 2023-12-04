@@ -18,7 +18,7 @@ export default function Search({ query }) {
   const onSearchSubmit = () => {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
-    searchParams.set(query, search);
+    search ? searchParams.set(query, search) : searchParams.delete(query);
     url.search = searchParams.toString();
     router.push(url.toString());
   };
