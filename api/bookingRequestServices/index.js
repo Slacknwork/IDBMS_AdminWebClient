@@ -1,3 +1,7 @@
+import { mapFromOdata } from "/utils/odata";
+import { projectTypeIndex } from "/constants/enums/projectType";
+import { bookingRequestStatusIndex } from "/constants/enums/bookingRequestStatus";
+
 const countBookingRequests = async (search) => {
   try {
     const response = await fetch(
@@ -6,6 +10,9 @@ const countBookingRequests = async (search) => {
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Count failed');
+    }
     const count = await response.text();
     return parseInt(count, 10);
   } catch (error) {
@@ -19,6 +26,9 @@ const getBookingRequests = async () => {
     const response = await fetch(`https://localhost:7062/api/BookingRequests`, {
       cache: "no-store",
     });
+    if (!response.ok) {
+      throw new Error('Get failed');
+  }
     const bookingRequests = await response.json();
     return bookingRequests;
   } catch (error) {
@@ -28,15 +38,19 @@ const getBookingRequests = async () => {
 };
 
 const countBookingRequestsFilter = async (search, type, status) => {
-  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
+  const typeQuery = type ? `ProjectType eq '${type}' and ` : "";
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`,
+      `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}${searchQuery}`,
       {
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Count failed');
+  }
     const count = await response.text();
     return parseInt(count, 10);
   } catch (error) {
@@ -52,19 +66,26 @@ const getBookingRequestsFilter = async (
   pageNo = 0,
   pageSize = 5
 ) => {
-  const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
+  const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
+  const typeQuery = type ? `ProjectType eq '${type}' and ` : "";
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
+  const pagination = `$top=${pageSize}&$skip=${pageNo * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))&$top=${pageSize}&$skip=${
-        pageNo * pageSize
-      }`,
+      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}${searchQuery}&${pagination}`,
       {
         cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error('Get failed');
+    }
     const bookingRequests = await response.json();
-    return bookingRequests;
+    return mapFromOdata(bookingRequests).map((req) => ({
+      ...req,
+      status: bookingRequestStatusIndex[req.status],
+      projectType: projectTypeIndex[req.projectType],
+    }));
   } catch (error) {
     console.error("Error fetching booking requests:", error);
     throw error;

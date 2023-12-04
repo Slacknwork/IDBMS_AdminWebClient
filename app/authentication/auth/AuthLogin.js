@@ -8,15 +8,13 @@ import {
   Button,
   Stack,
   Checkbox,
-  TextField
+  TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { loginAdmin } from "/api/authenticationServices"
-import CustomTextField from "/components/forms/theme-elements/CustomTextField";
+import { loginAdmin } from "/api/authenticationServices";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";
-import store from "/store/reducers/user";
 import { useRouter } from "next/navigation";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
@@ -24,7 +22,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   const router = useRouter();
 
   const user = useSelector((state) => state.user);
-  console.log(user);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -43,7 +40,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     const request = {
       username: username ?? "",
       password: password ?? "",
-    }
+    };
 
     try {
       const response = await loginAdmin(request);
@@ -51,15 +48,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       toast.success("Đăng nhập thành công!");
       dispatch(login(response.data));
 
-      console.log(user);
-
       // router.push(`/sites`);
-
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
     }
-  }
+  };
 
   return (
     <>

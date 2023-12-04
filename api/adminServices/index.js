@@ -4,6 +4,9 @@ const apiUrl = "https://localhost:7062/api";
 const getAllAdmins = async () => {
     try {
         const response = await fetch(`${apiUrl}/admins`);
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
         const admins = await response.json();
         return admins;
     } catch (error) {
@@ -15,6 +18,9 @@ const getAllAdmins = async () => {
 const getAdminById = async (adminId) => {
     try {
         const response = await fetch(`${apiUrl}/admins/${adminId}`);
+        if (!response.ok) {
+            throw new Error('Get failed');
+        }
         const admin = await response.json();
         return admin;
     } catch (error) {

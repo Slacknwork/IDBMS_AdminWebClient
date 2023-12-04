@@ -109,13 +109,9 @@ export default function RequestList() {
           page,
           pageSize
         );
-        const dataCount = await countBookingRequestsFilter(
-          search,
-          type,
-          status
-        );
-        setValues(data.value);
-        setCount(dataCount);
+        const count = await countBookingRequestsFilter(search, type, status);
+        setValues(data);
+        setCount(count);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -157,32 +153,32 @@ export default function RequestList() {
             >
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>
+                  <StyledTableCell width={"27.5%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Thông tin khách
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Loại dự án
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Địa chỉ
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Ghi chú
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"12.5%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Trạng thái
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Phản hồi
                     </Typography>
@@ -191,55 +187,39 @@ export default function RequestList() {
               </TableHead>
               <TableBody>
                 {values?.map((request) => (
-                  <StyledTableRow key={request.Id}>
+                  <StyledTableRow key={request.id}>
                     <TableCell>
                       <UserCard
-                        name={request.ContactName}
-                        email={request.ContactEmail}
-                        phone={request.ContactPhone}
+                        name={request.contactName}
+                        email={request.contactEmail}
+                        phone={request.contactPhone}
                       ></UserCard>
                     </TableCell>
                     <TableCell>
                       <Chip
-                        color={
-                          projectTypeChipColors[
-                            projectTypeIndex[request.ProjectType]
-                          ]
-                        }
-                        label={
-                          projectTypeOptions[
-                            projectTypeIndex[request.ProjectType]
-                          ]
-                        }
+                        color={projectTypeChipColors[request.projectType]}
+                        label={projectTypeOptions[request.projectType]}
                       ></Chip>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
-                        {request.ContactLocation}
+                        {request.contactLocation}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
-                        {request.Note || "N/A"}
+                        {request.note || "N/A"}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Chip
-                        color={
-                          bookingRequestStatusButtonColors[
-                            bookingRequestStatusIndex[request.Status]
-                          ]
-                        }
-                        label={
-                          bookingRequestStatusOptions[
-                            bookingRequestStatusIndex[request.Status]
-                          ]
-                        }
+                        color={bookingRequestStatusButtonColors[request.status]}
+                        label={bookingRequestStatusOptions[request.status]}
                       ></Chip>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
-                        {request.AdminReply || "N/A"}
+                        {request.adminReply || "N/A"}
                       </Typography>
                     </TableCell>
                   </StyledTableRow>

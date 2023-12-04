@@ -4,86 +4,94 @@ const getAllProjectDesigns = async () => {
             'https://localhost:7062/api/ProjectDesigns',
             { cache: 'no-store' }
         );
-        const projectDesigns = await response.json();
-        return projectDesigns;
+
+        if (!response.ok) {
+            throw new Error('Get all project designs failed');
+        }
+
+        const designs = await response.json();
+        return designs;
     } catch (error) {
-        console.error('Error fetching all project Designs:', error);
+        console.error('Error fetching all project designs:', error);
         throw error;
     }
 };
 
-const getProjectDesignById = async (designId) => {
+const createProjectDesign = async (request) => {
+    try {
+        const response = await fetch('https://localhost:7062/api/ProjectDesigns', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Create project design failed');
+        }
+
+        const createdDesign = await response.json();
+        return createdDesign;
+    } catch (error) {
+        console.error('Error creating project design:', error);
+        throw error;
+    }
+};
+
+const updateProjectDesign = async (designId, request) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns/${designId}`,
-            { cache: 'no-store' }
-        );
-        const projectDesign = await response.json();
-        return projectDesign;
-    } catch (error) {
-        console.error('Error fetching project design by ID:', error);
-        throw error;
-    }
-};
-
-const createProjectDesign = async (createData) => {
-    try {
-        const promise = await axios.post('https://localhost:7062/api/ProjectDesigns', createData);
-        toast.promise(
-            promise,
             {
-                pending: 'Đang thêm...',
-                success: 'Thêm thành công!',
-                error: 'Thêm không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'createProjectDesignsToast' }
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
         );
 
-        const response = await promise;
-        return response.data;
+        if (!response.ok) {
+            throw new Error('Update project design failed');
+        }
+
+        const updatedDesign = await response.json();
+        return updatedDesign;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating project design:', error);
         throw error;
     }
 };
 
-const updateProjectDesign = async (id, updateData) => {
+const updateProjectDesignHiddenStatus = async (designId, newHiddenStatus) => {
     try {
-        const promise = await axios.put(`https://localhost:7062/api/ProjectDesigns/${id}`, updateData);
-        toast.promise(
-            promise,
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectDesigns/${designId}/isHidden`,
             {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'updateProjectDesignsToast' }
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isHidden: newHiddenStatus }),
+            }
         );
-        const response = await promise;
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Update project design hidden status failed');
+        }
+
+        const updatedDesign = await response.json();
+        return updatedDesign;
     } catch (error) {
-        console.error(error);
+        console.error('Error updating project design hidden status:', error);
         throw error;
     }
 };
 
-const hideProjectDesign = async (id, status) => {
-    try {
-        const promise = await axios.delete(`https://localhost:7062/api/ProjectDesigns/${id}/isHidden?isHidden=${status}`);
-        toast.promise(
-            promise,
-            {
-                pending: 'Đang chỉnh sửa...',
-                success: 'Chỉnh sửa thành công!',
-                error: 'Chỉnh sửa không thành công! Vui lòng thử lại!',
-            },
-            { toastId: 'hideProjectDesignsToast' }
-        );
-        const response = await promise;
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+export {
+    getAllProjectDesigns,
+    createProjectDesign,
+    updateProjectDesign,
+    updateProjectDesignHiddenStatus,
 };
-export { getAllProjectDesigns, getProjectDesignById, createProjectDesign, updateProjectDesign, hideProjectDesign };

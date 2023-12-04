@@ -26,13 +26,9 @@ import {
 
 import projectTypeOptions, {
   projectTypeChipColors,
-  projectTypeIndex,
   projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
-import bookingRequestStatusOptions, {
-  bookingRequestStatusButtonColors,
-  bookingRequestStatusIndex,
-} from "/constants/enums/bookingRequestStatus";
+import { bookingRequestStatusIndex } from "/constants/enums/bookingRequestStatus";
 
 import FilterStatus from "/components/shared/FilterStatus";
 import FormText from "/components/shared/Forms/Text";
@@ -106,13 +102,13 @@ export default function RequestList() {
           page,
           pageSize
         );
-        const dataCount = await countBookingRequestsFilter(
+        const count = await countBookingRequestsFilter(
           search,
           type,
           defaultStatus
         );
-        setValues(data.value);
-        setCount(dataCount);
+        setValues(data);
+        setCount(count);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -121,6 +117,7 @@ export default function RequestList() {
       }
     };
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // UPDATE BOOKING STATUS
@@ -151,67 +148,68 @@ export default function RequestList() {
             >
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>
+                  <StyledTableCell width={"27.5%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Thông tin khách
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Loại dự án
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Địa chỉ
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Ghi chú
                     </Typography>
                   </StyledTableCell>
-                  <StyledTableCell align="right"></StyledTableCell>
+                  <StyledTableCell
+                    width={"27.5%"}
+                    align="right"
+                  ></StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {values?.map((request) => (
-                  <StyledTableRow key={request.Id}>
+                  <StyledTableRow key={request.id}>
                     <TableCell>
                       <UserCard
-                        name={request.ContactName}
-                        email={request.ContactEmail}
-                        phone={request.ContactPhone}
+                        name={request.contactName}
+                        email={request.contactEmail}
+                        phone={request.contactPhone}
                       ></UserCard>
                     </TableCell>
                     <TableCell>
                       <Chip
-                        color={
-                          projectTypeChipColors[
-                            projectTypeIndex[request.ProjectType]
-                          ]
-                        }
-                        label={
-                          projectTypeOptions[
-                            projectTypeIndex[request.ProjectType]
-                          ]
-                        }
+                        color={projectTypeChipColors[request.projectType]}
+                        label={projectTypeOptions[request.projectType]}
                       ></Chip>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
-                        {request.ContactLocation}
+                        {request.contactLocation}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
-                        {request.Note || "N/A"}
+                        {request.note || "N/A"}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
-                      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          mr: 2,
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                      >
                         <MessageModal
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 4 }}
                           buttonLabel="Tiếp nhận"
                           title="Tiếp nhận yêu cầu này?"
                           color="primary"
@@ -224,10 +222,10 @@ export default function RequestList() {
                           }
                         >
                           <UserCard
-                            name={request.ContactName}
-                            address={request.ContactLocation}
-                            email={request.ContactEmail}
-                            phone={request.ContactPhone}
+                            name={request.contactName}
+                            address={request.contactLocation}
+                            email={request.contactEmail}
+                            phone={request.contactPhone}
                           ></UserCard>
                           <Typography sx={{ mt: 2 }} variant="subtitle2">
                             Nhập ghi chú (nếu có)
@@ -247,10 +245,10 @@ export default function RequestList() {
                           }
                         >
                           <UserCard
-                            name={request.ContactName}
-                            address={request.ContactLocation}
-                            email={request.ContactEmail}
-                            phone={request.ContactPhone}
+                            name={request.contactName}
+                            address={request.contactLocation}
+                            email={request.contactEmail}
+                            phone={request.contactPhone}
                           ></UserCard>
                           <Typography sx={{ mt: 2 }} variant="p">
                             Nhập lý do từ chối yêu cầu
