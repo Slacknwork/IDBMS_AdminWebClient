@@ -240,10 +240,35 @@ export default function TaskOverview() {
               Công việc: {formData.name}
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <DeleteModal>
+              <DeleteModal
+
+              >
                 <span>Xóa</span>
               </DeleteModal>
-              <SaveModal>
+              <SaveModal
+                request={{
+                  code: formData?.taskDesign?.code ?? null,
+                  name: formData.name,
+                  description: formData.description,
+                  percentage: formData.percentage,
+                  calculationUnit: formData.calculationUnit,
+                  pricePerUnit: formData.pricePerUnit,
+                  unitInContract: parseInt(formData.unitInContract, 10) || 0,
+                  unitUsed: parseInt(formData.unitUsed, 10) || 0,
+                  isIncurred: formData.isIncurred,
+                  startedDate: formData.startedDate ? formData.startedDate.toISOString() : null,
+                  endDate: formData.endDate ? formData.endDate.toISOString() : null,
+                  noDate: formData.noDate,
+                  parentTaskId: formData?.parentTask?.id ?? null,
+                  taskCategoryId: formData.taskCategoryId,
+                  projectId: params.id,
+                  paymentStageId: formData?.paymentStage?.id ?? null,
+                  interiorItemId: formData?.interiorItem?.id ?? null,
+                  taskDesignId: formData?.taskDesign?.id ?? null,
+                  roomId: formData?.roomId ?? null,
+                  status: formData?.status ?? null,
+                }}
+              >
                 <span>Lưu</span>
               </SaveModal>
             </Box>
