@@ -11,7 +11,7 @@ export default function SidebarItems({ toggleMobileSidebar }) {
 
   return (
     <Box sx={{ px: 3 }}>
-      <List sx={{ pt: 0, marginTop: 10 }} className="sidebarNav" component="div">
+      <List sx={{ pt: 0, marginTop: 4 }} className="sidebarNav" component="div">
         {Menuitems.map((item) => {
           if (item.subheader) {
             return <NavGroup item={item} key={item.subheader} />;
