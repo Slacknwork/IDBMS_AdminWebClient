@@ -1,26 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Grid } from "@mui/material";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
 import TextForm from "/components/shared/Forms/Text";
+import NumberForm from "/components/shared/Forms/Number";
+import SelectForm from "/components/shared/Forms/Select";
+import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FormModal from "/components/shared/Modals/Form";
 
-export default function ItemModal({ children }) {
+export default function CreateItemModal() {
   const [formData, setFormData] = useState({
     code: "",
     name: "",
     nameError: { hasError: false, label: "" },
+    description: "",
+    descriptionError: { hasError: false, label: "" },
     englishName: "",
     englishNameError: { hasError: false, label: "" },
     length: 0,
@@ -29,7 +27,7 @@ export default function ItemModal({ children }) {
     widthError: { hasError: false, label: "" },
     height: 0,
     heightError: { hasError: false, label: "" },
-    calculationUnit: "",
+    calculationUnit: -1,
     calculationUnitError: { hasError: false, label: "" },
     material: "",
     materialError: { hasError: false, label: "" },
@@ -40,7 +38,9 @@ export default function ItemModal({ children }) {
     laborCost: 0,
     laborCostError: { hasError: false, label: "" },
     interiorItemColor: { id: 1, name: "", hex: "" },
+    interiorItemColorError: { hasError: false, label: "" },
     interiorItemCategory: { id: 1, name: "" },
+    interiorItemCategoryError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
     parentItem: { id: 1, name: "" },
@@ -50,21 +50,25 @@ export default function ItemModal({ children }) {
   const interiorItemColorOptions = [
     { id: 1, name: "Color1", hex: "#ffffff" },
     { id: 2, name: "Color2", hex: "#000000" },
-    // Add more color options as needed
   ];
   const interiorItemCategoryOptions = [
     { id: 1, name: "Category1" },
     { id: 2, name: "Category2" },
-    // Add more category options as needed
   ];
   const parentItemOptions = [
     { id: 1, name: "ParentItem1" },
     { id: 2, name: "ParentItem2" },
-    // Add more parent item options as needed
   ];
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
+    // Handle error here
+    switch (field) {
+      case "name":
+      case "length":
+      default:
+        handleInputError(field, false, "");
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -72,16 +76,19 @@ export default function ItemModal({ children }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-  const handleNumberChange = (field, value) => {
-    const val = parseFloat(value);
-    handleInputChange(field, val);
-  };
 
   return (
-    <FormModal buttonLabel="Tạo đồ dùng" title="Tạo đồ dùng" submitLabel="Tạo">
-      {/* name */}
-      <Grid item xs={12} lg={12}>
+    <FormModal
+      buttonLabel="Tạo đồ dùng"
+      title="Tạo đồ dùng"
+      submitLabel="Tạo"
+      size="big"
+    >
+      {/* NAME */}
+      <Grid item xs={12} lg={6}>
         <TextForm
+          multiline
+          rows={3}
           title="Tên"
           required
           subtitle="Nhập tên đồ dùng"
@@ -93,301 +100,184 @@ export default function ItemModal({ children }) {
       </Grid>
 
       {/* LENGTH */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Chiều dài</Typography>
-            <Typography variant="p">Nhập chiều dài</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.lengthError.hasError}
-                variant="outlined"
-                type="number"
-                value={formData.length}
-                helperText={formData.lengthError.label}
-                onChange={(e) => handleNumberChange("length", e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Chiều dài"
+          required
+          subtitle="Nhập chiều dài"
+          value={formData.length}
+          error={formData.lengthError.hasError}
+          errorLabel={formData.lengthError.label}
+          onChange={(value) => handleInputChange("length", value)}
+          endAdornment={<>m</>}
+        ></NumberForm>
       </Grid>
 
       {/* WIDTH */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Chiều rộng</Typography>
-            <Typography variant="p">Nhập chiều rộng</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.widthError.hasError}
-                variant="outlined"
-                type="number"
-                value={formData.width}
-                helperText={formData.widthError.label}
-                onChange={(e) => handleNumberChange("width", e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Chiều rộng"
+          required
+          subtitle="Nhập chiều rộng"
+          value={formData.width}
+          error={formData.widthError.hasError}
+          errorLabel={formData.widthError.label}
+          onChange={(value) => handleInputChange("width", value)}
+          endAdornment={<>m</>}
+        ></NumberForm>
       </Grid>
 
       {/* HEIGHT */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Chiều cao</Typography>
-            <Typography variant="p">Nhập chiều cao</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.heightError.hasError}
-                variant="outlined"
-                type="number"
-                value={formData.height}
-                helperText={formData.heightError.label}
-                onChange={(e) => handleNumberChange("height", e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Chiều cao"
+          required
+          subtitle="Nhập chiều cao"
+          value={formData.height}
+          error={formData.heightError.hasError}
+          errorLabel={formData.heightError.label}
+          onChange={(value) => handleInputChange("width", value)}
+          endAdornment={<>m</>}
+        ></NumberForm>
       </Grid>
 
       {/* CALCULATION UNIT */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Đơn vị tính</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <Select
-                variant="outlined"
-                value={formData.calculationUnit}
-                onChange={(e) =>
-                  handleInputChange("calculationUnit", e.target.value)
-                }
-                error={formData.calculationUnitError.hasError}
-              >
-                <MenuItem disabled value={-1}>
-                  Chọn đơn vị tính
-                </MenuItem>
-                {calculationUnitOptions.map((unit, index) => (
-                  <MenuItem key={unit} value={index}>
-                    {unit}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <SelectForm
+          title="Đơn vị tính"
+          required
+          subtitle="Chọn một đơn vị tính"
+          value={formData.calculationUnit}
+          options={calculationUnitOptions}
+          defaultValue={-1}
+          defaultLabel="Chọn một..."
+          error={formData.calculationUnitError.hasError}
+          errorLabel={formData.calculationUnitError.label}
+          onChange={(value) => handleInputChange("calculationUnit", value)}
+        ></SelectForm>
       </Grid>
 
       {/* MATERIAL */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Chất liệu</Typography>
-            <Typography variant="p">Nhập chất liệu</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.materialError.hasError}
-                variant="outlined"
-                value={formData.material}
-                helperText={formData.materialError.label}
-                onChange={(e) => handleInputChange("material", e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <TextForm
+          title="Chất liệu"
+          required
+          subtitle="Nhập chất liệu đồ dùng"
+          value={formData.material}
+          error={formData.materialError.hasError}
+          errorLabel={formData.materialError.label}
+          onChange={(e) => handleInputChange("material", e.target.value)}
+        ></TextForm>
       </Grid>
 
       {/* ORIGIN */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Xuất xứ</Typography>
-            <Typography variant="p">Nhập xuất xứ</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.originError.hasError}
-                variant="outlined"
-                value={formData.origin}
-                helperText={formData.originError.label}
-                onChange={(e) => handleInputChange("origin", e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <TextForm
+          title="Xuất xứ"
+          required
+          subtitle="Nhập xuất xứ đồ dùng"
+          value={formData.origin}
+          error={formData.originError.hasError}
+          errorLabel={formData.originError.label}
+          onChange={(e) => handleInputChange("origin", e.target.value)}
+        ></TextForm>
       </Grid>
 
       {/* ESTIMATE PRICE */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Giá ước tính</Typography>
-            <Typography variant="p">Nhập giá ước tính</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.estimatePriceError.hasError}
-                variant="outlined"
-                type="number"
-                value={formData.estimatePrice}
-                helperText={formData.estimatePriceError.label}
-                onChange={(e) =>
-                  handleNumberChange("estimatePrice", e.target.value)
-                }
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Giá ước tính"
+          required
+          subtitle="Nhập giá tiền ước tính của sản phẩm"
+          value={formData.estimatePrice}
+          error={formData.estimatePriceError.hasError}
+          errorLabel={formData.estimatePriceError.label}
+          onChange={(value) => handleInputChange("estimatePrice", value)}
+          endAdornment={<>VND</>}
+        ></NumberForm>
       </Grid>
 
       {/* LABOR COST */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Chi phí lao động</Typography>
-            <Typography variant="p">Nhập chi phí lao động</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <TextField
-                error={formData.laborCostError.hasError}
-                variant="outlined"
-                type="number"
-                value={formData.laborCost}
-                helperText={formData.laborCostError.label}
-                onChange={(e) =>
-                  handleNumberChange("laborCost", e.target.value)
-                }
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Chi phí lao động"
+          required
+          subtitle="Nhập chi phí lao động"
+          value={formData.laborCost}
+          error={formData.laborCostError.hasError}
+          errorLabel={formData.laborCostError.label}
+          onChange={(value) => handleInputChange("laborCost", value)}
+          endAdornment={<>VND</>}
+        ></NumberForm>
       </Grid>
 
       {/* INTERIOR ITEM COLOR */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Màu sắc sản phẩm</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <Select
-                variant="outlined"
-                value={formData.interiorItemColor.id}
-                onChange={(e) =>
-                  handleInputChange("interiorItemColor", {
-                    ...formData.interiorItemColor,
-                    id: e.target.value,
-                  })
-                }
-              >
-                {interiorItemColorOptions.map((color) => (
-                  <MenuItem key={color.id} value={color.id}>
-                    {color.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <AutocompleteForm
+          title="Màu"
+          subtitle="Chọn màu sắc sản phẩm"
+          value={formData.interiorItemColor}
+          options={interiorItemColorOptions}
+          error={formData.interiorItemColorError.hasError}
+          errorLabel={formData.interiorItemColorError.label}
+          onChange={(value) => handleInputChange("interiorItemColor", value)}
+        ></AutocompleteForm>
       </Grid>
 
       {/* INTERIOR ITEM CATEGORY */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Danh mục sản phẩm</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <Select
-                variant="outlined"
-                value={formData.interiorItemCategory.id}
-                onChange={(e) =>
-                  handleInputChange("interiorItemCategory", {
-                    ...formData.interiorItemCategory,
-                    id: e.target.value,
-                  })
-                }
-              >
-                {interiorItemCategoryOptions.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <AutocompleteForm
+          title="Danh mục"
+          subtitle="Chọn danh mục sản phẩm"
+          value={formData.interiorItemCategory}
+          options={interiorItemCategoryOptions}
+          error={formData.interiorItemCategoryError.hasError}
+          errorLabel={formData.interiorItemCategoryError.label}
+          onChange={(value) => handleInputChange("interiorItemCategory", value)}
+        ></AutocompleteForm>
       </Grid>
 
       {/* STATUS */}
-      <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Trạng thái</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <Select
-                variant="outlined"
-                value={formData.status}
-                onChange={(e) => handleInputChange("status", e.target.value)}
-                error={formData.statusError.hasError}
-              >
-                {interiorItemStatusOptions.map((status, index) => (
-                  <MenuItem key={status} value={index}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+      <Grid item xs={12} lg={6}>
+        <SelectForm
+          title="Trạng thái"
+          required
+          subtitle="Chọn trạng thái hiển thị của sản phẩm"
+          value={formData.status}
+          options={interiorItemStatusOptions}
+          defaultValue={-1}
+          defaultLabel="Chọn một..."
+          error={formData.statusError.hasError}
+          errorLabel={formData.statusError.label}
+          onChange={(value) => handleInputChange("status", value)}
+        ></SelectForm>
       </Grid>
 
       {/* PARENT ITEM */}
+      <Grid item xs={12} lg={6}>
+        <AutocompleteForm
+          title="Sản phẩm tiền bối"
+          subtitle="Chọn sản phẩm tiền bối"
+          value={formData.parentItem}
+          options={parentItemOptions}
+          error={formData.parentItemError.hasError}
+          errorLabel={formData.parentItemError.label}
+          onChange={(value) => handleInputChange("parentItem", value)}
+        ></AutocompleteForm>
+      </Grid>
+
+      {/* DESCRIPTION */}
       <Grid item xs={12} lg={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} lg={4}>
-            <Typography variant="h5">Sản phẩm cha</Typography>
-          </Grid>
-          <Grid item xs={8} lg={8}>
-            <FormControl fullWidth>
-              <Select
-                variant="outlined"
-                value={formData.parentItem.id}
-                onChange={(e) =>
-                  handleInputChange("parentItem", {
-                    ...formData.parentItem,
-                    id: e.target.value,
-                  })
-                }
-              >
-                {parentItemOptions.map((parentItem) => (
-                  <MenuItem key={parentItem.id} value={parentItem.id}>
-                    {parentItem.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+        <TextForm
+          multiline
+          rows={4}
+          title="Mô tả"
+          subtitle="Mổ tả sản phẩm"
+          value={formData.description}
+          error={formData.descriptionError.hasError}
+          errorLabel={formData.descriptionError.label}
+          onChange={(e) => handleInputChange("description", e.target.value)}
+        ></TextForm>
       </Grid>
     </FormModal>
   );
