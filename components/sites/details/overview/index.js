@@ -199,21 +199,19 @@ export default function Sites() {
   }, [siteId]);
 
   const mapData = (data) => {
-
-    setName(data.name ?? "")
-    setDescription(data.description ?? "")
-    setContactLocation(data.contactLocation ?? "")
-    setCompanyCode(data.companyCode ?? "")
-    setContactName(data.contactName ?? "")
-    setAddress(data.address ?? "")
-    setContactPhone(data.contactPhone ?? "")
-    setContactEmail(data.contactEmail ?? "")
-
+    setName(data.name ?? "");
+    setDescription(data.description ?? "");
+    setContactLocation(data.contactLocation ?? "");
+    setCompanyCode(data.companyCode ?? "");
+    setContactName(data.contactName ?? "");
+    setAddress(data.address ?? "");
+    setContactPhone(data.contactPhone ?? "");
+    setContactEmail(data.contactEmail ?? "");
   };
 
   const getAvatarContent = (name) => {
-    const words = name.split(' ');
-    const lastWord = words.length > 0 ? words[words.length - 1] : '';
+    const words = name.split(" ");
+    const lastWord = words.length > 0 ? words[words.length - 1] : "";
     const firstCharacter = lastWord.charAt(0).toUpperCase();
 
     return firstCharacter;
@@ -236,22 +234,24 @@ export default function Sites() {
               <Typography variant="h2" sx={{ my: "auto" }}>
                 {name}
               </Typography>
-              <SaveSiteModal
-                request={{
-                  name: name,
-                  description: description,
-                  companyCode: companyCode,
-                  contactName: contactName,
-                  contactEmail: contactEmail,
-                  contactPhone: contactPhone,
-                  contactLocation: contactLocation,
-                  address: address,
-                }}
-                siteId={siteId}
-              >Lưu</SaveSiteModal>
-              <DeleteSiteModal
-                siteId={siteId}
-              >Xoá</DeleteSiteModal>
+              <Box sx={{ display: "flex" }}>
+                <SaveSiteModal
+                  request={{
+                    name: name,
+                    description: description,
+                    companyCode: companyCode,
+                    contactName: contactName,
+                    contactEmail: contactEmail,
+                    contactPhone: contactPhone,
+                    contactLocation: contactLocation,
+                    address: address,
+                  }}
+                  siteId={siteId}
+                >
+                  Lưu
+                </SaveSiteModal>
+                <DeleteSiteModal siteId={siteId}>Xoá</DeleteSiteModal>
+              </Box>
             </Box>
           </Grid>
           <Grid item xs={12} lg={8}>
@@ -455,7 +455,10 @@ export default function Sites() {
                 {contactLabel}
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}> {getAvatarContent(contactName)}</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                  {" "}
+                  {getAvatarContent(contactName)}
+                </Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
                   <Typography variant="h6">{contactName}</Typography>
                   <Typography variant="p">{contactEmail}</Typography>

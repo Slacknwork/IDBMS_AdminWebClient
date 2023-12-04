@@ -1,11 +1,6 @@
 import { Card } from "@mui/material";
 
-type Props = {
-  className?: string;
-  children: JSX.Element | JSX.Element[];
-};
-
-const BlankCard = ({ children, className }: Props) => {
+const BlankCard = ({ children, className }) => {
   return (
     <Card
       sx={{ p: 0, position: "relative" }}

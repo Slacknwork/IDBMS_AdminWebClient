@@ -124,7 +124,9 @@ export default function ProjectDetails() {
           );
           console.log(project);
           setDecorProjects(
-            listProjectsBySiteId.filter((project) => project.type === 0 && project.id !== projectId)
+            listProjectsBySiteId.filter(
+              (project) => project.type === 0 && project.id !== projectId
+            )
           );
           const participation = project?.projectParticipations.find(
             (par) => par.role === 0
@@ -190,7 +192,14 @@ export default function ProjectDetails() {
               item
               xs={12}
               lg={12}
-              sx={{ borderBottom: 1, borderColor: "grey.500", py: 3, mt: 1 }}
+              sx={{
+                borderBottom: 1,
+                borderColor: "grey.500",
+                py: 3,
+                mt: 1,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
             >
               <Typography variant="h2" sx={{ my: "auto" }}>
                 {formData.name ?? "Tên dự án không tìm thấy"}
@@ -302,7 +311,8 @@ export default function ProjectDetails() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Phân loại mục đích <span style={{ color: "red" }}>*</span>
+                        Phân loại mục đích{" "}
+                        <span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
@@ -586,9 +596,7 @@ export default function ProjectDetails() {
                   <Grid item xs={12} lg={12}>
                     <Grid container spacing={2}>
                       <Grid item xs={4} lg={4}>
-                        <Typography variant="h5">
-                          Dựa trên thiết kế
-                        </Typography>
+                        <Typography variant="h5">Dựa trên thiết kế</Typography>
                       </Grid>
                       <Grid item xs={8} lg={8}>
                         <FormControl fullWidth>
@@ -603,7 +611,9 @@ export default function ProjectDetails() {
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                error={formData.basedOnDecorProjectError.hasError}
+                                error={
+                                  formData.basedOnDecorProjectError.hasError
+                                }
                                 variant="outlined"
                                 helperText={
                                   formData.basedOnDecorProjectError.label
