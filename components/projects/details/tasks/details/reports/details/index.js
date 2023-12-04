@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
@@ -9,6 +9,7 @@ import {
   Button,
   FormControl,
   Grid,
+  InputAdornment,
   Table,
   TableBody,
   TableCell,
@@ -27,6 +28,10 @@ import {
 
 import DashboardCard from "/components/shared/DashboardCard";
 import DocumentModal from "./modal";
+import { deleteTaskReport, getTaskReportById, updateTaskReport } from "../../../../../../../api/taskReportServices";
+import { toast } from "react-toastify";
+import calculationUnitOptions from "/constants/enums/calculationUnit";
+import { deleteTaskDocument } from "../../../../../../../api/taskDocumentServices";
 
 const taskReports = [
   {
@@ -94,6 +99,89 @@ export default function ReportDetails() {
     }));
   };
 
+
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [documents, setDocuments] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const data = await getTaskReportById(params.reportId)
+        console.log(data)
+        mapData(data)
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  const handleUpdateReport = async () => {
+    const request = {
+      name: formData?.name ?? null,
+      unitUsed: formData?.unitUsed !== undefined
+        ? parseInt(formData.unitUsed, 10)
+        : null,
+      description: formData?.description ?? null,
+      projectTaskId: params.taskId ?? null,
+    };
+    console.log(request)
+    try {
+      const response = await updateTaskReport(params.reportId, request);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const handleDeleteReport = async () => {
+    try {
+      const response = await deleteTaskReport(params.reportId);
+      console.log(response);
+      toast.success("Xóa thành công!");
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const handleDeleteDocument = async (documentId) => {
+    try {
+      const response = await deleteTaskDocument(documentId);
+      console.log(response);
+      toast.success("Xóa thành công!");
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const mapData = (data) => {
+    console.log(data)
+    if (data) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        name: data.name ?? "",
+        calculationUnit: data?.projectTask?.calculationUnit ?? "",
+        unitUsed: data.unitUsed ?? "",
+        description: data.description ?? "",
+      }));
+      setDocuments(data?.taskDocuments ?? [])
+    }
+  };
+
   return (
     <DashboardCard title={"Báo cáo"}>
       <Box sx={{ overflow: "auto", mt: 3 }}>
@@ -118,6 +206,7 @@ export default function ReportDetails() {
                     variant="contained"
                     disableElevation
                     color="primary"
+                    onClick={handleUpdateReport}
                   >
                     <IconDeviceFloppy></IconDeviceFloppy>
                   </Button>
@@ -126,6 +215,7 @@ export default function ReportDetails() {
                     variant="contained"
                     disableElevation
                     color="error"
+                    onClick={handleDeleteReport}
                   >
                     <IconTrashFilled></IconTrashFilled>
                   </Button>
@@ -174,6 +264,13 @@ export default function ReportDetails() {
                         onChange={(e) =>
                           handleInputChange("unitUsed", e.target.value)
                         }
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              {calculationUnitOptions[formData?.calculationUnit] ?? "Không xác định"}
+                            </InputAdornment>
+                          ),
+                        }}
                       />
                     </FormControl>
                   </Grid>
@@ -233,11 +330,11 @@ export default function ReportDetails() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {taskReports?.map((taskReport) => (
-                  <StyledTableRow key={taskReport.id}>
+                {documents?.map((document) => (
+                  <StyledTableRow key={document.id}>
                     <TableCell>
                       <Typography variant="subtitle2" fontWeight={400}>
-                        {taskReport.name}
+                        {document.name}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
@@ -247,7 +344,7 @@ export default function ReportDetails() {
                         variant="contained"
                         disableElevation
                         color="primary"
-                        href={`/projects/${params.id}/tasks/${params.taskId}/reports/${taskReport.id}`}
+
                       >
                         <IconDownload></IconDownload>
                       </Button>
@@ -256,7 +353,7 @@ export default function ReportDetails() {
                         variant="contained"
                         disableElevation
                         color="error"
-                        href={`/projects/${params.id}/tasks/${params.taskId}/reports/${taskReport.id}`}
+                        onClick={() => handleDeleteDocument(document.id)}
                       >
                         <IconTrashFilled></IconTrashFilled>
                       </Button>

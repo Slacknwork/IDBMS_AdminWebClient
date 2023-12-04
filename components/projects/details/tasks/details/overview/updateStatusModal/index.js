@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Box, Button, Grid, Modal } from "@mui/material";
-import { updateProjectTask } from "../../../../../../../api/projectTaskServices";
+import { useEffect, useState } from "react";
+import { Box, Button, FormControl, Grid, MenuItem, Modal, Select } from "@mui/material";
+import projectTaskStatusOptions from "../../../../../../../constants/enums/projectTaskStatus";
+import { updateProjectTaskStatus } from "../../../../../../../api/projectTaskServices";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
@@ -19,7 +20,7 @@ const style = {
   pb: 3,
 };
 
-export default function UpdateTaskModal({ children, request }) {
+export default function UpdateTaskStatusModal({ children, currentStatus }) {
   const params = useParams();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
@@ -29,11 +30,15 @@ export default function UpdateTaskModal({ children, request }) {
   const handleClose = () => {
     setOpen(false);
   };
+  const [status, setStatus] = useState(currentStatus);
 
-  const handleUpdate = async () => {
-    console.log(request);
+  useEffect(() => {
+    setStatus(currentStatus)
+  }, [currentStatus]);
+
+  const handleUpdateStatus = async () => {
     try {
-      const response = await updateProjectTask(params.taskId ?? null, request);
+      const response = await updateProjectTaskStatus(params.taskId ?? null, status);
       console.log(response);
       toast.success("Cập nhật thành công!");
       handleClose()
@@ -46,7 +51,12 @@ export default function UpdateTaskModal({ children, request }) {
 
   return (
     <Box>
-      <Button variant="contained" disableElevation onClick={handleOpen}>
+      <Button
+        sx={{ mr: 2, width: '170px' }}
+        variant="outlined"
+        disableElevation
+        onClick={handleOpen}
+      >
         {children}
       </Button>
       <Modal
@@ -56,16 +66,31 @@ export default function UpdateTaskModal({ children, request }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style }}>
-          <h2 id="child-modal-title">Lưu</h2>
+          <h2 id="child-modal-title">Cập nhật trạng thái công việc</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
-              <p>Lưu thông tin tầng?</p>
+              <FormControl fullWidth sx={{ padding: '16px' }}>
+                <Select
+                  variant="outlined"
+                  value={status}
+                  onChange={(e) =>
+                    setStatus(e.target.value)
+                  }
+                >
+                  {projectTaskStatusOptions.map((unit, index) => (
+                    <MenuItem key={index} value={index}>
+                      {unit}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   variant="outlined"
                   disableElevation
+                  color="error"
                   onClick={handleClose}
                   sx={{ mr: 2 }}
                 >
@@ -74,9 +99,10 @@ export default function UpdateTaskModal({ children, request }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleUpdate}
+                  color="success"
+                  onClick={handleUpdateStatus}
                 >
-                  Lưu
+                  Cập nhật
                 </Button>
               </Box>
             </Grid>

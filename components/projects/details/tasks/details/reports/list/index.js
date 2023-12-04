@@ -29,6 +29,9 @@ import calculationUnitOptions from "/constants/enums/calculationUnit";
 
 import PageContainer from "/components/container/PageContainer";
 import TaskModal from "./modal";
+import { getTaskReportsByProjectTaskId } from "../../../../../../../api/taskReportServices";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const taskReports = [
   {
@@ -74,6 +77,28 @@ export default function Sites() {
   const params = useParams();
   const searchParams = useSearchParams();
 
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    if (!initialized.current) {
+      try {
+        const data = await getTaskReportsByProjectTaskId(params.taskId);
+        console.log(data)
+        setValues(data)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer title={"Báo cáo công việc"}>
       <Box sx={{ overflow: "auto", mt: 3 }}>
@@ -99,9 +124,14 @@ export default function Sites() {
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Thực hiện
+                  Đã thực hiện
                 </Typography>
               </StyledTableCell>
+              {/* <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Đơn vị
+                </Typography>
+              </StyledTableCell> */}
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Ngày Tạo
@@ -111,7 +141,7 @@ export default function Sites() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {taskReports?.map((taskReport) => (
+            {values?.map((taskReport) => (
               <StyledTableRow key={taskReport.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -120,11 +150,15 @@ export default function Sites() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {`${taskReport.unitUsed} ${
-                      calculationUnitOptions[taskReport.calculationUnit]
-                    }`}
+                    {`${taskReport.unitUsed}`}
                   </Typography>
                 </TableCell>
+                {/* <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {`${calculationUnitOptions[taskReport.calculationUnit]
+                      }`}
+                  </Typography>
+                </TableCell> */}
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {new Date(taskReport.createdTime).toLocaleDateString(

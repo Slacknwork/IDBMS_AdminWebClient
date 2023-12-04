@@ -247,8 +247,8 @@ export default function CreateModal({ children, request, tasks }) {
       const response = await createProjectTask(transformedValue);
       console.log(response);
       toast.success("Thêm thành công!");
-      // handleClose()
-      // router.push(`/projects/${params.id}/rooms/${response.data.id}`);
+      handleClose()
+      router.push(`/projects/${params.id}/rooms/${response.data.id}`);
 
     } catch (error) {
       console.error("Error :", error);

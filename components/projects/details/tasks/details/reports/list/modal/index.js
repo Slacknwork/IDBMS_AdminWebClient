@@ -16,6 +16,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
+import { useParams, useRouter } from "next/navigation";
+import { createTaskReport } from "../../../../../../../../api/taskReportServices";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -39,6 +42,8 @@ const unitUsedSubLabel = "Số đơn vị đã sử dụng sublabel";
 const descriptionLabel = "Mô tả";
 
 export default function SiteModal({ children }) {
+  const params = useParams();
+  const router = useRouter();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -68,6 +73,42 @@ export default function SiteModal({ children }) {
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const transformEmptyToNull = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+      if (result[key] === "") {
+        result[key] = null;
+      }
+    }
+    return result;
+  };
+
+  const handleCreate = async () => {
+    console.log(params)
+    const request = {
+      name: formData?.name ?? null,
+      // calculationUnit: formData?.calculationUnit ?? null,
+      unitUsed: formData?.unitUsed !== undefined
+        ? parseInt(formData.unitUsed, 10)
+        : null,
+      description: formData?.description ?? null,
+      projectTaskId: params.taskId ?? null,
+    };
+    const transformedValue = transformEmptyToNull(request);
+    console.log(transformedValue)
+    try {
+      const response = await createTaskReport(transformedValue);
+      console.log(response);
+      toast.success("Thêm thành công!");
+      handleClose()
+      router.push(`/projects/${params.id}/tasks/${params.taskId}/reports/${response.data.id}`);
+
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
   };
 
   return (
@@ -120,7 +161,7 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Tên công việc</Typography>
+                  <Typography variant="h5">Tên báo cáo</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
@@ -139,7 +180,7 @@ export default function SiteModal({ children }) {
             </Grid>
 
             {/* CALCULATION UNIT */}
-            <Grid item xs={12} lg={12}>
+            {/* <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
                   <Typography variant="h5">Đơn vị</Typography>
@@ -166,7 +207,7 @@ export default function SiteModal({ children }) {
                   </FormControl>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
 
             {/* UNIT USED */}
             <Grid item xs={12} lg={12}>
@@ -227,7 +268,7 @@ export default function SiteModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleCreate}
                 >
                   Tạo
                 </Button>

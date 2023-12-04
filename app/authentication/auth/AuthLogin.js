@@ -48,7 +48,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       toast.success("Đăng nhập thành công!");
       dispatch(login(response.data));
 
-      // router.push(`/sites`);
+      router.push(`/sites`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

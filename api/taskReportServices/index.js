@@ -104,9 +104,29 @@ const deleteTaskReport = async (reportId) => {
     }
 };
 
+const getTaskReportById = async (reportId) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/TaskReports/${reportId}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get task report by ID failed');
+        }
+
+        const report = await response.json();
+        return report;
+    } catch (error) {
+        console.error('Error fetching task report by ID:', error);
+        throw error;
+    }
+};
+
 export {
     getAllTaskReports,
     getTaskReportsByProjectTaskId,
+    getTaskReportById,
     createTaskReport,
     updateTaskReport,
     deleteTaskReport,
