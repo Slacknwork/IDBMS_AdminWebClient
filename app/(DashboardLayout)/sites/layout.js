@@ -1,7 +1,15 @@
 "use client";
 
-import Sites from "/components/sites";
+import PageContainer from "/components/container/PageContainer";
+import DashboardCard from "/components/shared/DashboardCard";
 
-export default function ClientLayout({ children }) {
-  return <Sites>{children}</Sites>;
+const pageTitle = "Khu công trình";
+const pageDescription = "Danh sách các khu công trình";
+
+export default function Sites({ children }) {
+  return (
+    <PageContainer title={pageTitle} description={pageDescription}>
+      <DashboardCard title={pageTitle}>{children}</DashboardCard>
+    </PageContainer>
+  );
 }

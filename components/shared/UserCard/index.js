@@ -30,7 +30,7 @@ export default function UserCard({
               <Typography variant="subtitle2">{address}</Typography>
             </Box>
           )}
-          <Typography variant="p">{email}</Typography>
+          <Typography variant="p" noWrap>{email}</Typography>
           <br />
           <Typography variant="p">{phone}</Typography>
           <br />

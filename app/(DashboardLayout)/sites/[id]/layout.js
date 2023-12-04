@@ -1,7 +1,17 @@
 "use client";
 
-import SiteDetails from "/components/sites/details";
+import Tabs from "/components/shared/Tabs";
+import PageContainer from "/components/container/PageContainer";
+import TabItems from "./tabItems";
 
-export default function ClientLayout({ children }) {
-  return <SiteDetails>{children}</SiteDetails>;
+const pageName = "Thông tin khu công trình";
+const pageDescription = "Thông tin khu công trình";
+
+export default function SiteDetails({ children }) {
+  return (
+    <PageContainer title={pageName} description={pageDescription}>
+      <Tabs uriPos={3} tabs={TabItems}></Tabs>
+      {children}
+    </PageContainer>
+  );
 }

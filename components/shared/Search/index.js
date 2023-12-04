@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { FormControl, TextField, InputAdornment } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 
-export default function Search({ query }) {
+export default function Search({ query, placeholder }) {
   // INIT
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -18,7 +18,7 @@ export default function Search({ query }) {
   const onSearchSubmit = () => {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
-    searchParams.set(query, search);
+    search ? searchParams.set(query, search) : searchParams.delete(query);
     url.search = searchParams.toString();
     router.push(url.toString());
   };
@@ -29,6 +29,7 @@ export default function Search({ query }) {
         label="Tìm kiếm"
         size="small"
         variant="outlined"
+        placeholder={placeholder || ""}
         value={search}
         onChange={onSearchChange}
         onBlur={onSearchSubmit}
