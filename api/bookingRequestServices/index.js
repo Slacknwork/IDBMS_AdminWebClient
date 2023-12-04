@@ -28,11 +28,12 @@ const getBookingRequests = async () => {
 };
 
 const countBookingRequestsFilter = async (search, type, status) => {
+  const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
   const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`,
+      `https://localhost:7062/odata/BookingRequests/$count?$filter=${typeQuery}${statusQuery}${searchQuery}`,
       {
         cache: "no-store",
       }
@@ -52,11 +53,12 @@ const getBookingRequestsFilter = async (
   pageNo = 0,
   pageSize = 5
 ) => {
+  const searchQuery = `(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))`;
   const typeQuery = `${type ? `ProjectType eq '${type}' and ` : ``}`;
   const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}(contains(ContactName, '${search}') or contains(ContactEmail, '${search}') or contains(ContactPhone, '${search}'))&$top=${pageSize}&$skip=${
+      `https://localhost:7062/odata/BookingRequests?$filter=${typeQuery}${statusQuery}${searchQuery}&$top=${pageSize}&$skip=${
         pageNo * pageSize
       }`,
       {
