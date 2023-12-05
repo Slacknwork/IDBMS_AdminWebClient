@@ -2,16 +2,12 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Table,
   TableBody,
@@ -28,12 +24,15 @@ import {
   getInteriorItemsFilter,
   countInteriorItemsFilter,
 } from "/api/interiorItemServices";
+import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 
+import PageContainer from "/components/container/PageContainer";
 import CreateItemModal from "./(CreateItemModal)";
 import Search from "/components/shared/Search";
+import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import Pagination from "/components/shared/Pagination";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -58,6 +57,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ItemList() {
   // CONSTANTS
   const searchQuery = "search";
+  const interiorItemCategoryQuery = "category";
 
   const pageQuery = "page";
   const defaultPage = 0;
@@ -66,16 +66,17 @@ export default function ItemList() {
   const defaultPageSize = 5;
 
   // INIT
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // FETCH DATA FROM API
   const [interiorItems, setInteriorItems] = useState([]);
+  const [interiorItemCategories, setInteriorItemCategories] = useState([]);
   const [interiorItemCount, setInteriorItemCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const search = searchParams.get(searchQuery) || "";
+    const search = searchParams.get(searchQuery) ?? "";
+    const category = searchParams.get(interiorItemCategoryQuery) || null;
     const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -83,8 +84,15 @@ export default function ItemList() {
     const fetchDataFromApi = async () => {
       try {
         setLoading(true);
-        const data = await getInteriorItemsFilter(search, page, pageSize);
-        const count = await countInteriorItemsFilter(search);
+        const categories = await getAllInteriorItemCategories();
+        const data = await getInteriorItemsFilter(
+          search,
+          category,
+          page,
+          pageSize
+        );
+        const count = await countInteriorItemsFilter(search, category);
+        setInteriorItemCategories(categories);
         setInteriorItems(data);
         setInteriorItemCount(count);
       } catch (error) {
@@ -98,9 +106,18 @@ export default function ItemList() {
   }, [searchParams]);
 
   return (
-    <Box>
+    <PageContainer title="Danh sách sản phẩm" description="Danh sách sản phẩm">
       <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-        <Search query={searchQuery}></Search>
+        <Box>
+          <Search query={searchQuery}></Search>
+          <FilterAutocomplete
+            query={interiorItemCategoryQuery}
+            options={interiorItemCategories}
+            label="Danh mục"
+            allValue={null}
+            allLabel="Tất cả"
+          ></FilterAutocomplete>
+        </Box>
         <CreateItemModal></CreateItemModal>
       </Box>
       {interiorItems && interiorItems.length > 0 ? (
@@ -211,6 +228,6 @@ export default function ItemList() {
         sizeQuery={pageSizeQuery}
         count={interiorItemCount}
       />
-    </Box>
+    </PageContainer>
   );
 }
