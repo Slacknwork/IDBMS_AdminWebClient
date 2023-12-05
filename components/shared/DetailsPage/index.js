@@ -15,7 +15,7 @@ export default function DetailsPage({
   children,
 }) {
   return (
-    <Box sx={{ overflow: "auto", mt: 3 }}>
+    <Box sx={{ overflow: "auto" }}>
       <Grid container columnSpacing={4} rowSpacing={4}>
         <Grid
           item
