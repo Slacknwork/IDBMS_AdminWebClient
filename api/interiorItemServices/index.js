@@ -132,11 +132,14 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
   }
 };
 
-const countInteriorItemsFilter = async (search) => {
-  const searchQuery = `contains(Name, '${search}') or contains(EnglishName, '${search}')`;
+const countInteriorItemsFilter = async (search, category) => {
+  const searchQuery = `(contains(Name, '${search}') or contains(EnglishName, '${search}'))`;
+  const categoryQuery = category
+    ? `and InteriorItemCategoryId eq ${category}`
+    : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/InteriorItems/$count?$filter=${searchQuery}`,
+      `https://localhost:7062/odata/InteriorItems/$count?$filter=${searchQuery}${categoryQuery}`,
       {
         cache: "no-store",
       }
@@ -149,13 +152,16 @@ const countInteriorItemsFilter = async (search) => {
   }
 };
 
-const getInteriorItemsFilter = async (search, page, pageSize) => {
+const getInteriorItemsFilter = async (search, category, page, pageSize) => {
   const expand = `InteriorItemCategory`;
-  const searchQuery = `contains(Name, '${search}') or contains(EnglishName, '${search}')`;
+  const searchQuery = `(contains(Name, '${search}') or contains(EnglishName, '${search}'))`;
+  const categoryQuery = category
+    ? ` and InteriorItemCategoryId eq ${category}`
+    : "";
   const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/InteriorItems?$expand=${expand}&$filter=${searchQuery}&${pagination}`,
+      `https://localhost:7062/odata/InteriorItems?$expand=${expand}&$filter=${searchQuery}${categoryQuery}&${pagination}`,
       {
         cache: "no-store",
       }
