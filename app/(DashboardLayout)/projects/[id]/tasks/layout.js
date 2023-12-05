@@ -1,7 +1,14 @@
 "use client";
 
-import Tasks from "/components/projects/details/tasks";
+import PageContainer from "/components/container/PageContainer";
+import DashboardCard from "/components/shared/DashboardCard";
 
-export default function TaskLayout({ children }) {
-  return <Tasks>{children}</Tasks>;
+const pageTitle = "Công việc";
+
+export default function TasksLayout({ children }) {
+  return (
+    <PageContainer>
+      <DashboardCard title={pageTitle}>{children}</DashboardCard>
+    </PageContainer>
+  );
 }
