@@ -4,13 +4,12 @@ import { interiorItemStatusIndex } from "/constants/enums/interiorItemStatus";
 
 const getAllInteriorItems = async () => {
   try {
-    const response = await fetch(
-      'https://localhost:7062/api/InteriorItems',
-      { cache: 'no-store' }
-    );
+    const response = await fetch("https://localhost:7062/api/InteriorItems", {
+      cache: "no-store",
+    });
 
     if (!response.ok) {
-      throw new Error('Get all interior items failed');
+      throw new Error("Get all interior items failed");
     }
 
     const items = await response.json();
@@ -35,7 +34,7 @@ const getItemsByInteriorItemCategoryId = async (categoryId) => {
     const items = await response.json();
     return items;
   } catch (error) {
-    console.error('Error fetching items by interior item category ID:', error);
+    console.error("Error fetching items by interior item category ID:", error);
     throw error;
   }
 };
@@ -103,7 +102,7 @@ const deleteInteriorItem = async (itemId) => {
     // Assuming successful deletion doesn't return data, you can adjust as needed.
     return { success: true };
   } catch (error) {
-    console.error('Error deleting interior item:', error);
+    console.error("Error deleting interior item:", error);
     throw error;
   }
 };
@@ -113,9 +112,9 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}/status`,
       {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
       }
@@ -128,7 +127,7 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
     const updatedItem = await response.json();
     return updatedItem;
   } catch (error) {
-    console.error('Error updating interior item status:', error);
+    console.error("Error updating interior item status:", error);
     throw error;
   }
 };
@@ -199,4 +198,3 @@ export {
   getItemsByInteriorItemCategoryId,
   updateInteriorItemStatus,
 };
-

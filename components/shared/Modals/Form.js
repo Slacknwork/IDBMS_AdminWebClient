@@ -9,18 +9,9 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  overflowY: "auto",
-  boxShadow: 24,
-};
 
 export default function FormModal({
   children,
@@ -28,7 +19,23 @@ export default function FormModal({
   title,
   submitLabel,
   onSubmit,
+  size = "",
 }) {
+  // STYLE
+  const theme = useTheme();
+  const isBigScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: size === "big" && isBigScreen ? "60rem" : "40rem",
+    bgcolor: "background.paper",
+    overflowY: "auto",
+    boxShadow: 24,
+  };
+
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -51,7 +58,6 @@ export default function FormModal({
       >
         <Box sx={{ ...style }} component="div">
           <Box
-            container
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -82,7 +88,8 @@ export default function FormModal({
             sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
             component={"div"}
             container
-            spacing={3}
+            columnSpacing={8}
+            rowSpacing={3}
           >
             {children}
             {/* SUBMIT */}

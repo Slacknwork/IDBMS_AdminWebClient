@@ -1,6 +1,13 @@
 "use client";
 
-import { FormControl, Grid, TextField, Typography } from "@mui/material";
+import {
+  FormControl,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 
 export default function FormText({
   sx,
@@ -8,9 +15,10 @@ export default function FormText({
   required,
   variant = "outlined",
   subtitle = "",
-  multiline,
-  rows = 4,
   value,
+  options,
+  defaultValue = -1,
+  defaultLabel = "Chọn một",
   error,
   errorLabel,
   onChange,
@@ -28,15 +36,22 @@ export default function FormText({
       )}
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <FormControl fullWidth>
-          <TextField
-            multiline={multiline}
-            rows={rows}
+          <Select
             variant={variant}
             value={value}
+            onChange={(e) => onChange(parseInt(e.target.value))}
             error={error}
-            helperText={errorLabel}
-            onChange={onChange}
-          />
+          >
+            <MenuItem disabled value={defaultValue}>
+              {defaultLabel}
+            </MenuItem>
+            {options.map((option, index) => (
+              <MenuItem key={option} value={index}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+          {error && <FormHelperText>{errorLabel}</FormHelperText>}
         </FormControl>
       </Grid>
     </Grid>

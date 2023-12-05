@@ -1,8 +1,8 @@
 const calculationUnitOptions = [
   "m3",
-  "m2",
+  "m²",
   "m",
-  "cm2",
+  "cm²",
   "cm",
   "Bộ",
   "Cái",
