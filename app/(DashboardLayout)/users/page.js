@@ -28,7 +28,7 @@ import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
-import CreateModal from "./createModal";
+import CreateUserModal from "./(CreateUserModal)";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -115,22 +115,7 @@ export default function UserList() {
               allLabel={statusAllLabel}
             ></FilterStatus>
           </Box>
-          <CreateModal
-            request={{
-              name: "John Doe",
-              bio: "A software engineer",
-              companyName: "ABC Corporation",
-              address: "123 Main St, Cityville",
-              email: "john.doe@example.com",
-              password: "securepassword",
-              phone: "1234567890",
-              dateOfBirth: "2023-12-01T14:22:42.565Z",
-              language: 0,
-              externalId: "",
-            }}
-          >
-            Lưu
-          </CreateModal>
+          <CreateUserModal></CreateUserModal>
         </Box>
         {users && users.length > 0 ? (
           <Table
