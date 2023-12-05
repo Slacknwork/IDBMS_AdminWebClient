@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
-import { updateProjectTask } from "../../../../../../../api/projectTaskServices";
+import { updateProjectTask } from "/api/projectTaskServices";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
@@ -36,8 +36,7 @@ export default function UpdateTaskModal({ children, request }) {
       const response = await updateProjectTask(params.taskId ?? null, request);
       console.log(response);
       toast.success("Cập nhật thành công!");
-      handleClose()
-
+      handleClose();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

@@ -22,11 +22,14 @@ import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import { getAllTaskDesigns } from "../../../../../../api/taskDesignServices";
-import { getAllInteriorItems } from "../../../../../../api/interiorItemServices";
-import { getAllTaskCategories } from "../../../../../../api/taskCategoryServices";
-import { getPaymentStagesByProjectId } from "../../../../../../api/paymentStageServices";
-import { getProjectTaskById, getProjectTasksByRoomId } from "../../../../../../api/projectTaskServices";
+import { getAllTaskDesigns } from "/api/taskDesignServices";
+import { getAllInteriorItems } from "/api/interiorItemServices";
+import { getAllTaskCategories } from "/api/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
+import {
+  getProjectTaskById,
+  getProjectTasksByRoomId,
+} from "/api/projectTaskServices";
 
 const style = {
   position: "absolute",
@@ -77,19 +80,6 @@ const statusLabel = "Trạng thái";
 
 export default function TaskOverview() {
   const params = useParams();
-  const taskOptions = [
-    { id: 0, name: "Task Option 1" },
-    { id: 1, name: "Task Option 2" },
-    { id: 2, name: "Task Option 3" },
-    // Add more task options as needed
-  ];
-
-  const interiorItemOptions = [
-    { id: 0, name: "Interior Item 1" },
-    { id: 1, name: "Interior Item 2" },
-    { id: 2, name: "Interior Item 3" },
-    // Add more interior items as needed
-  ];
 
   const [formData, setFormData] = useState({
     name: "",
@@ -106,6 +96,7 @@ export default function TaskOverview() {
     unitInContractError: { hasError: false, label: "" },
     unitUsed: 0,
     unitUsedError: { hasError: false, label: "" },
+    projectId: params.id,
     isIncurred: false,
     started: new Date(),
     end: null,
@@ -154,30 +145,36 @@ export default function TaskOverview() {
   const fetchDataFromApi = async () => {
     if (!initialized.current) {
       try {
-        const data = await getProjectTaskById(params.taskId)
-        console.log(data)
-        setTask(data)
-        mapData(data)
+        const data = await getProjectTaskById(params.taskId);
+        console.log(data);
+        setTask(data);
+        mapData(data);
 
-        const listTasksInRoom = await getProjectTasksByRoomId(data.roomId)
-        console.log(listTasksInRoom)
-        const filteredListTasks = listTasksInRoom.filter(task => task.id !== params.taskId);
+        const listTasksInRoom = await getProjectTasksByRoomId(data.roomId);
+        console.log(listTasksInRoom);
+        const filteredListTasks = listTasksInRoom.filter(
+          (task) => task.id !== params.taskId
+        );
 
         console.log(filteredListTasks);
         setListTask(filteredListTasks);
 
         const listItems = await getAllInteriorItems();
-        const furniture = listItems.filter(item => item?.interiorItemCategory?.interiorItemType === 0);
-        console.log(furniture)
-        setItems(furniture)
+        const furniture = listItems.filter(
+          (item) => item?.interiorItemCategory?.interiorItemType === 0
+        );
+        console.log(furniture);
+        setItems(furniture);
 
         const listTaskCategory = await getAllTaskCategories();
-        setTaskCategories(listTaskCategory)
-        console.log(listTaskCategory)
+        setTaskCategories(listTaskCategory);
+        console.log(listTaskCategory);
 
-        const listStagesByProjectId = await getPaymentStagesByProjectId(params.id);
-        setStages(listStagesByProjectId)
-        console.log(listStagesByProjectId)
+        const listStagesByProjectId = await getPaymentStagesByProjectId(
+          params.id
+        );
+        setStages(listStagesByProjectId);
+        console.log(listStagesByProjectId);
 
         setLoading(false);
       } catch (error) {
@@ -192,7 +189,7 @@ export default function TaskOverview() {
   }, []);
 
   const mapData = (data) => {
-    console.log(data)
+    console.log(data);
     if (data) {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -204,6 +201,7 @@ export default function TaskOverview() {
         unitInContract: data.unitInContract || 0,
         unitUsed: data.unitUsed || 0,
         isIncurred: data.isIncurred || false,
+        projectId: data.projectId || params.id,
         startedDate: new Date(data.startedDate) || new Date(),
         endDate: data.endDate ? new Date(data.endDate) : null,
         noDate: data.noDate || 0,
@@ -243,9 +241,7 @@ export default function TaskOverview() {
               Công việc: {formData.name}
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <UpdateStatusModal
-                currentStatus={formData?.status ?? ""}
-              >
+              <UpdateStatusModal currentStatus={formData?.status ?? ""}>
                 <span>Cập nhật trạng thái</span>
               </UpdateStatusModal>
               <SaveModal
@@ -259,8 +255,12 @@ export default function TaskOverview() {
                   unitInContract: parseInt(formData.unitInContract, 10) || 0,
                   unitUsed: parseInt(formData.unitUsed, 10) || 0,
                   isIncurred: formData.isIncurred,
-                  startedDate: formData.startedDate ? formData.startedDate.toISOString() : null,
-                  endDate: formData.endDate ? formData.endDate.toISOString() : null,
+                  startedDate: formData.startedDate
+                    ? formData.startedDate.toISOString()
+                    : null,
+                  endDate: formData.endDate
+                    ? formData.endDate.toISOString()
+                    : null,
                   noDate: formData.noDate,
                   parentTaskId: formData?.parentTask?.id ?? null,
                   taskCategoryId: formData.taskCategoryId,
@@ -463,7 +463,9 @@ export default function TaskOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">Mô tả</Typography>
-                    <Typography variant="p">Mô tả chi tiết về công việc</Typography>
+                    <Typography variant="p">
+                      Mô tả chi tiết về công việc
+                    </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
@@ -657,7 +659,9 @@ export default function TaskOverview() {
                   <Grid item xs={8} lg={8}>
                     <Autocomplete
                       options={items}
-                      getOptionLabel={(option) => `${option.code} - ${option.name}`}
+                      getOptionLabel={(option) =>
+                        `${option.code} - ${option.name}`
+                      }
                       value={formData.interiorItem}
                       onChange={(_, newValue) =>
                         handleInputChange("interiorItem", newValue)
@@ -666,10 +670,11 @@ export default function TaskOverview() {
                         const inputValueLower = inputValue.toLowerCase();
                         return options.filter(
                           (option) =>
-                            option.code.toLowerCase().includes(inputValueLower) ||
+                            option.code
+                              .toLowerCase()
+                              .includes(inputValueLower) ||
                             option.name.toLowerCase().includes(inputValueLower)
                         );
-
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -720,7 +725,6 @@ export default function TaskOverview() {
                         variant="outlined"
                         value={formData.roomName}
                         disabled
-
                         InputProps={{
                           style: {
                             backgroundColor: "#EFEFEF",
