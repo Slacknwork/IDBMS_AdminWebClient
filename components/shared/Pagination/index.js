@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TablePagination } from "@mui/material";
 export default function Pagination({
-  query,
-  sizeQuery,
+  query = "page",
+  sizeQuery = "size",
   count,
   label = "Hiển thị: ",
 }) {

@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { FormControl, TextField, InputAdornment } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 
-export default function Search({ query, placeholder }) {
+export default function Search({ query = "search", placeholder }) {
   // INIT
   const router = useRouter();
   const searchParams = useSearchParams();

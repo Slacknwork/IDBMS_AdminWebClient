@@ -1,21 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Grid, Modal } from "@mui/material";
 import { updateProject } from "/api/projectServices";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import { createUser } from "../../../api/userServices";
+import { createUser } from "/api/userServices";
 
 const style = {
   position: "absolute",
@@ -56,13 +46,12 @@ export default function SaveModal({ children, request }) {
 
   const handleCreate = async () => {
     const transformedValue = transformEmptyToNull(request);
-    console.log(transformedValue)
+    console.log(transformedValue);
     try {
       const response = await createUser(transformedValue);
       console.log(response);
       toast.success("Cập nhật thành công!");
-      handleClose()
-
+      handleClose();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
