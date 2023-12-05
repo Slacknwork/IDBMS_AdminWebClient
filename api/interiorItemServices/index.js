@@ -15,7 +15,7 @@ const getAllInteriorItems = async () => {
     const items = await response.json();
     return items;
   } catch (error) {
-    console.error("Error fetching all interior items:", error);
+    console.error('Error fetching all interior items:', error);
     throw error;
   }
 };
@@ -24,11 +24,11 @@ const getItemsByInteriorItemCategoryId = async (categoryId) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}`,
-      { cache: "no-store" }
+      { cache: 'no-store' }
     );
 
     if (!response.ok) {
-      throw new Error("Get items by interior item category ID failed");
+      throw new Error('Get items by interior item category ID failed');
     }
 
     const items = await response.json();
@@ -41,22 +41,22 @@ const getItemsByInteriorItemCategoryId = async (categoryId) => {
 
 const createInteriorItem = async (request) => {
   try {
-    const response = await fetch("https://localhost:7062/api/InteriorItems", {
-      method: "POST",
+    const response = await fetch('https://localhost:7062/api/InteriorItems', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(request),
     });
 
     if (!response.ok) {
-      throw new Error("Create interior item failed");
+      throw new Error('Create interior item failed');
     }
 
     const createdItem = await response.json();
     return createdItem;
   } catch (error) {
-    console.error("Error creating interior item:", error);
+    console.error('Error creating interior item:', error);
     throw error;
   }
 };
@@ -66,22 +66,22 @@ const updateInteriorItem = async (itemId, request) => {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}`,
       {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(request),
       }
     );
 
     if (!response.ok) {
-      throw new Error("Update interior item failed");
+      throw new Error('Update interior item failed');
     }
 
     const updatedItem = await response.json();
     return updatedItem;
   } catch (error) {
-    console.error("Error updating interior item:", error);
+    console.error('Error updating interior item:', error);
     throw error;
   }
 };
@@ -91,12 +91,12 @@ const deleteInteriorItem = async (itemId) => {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}`,
       {
-        method: "DELETE",
+        method: 'DELETE',
       }
     );
 
     if (!response.ok) {
-      throw new Error("Delete interior item failed");
+      throw new Error('Delete interior item failed');
     }
 
     // Assuming successful deletion doesn't return data, you can adjust as needed.
@@ -121,7 +121,7 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
     );
 
     if (!response.ok) {
-      throw new Error("Update interior item status failed");
+      throw new Error('Update interior item status failed');
     }
 
     const updatedItem = await response.json();

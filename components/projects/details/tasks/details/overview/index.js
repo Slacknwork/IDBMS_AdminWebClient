@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 import PageContainer from "/components/container/PageContainer";
-import DeleteModal from "./deleteModal";
+import UpdateStatusModal from "./updateStatusModal";
 import SaveModal from "./modal";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
@@ -120,7 +120,9 @@ export default function TaskOverview() {
     taskCategoryId: "",
     paymentStage: null,
     taskCategory: null,
-    roomName: ""
+    roomName: "",
+    taskDesignId: "",
+    code: "",
   });
 
   const validateInput = (field, value) => {
@@ -159,16 +161,15 @@ export default function TaskOverview() {
 
         const listTasksInRoom = await getProjectTasksByRoomId(data.roomId)
         console.log(listTasksInRoom)
-        setListTask(listTasksInRoom)
+        const filteredListTasks = listTasksInRoom.filter(task => task.id !== params.taskId);
+
+        console.log(filteredListTasks);
+        setListTask(filteredListTasks);
 
         const listItems = await getAllInteriorItems();
         const furniture = listItems.filter(item => item?.interiorItemCategory?.interiorItemType === 0);
         console.log(furniture)
         setItems(furniture)
-
-        const listTaskDesign = await getAllTaskDesigns();
-        setTaskDesigns(listTaskDesign)
-        console.log(listTaskDesign)
 
         const listTaskCategory = await getAllTaskCategories();
         setTaskCategories(listTaskCategory)
@@ -191,7 +192,7 @@ export default function TaskOverview() {
   }, []);
 
   const mapData = (data) => {
-    console.log(data.calculationUnit)
+    console.log(data)
     if (data) {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -209,13 +210,15 @@ export default function TaskOverview() {
         parentTask: data.parentTask || null,
         interiorItem: data.interiorItem || null,
         taskDesign: data.taskDesign || "",
-        room: data.room || "",
-        status: data.status || "",
+        room: data?.room || "",
+        status: data?.status ?? "",
         designCategoryId: data.designCategoryId || "",
         taskCategoryId: data.taskCategoryId || "",
         paymentStage: data.paymentStage || null,
         taskCategory: data.taskCategory || null,
-        roomName: data?.room?.usePurpose || ""
+        roomName: data?.room?.usePurpose || "",
+        code: data?.code || null,
+        taskDesignId: data?.taskDesignId || null,
       }));
     }
   };
@@ -240,14 +243,14 @@ export default function TaskOverview() {
               Công việc: {formData.name}
             </Typography>
             <Box sx={{ display: "flex" }}>
-              <DeleteModal
-
+              <UpdateStatusModal
+                currentStatus={formData?.status ?? ""}
               >
-                <span>Xóa</span>
-              </DeleteModal>
+                <span>Cập nhật trạng thái</span>
+              </UpdateStatusModal>
               <SaveModal
                 request={{
-                  code: formData?.taskDesign?.code ?? null,
+                  code: formData?.code ?? null,
                   name: formData.name,
                   description: formData.description,
                   percentage: formData.percentage,
@@ -264,8 +267,8 @@ export default function TaskOverview() {
                   projectId: params.id,
                   paymentStageId: formData?.paymentStage?.id ?? null,
                   interiorItemId: formData?.interiorItem?.id ?? null,
-                  taskDesignId: formData?.taskDesign?.id ?? null,
-                  roomId: formData?.roomId ?? null,
+                  taskDesignId: formData?.taskDesignId ?? null,
+                  roomId: formData?.room?.id ?? null,
                   status: formData?.status ?? null,
                 }}
               >
@@ -297,7 +300,7 @@ export default function TaskOverview() {
                   </Grid>
                 </Grid>
               </Grid>
-              {console.log(formData.calculationUnit)}
+
               {/* PERCENTAGE */}
               <Grid item xs={12} lg={12}>
                 <Grid container spacing={2}>

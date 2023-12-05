@@ -95,7 +95,7 @@ export default function SiteModal({ children }) {
             }}
           >
             <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
-              Tạo báo cáo mới
+              Tạo tài liệu mới
             </Typography>
             <IconButton
               aria-label="close"
@@ -117,7 +117,7 @@ export default function SiteModal({ children }) {
             <Grid item xs={12} lg={12}>
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
-                  <Typography variant="h5">Tên công việc</Typography>
+                  <Typography variant="h5">Tên tài liệu</Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>

@@ -134,8 +134,59 @@ const getProjectTaskById = async (taskId) => {
     }
 };
 
+const updateProjectTask = async (taskId, request) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectTasks/${taskId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Update failed');
+        }
+
+        const updatedProjectTask = await response.json();
+        return updatedProjectTask;
+    } catch (error) {
+        console.error('Error updating project task:', error);
+        throw error;
+    }
+};
+
+const updateProjectTaskStatus = async (taskId, status) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectTasks/${taskId}/status?status=${status}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Update failed');
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error updating project task status:', error);
+        throw error;
+    }
+};
+
+
 export {
     getProjectTasksByProjectId, getProjectTasksByPaymentStageId,
     getProjectTasksWithItemByProjectId, getProjectTasksWithItemByRoomId,
-    getProjectTasksByRoomId, createProjectTask, getProjectTaskById
+    getProjectTasksByRoomId, createProjectTask, getProjectTaskById,
+    updateProjectTask, updateProjectTaskStatus
 };
