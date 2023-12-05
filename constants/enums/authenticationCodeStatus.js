@@ -1,5 +1,8 @@
-export default {
-    0: "Active",
-    1: "Used",
-    2: "Expired",
-};
+const authenticationCodeStatusOptions = [
+    "Đang hoạt động",
+    "Đã sử dụng",
+    "Đã quá hạn",
+  ];
+  
+export default authenticationCodeStatusOptions;
+  
