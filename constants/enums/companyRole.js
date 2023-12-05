@@ -1,5 +1,8 @@
-export default {
-    0: "Customer",
-    1: "Architect",
-    2: "ConstructionManager",
-};
+const companyRoleOptions = [
+    "Khách hàng",
+    "Kiến trúc sư",
+    "Quản lý xây dựng",
+  ];
+  
+export default companyRoleOptions;
+  
