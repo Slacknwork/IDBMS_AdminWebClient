@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createFloor } from "../../../../../../api/floorServices";
 import { toast } from "react-toastify";
 
@@ -38,6 +38,7 @@ const initialValues = {
 
 export default function CreateFloorModal({ children }) {
   const params = useParams();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -90,7 +91,8 @@ export default function CreateFloorModal({ children }) {
       const response = await createFloor(transformedValue);
       console.log(response);
       toast.success("Thêm thành công!");
-      handleClose()
+      // handleClose()
+      router.push(`/projects/${params.id}/floors/${response.data.id}`);
 
     } catch (error) {
       console.error("Error :", error);

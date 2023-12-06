@@ -198,7 +198,7 @@ export default function CreateModal({ onSubmit }) {
         </Grid>
 
         {/* ESTIMATED PRICE */}
-        <Grid item xs={12} lg={6}>
+        {/* <Grid item xs={12} lg={6}>
           <NumberForm
             title="Giá ước tính"
             required
@@ -209,10 +209,10 @@ export default function CreateModal({ onSubmit }) {
             onChange={(value) => handleInputChange("estimatedPrice", value)}
             endAdornment={<>VND</>}
           ></NumberForm>
-        </Grid>
+        </Grid> */}
 
         {/* FINAL PRICE */}
-        <Grid item xs={12} lg={6}>
+        {/* <Grid item xs={12} lg={6}>
           <NumberForm
             title="Giá thực tế"
             required
@@ -223,10 +223,10 @@ export default function CreateModal({ onSubmit }) {
             onChange={(value) => handleInputChange("finalPrice", value)}
             endAdornment={<>VND</>}
           ></NumberForm>
-        </Grid>
+        </Grid> */}
 
         {/* TOTAL WARRANTY PAID */}
-        <Grid item xs={12} lg={6}>
+        {/* <Grid item xs={12} lg={6}>
           <NumberForm
             title="Bảo hiểm đã trả"
             subtitle="Nhập số tiền bảo hiểm khách đã trả"
@@ -236,10 +236,10 @@ export default function CreateModal({ onSubmit }) {
             onChange={(value) => handleInputChange("totalWarrantyPaid", value)}
             endAdornment={<>VND</>}
           ></NumberForm>
-        </Grid>
+        </Grid> */}
 
         {/* AREA */}
-        <Grid item xs={12} lg={6}>
+        {/* <Grid item xs={12} lg={6}>
           <NumberForm
             title="Tổng diện tích"
             required
@@ -250,10 +250,10 @@ export default function CreateModal({ onSubmit }) {
             onChange={(value) => handleInputChange("area", value)}
             endAdornment={<>m²</>}
           ></NumberForm>
-        </Grid>
+        </Grid> */}
 
         {/* ESTIMATE BUSINESS DAY */}
-        <Grid item xs={12} lg={6}>
+        {/* <Grid item xs={12} lg={6}>
           <NumberForm
             title="Ước tính thời gian"
             required
@@ -266,7 +266,7 @@ export default function CreateModal({ onSubmit }) {
             }
             endAdornment={<>ngày</>}
           ></NumberForm>
-        </Grid>
+        </Grid> */}
 
         {/* LANGUAGE */}
         <Grid item xs={12} lg={6}>
