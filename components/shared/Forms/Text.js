@@ -6,6 +6,7 @@ export default function FormText({
   sx,
   title,
   required,
+  disabled,
   variant = "outlined",
   subtitle = "",
   multiline,
@@ -29,6 +30,7 @@ export default function FormText({
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <FormControl fullWidth>
           <TextField
+            disabled={disabled}
             multiline={multiline}
             rows={rows}
             variant={variant}

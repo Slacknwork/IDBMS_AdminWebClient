@@ -11,6 +11,7 @@ export default function FormCheckbox({
   sx,
   title,
   subtitle,
+  disabled,
   required,
   checked,
   error,
@@ -32,7 +33,12 @@ export default function FormCheckbox({
         <FormControl fullWidth>
           <FormControlLabel
             control={
-              <Checkbox checked={checked} onChange={onChange} color="primary" />
+              <Checkbox
+                disabled={disabled}
+                checked={checked}
+                onChange={onChange}
+                color="primary"
+              />
             }
             label=""
           />

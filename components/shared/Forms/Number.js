@@ -17,6 +17,7 @@ export default function FormText({
   sx,
   title,
   required,
+  disabled,
   variant = "outlined",
   subtitle = "",
   defaultValue = 0,
@@ -63,6 +64,7 @@ export default function FormText({
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <FormControl fullWidth>
           <TextField
+            disabled={disabled}
             variant={variant}
             value={valueString}
             error={error}

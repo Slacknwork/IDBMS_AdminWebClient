@@ -13,6 +13,7 @@ export default function FormText({
   sx,
   title,
   required,
+  disabled,
   variant = "outlined",
   subtitle = "",
   value,
@@ -37,6 +38,7 @@ export default function FormText({
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <FormControl fullWidth>
           <Select
+            disabled={disabled}
             variant={variant}
             value={value}
             onChange={(e) => onChange(parseInt(e.target.value))}

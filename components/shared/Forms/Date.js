@@ -10,6 +10,7 @@ import moment from "moment-timezone";
 export default function DateForm({
   sx,
   datetime,
+  disabled,
   title,
   subtitle,
   required,
@@ -54,6 +55,7 @@ export default function DateForm({
             dateLibInstance={moment}
           >
             <DatePicker
+            disabled={disabled}
               type={datetime ? "datetime-local" : "date"}
               format="DD/MM/YYYY"
               variant="outlined"

@@ -6,6 +6,7 @@ export default function AutocompleteForm({
   sx,
   title,
   required,
+  disabled,
   variant = "outlined",
   subtitle = "",
   label,
@@ -28,6 +29,7 @@ export default function AutocompleteForm({
       )}
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <Autocomplete
+          disabled={disabled}
           options={options}
           getOptionLabel={(option) => option.name}
           value={value}
