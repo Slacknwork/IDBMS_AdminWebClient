@@ -15,6 +15,20 @@ const getPaymentStagesByProjectId = async (projectId) => {
   }
 };
 
+const getPaymentStagesById = async (id) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/${id}`,
+      { cache: "no-store" }
+    );
+    const paymentStages = await response.json();
+    return paymentStages;
+  } catch (error) {
+    console.error("Error fetching payment stages by project ID:", error);
+    throw error;
+  }
+};
+
 const createPaymentStage = async (request) => {
   try {
     const response = await fetch(`https://localhost:7062/api/PaymentStages`, {
@@ -89,7 +103,7 @@ const countPaymentStagesFilter = async (projectId, search, status) => {
   const statusQuery = status ? `Status eq '${status}' and ` : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/PaymentStages/$count?$filter=${projectIdQuery}${statusQuery}${searchQuery}`,
+      `https://localhost:7062/odata/PaymentStages/$count?$filter=${projectIdQuery}${statusQuery}IsHidden eq false and ${searchQuery}`,
       { cache: "no-store" }
     );
     const paymentStages = await response.text();
@@ -116,7 +130,7 @@ const getPaymentStagesFilter = async (
   const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/PaymentStages?$filter=${projectIdQuery}${statusQuery}${searchQuery}&${pagination}`,
+      `https://localhost:7062/odata/PaymentStages?$filter=${projectIdQuery}${statusQuery}IsHidden eq false and ${searchQuery}&${pagination}`,
       { cache: "no-store" }
     );
     const paymentStages = await response.json();
@@ -132,6 +146,7 @@ const getPaymentStagesFilter = async (
 
 export {
   getPaymentStagesByProjectId,
+  getPaymentStagesById,
   createPaymentStage,
   updatePaymentStage,
   updatePaymentStageIsHidden,

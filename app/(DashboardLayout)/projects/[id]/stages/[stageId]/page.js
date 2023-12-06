@@ -1,40 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Grid } from "@mui/material";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+
+import stageStatusOptions from "/constants/enums/stageStatus";
+
 import {
-  Autocomplete,
-  Box,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+  getPaymentStagesById,
+  updatePaymentStage,
+  updatePaymentStageIsHidden,
+} from "/api/paymentStageServices";
 
 import PageContainer from "/components/container/PageContainer";
-import DeleteModal from "./deleteModal";
-import SaveModal from "./modal";
-
-import calculationUnitOptions from "/constants/enums/calculationUnit";
-import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  overflowY: "auto",
-  boxShadow: 24,
-};
+import DetailsPage from "/components/shared/DetailsPage";
+import TextForm from "/components/shared/Forms/Text";
+import DateForm from "/components/shared/Forms/Date";
+import CheckboxForm from "/components/shared/Forms/Checkbox";
+import NumberForm from "/components/shared/Forms/Number";
+import SelectForm from "/components/shared/Forms/Select";
 
 export default function StageOverview() {
+  const params = useParams();
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
-    id: "",
     name: "",
     nameError: { hasError: false, label: "" },
     stageNo: 0,
@@ -49,20 +40,31 @@ export default function StageOverview() {
     isPrepaid: false,
     pricePercentage: 0,
     pricePercentageError: { hasError: false, label: "" },
-    paidDate: "",
-    startedDate: "",
-    endDate: "",
-    endTimePayment: "",
+    paidDate: null,
+    paidDateError: { hasError: false, label: "" },
+    startedDate: null,
+    startedDateError: { hasError: false, label: "" },
+    endDate: null,
+    endDateError: { hasError: false, label: "" },
+    endTimePayment: null,
+    endTimePaymentError: { hasError: false, label: "" },
     penaltyFee: 0,
     penaltyFeeError: { hasError: false, label: "" },
     estimateBusinessDay: 0,
     estimateBusinessDayError: { hasError: false, label: "" },
+    status: -1,
+    statusError: { hasError: false, label: "" },
+    isHidden: false,
+    projectId: params.id,
   });
+
+  const [pageName, setPageName] = useState("Giai đoạn");
+  const [pageDescription, setPageDescription] = useState("Giai đoạn");
+  const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
-
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -70,378 +72,255 @@ export default function StageOverview() {
     }));
   };
 
-  const handleNumberChange = (field, value) => {
-    const val = parseFloat(value);
-    handleInputChange(field, val);
+  const fetchDataFromApi = async () => {
+    try {
+      setLoading(true);
+      const stage = await getPaymentStagesById(params.stageId);
+      setFormData((prevData) => ({ ...prevData, ...stage }));
+      setPageName(stage.name);
+      setPageDescription(stage.description);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
   };
-  const handleCheckboxChange = (fieldName, checked) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [fieldName]: !formData[fieldName],
-    }));
+
+  // FETCH DATA FROM API
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  const onSaveStage = async () => {
+    try {
+      await updatePaymentStage(params.stageId, formData);
+      toast.success("Lưu thành công!");
+      setPageName(formData.name);
+      setPageDescription(formData.description);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi lưu dữ liệu");
+    }
+  };
+  const onDeleteStage = async () => {
+    try {
+      await updatePaymentStageIsHidden(params.stageId, true);
+      toast.success("Xóa thành công!");
+      router.push(`/projects/${params.id}/stages`);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi lưu dữ liệu");
+    }
   };
 
   return (
-    <PageContainer
-      title="Thông tin giai đoạn"
-      description="Thông tin giai đoạn"
-    >
-      <Box sx={{ overflow: "auto", mt: 3 }}>
-        <Grid container columnSpacing={4} rowSpacing={4}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{
-              borderBottom: 1,
-              display: "flex",
-              justifyContent: "space-between",
-              borderColor: "grey.500",
-              py: 3,
-            }}
-          >
-            <Typography variant="h2" sx={{ my: "auto" }}>
-              Giai đoạn thanh toán
-            </Typography>
-            <Box sx={{ display: "flex" }}>
-              <DeleteModal>
-                <span>Xóa</span>
-              </DeleteModal>
-              <SaveModal>
-                <span>Lưu</span>
-              </SaveModal>
-            </Box>
-          </Grid>
-          <Grid item xs={12} lg={12}>
-            <Grid container columnSpacing={2} rowSpacing={4}>
-              {/* STAGE NO */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      Giai đoạn số<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        error={formData.stageNoError.hasError}
-                        variant="outlined"
-                        value={formData.stageNo}
-                        helperText={formData.stageNoError.label}
-                        onChange={(e) =>
-                          handleNumberChange("stageNo", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* NAME */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">
-                      Tên<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        error={formData.nameError.hasError}
-                        variant="outlined"
-                        value={formData.name}
-                        helperText={formData.nameError.label}
-                        onChange={(e) =>
-                          handleInputChange("name", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Mô tả</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        value={formData.description}
-                        error={formData.descriptionError.hasError}
-                        helperText={formData.descriptionError.label}
-                        onChange={(e) =>
-                          handleInputChange("description", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* IS PAID */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Is Paid</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formData.isPaid}
-                          onChange={(e) =>
-                            handleCheckboxChange("isPaid", e.target.checked)
-                          }
-                        />
-                      }
-                      label="Check if payment is required"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* TOTAL CONTRACT PAID */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Total Contract Paid</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.totalContractPaid}
-                        error={formData.totalContractPaidError.hasError}
-                        helperText={formData.totalContractPaidError.label}
-                        onChange={(e) =>
-                          handleNumberChange(
-                            "totalContractPaid",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* TOTAL INCURRED PAID */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Total Incurred Paid</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.totalIncurredPaid}
-                        error={formData.totalIncurredPaidError.hasError}
-                        helperText={formData.totalIncurredPaidError.label}
-                        onChange={(e) =>
-                          handleNumberChange(
-                            "totalIncurredPaid",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* IS PREPAID */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Is Prepaid</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formData.isPrepaid}
-                          onChange={(e) =>
-                            handleCheckboxChange("isPrepaid", e.target.checked)
-                          }
-                        />
-                      }
-                      label="Check if payment is prepaid"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PRICE PERCENTAGE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Price Percentage</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.pricePercentage}
-                        error={formData.pricePercentageError.hasError}
-                        helperText={formData.pricePercentageError.label}
-                        onChange={(e) =>
-                          handleNumberChange("pricePercentage", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PAID DATE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Paid Date</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="date"
-                        variant="outlined"
-                        value={formData.paidDate}
-                        onChange={(e) =>
-                          handleInputChange("paidDate", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* STARTED DATE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Started Date</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="date"
-                        variant="outlined"
-                        value={formData.startedDate}
-                        onChange={(e) =>
-                          handleInputChange("startedDate", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* END DATE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">End Date</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="date"
-                        variant="outlined"
-                        value={formData.endDate}
-                        onChange={(e) =>
-                          handleInputChange("endDate", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* END TIME PAYMENT */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">End Time Payment</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="datetime-local"
-                        variant="outlined"
-                        value={formData.endTimePayment}
-                        onChange={(e) =>
-                          handleInputChange("endTimePayment", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* PENALTY FEE */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Penalty Fee</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.penaltyFee}
-                        error={formData.penaltyFeeError.hasError}
-                        helperText={formData.penaltyFeeError.label}
-                        onChange={(e) =>
-                          handleNumberChange("penaltyFee", e.target.value)
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {/* ESTIMATE BUSINESS DAY */}
-              <Grid item xs={12} lg={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={4} lg={4}>
-                    <Typography variant="h5">Estimate Business Day</Typography>
-                  </Grid>
-                  <Grid item xs={8} lg={8}>
-                    <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.estimateBusinessDay}
-                        error={formData.estimateBusinessDayError.hasError}
-                        helperText={formData.estimateBusinessDayError.label}
-                        onChange={(e) =>
-                          handleNumberChange(
-                            "estimateBusinessDay",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+    <PageContainer title={pageName} description={pageDescription}>
+      <DetailsPage
+        title="Thông tin giai đoạn"
+        saveMessage="Lưu thông tin giai đoạn?"
+        onSave={onSaveStage}
+        hasDelete
+        deleteMessage="Xóa giai đoạn?"
+        onDelete={onDeleteStage}
+      >
+        {/* STAGE NO */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Giai đoạn số"
+            required
+            subtitle="Nhập số thứ tự của giai đoạn"
+            value={formData.stageNo}
+            error={formData.stageNoError.hasError}
+            errorLabel={formData.stageNoError.label}
+            onChange={(value) => handleInputChange("stageNo", value)}
+          ></NumberForm>
         </Grid>
-      </Box>
+
+        {/* NAME */}
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Tên"
+            required
+            subtitle="Nhập tên giai đoạn"
+            value={formData.name}
+            error={formData.nameError.hasError}
+            errorLabel={formData.nameError.label}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          ></TextForm>
+        </Grid>
+
+        {/* IS PAID */}
+        <Grid item xs={12} lg={6}>
+          <CheckboxForm
+            title="Đã trả tiền"
+            subtitle="Check vào ô nếu giai đoạn này đã được thanh toán"
+            value={formData.isPaid}
+            onChange={(e) => handleInputChange("isPaid", e.target.checked)}
+          ></CheckboxForm>
+        </Grid>
+
+        {/* IS PREPAID */}
+        <Grid item xs={12} lg={6}>
+          <CheckboxForm
+            title="Đã trả trước"
+            subtitle="Check vào ô nếu giai đoạn này đã được thanh toán trước giai đoạn"
+            value={formData.isPrepaid}
+            onChange={(e) => handleInputChange("isPrepaid", e.target.checked)}
+          ></CheckboxForm>
+        </Grid>
+
+        {/* TOTAL CONTRACT PAID */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Số tiền trên hợp đồng"
+            required
+            subtitle="Nhập số tiền dựa trên hợp đồng"
+            value={formData.totalContractPaid}
+            error={formData.totalContractPaidError.hasError}
+            errorLabel={formData.totalContractPaidError.label}
+            onChange={(value) => handleInputChange("totalContractPaid", value)}
+            endAdornment={<>VND</>}
+          ></NumberForm>
+        </Grid>
+
+        {/* TOTAL INCURRED PAID */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Số tiền phát sinh"
+            subtitle="Nhập số tiền phát sinh (nếu có)"
+            value={formData.totalIncurredPaid}
+            error={formData.totalIncurredPaidError.hasError}
+            errorLabel={formData.totalIncurredPaidError.label}
+            onChange={(value) => handleInputChange("totalIncurredPaid", value)}
+            endAdornment={<>VND</>}
+          ></NumberForm>
+        </Grid>
+
+        {/* PRICE PERCENTAGE */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Khoảng phần trăm"
+            required
+            subtitle="Nhập số phần trăm trên số tiền tổng dự án cho giai đoạn này"
+            value={formData.pricePercentage}
+            error={formData.pricePercentageError.hasError}
+            errorLabel={formData.pricePercentageError.label}
+            onChange={(value) => handleInputChange("pricePercentage", value)}
+            endAdornment={<>%</>}
+          ></NumberForm>
+        </Grid>
+
+        {/* PAID DATE */}
+        <Grid item xs={12} lg={6}>
+          <DateForm
+            title="Ngày trả tiền"
+            subtitle="Ngày khách hàng đã thanh toán khoảng tiền này"
+            value={formData.paidDate}
+            error={formData.paidDateError.hasError}
+            errorLabel={formData.paidDateError.label}
+            onChange={(value) => handleInputChange("paidDate", value)}
+          ></DateForm>
+        </Grid>
+
+        {/* STARTED DATE */}
+        <Grid item xs={12} lg={6}>
+          <DateForm
+            title="Ngày bắt đầu"
+            required
+            subtitle="Ngày bắt đầu giai đoạn"
+            value={formData.startedDate}
+            error={formData.startedDateError.hasError}
+            errorLabel={formData.startedDateError.label}
+            onChange={(value) => handleInputChange("startedDate", value)}
+          ></DateForm>
+        </Grid>
+
+        {/* END DATE */}
+        <Grid item xs={12} lg={6}>
+          <DateForm
+            title="Ngày kết thúc"
+            required
+            subtitle="Ngày kết thúc giai đoạn"
+            value={formData.endDate}
+            error={formData.endDateError.hasError}
+            errorLabel={formData.endDateError.label}
+            onChange={(value) => handleInputChange("endDate", value)}
+          ></DateForm>
+        </Grid>
+
+        {/* END TIME PAYMENT */}
+        <Grid item xs={12} lg={6}>
+          <DateForm
+            datetime
+            title="Hạn chót thanh toán"
+            required
+            subtitle="Hạn chót thanh toán cho giai đoạn này"
+            value={formData.endTimePayment}
+            error={formData.endTimePaymentError.hasError}
+            errorLabel={formData.endTimePaymentError.label}
+            onChange={(value) => handleInputChange("endTimePayment", value)}
+          ></DateForm>
+        </Grid>
+
+        {/* PENALTY FEE */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Khoảng phạt"
+            subtitle="Nhập số tiền bồi thường giai đoạn"
+            value={formData.penaltyFee}
+            error={formData.penaltyFeeError.hasError}
+            errorLabel={formData.penaltyFeeError.label}
+            onChange={(value) => handleInputChange("penaltyFee", value)}
+            endAdornment={<>VND</>}
+          ></NumberForm>
+        </Grid>
+
+        {/* ESTIMATE BUSINESS DAY */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Số ngày"
+            required
+            subtitle="Số ngày làm việc ước tính"
+            value={formData.estimateBusinessDay}
+            error={formData.estimateBusinessDayError.hasError}
+            errorLabel={formData.estimateBusinessDayError.label}
+            onChange={(value) =>
+              handleInputChange("estimateBusinessDay", value)
+            }
+            endAdornment={<>ngày</>}
+          ></NumberForm>
+        </Grid>
+
+        {/* STATUS */}
+        <Grid item xs={12} lg={6}>
+          <SelectForm
+            title="Trạng thái"
+            required
+            subtitle="Trạng thái của giai đoạn này"
+            value={formData.status}
+            options={stageStatusOptions}
+            defaultValue={-1}
+            defaultLabel="Chọn một..."
+            error={formData.statusError.hasError}
+            errorLabel={formData.statusError.label}
+            onChange={(value) => handleInputChange("status", value)}
+          ></SelectForm>
+        </Grid>
+
+        {/* DESCRIPTION */}
+        <Grid item xs={12} lg={12}>
+          <TextForm
+            title="Mô tả"
+            multiline
+            rows={4}
+            subtitle="Mô tả sơ lược giai đoạn"
+            value={formData.description}
+            error={formData.descriptionError.hasError}
+            errorLabel={formData.descriptionError.label}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+          ></TextForm>
+        </Grid>
+      </DetailsPage>
     </PageContainer>
   );
 }

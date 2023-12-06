@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { FormControl, Grid, Typography } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import "dayjs/locale/en-gb";
+import moment from "moment-timezone";
 
 export default function DateForm({
   sx,
@@ -19,22 +18,20 @@ export default function DateForm({
   errorLabel,
   onChange,
 }) {
-  const [formattedDate, setFormattedDate] = useState(dayjs(""));
+  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+
+  const [formattedDate, setFormattedDate] = useState(moment(""));
 
   useEffect(() => {
     if (value === null) {
-      setFormattedDate(dayjs(""));
+      setFormattedDate(moment(""));
       return;
     }
-    const parsedDate = new Date(value);
-    if (!isNaN(parsedDate.getTime())) {
-      const formattedDateString = parsedDate.toISOString().slice(0, 10);
-      setFormattedDate(dayjs(formattedDateString));
-    }
+    setFormattedDate(moment(value));
   }, [value]);
 
   const handleDateChange = (value) => {
-    const newIsoString = value ? new Date(value).toISOString() : null;
+    const newIsoString = value ? moment(value) : null;
     setFormattedDate(value);
     onChange(newIsoString);
   };
@@ -53,11 +50,12 @@ export default function DateForm({
       <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
         <FormControl fullWidth>
           <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale={"en-gb"}
+            dateAdapter={AdapterMoment}
+            dateLibInstance={moment}
           >
             <DatePicker
               type={datetime ? "datetime-local" : "date"}
+              format="DD/MM/YYYY"
               variant="outlined"
               value={formattedDate}
               slotProps={{
