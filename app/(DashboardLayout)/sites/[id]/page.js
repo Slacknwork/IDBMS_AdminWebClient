@@ -114,6 +114,7 @@ export default function SiteDetails() {
         saveMessage="Lưu thông khu công trình?"
         deleteMessage="Xóa khu công trình?"
         onSave={onSaveSite}
+        hasDelete
         onDelete={onDeleteSite}
       >
         <Grid item xs={12} lg={8}>

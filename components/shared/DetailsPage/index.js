@@ -12,6 +12,7 @@ export default function DetailsPage({
   deleteLabel = "Xóa",
   deleteMessage = "Xóa thông tin?",
   onSave,
+  hasDelete,
   onDelete,
   children,
 }) {
@@ -35,7 +36,7 @@ export default function DetailsPage({
           </Typography>
           <Box sx={{ display: "flex" }}>
             <MessageModal
-              sx={onDelete ?? { mr: 2 }}
+              sx={hasDelete ? { mr: 2 } : null}
               buttonLabel={saveLabel}
               onSubmit={onSave}
               title={saveLabel}
@@ -43,7 +44,7 @@ export default function DetailsPage({
             >
               <Typography variant="p">{saveMessage}</Typography>
             </MessageModal>
-            {onDelete ?? (
+            {hasDelete ? (
               <MessageModal
                 color="error"
                 buttonLabel={deleteLabel}
@@ -53,7 +54,7 @@ export default function DetailsPage({
               >
                 <Typography variant="p">{deleteMessage}</Typography>
               </MessageModal>
-            )}
+            ) : null}
           </Box>
         </Grid>
         {children}

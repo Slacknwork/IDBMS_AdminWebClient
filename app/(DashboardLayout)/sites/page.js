@@ -46,10 +46,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const pageTitle = "Khu công trình";
-const pageDescription = "Danh sách các khu công trình";
-
-export default function Sites() {
+export default function SitesPage() {
   // CONSTANTS
   const searchQuery = "search";
 
@@ -79,6 +76,7 @@ export default function Sites() {
       try {
         const count = await countSitesFilter(search);
         const data = await getSitesFilter(search, page, pageSize);
+        console.log(data);
         setCount(count);
         setValues(data);
         setLoading(false);
