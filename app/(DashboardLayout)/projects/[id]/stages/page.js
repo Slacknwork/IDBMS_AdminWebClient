@@ -19,15 +19,18 @@ import {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
-import { stageStatusOptionsEnglish } from "/constants/enums/stageStatus";
+import stageStatusOptions, {
+  stageStatusOptionsEnglish,
+} from "/constants/enums/stageStatus";
 
 import {
   getPaymentStagesFilter,
   countPaymentStagesFilter,
 } from "/api/paymentStageServices";
 
-import StageModal from "./modal";
+import CreateStageModal from "/components/shared/Modals/Stages/CreateModal";
 import Search from "/components/shared/Search";
+import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -108,8 +111,15 @@ export default function PaymentStages() {
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
         <Box sx={{ display: "flex" }}>
           <Search></Search>
+          <FilterStatus
+            query={statusQuery}
+            options={stageStatusOptions}
+            label="Trạng thái"
+            allValue={statusAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
         </Box>
-        <StageModal>Thêm</StageModal>
+        <CreateStageModal>Thêm</CreateStageModal>
       </Box>
       {/* Table */}
       {stages && stages.length > 0 ? (
@@ -171,12 +181,12 @@ export default function PaymentStages() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.totalContractPaid.toLocaleString("vi-VN")}
+                    {stage.totalContractPaid?.toLocaleString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.totalIncurredPaid.toLocaleString("vi-VN")}
+                    {stage.totalIncurredPaid?.toLocaleString("vi-VN")}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -215,7 +225,7 @@ export default function PaymentStages() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có công việc.
+            Chưa có giai đoạn.
           </Typography>
         </Stack>
       )}

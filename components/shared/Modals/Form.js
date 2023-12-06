@@ -98,7 +98,14 @@ export default function FormModal({
                 sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
                 spacing={2}
               >
-                <Button variant="contained" disableElevation onClick={onSubmit}>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={() => {
+                    onSubmit();
+                    handleClose();
+                  }}
+                >
                   {submitLabel || ""}
                 </Button>
               </Box>
