@@ -85,6 +85,7 @@ export default function ProjectDetails() {
 
   // CONTACT
   const contactLabel = "Thông tin liên hệ chủ dự án";
+  const priceLabel = "Thông tin về các giá trị";
 
   const [projectId, setProjectId] = useState(params.id);
   const [siteId, setSiteId] = useState("");
@@ -118,7 +119,7 @@ export default function ProjectDetails() {
           setDecorProjects(
             listProjectsBySiteId.filter(
               (project) => project.type === 0 && project.id !== projectId
-            )
+            ).map(({ id, name }) => ({ id, name }))
           );
           const participation = project?.projectParticipations.find(
             (par) => par.role === 0
@@ -225,7 +226,7 @@ export default function ProjectDetails() {
               </Grid>
 
               {/* ESTIMATED PRICE */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Giá ước tính"
                   required
@@ -238,10 +239,10 @@ export default function ProjectDetails() {
                   }
                   endAdornment={<>VND</>}
                 ></NumberForm>
-              </Grid>
+              </Grid> */}
 
               {/* FINAL PRICE */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Giá thực tế"
                   required
@@ -252,10 +253,10 @@ export default function ProjectDetails() {
                   onChange={(value) => handleInputChange("finalPrice", value)}
                   endAdornment={<>VND</>}
                 ></NumberForm>
-              </Grid>
+              </Grid> */}
 
               {/* TOTAL WARRANTY PAID */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Bảo hiểm đã trả"
                   subtitle="Nhập số tiền bảo hiểm khách đã trả"
@@ -267,10 +268,10 @@ export default function ProjectDetails() {
                   }
                   endAdornment={<>VND</>}
                 ></NumberForm>
-              </Grid>
+              </Grid> */}
 
               {/* AREA */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Tổng diện tích"
                   required
@@ -281,10 +282,10 @@ export default function ProjectDetails() {
                   onChange={(value) => handleInputChange("area", value)}
                   endAdornment={<>m²</>}
                 ></NumberForm>
-              </Grid>
+              </Grid> */}
 
               {/* ESTIMATE BUSINESS DAY */}
-              <Grid item xs={12} lg={12}>
+              {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Ước tính thời gian"
                   required
@@ -297,7 +298,7 @@ export default function ProjectDetails() {
                   }
                   endAdornment={<>ngày</>}
                 ></NumberForm>
-              </Grid>
+              </Grid> */}
 
               {/* LANGUAGE */}
               <Grid item xs={12} lg={12}>
@@ -341,6 +342,7 @@ export default function ProjectDetails() {
                     subtitle="Chọn dự án thiết kế cho dự án thi công này"
                     value={formData.basedOnDecorProject}
                     options={decorProjects}
+                    getOptionLabel={(option) => option.name}
                     error={formData.basedOnDecorProjectError.hasError}
                     errorLabel={formData.basedOnDecorProjectError.label}
                     onChange={(value) =>
@@ -370,7 +372,7 @@ export default function ProjectDetails() {
           <Grid item xs={12} lg={4}>
             <Card
               variant="outlined"
-              sx={{ p: 3, border: 1, borderColor: "gray" }}
+              sx={{ p: 2, border: 1, borderColor: "gray" }}
             >
               <Typography variant="h5" sx={{ my: "auto" }}>
                 {contactLabel}
@@ -394,6 +396,98 @@ export default function ProjectDetails() {
                   <br />
                 </Box>
               </Box>
+            </Card>
+            <Card
+              variant="outlined"
+              sx={{ p: 2, border: 1, borderColor: "gray", mt: 2 }}
+            >
+              <Typography variant="h5" sx={{ my: "auto" }}>
+                {priceLabel}
+                {console.log(projectOwner)}
+              </Typography>
+              <Typography variant="h5" sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}>
+              </Typography>
+
+              <Grid
+                container
+                sx={{ mt: 1, pt: 2 }}
+              >
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Giá ước tính:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.estimatedPrice?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid
+                container
+                sx={{ mt: 1, pt: 2 }}
+              >
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Giá thực tế:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.finalPrice?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid
+                container
+                sx={{ mt: 1, pt: 2 }}
+              >
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Đã bảo hiểm:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.totalWarrantyPaid?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid
+                container
+                sx={{ mt: 1, pt: 2 }}
+              >
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Tổng diện tích:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.area ?? 0} m²
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid
+                container
+                sx={{ mt: 1, pt: 2 }}
+              >
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Ngày làm việc:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData.estimateBusinessDay} ngày
+                  </Typography>
+                </Grid>
+              </Grid>
+
             </Card>
           </Grid>
         </DetailsPage>

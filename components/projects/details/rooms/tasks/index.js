@@ -192,12 +192,12 @@ export default function Sites() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(task.startedDate).toLocaleDateString("vi-VN")}
+                    {task.startedDate ? new Date(task.startedDate).toLocaleDateString("vi-VN") : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(task.endDate).toLocaleDateString("vi-VN")}
+                    {task.endDate ? new Date(task.endDate).toLocaleDateString("vi-VN") : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

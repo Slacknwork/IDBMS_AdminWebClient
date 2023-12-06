@@ -83,8 +83,8 @@ export default function FloorOverview() {
       setRooms(data.rooms ?? "")
       // setTotal
       const total = data.rooms?.reduce((acc, room) => {
-        const roomTotal = (room.pricePerArea || 0) * (room.area || 0);
-        return acc + roomTotal;
+        const totalArea = (room.area || 0);
+        return acc + totalArea;
       }, 0);
       setTotal(total ?? 0)
     }
@@ -214,7 +214,7 @@ export default function FloorOverview() {
               sx={{ p: 3, border: 1, borderColor: "gray" }}
             >
               <Typography variant="h5" sx={{ my: "auto" }}>
-                Bảng giá
+                Thống kê các phòng trong tầng
               </Typography>
               <Typography variant="h5" sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}>
               </Typography>
@@ -231,7 +231,7 @@ export default function FloorOverview() {
                   </Grid>
                   <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                     <Typography variant="p" sx={{ my: "auto" }}>
-                      {(room.pricePerArea * room.area).toLocaleString('en-US') ?? 0} VND
+                      {room.area ?? 0} m²
                     </Typography>
                   </Grid>
                 </Grid>
@@ -247,7 +247,7 @@ export default function FloorOverview() {
                 </Grid>
                 <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
-                    {total.toLocaleString('en-US') ?? 0} VND
+                    {total.toLocaleString('en-US') ?? 0} m²
                   </Typography>
                 </Grid>
               </Grid>
