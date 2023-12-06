@@ -109,6 +109,7 @@ export default function SiteDetails() {
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        sx={{ mt: 0 }}
         title="Thông tin khu công trình"
         saveMessage="Lưu thông khu công trình?"
         deleteMessage="Xóa khu công trình?"
@@ -243,6 +244,7 @@ export default function SiteDetails() {
               Thông tin liên hệ
             </Typography>
             <UserCard
+              sx={{ mt: 2 }}
               name={formData.contactName}
               email={formData.contactEmail}
               phone={formData.contactPhone}

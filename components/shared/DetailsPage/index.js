@@ -5,6 +5,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import MessageModal from "/components/shared/Modals/Message";
 
 export default function DetailsPage({
+  sx,
   title = "Tiêu đề",
   saveLabel = "Lưu",
   saveMessage = "Lưu thông tin?",
@@ -16,7 +17,7 @@ export default function DetailsPage({
 }) {
   return (
     <Box sx={{ overflow: "auto" }}>
-      <Grid container columnSpacing={4} rowSpacing={4}>
+      <Grid sx={sx} container columnSpacing={4} rowSpacing={4}>
         <Grid
           item
           xs={12}
@@ -34,7 +35,7 @@ export default function DetailsPage({
           </Typography>
           <Box sx={{ display: "flex" }}>
             <MessageModal
-              sx={{ mr: 2 }}
+              sx={onDelete ?? { mr: 2 }}
               buttonLabel={saveLabel}
               onSubmit={onSave}
               title={saveLabel}
@@ -42,15 +43,17 @@ export default function DetailsPage({
             >
               <Typography variant="p">{saveMessage}</Typography>
             </MessageModal>
-            <MessageModal
-              color="error"
-              buttonLabel={deleteLabel}
-              onSubmit={onDelete}
-              title={deleteLabel}
-              submitLabel={deleteLabel}
-            >
-              <Typography variant="p">{deleteMessage}</Typography>
-            </MessageModal>
+            {onDelete ?? (
+              <MessageModal
+                color="error"
+                buttonLabel={deleteLabel}
+                onSubmit={onDelete}
+                title={deleteLabel}
+                submitLabel={deleteLabel}
+              >
+                <Typography variant="p">{deleteMessage}</Typography>
+              </MessageModal>
+            )}
           </Box>
         </Grid>
         {children}

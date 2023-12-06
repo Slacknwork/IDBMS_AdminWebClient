@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import PageContainer from "/components/container/PageContainer";
-import MessageModal from "/components/shared/Modals/Message";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";

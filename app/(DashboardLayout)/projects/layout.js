@@ -1,7 +1,15 @@
 "use client";
 
-import Projects from "/components/projects";
+import DashboardCard from "/components/shared/DashboardCard";
+import PageContainer from "/components/container/PageContainer";
 
-export default function SiteProjectsLayout({ children }) {
-  return <Projects>{children}</Projects>;
+export default function ProjectsPage({ children }) {
+  return (
+    <PageContainer
+      title="Dự án"
+      description="Thông tin chi tiết của dự án & những tài liệu liên quan"
+    >
+      <DashboardCard title="Dự án">{children}</DashboardCard>
+    </PageContainer>
+  );
 }

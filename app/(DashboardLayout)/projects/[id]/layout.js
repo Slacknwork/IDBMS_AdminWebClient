@@ -1,7 +1,15 @@
 "use client";
 
-import ProjectDetails from "/components/projects/details";
+import PageContainer from "/components/container/PageContainer";
+import Tabs from "/components/shared/Tabs";
 
-export default function ClientLayout({ children }) {
-  return <ProjectDetails>{children}</ProjectDetails>;
+import TabItems from "./tabItems";
+
+export default function ProjectDetails({ children }) {
+  return (
+    <PageContainer>
+      <Tabs uriPos={3} tabs={TabItems}></Tabs>
+      {children}
+    </PageContainer>
+  );
 }

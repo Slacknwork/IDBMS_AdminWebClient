@@ -4,6 +4,7 @@ import { Avatar, Box, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 
 export default function UserCard({
+  sx,
   name = "",
   address,
   email = ".@mail.com",
@@ -19,7 +20,7 @@ export default function UserCard({
 
   return (
     <Typography variant="subtitle2">
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ ...sx, display: "flex" }}>
         <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
           {getAvatarContent(name)}
         </Avatar>
@@ -30,7 +31,9 @@ export default function UserCard({
               <Typography variant="subtitle2">{address}</Typography>
             </Box>
           )}
-          <Typography variant="p" noWrap>{email}</Typography>
+          <Typography variant="p" noWrap>
+            {email}
+          </Typography>
           <br />
           <Typography variant="p">{phone}</Typography>
           <br />
