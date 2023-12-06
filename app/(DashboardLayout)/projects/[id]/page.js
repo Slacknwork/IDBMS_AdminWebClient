@@ -1,20 +1,7 @@
 "use client";
 
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import {
-  Avatar,
-  Autocomplete,
-  Box,
-  Card,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useParams } from "next/navigation";
+import { Avatar, Box, Card, Grid, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -40,15 +27,13 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 export default function ProjectDetails() {
-  const router = useRouter();
   const params = useParams();
-  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    projectType: -1,
-    projectTypeError: { hasError: false, label: "" },
+    type: -1,
+    typeError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
     language: -1,
@@ -198,13 +183,13 @@ export default function ProjectDetails() {
                   title="Kiểu dự án"
                   required
                   subtitle="Chọn kiểu dự án"
-                  value={formData.projectType}
+                  value={formData.type}
                   options={projectTypeOptions}
                   defaultValue={-1}
                   defaultLabel="Chọn kiểu dự án"
-                  error={formData.projectTypeError.hasError}
-                  errorLabel={formData.projectTypeError.label}
-                  onChange={(value) => handleInputChange("projectType", value)}
+                  error={formData.typeError.hasError}
+                  errorLabel={formData.typeError.label}
+                  onChange={(value) => handleInputChange("type", value)}
                 ></SelectForm>
               </Grid>
 
@@ -371,7 +356,6 @@ export default function ProjectDetails() {
                   title="Mô tả"
                   multiline
                   rows={4}
-                  required
                   subtitle="Mô tả dự án"
                   value={formData.description}
                   error={formData.descriptionError.hasError}
