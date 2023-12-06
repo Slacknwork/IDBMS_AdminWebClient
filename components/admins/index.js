@@ -12,27 +12,13 @@ import {
   tableCellClasses,
   TableHead,
   TableRow,
-  Chip,
 } from "@mui/material";
-import { getAllAdmins } from "../../api/adminServices";
+import { getAllAdmins } from "/api/adminServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import PageContainer from "/components/container/PageContainer";
 import CreateModal from "./createModal";
-import UpdateModal from "./updateModal";
 import adminStatus from "/constants/enums/adminStatus";
-
-const admins = [
-  {
-    id: "1",
-    name: "Sunil Joshi",
-    post: "Web Designer",
-    pname: "Elite Admin",
-    priority: "Low",
-    pbg: "primary.main",
-    budget: "3.9",
-  },
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,7 +40,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const initialized = useRef(false);
@@ -92,21 +77,6 @@ export default function ProjectList() {
       >
         Lưu
       </CreateModal>
-
-      <UpdateModal
-        id={"0A93A6C1-8267-4D60-8C6D-C8E25C8F8F22"}
-        request={{
-          name: "Nam Kun",
-          username: "nam_kun",
-          email: "nam.kun@example.com",
-          password: "newsecurepassword",
-          status: 1,
-          isDeleted: false,
-          creatorId: null,
-        }}
-      >
-        Cập nhật
-      </UpdateModal>
       <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
         <Table
           aria-label="simple table"
@@ -168,8 +138,7 @@ export default function ProjectList() {
                         sx={{
                           fontSize: "13px",
                         }}
-                      >
-                      </Typography>
+                      ></Typography>
                     </Box>
                   </Box>
                 </TableCell>
@@ -180,12 +149,12 @@ export default function ProjectList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {admin?.creator?.name ?? 'Không'}
+                    {admin?.creator?.name ?? "Không"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {adminStatus[admin.status ?? 'Không xác định']}
+                    {adminStatus[admin.status ?? "Không xác định"]}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

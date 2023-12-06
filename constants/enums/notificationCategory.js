@@ -1,5 +1,9 @@
-export default {
-    0: "System",
-    1: "Admin",
-    2: "Project",
-};
+const notificationCategoryOptions = [
+    "Hệ thống",
+    "Quản trị viên",
+    "Dự án",
+  ];
+  
+export default notificationCategoryOptions;
+  
+

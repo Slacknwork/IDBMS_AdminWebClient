@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 
 const DashboardCard = ({
+  sx,
   title,
   subtitle,
   children,
@@ -13,7 +14,7 @@ const DashboardCard = ({
   middlecontent,
 }) => {
   return (
-    <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
+    <Card sx={sx} elevation={9} variant={undefined}>
       {cardheading ? (
         <CardContent>
           <Typography variant="h5">{headtitle}</Typography>
@@ -22,7 +23,7 @@ const DashboardCard = ({
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ p: "30px" }}>
+        <CardContent sx={{ p: 4 }}>
           {title ? (
             <Stack
               direction="row"

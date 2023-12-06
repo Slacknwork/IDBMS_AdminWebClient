@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const formatNumberWithDots = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -19,16 +19,19 @@ export default function FormText({
   required,
   variant = "outlined",
   subtitle = "",
+  defaultValue = 0,
   value,
   error,
   errorLabel,
   onChange,
   endAdornment,
 }) {
-  const [valueString, setValueString] = useState(value);
-  const handleValueStringChange = (e) => {
+  const [valueString, setValueString] = useState(
+    value ? value.toString() : defaultValue.toString()
+  );
+  const handleValueStringChange = (value) => {
     // Extract numeric characters only
-    const numericValue = e.target.value.replace(/[^0-9]/g, "");
+    const numericValue = value.replace(/[^0-9]/g, "");
 
     // Remove redundant leading zeros
     const nonZeroIndex = numericValue.indexOf(numericValue.match(/[^0]/));
@@ -40,6 +43,12 @@ export default function FormText({
     setValueString(formattedValue);
     onChange(Number(numericValue));
   };
+
+  useEffect(() => {
+    handleValueStringChange(value ? value.toString() : defaultValue.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   return (
     <Grid container spacing={2} sx={sx}>
       {title && (
@@ -58,7 +67,7 @@ export default function FormText({
             value={valueString}
             error={error}
             helperText={errorLabel}
-            onChange={handleValueStringChange}
+            onChange={(e) => handleValueStringChange(e.target.value)}
             InputProps={{
               endAdornment: endAdornment && (
                 <InputAdornment position="end">{endAdornment}</InputAdornment>

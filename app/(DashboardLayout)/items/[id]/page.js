@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import PageContainer from "/components/container/PageContainer";
-import MessageModal from "/components/shared/Modals/Message";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
+import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
@@ -84,260 +84,221 @@ export default function ItemDetails() {
 
   return (
     <PageContainer title={formData.name} description="Chi tiết sản phẩm">
-      <Box sx={{ overflow: "auto", mt: 3 }}>
-        <Grid container columnSpacing={4} rowSpacing={4}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{
-              borderBottom: 1,
-              display: "flex",
-              justifyContent: "space-between",
-              borderColor: "grey.500",
-              py: 3,
-            }}
-          >
-            <Typography variant="h2" sx={{ my: "auto" }}>
-              Đồ nội thất
-            </Typography>
-            <Box sx={{ display: "flex" }}>
-              <MessageModal
-                sx={{ mr: 2 }}
-                buttonLabel="Lưu"
-                onSubmit={onSaveInteriorItem}
-                title="Lưu"
-                submitLabel="Lưu"
-              >
-                <Typography variant="p">Lưu thông tin sản phẩm?</Typography>
-              </MessageModal>
-              <MessageModal
-                color="error"
-                buttonLabel="Xóa"
-                onSubmit={onDeleteInteriorItem}
-                title="Xóa"
-                submitLabel="Xóa"
-              >
-                <Typography variant="p">Xóa sản phẩm?</Typography>
-              </MessageModal>
-            </Box>
-          </Grid>
-          <Grid item xs={12} lg={12}>
-            <Grid container columnSpacing={8} rowSpacing={3}>
-              {/* NAME */}
-              <Grid item xs={12} lg={6}>
-                <TextForm
-                  multiline
-                  rows={3}
-                  title="Tên"
-                  required
-                  subtitle="Nhập tên đồ dùng"
-                  value={formData.name}
-                  error={formData.nameError.hasError}
-                  errorLabel={formData.nameError.label}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                ></TextForm>
-              </Grid>
+      <DetailsPage
+        title="Thông tin đồ nội thất"
+        saveMessage="Lưu thông tin đồ nội thất?"
+        deleteMessage="Xóa món đồ này?"
+        onSave={onSaveInteriorItem}
+        onDelete={onDeleteInteriorItem}
+      >
+        <Grid item xs={12} lg={12}>
+          <Grid container columnSpacing={8} rowSpacing={3}>
+            {/* NAME */}
+            <Grid item xs={12} lg={6}>
+              <TextForm
+                multiline
+                rows={3}
+                title="Tên"
+                required
+                subtitle="Nhập tên đồ dùng"
+                value={formData.name}
+                error={formData.nameError.hasError}
+                errorLabel={formData.nameError.label}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+              ></TextForm>
+            </Grid>
 
-              {/* LENGTH */}
-              <Grid item xs={12} lg={6}>
-                <NumberForm
-                  title="Chiều dài"
-                  required
-                  subtitle="Nhập chiều dài"
-                  value={formData.length}
-                  error={formData.lengthError.hasError}
-                  errorLabel={formData.lengthError.label}
-                  onChange={(value) => handleInputChange("length", value)}
-                  endAdornment={<>m</>}
-                ></NumberForm>
-              </Grid>
+            {/* LENGTH */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Chiều dài"
+                required
+                subtitle="Nhập chiều dài"
+                value={formData.length}
+                error={formData.lengthError.hasError}
+                errorLabel={formData.lengthError.label}
+                onChange={(value) => handleInputChange("length", value)}
+                endAdornment={<>m</>}
+              ></NumberForm>
+            </Grid>
 
-              {/* WIDTH */}
-              <Grid item xs={12} lg={6}>
-                <NumberForm
-                  title="Chiều rộng"
-                  required
-                  subtitle="Nhập chiều rộng"
-                  value={formData.width}
-                  error={formData.widthError.hasError}
-                  errorLabel={formData.widthError.label}
-                  onChange={(value) => handleInputChange("width", value)}
-                  endAdornment={<>m</>}
-                ></NumberForm>
-              </Grid>
+            {/* WIDTH */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Chiều rộng"
+                required
+                subtitle="Nhập chiều rộng"
+                value={formData.width}
+                error={formData.widthError.hasError}
+                errorLabel={formData.widthError.label}
+                onChange={(value) => handleInputChange("width", value)}
+                endAdornment={<>m</>}
+              ></NumberForm>
+            </Grid>
 
-              {/* HEIGHT */}
-              <Grid item xs={12} lg={6}>
-                <NumberForm
-                  title="Chiều cao"
-                  required
-                  subtitle="Nhập chiều cao"
-                  value={formData.height}
-                  error={formData.heightError.hasError}
-                  errorLabel={formData.heightError.label}
-                  onChange={(value) => handleInputChange("width", value)}
-                  endAdornment={<>m</>}
-                ></NumberForm>
-              </Grid>
+            {/* HEIGHT */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Chiều cao"
+                required
+                subtitle="Nhập chiều cao"
+                value={formData.height}
+                error={formData.heightError.hasError}
+                errorLabel={formData.heightError.label}
+                onChange={(value) => handleInputChange("width", value)}
+                endAdornment={<>m</>}
+              ></NumberForm>
+            </Grid>
 
-              {/* CALCULATION UNIT */}
-              <Grid item xs={12} lg={6}>
-                <SelectForm
-                  title="Đơn vị tính"
-                  required
-                  subtitle="Chọn một đơn vị tính"
-                  value={formData.calculationUnit}
-                  options={calculationUnitOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn một..."
-                  error={formData.calculationUnitError.hasError}
-                  errorLabel={formData.calculationUnitError.label}
-                  onChange={(value) =>
-                    handleInputChange("calculationUnit", value)
-                  }
-                ></SelectForm>
-              </Grid>
+            {/* CALCULATION UNIT */}
+            <Grid item xs={12} lg={6}>
+              <SelectForm
+                title="Đơn vị tính"
+                required
+                subtitle="Chọn một đơn vị tính"
+                value={formData.calculationUnit}
+                options={calculationUnitOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn một..."
+                error={formData.calculationUnitError.hasError}
+                errorLabel={formData.calculationUnitError.label}
+                onChange={(value) =>
+                  handleInputChange("calculationUnit", value)
+                }
+              ></SelectForm>
+            </Grid>
 
-              {/* MATERIAL */}
-              <Grid item xs={12} lg={6}>
-                <TextForm
-                  title="Chất liệu"
-                  required
-                  subtitle="Nhập chất liệu đồ dùng"
-                  value={formData.material}
-                  error={formData.materialError.hasError}
-                  errorLabel={formData.materialError.label}
-                  onChange={(e) =>
-                    handleInputChange("material", e.target.value)
-                  }
-                ></TextForm>
-              </Grid>
+            {/* MATERIAL */}
+            <Grid item xs={12} lg={6}>
+              <TextForm
+                title="Chất liệu"
+                required
+                subtitle="Nhập chất liệu đồ dùng"
+                value={formData.material}
+                error={formData.materialError.hasError}
+                errorLabel={formData.materialError.label}
+                onChange={(e) => handleInputChange("material", e.target.value)}
+              ></TextForm>
+            </Grid>
 
-              {/* ORIGIN */}
-              <Grid item xs={12} lg={6}>
-                <TextForm
-                  title="Xuất xứ"
-                  required
-                  subtitle="Nhập xuất xứ đồ dùng"
-                  value={formData.origin}
-                  error={formData.originError.hasError}
-                  errorLabel={formData.originError.label}
-                  onChange={(e) => handleInputChange("origin", e.target.value)}
-                ></TextForm>
-              </Grid>
+            {/* ORIGIN */}
+            <Grid item xs={12} lg={6}>
+              <TextForm
+                title="Xuất xứ"
+                required
+                subtitle="Nhập xuất xứ đồ dùng"
+                value={formData.origin}
+                error={formData.originError.hasError}
+                errorLabel={formData.originError.label}
+                onChange={(e) => handleInputChange("origin", e.target.value)}
+              ></TextForm>
+            </Grid>
 
-              {/* ESTIMATE PRICE */}
-              <Grid item xs={12} lg={6}>
-                <NumberForm
-                  title="Giá ước tính"
-                  required
-                  subtitle="Nhập giá tiền ước tính của sản phẩm"
-                  value={formData.estimatePrice}
-                  error={formData.estimatePriceError.hasError}
-                  errorLabel={formData.estimatePriceError.label}
-                  onChange={(value) =>
-                    handleInputChange("estimatePrice", value)
-                  }
-                  endAdornment={<>VND</>}
-                ></NumberForm>
-              </Grid>
+            {/* ESTIMATE PRICE */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Giá ước tính"
+                required
+                subtitle="Nhập giá tiền ước tính của sản phẩm"
+                value={formData.estimatePrice}
+                error={formData.estimatePriceError.hasError}
+                errorLabel={formData.estimatePriceError.label}
+                onChange={(value) => handleInputChange("estimatePrice", value)}
+                endAdornment={<>VND</>}
+              ></NumberForm>
+            </Grid>
 
-              {/* LABOR COST */}
-              <Grid item xs={12} lg={6}>
-                <NumberForm
-                  title="Chi phí lao động"
-                  required
-                  subtitle="Nhập chi phí lao động"
-                  value={formData.laborCost}
-                  error={formData.laborCostError.hasError}
-                  errorLabel={formData.laborCostError.label}
-                  onChange={(value) => handleInputChange("laborCost", value)}
-                  endAdornment={<>VND</>}
-                ></NumberForm>
-              </Grid>
+            {/* LABOR COST */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Chi phí lao động"
+                required
+                subtitle="Nhập chi phí lao động"
+                value={formData.laborCost}
+                error={formData.laborCostError.hasError}
+                errorLabel={formData.laborCostError.label}
+                onChange={(value) => handleInputChange("laborCost", value)}
+                endAdornment={<>VND</>}
+              ></NumberForm>
+            </Grid>
 
-              {/* INTERIOR ITEM COLOR */}
-              <Grid item xs={12} lg={6}>
-                <AutocompleteForm
-                  title="Màu"
-                  subtitle="Chọn màu sắc sản phẩm"
-                  value={formData.interiorItemColor}
-                  options={interiorItemColorOptions}
-                  error={formData.interiorItemColorError.hasError}
-                  errorLabel={formData.interiorItemColorError.label}
-                  onChange={(value) =>
-                    handleInputChange("interiorItemColor", value)
-                  }
-                ></AutocompleteForm>
-              </Grid>
+            {/* INTERIOR ITEM COLOR */}
+            <Grid item xs={12} lg={6}>
+              <AutocompleteForm
+                title="Màu"
+                subtitle="Chọn màu sắc sản phẩm"
+                value={formData.interiorItemColor}
+                options={interiorItemColorOptions}
+                error={formData.interiorItemColorError.hasError}
+                errorLabel={formData.interiorItemColorError.label}
+                onChange={(value) =>
+                  handleInputChange("interiorItemColor", value)
+                }
+              ></AutocompleteForm>
+            </Grid>
 
-              {/* INTERIOR ITEM CATEGORY */}
-              <Grid item xs={12} lg={6}>
-                <AutocompleteForm
-                  title="Danh mục"
-                  subtitle="Chọn danh mục sản phẩm"
-                  value={formData.interiorItemCategory}
-                  options={interiorItemCategoryOptions}
-                  error={formData.interiorItemCategoryError.hasError}
-                  errorLabel={formData.interiorItemCategoryError.label}
-                  onChange={(value) =>
-                    handleInputChange("interiorItemCategory", value)
-                  }
-                ></AutocompleteForm>
-              </Grid>
+            {/* INTERIOR ITEM CATEGORY */}
+            <Grid item xs={12} lg={6}>
+              <AutocompleteForm
+                title="Danh mục"
+                subtitle="Chọn danh mục sản phẩm"
+                value={formData.interiorItemCategory}
+                options={interiorItemCategoryOptions}
+                error={formData.interiorItemCategoryError.hasError}
+                errorLabel={formData.interiorItemCategoryError.label}
+                onChange={(value) =>
+                  handleInputChange("interiorItemCategory", value)
+                }
+              ></AutocompleteForm>
+            </Grid>
 
-              {/* STATUS */}
-              <Grid item xs={12} lg={6}>
-                <SelectForm
-                  title="Trạng thái"
-                  required
-                  subtitle="Chọn trạng thái hiển thị của sản phẩm"
-                  value={formData.status}
-                  options={interiorItemStatusOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn một..."
-                  error={formData.statusError.hasError}
-                  errorLabel={formData.statusError.label}
-                  onChange={(value) => handleInputChange("status", value)}
-                ></SelectForm>
-              </Grid>
+            {/* STATUS */}
+            <Grid item xs={12} lg={6}>
+              <SelectForm
+                title="Trạng thái"
+                required
+                subtitle="Chọn trạng thái hiển thị của sản phẩm"
+                value={formData.status}
+                options={interiorItemStatusOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn một..."
+                error={formData.statusError.hasError}
+                errorLabel={formData.statusError.label}
+                onChange={(value) => handleInputChange("status", value)}
+              ></SelectForm>
+            </Grid>
 
-              {/* PARENT ITEM */}
-              <Grid item xs={12} lg={6}>
-                <AutocompleteForm
-                  title="Sản phẩm tiền bối"
-                  subtitle="Chọn sản phẩm tiền bối"
-                  value={formData.parentItem}
-                  options={parentItemOptions}
-                  error={formData.parentItemError.hasError}
-                  errorLabel={formData.parentItemError.label}
-                  onChange={(value) => handleInputChange("parentItem", value)}
-                ></AutocompleteForm>
-              </Grid>
+            {/* PARENT ITEM */}
+            <Grid item xs={12} lg={6}>
+              <AutocompleteForm
+                title="Sản phẩm tiền bối"
+                subtitle="Chọn sản phẩm tiền bối"
+                value={formData.parentItem}
+                options={parentItemOptions}
+                error={formData.parentItemError.hasError}
+                errorLabel={formData.parentItemError.label}
+                onChange={(value) => handleInputChange("parentItem", value)}
+              ></AutocompleteForm>
+            </Grid>
 
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <TextForm
-                  multiline
-                  rows={4}
-                  title="Mô tả"
-                  subtitle="Mổ tả sản phẩm"
-                  value={formData.description}
-                  error={formData.descriptionError.hasError}
-                  errorLabel={formData.descriptionError.label}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                ></TextForm>
-              </Grid>
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+                multiline
+                rows={4}
+                title="Mô tả"
+                subtitle="Mổ tả sản phẩm"
+                value={formData.description}
+                error={formData.descriptionError.hasError}
+                errorLabel={formData.descriptionError.label}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+              ></TextForm>
             </Grid>
           </Grid>
-          <Grid item xs={12} lg={4}>
-            {/* Additional details can be added here */}
-          </Grid>
         </Grid>
-      </Box>
+      </DetailsPage>
     </PageContainer>
   );
 }

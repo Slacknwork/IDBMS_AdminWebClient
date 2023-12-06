@@ -1,6 +1,24 @@
-export default {
-    0: "Đang hoạt động",
-    1: "Chưa xác nhận",
-    2: "Bị kiểm soát",
-    3: "Khóa",
+const userStatusIndex = {
+  Active: 0,
+  Unverified: 1,
+  Suspended: 2,
+  Locked: 3,
 };
+
+const userStatusEnglishOptions = [
+  "Active",
+  "Unverified",
+  "Suspended",
+  "Locked",
+];
+
+const userStatusOptions = [
+  "Đang hoạt động",
+  "Chưa xác nhận",
+  "Bị kiểm soát",
+  "Khóa",
+];
+
+export { userStatusIndex, userStatusEnglishOptions };
+
+export default userStatusOptions;
