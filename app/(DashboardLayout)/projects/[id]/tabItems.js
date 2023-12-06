@@ -9,6 +9,10 @@ const items = [
     subPaths: ["rooms"],
   },
   {
+    path: "stages",
+    label: "Giai đoạn",
+  },
+  {
     path: "tasks",
     label: "Công việc",
   },
@@ -18,7 +22,7 @@ const items = [
   },
   {
     path: "items",
-    label: "Đồ nội thất",
+    label: "Nội thất",
   },
   {
     path: "documents",
@@ -29,8 +33,12 @@ const items = [
     label: "Thành viên",
   },
   {
-    path: "payment",
+    path: "transactions",
     label: "Thanh toán",
+  },
+  {
+    path: "warranty",
+    label: "Bảo hiểm",
   },
 ];
 
