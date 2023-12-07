@@ -26,6 +26,7 @@ import {
   countProjectTasksFilter,
 } from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "api/paymentStageServices";
 
 import projectTaskStatusOptions, {
   projectTaskStatusOptionsEnglish,
@@ -57,14 +58,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// TABLE LABELS
-const codeHeaderLabel = "Mã";
-const nameHeaderLabel = "Tên";
-const percentageHeaderLabel = "Tiến độ";
-const pricePerUnitHeaderLabel = "Tổng tiền ước tính (VND)";
-const startDateHeaderLabel = "Ngày bắt đầu";
-const endDateHeaderLabel = "Ngày kết thúc";
-
 export default function ProjectTasksPage() {
   // CONSTANTS
   const searchQuery = "search";
@@ -93,6 +86,7 @@ export default function ProjectTasksPage() {
 
   // FETCH DATA FROM API
   const [categories, setCategories] = useState([]);
+  const [stages, setStages] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
@@ -112,6 +106,7 @@ export default function ProjectTasksPage() {
 
       try {
         setLoading(true);
+        const stages = await getPaymentStagesByProjectId(params.id);
         const categories = await getAllTaskCategories();
         const count = await countProjectTasksFilter(
           projectId,
@@ -127,6 +122,7 @@ export default function ProjectTasksPage() {
           page,
           pageSize
         );
+        setStages(stages);
         setCategories(categories);
         setCount(count);
         setTasks(data);
@@ -163,111 +159,123 @@ export default function ProjectTasksPage() {
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>
-        <TaskModal>
-          <span>Tạo</span>
-        </TaskModal>
+        <Box sx={{ display: "flex" }}>
+          <Button disableElevation variant="contained" sx={{ mr: 2 }}>
+            Xem theo tầng
+          </Button>
+          <TaskModal>
+            <span>Tạo</span>
+          </TaskModal>
+        </Box>
       </Box>
-      <Tabs value={activeTab} onChange={handleTabChange}>
-        <Tab label="Chưa có stage" />
-        <Tab label="Stage 1" />
-        <Tab label="Stage 2" />
-      </Tabs>
       {tasks && tasks.length > 0 ? (
-        <Table
-          aria-label="simple table"
-          sx={{
-            whiteSpace: "nowrap",
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {codeHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {nameHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {percentageHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {pricePerUnitHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {startDateHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  {endDateHeaderLabel}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tasks?.map((task) => (
-              <StyledTableRow key={task.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {task.code}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {task.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <LinearProgress
-                    variant="determinate"
-                    value={task.percentage}
-                  />
-                  <Typography variant="body2" fontWeight={400}>
-                    {`${task.percentage}%`}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {(task.pricePerUnit * task.unitInContract).toLocaleString(
-                      "vi-VN"
-                    )}{" "}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(task.startDate).toLocaleDateString("vi-VN")}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(task.endDate).toLocaleDateString("vi-VN")}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Button
-                    component={Link}
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    href={`/projects/${params.id}/tasks/${task.id}`}
-                  >
-                    Chi tiết
-                  </Button>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Box>
+          <Tabs sx={{ mt: 2 }} value={activeTab} onChange={handleTabChange}>
+            <Tab label="Chưa có giai đoạn" />
+            {stages &&
+              stages.map((stage) => <Tab key={stage.id} label={stage.name} />)}
+          </Tabs>
+          <Box sx={{ mt: 2, display: "flex", overflowX: "hidden" }}>
+            <Tabs
+              orientation="vertical"
+              variant="scrollable"
+              sx={{
+                minWidth: "8rem",
+                backgroundColor: "whitesmoke",
+                ".MuiTabs-indicator": {
+                  left: 0,
+                },
+              }}
+              value={activeTab}
+              onChange={handleTabChange}
+            >
+              <Tab label="Phòng 1" />
+              <Tab label="Phòng 2" />
+              <Tab label="Phòng 3" />
+            </Tabs>
+            <Table
+              aria-label="simple table"
+              sx={{
+                whiteSpace: "nowrap",
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell width={"30%"}>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Công việc
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell width={"15%"}>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Tổng giá ước tính
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell width={"15%"}>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Ngày bắt đầu
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell width={"30%"}>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Tiến độ
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="right"></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tasks?.map((task) => (
+                  <StyledTableRow key={task.id}>
+                    <TableCell>
+                      <Typography variant="p" fontWeight={600}>
+                        {task.code}
+                      </Typography>
+                      <Typography variant="subtitle2" fontWeight={400}>
+                        {task.name}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={400}>
+                        {(
+                          task.pricePerUnit * task.unitInContract
+                        ).toLocaleString("vi-VN")}{" "}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={400}>
+                        {task.startDate
+                          ? new Date(task.startDate).toLocaleDateString("vi-VN")
+                          : "Chưa xác định"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <LinearProgress
+                        variant="determinate"
+                        value={task.percentage}
+                      />
+                      <Typography variant="body2" fontWeight={400}>
+                        {`${task.percentage}%`}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        component={Link}
+                        variant="contained"
+                        disableElevation
+                        color="primary"
+                        href={`/projects/${params.id}/tasks/${task.id}`}
+                      >
+                        Chi tiết
+                      </Button>
+                    </TableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Box>
       ) : loading ? (
         <Stack sx={{ my: 5 }}>
           <CircularProgress sx={{ mx: "auto" }}></CircularProgress>

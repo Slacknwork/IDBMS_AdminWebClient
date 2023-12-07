@@ -159,77 +159,76 @@ export default function ProjectDetails() {
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
-      <DashboardCard>
-        <DetailsPage
-          title="Thông tin dự án"
-          saveMessage="Lưu thông tin dự án?"
-          onSave={onSaveProject}
-        >
-          <Grid item xs={12} lg={8}>
-            <Grid container columnSpacing={2} rowSpacing={4}>
-              {/* NAME */}
-              <Grid item xs={12} lg={12}>
-                <TextForm
-                  title="Tên"
-                  required
-                  subtitle="Nhập tên dự án"
-                  value={formData.name}
-                  error={formData.nameError.hasError}
-                  errorLabel={formData.nameError.label}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                ></TextForm>
-              </Grid>
+      <DetailsPage
+        title="Thông tin dự án"
+        saveMessage="Lưu thông tin dự án?"
+        onSave={onSaveProject}
+      >
+        <Grid item xs={12} lg={8}>
+          <Grid container columnSpacing={2} rowSpacing={4}>
+            {/* NAME */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+                title="Tên"
+                required
+                subtitle="Nhập tên dự án"
+                value={formData.name}
+                error={formData.nameError.hasError}
+                errorLabel={formData.nameError.label}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+              ></TextForm>
+            </Grid>
 
-              {/* PROJECT TYPE */}
-              <Grid item xs={12} lg={12}>
-                <SelectForm
-                  title="Kiểu dự án"
-                  required
-                  subtitle="Chọn kiểu dự án"
-                  value={formData.type}
-                  options={projectTypeOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn kiểu dự án"
-                  error={formData.typeError.hasError}
-                  errorLabel={formData.typeError.label}
-                  onChange={(value) => handleInputChange("type", value)}
-                  disabled
-                ></SelectForm>
-              </Grid>
+            {/* PROJECT TYPE */}
+            <Grid item xs={12} lg={12}>
+              <SelectForm
+                title="Kiểu dự án"
+                required
+                subtitle="Chọn kiểu dự án"
+                value={formData.type}
+                options={projectTypeOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn kiểu dự án"
+                error={formData.typeError.hasError}
+                errorLabel={formData.typeError.label}
+                onChange={(value) => handleInputChange("type", value)}
+                disabled
+              ></SelectForm>
+            </Grid>
 
-              {/* PROJECT STATUS */}
-              <Grid item xs={12} lg={12}>
-                <SelectForm
-                  title="Trạng thái"
-                  required
-                  subtitle="Chọn trạng thái của dự án"
-                  value={formData.status}
-                  options={projectStatusOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn trạng thái"
-                  error={formData.statusError.hasError}
-                  errorLabel={formData.statusError.label}
-                  onChange={(value) => handleInputChange("status", value)}
-                ></SelectForm>
-              </Grid>
+            {/* PROJECT STATUS */}
+            <Grid item xs={12} lg={12}>
+              <SelectForm
+                title="Trạng thái"
+                required
+                subtitle="Chọn trạng thái của dự án"
+                value={formData.status}
+                options={projectStatusOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn trạng thái"
+                error={formData.statusError.hasError}
+                errorLabel={formData.statusError.label}
+                onChange={(value) => handleInputChange("status", value)}
+              ></SelectForm>
+            </Grid>
 
-              {/* PROJECT CATEGORY */}
-              <Grid item xs={12} lg={12}>
-                <AutocompleteForm
-                  title="Phân loại"
-                  subtitle="Chọn phân loại dự án"
-                  value={formData.projectCategoryId}
-                  options={projectCategories}
-                  error={formData.projectCategoryIdError.hasError}
-                  errorLabel={formData.projectCategoryIdError.label}
-                  onChange={(value) =>
-                    handleInputChange("projectCategoryId", value)
-                  }
-                ></AutocompleteForm>
-              </Grid>
+            {/* PROJECT CATEGORY */}
+            <Grid item xs={12} lg={12}>
+              <AutocompleteForm
+                title="Phân loại"
+                subtitle="Chọn phân loại dự án"
+                value={formData.projectCategoryId}
+                options={projectCategories}
+                error={formData.projectCategoryIdError.hasError}
+                errorLabel={formData.projectCategoryIdError.label}
+                onChange={(value) =>
+                  handleInputChange("projectCategoryId", value)
+                }
+              ></AutocompleteForm>
+            </Grid>
 
-              {/* ESTIMATED PRICE */}
-              {/* <Grid item xs={12} lg={12}>
+            {/* ESTIMATED PRICE */}
+            {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Giá ước tính"
                   required
@@ -244,8 +243,8 @@ export default function ProjectDetails() {
                 ></NumberForm>
               </Grid> */}
 
-              {/* FINAL PRICE */}
-              {/* <Grid item xs={12} lg={12}>
+            {/* FINAL PRICE */}
+            {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Giá thực tế"
                   required
@@ -258,8 +257,8 @@ export default function ProjectDetails() {
                 ></NumberForm>
               </Grid> */}
 
-              {/* TOTAL WARRANTY PAID */}
-              {/* <Grid item xs={12} lg={12}>
+            {/* TOTAL WARRANTY PAID */}
+            {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Bảo hiểm đã trả"
                   subtitle="Nhập số tiền bảo hiểm khách đã trả"
@@ -273,8 +272,8 @@ export default function ProjectDetails() {
                 ></NumberForm>
               </Grid> */}
 
-              {/* AREA */}
-              {/* <Grid item xs={12} lg={12}>
+            {/* AREA */}
+            {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Tổng diện tích"
                   required
@@ -287,8 +286,8 @@ export default function ProjectDetails() {
                 ></NumberForm>
               </Grid> */}
 
-              {/* ESTIMATE BUSINESS DAY */}
-              {/* <Grid item xs={12} lg={12}>
+            {/* ESTIMATE BUSINESS DAY */}
+            {/* <Grid item xs={12} lg={12}>
                 <NumberForm
                   title="Ước tính thời gian"
                   required
@@ -303,103 +302,105 @@ export default function ProjectDetails() {
                 ></NumberForm>
               </Grid> */}
 
-              {/* LANGUAGE */}
-              <Grid item xs={12} lg={12}>
-                <SelectForm
-                  title="Ngôn ngữ"
-                  required
-                  subtitle="Chọn ngôn ngữ của dự án"
-                  value={formData.language}
-                  options={projectLanguageOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn một..."
-                  error={formData.languageError.hasError}
-                  errorLabel={formData.languageError.label}
-                  onChange={(value) => handleInputChange("language", value)}
-                ></SelectForm>
-              </Grid>
+            {/* LANGUAGE */}
+            <Grid item xs={12} lg={12}>
+              <SelectForm
+                title="Ngôn ngữ"
+                required
+                subtitle="Chọn ngôn ngữ của dự án"
+                value={formData.language}
+                options={projectLanguageOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn một..."
+                error={formData.languageError.hasError}
+                errorLabel={formData.languageError.label}
+                onChange={(value) => handleInputChange("language", value)}
+              ></SelectForm>
+            </Grid>
 
-              {/* ADVERTISEMENT STATUS */}
+            {/* ADVERTISEMENT STATUS */}
+            <Grid item xs={12} lg={12}>
+              <SelectForm
+                title="Quảng cáo"
+                required
+                subtitle="Cho phép hệ thống quảng cáo dự án này"
+                value={formData.advertisementStatus}
+                options={projectAdvertisementStatusOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn một..."
+                error={formData.advertisementStatusError.hasError}
+                errorLabel={formData.advertisementStatusError.label}
+                onChange={(value) =>
+                  handleInputChange("advertisementStatus", value)
+                }
+              ></SelectForm>
+            </Grid>
+
+            {/* BASED ON DECOR PROJECT */}
+            {formData.type && formData.type === 1 ? (
               <Grid item xs={12} lg={12}>
-                <SelectForm
-                  title="Quảng cáo"
-                  required
-                  subtitle="Cho phép hệ thống quảng cáo dự án này"
-                  value={formData.advertisementStatus}
-                  options={projectAdvertisementStatusOptions}
-                  defaultValue={-1}
-                  defaultLabel="Chọn một..."
-                  error={formData.advertisementStatusError.hasError}
-                  errorLabel={formData.advertisementStatusError.label}
+                <AutocompleteForm
+                  title="Thiết kế"
+                  subtitle="Chọn dự án thiết kế cho dự án thi công này"
+                  value={formData.basedOnDecorProjectId}
+                  options={decorProjects}
+                  getOptionLabel={(option) => option.name}
+                  error={formData.basedOnDecorProjectErrorId.hasError}
+                  errorLabel={formData.basedOnDecorProjectErrorId.label}
                   onChange={(value) =>
-                    handleInputChange("advertisementStatus", value)
+                    handleInputChange("basedOnDecorProjectId", value)
                   }
-                ></SelectForm>
+                  disabled={true}
+                ></AutocompleteForm>
               </Grid>
+            ) : null}
 
-              {/* BASED ON DECOR PROJECT */}
-              {formData.type && formData.type === 1 ? (
-                <Grid item xs={12} lg={12}>
-                  <AutocompleteForm
-                    title="Thiết kế"
-                    subtitle="Chọn dự án thiết kế cho dự án thi công này"
-                    value={formData.basedOnDecorProjectId}
-                    options={decorProjects}
-                    getOptionLabel={(option) => option.name}
-                    error={formData.basedOnDecorProjectErrorId.hasError}
-                    errorLabel={formData.basedOnDecorProjectErrorId.label}
-                    onChange={(value) =>
-                      handleInputChange("basedOnDecorProjectId", value)
-                    }
-                    disabled={true}
-                  ></AutocompleteForm>
-                </Grid>
-              ) : null}
-
-              {/* DESCRIPTION */}
-              <Grid item xs={12} lg={12}>
-                <TextForm
-                  title="Mô tả"
-                  multiline
-                  rows={4}
-                  subtitle="Mô tả dự án"
-                  value={formData.description}
-                  error={formData.descriptionError.hasError}
-                  errorLabel={formData.descriptionError.label}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                ></TextForm>
-              </Grid>
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+                title="Mô tả"
+                multiline
+                rows={4}
+                subtitle="Mô tả dự án"
+                value={formData.description}
+                error={formData.descriptionError.hasError}
+                errorLabel={formData.descriptionError.label}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+              ></TextForm>
             </Grid>
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <Card
-              variant="outlined"
-              sx={{ p: 2, border: 1, borderColor: "gray" }}
-            >
-              <Typography variant="h5" sx={{ my: "auto" }}>
-                {contactLabel}
-              </Typography>
-              <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                  {getAvatarContent(projectOwner?.name ?? "E")}
-                </Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">
-                    {projectOwner?.name ?? "Không tìm thấy"}
-                  </Typography>
-                  <Typography variant="p">
-                    {projectOwner?.email ?? "..."}
-                  </Typography>
-                  <br />
-                  <Typography variant="p">
-                    {projectOwner?.phone ?? "..."}
-                  </Typography>
-                  <br />
-                </Box>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <Card
+            variant="outlined"
+            sx={{ p: 2, border: 1, borderColor: "gray" }}
+          >
+            <Typography variant="h5" sx={{ my: "auto" }}>
+              {contactLabel}
+            </Typography>
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                {getAvatarContent(projectOwner?.name ?? "E")}
+              </Avatar>
+              <Box sx={{ my: "auto", mx: 2 }}>
+                <Typography variant="h6">
+                  {projectOwner?.name ?? "Không tìm thấy"}
+                </Typography>
+                <Typography variant="p">
+                  {projectOwner?.email ?? "..."}
+                </Typography>
+                <br />
+                <Typography variant="p">
+                  {projectOwner?.phone ?? "..."}
+                </Typography>
+                <br />
               </Box>
-            </Card>
+            </Box>
+          </Card>
+
+          <Grid item xs={12} lg={4}>
             <Card
               variant="outlined"
               sx={{ p: 2, border: 1, borderColor: "gray", mt: 2 }}
@@ -464,7 +465,6 @@ export default function ProjectDetails() {
                   </Typography>
                 </Grid>
               </Grid>
-
               <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
@@ -479,8 +479,8 @@ export default function ProjectDetails() {
               </Grid>
             </Card>
           </Grid>
-        </DetailsPage>
-      </DashboardCard>
-    </PageContainer>
+        </Grid>
+      </DetailsPage >
+    </PageContainer >
   );
 }
