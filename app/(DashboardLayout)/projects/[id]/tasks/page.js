@@ -90,18 +90,6 @@ export default function ProjectTasksPage() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const updateSearchParams = (query, value = null) => {
-    const url = new URL(window.location.href);
-    const searchParams = new URLSearchParams(url.search);
-    if (value !== null) {
-      searchParams.set(query, value);
-    } else {
-      searchParams.delete(query);
-    }
-    url.search = searchParams.toString();
-    router.push(url.toString());
-  };
-
   // VIEWMODE (STAGE / FLOOR & ROOMS)
   const viewModeLabels = ["Xem theo giai đoạn", "Xem theo tầng/phòng"];
   const [viewMode, setViewMode] = useState(
@@ -110,6 +98,7 @@ export default function ProjectTasksPage() {
       : defaultViewMode
   );
   const onToggleViewMode = () => {
+    setTasksLoading(true);
     const newViewMode = viewMode ? 0 : 1;
     setViewMode(newViewMode);
     const url = new URL(window.location.href);
@@ -136,6 +125,7 @@ export default function ProjectTasksPage() {
     setActiveStage(active);
   };
   const handleStageChange = (event, newValue) => {
+    setTasksLoading(true);
     setActiveStage(newValue);
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
@@ -150,6 +140,7 @@ export default function ProjectTasksPage() {
   const [rooms, setRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState(0);
   const handleRoomChange = (event, newValue) => {
+    setTasksLoading(true);
     setActiveRoom(newValue);
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
@@ -167,9 +158,11 @@ export default function ProjectTasksPage() {
     const active =
       floors.findIndex((floor) => searchParams.get(floorQuery) === floor.id) +
       1;
+    setRooms(active ? floors[active - 1].rooms : []);
     setActiveFloor(active);
   };
   const handleFloorChange = (event, newValue) => {
+    setTasksLoading(true);
     setActiveFloor(newValue);
     setRooms(newValue ? floors[newValue - 1]?.rooms : []);
     const url = new URL(window.location.href);
@@ -225,8 +218,8 @@ export default function ProjectTasksPage() {
   };
 
   const fetchOptionsFromApi = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const categories = await getAllTaskCategories();
       setCategories(categories);
       await fetchStages();
@@ -240,8 +233,8 @@ export default function ProjectTasksPage() {
   };
 
   const fetchDataFromApi = async () => {
+    setTasksLoading(true);
     try {
-      setTasksLoading(true);
       await fetchTasks();
     } catch (error) {
       console.error("Error fetching data:", error);

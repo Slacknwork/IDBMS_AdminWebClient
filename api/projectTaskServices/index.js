@@ -115,9 +115,9 @@ const countProjectTasksFilter = async ({
     : "";
   const statusQuery = status ? `Status eq '${status}' and ` : "";
   const stageOrRoomQuery =
-    stageId | (stageId === null)
+    stageId || stageId === null
       ? `PaymentStageId eq ${stageId} and `
-      : roomId | (roomId === null)
+      : roomId || roomId === null
       ? `RoomId eq ${roomId} and `
       : "";
   try {
@@ -155,9 +155,9 @@ const getProjectTasksFilter = async ({
     : "";
   const statusQuery = status ? `Status eq '${status}' and ` : "";
   const stageOrRoomQuery =
-    stageId | (stageId === null)
+    stageId || stageId === null
       ? `PaymentStageId eq ${stageId} and `
-      : roomId | (roomId === null)
+      : roomId || roomId === null
       ? `RoomId eq ${roomId} and `
       : "";
   const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
