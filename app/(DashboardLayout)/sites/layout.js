@@ -3,13 +3,15 @@
 import PageContainer from "/components/container/PageContainer";
 import DashboardCard from "/components/shared/DashboardCard";
 
-const pageTitle = "Khu công trình";
-const pageDescription = "Danh sách các khu công trình";
-
-export default function Sites({ children }) {
+export default function SitesLayout({ children }) {
   return (
-    <PageContainer title={pageTitle} description={pageDescription}>
-      <DashboardCard title={pageTitle}>{children}</DashboardCard>
+    <PageContainer
+      title="Khu công trình"
+      description="Danh sách các khu công trình"
+    >
+      <DashboardCard sx={{ minHeight: "32rem" }} title="Khu công trình">
+        {children}
+      </DashboardCard>
     </PageContainer>
   );
 }

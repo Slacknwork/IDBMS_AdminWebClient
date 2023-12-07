@@ -38,14 +38,14 @@ export default function ProjectDetails() {
     statusError: { hasError: false, label: "" },
     language: -1,
     languageError: { hasError: false, label: "" },
-    projectCategory: { id: 0, name: "" },
-    projectCategoryError: { hasError: false, label: "" },
+    projectCategoryId: { id: 0, name: "" },
+    projectCategoryIdError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
     advertisementStatus: -1,
     advertisementStatusError: { hasError: false, label: "" },
-    basedOnDecorProject: null,
-    basedOnDecorProjectError: { hasError: false, label: "" },
+    basedOnDecorProjectId: null,
+    basedOnDecorProjectErrorId: { hasError: false, label: "" },
     estimatedPrice: 0,
     estimatedPriceError: { hasError: false, label: "" },
     finalPrice: 0,
@@ -117,9 +117,11 @@ export default function ProjectDetails() {
           );
           console.log(project);
           setDecorProjects(
-            listProjectsBySiteId.filter(
-              (project) => project.type === 0 && project.id !== projectId
-            ).map(({ id, name }) => ({ id, name }))
+            listProjectsBySiteId
+              .filter(
+                (project) => project.type === 0 && project.id !== projectId
+              )
+              .map(({ id, name }) => ({ id, name }))
           );
           const participation = project?.projectParticipations.find(
             (par) => par.role === 0
@@ -215,12 +217,12 @@ export default function ProjectDetails() {
                 <AutocompleteForm
                   title="Phân loại"
                   subtitle="Chọn phân loại dự án"
-                  value={formData.projectCategory}
+                  value={formData.projectCategoryId}
                   options={projectCategories}
-                  error={formData.projectCategoryError.hasError}
-                  errorLabel={formData.projectCategoryError.label}
+                  error={formData.projectCategoryIdError.hasError}
+                  errorLabel={formData.projectCategoryIdError.label}
                   onChange={(value) =>
-                    handleInputChange("projectCategory", value)
+                    handleInputChange("projectCategoryId", value)
                   }
                 ></AutocompleteForm>
               </Grid>
@@ -340,13 +342,13 @@ export default function ProjectDetails() {
                   <AutocompleteForm
                     title="Thiết kế"
                     subtitle="Chọn dự án thiết kế cho dự án thi công này"
-                    value={formData.basedOnDecorProject}
+                    value={formData.basedOnDecorProjectId}
                     options={decorProjects}
                     getOptionLabel={(option) => option.name}
-                    error={formData.basedOnDecorProjectError.hasError}
-                    errorLabel={formData.basedOnDecorProjectError.label}
+                    error={formData.basedOnDecorProjectErrorId.hasError}
+                    errorLabel={formData.basedOnDecorProjectErrorId.label}
                     onChange={(value) =>
-                      handleInputChange("basedOnDecorProject", value)
+                      handleInputChange("basedOnDecorProjectId", value)
                     }
                   ></AutocompleteForm>
                 </Grid>
@@ -405,13 +407,12 @@ export default function ProjectDetails() {
                 {priceLabel}
                 {console.log(projectOwner)}
               </Typography>
-              <Typography variant="h5" sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}>
-              </Typography>
+              <Typography
+                variant="h5"
+                sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}
+              ></Typography>
 
-              <Grid
-                container
-                sx={{ mt: 1, pt: 2 }}
-              >
+              <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
                     Giá ước tính:
@@ -424,10 +425,7 @@ export default function ProjectDetails() {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                sx={{ mt: 1, pt: 2 }}
-              >
+              <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
                     Giá thực tế:
@@ -440,10 +438,7 @@ export default function ProjectDetails() {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                sx={{ mt: 1, pt: 2 }}
-              >
+              <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
                     Đã bảo hiểm:
@@ -451,15 +446,13 @@ export default function ProjectDetails() {
                 </Grid>
                 <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                   <Typography variant="p" sx={{ my: "auto" }}>
-                    {formData?.totalWarrantyPaid?.toLocaleString("en-US") ?? 0} VND
+                    {formData?.totalWarrantyPaid?.toLocaleString("en-US") ?? 0}{" "}
+                    VND
                   </Typography>
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                sx={{ mt: 1, pt: 2 }}
-              >
+              <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
                     Tổng diện tích:
@@ -472,10 +465,7 @@ export default function ProjectDetails() {
                 </Grid>
               </Grid>
 
-              <Grid
-                container
-                sx={{ mt: 1, pt: 2 }}
-              >
+              <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
                     Ngày làm việc:
@@ -487,7 +477,6 @@ export default function ProjectDetails() {
                   </Typography>
                 </Grid>
               </Grid>
-
             </Card>
           </Grid>
         </DetailsPage>

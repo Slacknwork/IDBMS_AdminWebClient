@@ -1,6 +1,7 @@
 "use client";
 
 import { Autocomplete, Grid, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function AutocompleteForm({
   sx,
@@ -16,6 +17,15 @@ export default function AutocompleteForm({
   errorLabel,
   onChange,
 }) {
+  const [selectedObject, setSelectedObject] = useState(null);
+  const onSelectedObjectChange = (value) => {
+    setSelectedObject(value);
+    onChange(value?.id);
+  };
+  useEffect(() => {
+    setSelectedObject(options.find((option) => option.id === value));
+  }, [options, value]);
+
   return (
     <Grid container spacing={2} sx={sx}>
       {title && (
@@ -32,8 +42,8 @@ export default function AutocompleteForm({
           disabled={disabled}
           options={options}
           getOptionLabel={(option) => option.name}
-          value={value}
-          onChange={(_, newValue) => onChange(newValue)}
+          value={selectedObject}
+          onChange={(_, newValue) => onSelectedObjectChange(newValue)}
           renderInput={(params) => (
             <TextField
               {...params}
