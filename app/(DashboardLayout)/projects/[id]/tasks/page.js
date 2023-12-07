@@ -26,6 +26,8 @@ import {
   countProjectTasksFilter,
 } from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
+import { getFloorsByProjectId } from "/api/floorServices";
+import { getRoomsByFloorId } from "/api/roomServices";
 import { getPaymentStagesByProjectId } from "api/paymentStageServices";
 
 import projectTaskStatusOptions, {
@@ -60,7 +62,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectTasksPage() {
   // CONSTANTS
+  const viewModeQuery = "viewMode";
+  const defaultViewMode = 0;
+
   const searchQuery = "search";
+
+  const stageQuery = "stage";
+
+  const floorQuery = "floor";
+
+  const roomQuery = "room";
 
   const categoryQuery = "category";
 
@@ -78,61 +89,136 @@ export default function ProjectTasksPage() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  // TABS
-  const [activeTab, setActiveTab] = useState(0);
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+  const updateSearchParams = (query, value = null) => {
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    if (value !== null) {
+      searchParams.set(query, value);
+    } else {
+      searchParams.delete(query);
+    }
+    url.search = searchParams.toString();
+    router.push(url.toString());
+  };
+
+  // VIEWMODE (STAGE / FLOOR & ROOMS)
+  const viewModeLabels = ["Xem theo giai đoạn", "Xem theo tầng/phòng"];
+  const [viewMode, setViewMode] = useState(
+    searchParams.get(viewModeQuery)
+      ? parseInt(searchParams.get(viewModeQuery))
+      : defaultViewMode
+  );
+  const onToggleViewMode = () => {
+    const newViewMode = viewMode ? 0 : 1;
+    setViewMode(newViewMode);
+    updateSearchParams(viewModeQuery, newViewMode || null);
   };
 
   // FETCH DATA FROM API
   const [categories, setCategories] = useState([]);
+
+  // STAGES
   const [stages, setStages] = useState([]);
+  const [activeStage, setActiveStage] = useState(0);
+  const fetchStages = async () => {
+    const stages = await getPaymentStagesByProjectId(params.id);
+    setStages(stages);
+    const active =
+      stages.findIndex((stage) => searchParams.get(stageQuery) === stage.id) +
+      1;
+    setActiveStage(active);
+  };
+  const handleStageChange = (event, newValue) => {
+    setActiveStage(newValue);
+    updateSearchParams(stageQuery, newValue ? stages[newValue - 1]?.id : null);
+  };
+
+  // FLOORS
+  const [floors, setFloors] = useState([]);
+  const [activeFloor, setActiveFloor] = useState(0);
+  const fetchFloors = async () => {
+    const floors = await getFloorsByProjectId(params.id);
+    setFloors(floors);
+    const active =
+      floors.findIndex((floor) => searchParams.get(floorQuery) === floor.id) +
+      1;
+    setActiveFloor(active);
+  };
+  const handleFloorChange = (event, newValue) => {
+    setActiveFloor(newValue);
+    updateSearchParams(floorQuery, newValue ? floors[newValue - 1]?.id : null);
+  };
+
+  // ROOMS
+  const [rooms, setRooms] = useState([]);
+  const [activeRoom, setActiveRoom] = useState(0);
+  const fetchRooms = async () => {
+    if (searchParams.get(floorQuery)) {
+      const rooms = await getRoomsByFloorId(searchParams.get(floorQuery));
+      setRooms(rooms);
+      const active = rooms.findIndex(
+        (room) => searchParams.get(roomQuery) === room.id
+      );
+      setActiveRoom(active);
+    } else {
+      setRooms([]);
+      updateSearchParams(roomQuery, null);
+    }
+  };
+  const handleRoomChange = (event, newValue) => {
+    setActiveRoom(newValue);
+    updateSearchParams(roomQuery, rooms[newValue]?.id);
+  };
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const fetchDataFromApi = async () => {
-      const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const categoryId = searchParams.get(categoryQuery);
-      const status =
-        projectTaskStatusOptionsEnglish[
-          parseInt(searchParams.get(statusQuery))
-        ];
-      const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+  const fetchTasks = async () => {
+    const projectId = params.id;
+    const search = searchParams.get(searchQuery) || "";
+    const categoryId = searchParams.get(categoryQuery);
+    const status =
+      projectTaskStatusOptionsEnglish[parseInt(searchParams.get(statusQuery))];
+    const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
+    const pageSize =
+      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+    const count = await countProjectTasksFilter(
+      projectId,
+      search,
+      categoryId,
+      status
+    );
+    const data = await getProjectTasksFilter(
+      projectId,
+      search,
+      categoryId,
+      status,
+      page,
+      pageSize
+    );
+    setCount(count);
+    setTasks(data);
+  };
 
-      try {
-        setLoading(true);
-        const stages = await getPaymentStagesByProjectId(params.id);
-        const categories = await getAllTaskCategories();
-        const count = await countProjectTasksFilter(
-          projectId,
-          search,
-          categoryId,
-          status
-        );
-        const data = await getProjectTasksFilter(
-          projectId,
-          search,
-          categoryId,
-          status,
-          page,
-          pageSize
-        );
-        setStages(stages);
-        setCategories(categories);
-        setCount(count);
-        setTasks(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchDataFromApi = async () => {
+    try {
+      setLoading(true);
+      const categories = await getAllTaskCategories();
+      setCategories(categories);
+      await fetchStages();
+      await fetchFloors();
+      await fetchRooms();
+      await fetchTasks();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchDataFromApi();
   }, [searchParams]);
 
@@ -160,8 +246,13 @@ export default function ProjectTasksPage() {
           ></FilterAutocomplete>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <Button disableElevation variant="contained" sx={{ mr: 2 }}>
-            Xem theo tầng
+          <Button
+            disableElevation
+            variant="contained"
+            sx={{ mr: 2 }}
+            onClick={onToggleViewMode}
+          >
+            {viewModeLabels[viewMode]}
           </Button>
           <TaskModal>
             <span>Tạo</span>
@@ -170,29 +261,50 @@ export default function ProjectTasksPage() {
       </Box>
       {tasks && tasks.length > 0 ? (
         <Box>
-          <Tabs sx={{ mt: 2 }} value={activeTab} onChange={handleTabChange}>
-            <Tab label="Chưa có giai đoạn" />
-            {stages &&
-              stages.map((stage) => <Tab key={stage.id} label={stage.name} />)}
-          </Tabs>
-          <Box sx={{ mt: 2, display: "flex", overflowX: "hidden" }}>
+          {viewMode === 0 ? (
             <Tabs
-              orientation="vertical"
-              variant="scrollable"
-              sx={{
-                minWidth: "8rem",
-                backgroundColor: "whitesmoke",
-                ".MuiTabs-indicator": {
-                  left: 0,
-                },
-              }}
-              value={activeTab}
-              onChange={handleTabChange}
+              sx={{ mt: 2 }}
+              value={activeStage}
+              onChange={handleStageChange}
             >
-              <Tab label="Phòng 1" />
-              <Tab label="Phòng 2" />
-              <Tab label="Phòng 3" />
+              <Tab label="Chưa có giai đoạn" />
+              {stages &&
+                stages.map((stage) => (
+                  <Tab key={stage.id} label={stage.name} />
+                ))}
             </Tabs>
+          ) : (
+            <Tabs
+              sx={{ mt: 2 }}
+              value={activeFloor}
+              onChange={handleFloorChange}
+            >
+              <Tab label="Ngoài kiến trúc" />
+              {floors &&
+                floors.map((floor) => (
+                  <Tab key={floor.id} label={floor.usePurpose} />
+                ))}
+            </Tabs>
+          )}
+          <Box sx={{ mt: 2, display: "flex", overflowX: "hidden" }}>
+            {viewMode === 1 && rooms && rooms.length > 0 && (
+              <Tabs
+                orientation="vertical"
+                variant="scrollable"
+                sx={{
+                  minWidth: "8rem",
+                  ".MuiTabs-indicator": {
+                    left: 0,
+                  },
+                }}
+                value={activeRoom}
+                onChange={handleRoomChange}
+              >
+                {rooms.map((room) => (
+                  <Tab key={room.id} label={room.usePurpose} />
+                ))}
+              </Tabs>
+            )}
             <Table
               aria-label="simple table"
               sx={{
