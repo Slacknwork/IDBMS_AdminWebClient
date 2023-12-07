@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Grid,
   LinearProgress,
   Stack,
   Tab,
@@ -111,7 +112,13 @@ export default function ProjectTasksPage() {
   const onToggleViewMode = () => {
     const newViewMode = viewMode ? 0 : 1;
     setViewMode(newViewMode);
-    updateSearchParams(viewModeQuery, newViewMode || null);
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    newViewMode
+      ? searchParams.set(viewModeQuery, newViewMode)
+      : searchParams.delete(viewModeQuery);
+    url.search = searchParams.toString();
+    router.push(url.toString());
   };
 
   // FETCH DATA FROM API
@@ -130,7 +137,25 @@ export default function ProjectTasksPage() {
   };
   const handleStageChange = (event, newValue) => {
     setActiveStage(newValue);
-    updateSearchParams(stageQuery, newValue ? stages[newValue - 1]?.id : null);
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    newValue
+      ? searchParams.set(stageQuery, stages[newValue - 1]?.id)
+      : searchParams.delete(stageQuery);
+    url.search = searchParams.toString();
+    router.push(url.toString());
+  };
+
+  // ROOMS
+  const [rooms, setRooms] = useState([]);
+  const [activeRoom, setActiveRoom] = useState(0);
+  const handleRoomChange = (event, newValue) => {
+    setActiveRoom(newValue);
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    searchParams.set(roomQuery, rooms[newValue]?.id);
+    url.search = searchParams.toString();
+    router.push(url.toString());
   };
 
   // FLOORS
@@ -146,31 +171,24 @@ export default function ProjectTasksPage() {
   };
   const handleFloorChange = (event, newValue) => {
     setActiveFloor(newValue);
-    updateSearchParams(floorQuery, newValue ? floors[newValue - 1]?.id : null);
-  };
-
-  // ROOMS
-  const [rooms, setRooms] = useState([]);
-  const [activeRoom, setActiveRoom] = useState(0);
-  const fetchRooms = async () => {
-    if (searchParams.get(floorQuery)) {
-      const rooms = await getRoomsByFloorId(searchParams.get(floorQuery));
-      setRooms(rooms);
-      const active = rooms.findIndex(
-        (room) => searchParams.get(roomQuery) === room.id
-      );
-      setActiveRoom(active);
+    setRooms(newValue ? floors[newValue - 1]?.rooms : []);
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    if (newValue) {
+      searchParams.set(floorQuery, floors[newValue - 1]?.id);
+      setActiveRoom(0);
+      searchParams.set(roomQuery, floors[newValue - 1]?.rooms[0]?.id);
     } else {
-      setRooms([]);
-      updateSearchParams(roomQuery, null);
+      searchParams.delete(floorQuery);
+      searchParams.delete(roomQuery);
     }
-  };
-  const handleRoomChange = (event, newValue) => {
-    setActiveRoom(newValue);
-    updateSearchParams(roomQuery, rooms[newValue]?.id);
+    url.search = searchParams.toString();
+    router.push(url.toString());
   };
 
+  // TASKS
   const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
@@ -178,38 +196,41 @@ export default function ProjectTasksPage() {
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
     const categoryId = searchParams.get(categoryQuery);
+    const stageId = searchParams.get(stageQuery) ?? null;
+    const roomId = searchParams.get(roomQuery) ?? null;
     const status =
       projectTaskStatusOptionsEnglish[parseInt(searchParams.get(statusQuery))];
     const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
-    const count = await countProjectTasksFilter(
-      projectId,
-      search,
-      categoryId,
-      status
-    );
-    const data = await getProjectTasksFilter(
+
+    const count = await countProjectTasksFilter({
       projectId,
       search,
       categoryId,
       status,
+      ...(viewMode ? { roomId } : { stageId }),
+    });
+    const data = await getProjectTasksFilter({
+      projectId,
+      search,
+      categoryId,
+      status,
+      ...(viewMode ? { roomId } : { stageId }),
       page,
-      pageSize
-    );
+      pageSize,
+    });
     setCount(count);
     setTasks(data);
   };
 
-  const fetchDataFromApi = async () => {
+  const fetchOptionsFromApi = async () => {
     try {
       setLoading(true);
       const categories = await getAllTaskCategories();
       setCategories(categories);
       await fetchStages();
       await fetchFloors();
-      await fetchRooms();
-      await fetchTasks();
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -217,6 +238,22 @@ export default function ProjectTasksPage() {
       setLoading(false);
     }
   };
+
+  const fetchDataFromApi = async () => {
+    try {
+      setTasksLoading(true);
+      await fetchTasks();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOptionsFromApi();
+  }, []);
 
   useEffect(() => {
     fetchDataFromApi();
@@ -259,7 +296,7 @@ export default function ProjectTasksPage() {
           </TaskModal>
         </Box>
       </Box>
-      {tasks && tasks.length > 0 ? (
+      {(stages && stages.length) || (floors && floors.length) > 0 ? (
         <Box>
           {viewMode === 0 ? (
             <Tabs
@@ -268,10 +305,9 @@ export default function ProjectTasksPage() {
               onChange={handleStageChange}
             >
               <Tab label="Chưa có giai đoạn" />
-              {stages &&
-                stages.map((stage) => (
-                  <Tab key={stage.id} label={stage.name} />
-                ))}
+              {stages.map((stage) => (
+                <Tab key={stage.id} label={stage.name} />
+              ))}
             </Tabs>
           ) : (
             <Tabs
@@ -280,113 +316,136 @@ export default function ProjectTasksPage() {
               onChange={handleFloorChange}
             >
               <Tab label="Ngoài kiến trúc" />
-              {floors &&
-                floors.map((floor) => (
-                  <Tab key={floor.id} label={floor.usePurpose} />
-                ))}
+              {floors.map((floor) => (
+                <Tab key={floor.id} label={floor.usePurpose} />
+              ))}
             </Tabs>
           )}
-          <Box sx={{ mt: 2, display: "flex", overflowX: "hidden" }}>
-            {viewMode === 1 && rooms && rooms.length > 0 && (
-              <Tabs
-                orientation="vertical"
-                variant="scrollable"
-                sx={{
-                  minWidth: "8rem",
-                  ".MuiTabs-indicator": {
-                    left: 0,
-                  },
-                }}
-                value={activeRoom}
-                onChange={handleRoomChange}
-              >
-                {rooms.map((room) => (
-                  <Tab key={room.id} label={room.usePurpose} />
-                ))}
-              </Tabs>
-            )}
-            <Table
-              aria-label="simple table"
-              sx={{
-                whiteSpace: "nowrap",
-              }}
+          <Grid container sx={{ mt: 2, overflowX: "hidden" }}>
+            <Grid
+              item
+              xs={12}
+              lg={viewMode === 1 && rooms && rooms.length > 0 ? 2 : 0}
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell width={"30%"}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Công việc
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell width={"15%"}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Tổng giá ước tính
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell width={"15%"}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Ngày bắt đầu
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell width={"30%"}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Tiến độ
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell align="right"></StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tasks?.map((task) => (
-                  <StyledTableRow key={task.id}>
-                    <TableCell>
-                      <Typography variant="p" fontWeight={600}>
-                        {task.code}
-                      </Typography>
-                      <Typography variant="subtitle2" fontWeight={400}>
-                        {task.name}
-                      </Typography>
-                    </TableCell>
+              {viewMode === 1 && rooms && rooms.length > 0 && (
+                <Tabs
+                  orientation="vertical"
+                  variant="scrollable"
+                  sx={{
+                    minWidth: "8rem",
+                    ".MuiTabs-indicator": {
+                      left: 0,
+                    },
+                  }}
+                  value={activeRoom}
+                  onChange={handleRoomChange}
+                >
+                  {rooms.map((room) => (
+                    <Tab key={room.id} label={room.usePurpose} />
+                  ))}
+                </Tabs>
+              )}
+            </Grid>
 
-                    <TableCell>
-                      <Typography variant="subtitle2" fontWeight={400}>
-                        {(
-                          task.pricePerUnit * task.unitInContract
-                        ).toLocaleString("vi-VN")}{" "}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" fontWeight={400}>
-                        {task.startDate
-                          ? new Date(task.startDate).toLocaleDateString("vi-VN")
-                          : "Chưa xác định"}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <LinearProgress
-                        variant="determinate"
-                        value={task.percentage}
-                      />
-                      <Typography variant="body2" fontWeight={400}>
-                        {`${task.percentage}%`}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Button
-                        component={Link}
-                        variant="contained"
-                        disableElevation
-                        color="primary"
-                        href={`/projects/${params.id}/tasks/${task.id}`}
-                      >
-                        Chi tiết
-                      </Button>
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Box>
+            <Grid
+              item
+              xs={12}
+              lg={viewMode === 1 && rooms && rooms.length > 0 ? 10 : 12}
+            >
+              {/* TABLE */}
+              {tasksLoading ? (
+                <Stack sx={{ my: 5 }}>
+                  <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+                </Stack>
+              ) : tasks && tasks.length > 0 ? (
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell width={"30%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Công việc
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell width={"15%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Tổng giá ước tính
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell width={"15%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Ngày bắt đầu
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell width={"25%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Tiến độ
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell align="right"></StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tasks?.map((task) => (
+                      <StyledTableRow key={task.id}>
+                        <TableCell>
+                          <Typography variant="p" fontWeight={600}>
+                            {task.code}
+                          </Typography>
+                          <Typography variant="subtitle2" fontWeight={400}>
+                            {task.name}
+                          </Typography>
+                        </TableCell>
+
+                        <TableCell>
+                          <Typography variant="subtitle2" fontWeight={400}>
+                            {(
+                              task.pricePerUnit * task.unitInContract
+                            ).toLocaleString("vi-VN")}{" "}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" fontWeight={400}>
+                            {task.startDate
+                              ? new Date(task.startDate).toLocaleDateString(
+                                  "vi-VN"
+                                )
+                              : "Chưa xác định"}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <LinearProgress
+                            variant="determinate"
+                            value={task.percentage}
+                          />
+                          <Typography variant="body2" fontWeight={400}>
+                            {`${task.percentage}%`}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Button
+                            component={Link}
+                            variant="contained"
+                            disableElevation
+                            color="primary"
+                            href={`/projects/${params.id}/tasks/${task.id}`}
+                          >
+                            Chi tiết
+                          </Button>
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <Stack sx={{ my: 5 }}>
+                  <Typography variant="p" sx={{ textAlign: "center" }}>
+                    Không có công việc.
+                  </Typography>
+                </Stack>
+              )}
+              {/* END OF TABLE */}
+            </Grid>
+          </Grid>
         </Box>
       ) : loading ? (
         <Stack sx={{ my: 5 }}>
@@ -395,7 +454,7 @@ export default function ProjectTasksPage() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có công việc.
+            Không có dữ liệu.
           </Typography>
         </Stack>
       )}

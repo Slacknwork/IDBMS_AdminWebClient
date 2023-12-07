@@ -100,21 +100,29 @@ const getProjectTasksByPaymentStageId = async (paymentStageId) => {
   }
 };
 
-const countProjectTasksFilter = async (
+const countProjectTasksFilter = async ({
   projectId,
   search,
   categoryId,
-  status
-) => {
+  status,
+  stageId,
+  roomId,
+}) => {
   const searchQuery = `(contains(Code, '${search}') or contains(Name, '${search}'))`;
   const projectIdQuery = projectId ? `ProjectId eq ${projectId} and ` : "";
   const categoryIdQuery = categoryId
     ? `TaskCategoryId eq ${categoryId} and `
     : "";
   const statusQuery = status ? `Status eq '${status}' and ` : "";
+  const stageOrRoomQuery =
+    stageId | (stageId === null)
+      ? `PaymentStageId eq ${stageId} and `
+      : roomId | (roomId === null)
+      ? `RoomId eq ${roomId} and `
+      : "";
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/ProjectTasks/$count?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${searchQuery}`,
+      `https://localhost:7062/odata/ProjectTasks/$count?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}`,
       { cache: "no-store" }
     );
 
@@ -130,24 +138,32 @@ const countProjectTasksFilter = async (
   }
 };
 
-const getProjectTasksFilter = async (
+const getProjectTasksFilter = async ({
   projectId,
   search,
   categoryId,
   status,
+  stageId,
+  roomId,
   page,
-  pageSize
-) => {
+  pageSize,
+}) => {
   const searchQuery = `(contains(Code, '${search}') or contains(Name, '${search}'))`;
   const projectIdQuery = projectId ? `ProjectId eq ${projectId} and ` : "";
   const categoryIdQuery = categoryId
     ? `TaskCategoryId eq ${categoryId} and `
     : "";
   const statusQuery = status ? `Status eq '${status}' and ` : "";
+  const stageOrRoomQuery =
+    stageId | (stageId === null)
+      ? `PaymentStageId eq ${stageId} and `
+      : roomId | (roomId === null)
+      ? `RoomId eq ${roomId} and `
+      : "";
   const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/ProjectTasks?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${searchQuery}&${pagination}`,
+      `https://localhost:7062/odata/ProjectTasks?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}&${pagination}`,
       { cache: "no-store" }
     );
 

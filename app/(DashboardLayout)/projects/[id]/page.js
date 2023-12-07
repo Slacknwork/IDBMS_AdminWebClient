@@ -400,7 +400,7 @@ export default function ProjectDetails() {
             </Box>
           </Card>
 
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={12}>
             <Card
               variant="outlined"
               sx={{ p: 2, border: 1, borderColor: "gray", mt: 2 }}
@@ -480,7 +480,7 @@ export default function ProjectDetails() {
             </Card>
           </Grid>
         </Grid>
-      </DetailsPage >
-    </PageContainer >
+      </DetailsPage>
+    </PageContainer>
   );
 }
