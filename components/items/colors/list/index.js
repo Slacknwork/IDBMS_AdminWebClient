@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllColors } from "../../../../api/interiorItemColorServices";
+import { getAllColors, getAllInteriorItemColors } from "../../../../api/interiorItemColorServices";
 import colorType from "/constants/enums/colorType";
 
 const projects = [
@@ -69,7 +69,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getAllColors();
+          const data = await getAllInteriorItemColors();
           console.log(data);
           setitemColors(data);
           setLoading(false);

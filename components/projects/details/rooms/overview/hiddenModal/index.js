@@ -31,9 +31,8 @@ export default function HiddenModal({ children, isHidden }) {
   };
 
   const handleHidden = async () => {
-
     try {
-      const response = await updateRoomIsHidden(params.roomId, isHidden);
+      const response = await updateRoomIsHidden(params.roomId, isHidden, params.id);
       console.log(response);
       toast.success("Cập nhật thành công!");
       handleClose()

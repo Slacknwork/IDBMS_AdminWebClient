@@ -99,7 +99,7 @@ export default function FloorsPage() {
           <TableRow>
             <StyledTableCell>
               <Typography variant="subtitle2" fontWeight={600}>
-                Tầng số
+                Tầng
               </Typography>
             </StyledTableCell>
             <StyledTableCell>
@@ -126,7 +126,11 @@ export default function FloorsPage() {
               <StyledTableRow key={floor.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {floor.floorNo}
+                    {floor.floorNo === 0 ? (
+                      Trệt
+                    ) : (
+                      floor.floorNo
+                    )}
                   </Typography>
                 </TableCell>
                 <TableCell>

@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllProjectCategories } from "../../../api/projectCategoryServices";
+import { getProjectCategories } from "../../../api/projectCategoryServices";
 import Image from "next/image";
 
 const projects = [
@@ -69,7 +69,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getAllProjectCategories();
+          const data = await getProjectCategories();
           console.log(data);
           setProjectCategories(data);
           setLoading(false);
