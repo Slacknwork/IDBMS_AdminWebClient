@@ -107,8 +107,8 @@ export default function PaymentStages() {
   }, [searchParams]);
 
   return (
-    <Box sx={{ overflow: "auto" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+    <Box sx={{ zIndex: 1 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
           <Search></Search>
           <FilterStatus

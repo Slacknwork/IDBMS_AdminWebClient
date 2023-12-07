@@ -1,7 +1,12 @@
 "use client";
 
-import Documents from "/components/projects/details/documents";
+import PageContainer from "/components/container/PageContainer";
+import DashboardCard from "/components/shared/DashboardCard";
 
-export default function TaskLayout({ children }) {
-  return <Documents>{children}</Documents>;
+export default function DocumentsLayout({ children }) {
+  return (
+    <PageContainer>
+      <DashboardCard>{children}</DashboardCard>
+    </PageContainer>
+  );
 }

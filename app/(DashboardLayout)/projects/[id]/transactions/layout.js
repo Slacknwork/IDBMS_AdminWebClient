@@ -2,6 +2,6 @@
 
 import DashboardCard from "/components/shared/DashboardCard";
 
-export default function FloorsLayout({ children }) {
+export default function TransactionsLayout({ children }) {
   return <DashboardCard>{children}</DashboardCard>;
 }
