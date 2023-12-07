@@ -1,7 +1,7 @@
 "use client";
 
-import DashboardCard from "/components/shared/DashboardCard";
+import { Box } from "@mui/material";
 
 export default function FloorsLayout({ children }) {
-  return <DashboardCard>{children}</DashboardCard>;
+  return <Box>{children}</Box>;
 }
