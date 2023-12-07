@@ -85,10 +85,10 @@ const updateRoom = async (id, request) => {
     }
 };
 
-const updateRoomIsHidden = async (id, isHidden) => {
+const updateRoomIsHidden = async (id, isHidden, projectId) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Rooms/${id}/isHidden?isHidden=${isHidden}`,
+            `https://localhost:7062/api/Rooms/${id}/isHidden?isHidden=${isHidden}&projectId=${projectId}`,
             {
                 method: 'PUT',
             }

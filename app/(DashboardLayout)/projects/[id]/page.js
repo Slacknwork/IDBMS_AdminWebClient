@@ -193,6 +193,7 @@ export default function ProjectDetails() {
                   error={formData.typeError.hasError}
                   errorLabel={formData.typeError.label}
                   onChange={(value) => handleInputChange("type", value)}
+                  disabled
                 ></SelectForm>
               </Grid>
 
@@ -350,6 +351,7 @@ export default function ProjectDetails() {
                     onChange={(value) =>
                       handleInputChange("basedOnDecorProjectId", value)
                     }
+                    disabled={true}
                   ></AutocompleteForm>
                 </Grid>
               ) : null}
@@ -378,7 +380,6 @@ export default function ProjectDetails() {
             >
               <Typography variant="h5" sx={{ my: "auto" }}>
                 {contactLabel}
-                {console.log(projectOwner)}
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
                 <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
@@ -405,7 +406,6 @@ export default function ProjectDetails() {
             >
               <Typography variant="h5" sx={{ my: "auto" }}>
                 {priceLabel}
-                {console.log(projectOwner)}
               </Typography>
               <Typography
                 variant="h5"
@@ -473,7 +473,7 @@ export default function ProjectDetails() {
                 </Grid>
                 <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                   <Typography variant="p" sx={{ my: "auto" }}>
-                    {formData.estimateBusinessDay} ngày
+                    {formData.estimateBusinessDay ?? 0} ngày
                   </Typography>
                 </Grid>
               </Grid>

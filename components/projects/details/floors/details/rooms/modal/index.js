@@ -161,7 +161,7 @@ export default function CreateFloorModal({ children, floorNo }) {
             }}
           >
             <Typography variant="h4" id="child-modal-title" sx={{ py: 2 }}>
-              Tạo tầng
+              Tạo phòng
             </Typography>
             <IconButton
               aria-label="close"
@@ -263,6 +263,7 @@ export default function CreateFloorModal({ children, floorNo }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <TextField
+                      type="number"
                       error={formData.areaError.hasError}
                       variant="outlined"
                       value={formData.area}
@@ -292,7 +293,7 @@ export default function CreateFloorModal({ children, floorNo }) {
                     >
                       {roomtypes?.map((value, index) => (
                         <MenuItem value={value.id} key={value.id}>
-                          {value.name}
+                          {value.name} - {value.pricePerArea} VND/m²
                         </MenuItem>
                       ))}
                     </Select>

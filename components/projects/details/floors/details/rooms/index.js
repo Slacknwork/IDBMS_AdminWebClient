@@ -150,7 +150,7 @@ export default function Rooms() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {(room.pricePerArea * room.area).toLocaleString("vi-VN")}
+                    {(room.pricePerArea * room.area).toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>

@@ -28,7 +28,7 @@ const style = {
 };
 
 const initialValues = {
-  floorNo: "",
+  floorNo: 0,
   floorNoError: { hasError: false, label: "" },
   usePurpose: "",
   usePurposeError: { hasError: false, label: "" },
@@ -100,6 +100,28 @@ export default function CreateFloorModal({ children }) {
     }
   };
 
+  const [displayedValue, setDisplayedValue] = useState(formData.floorNo === 0 ? "Trệt" : formData.floorNo);
+
+  const handleFloorIncrement = (incrementBy) => {
+    const newValue = formData.floorNo + incrementBy;
+    handleInputChange("floorNo", newValue);
+    setDisplayedValue(newValue);
+  };
+
+  const handleFloorDecrement = (decrementBy) => {
+    if (formData.floorNo > 0) {
+      const newValue = Math.max(0, formData.floorNo - decrementBy);
+
+      if (newValue === 0) {
+        handleInputChange("floorNo", newValue);
+        setDisplayedValue("Trệt");
+      } else {
+        handleInputChange("floorNo", newValue.toString());
+        setDisplayedValue(newValue.toString());
+      }
+    }
+  };
+
   return (
     <Box>
       <Button variant="contained" disableElevation onClick={handleOpen}>
@@ -111,9 +133,9 @@ export default function CreateFloorModal({ children }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style }} container component="div">
+        <Box sx={{ ...style }} component="div">
           <Box
-            container
+
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -150,21 +172,36 @@ export default function CreateFloorModal({ children }) {
               <Grid container spacing={2}>
                 <Grid item xs={4} lg={4}>
                   <Typography variant="h5">
-                    Tầng số<span style={{ color: "red" }}>*</span>
+                    Tầng <span style={{ color: "red" }}>*</span>
                   </Typography>
                 </Grid>
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
-                    <TextField
-                      type="number"
-                      error={formData.floorNoError.hasError}
-                      variant="outlined"
-                      value={formData.floorNo}
-                      helperText={formData.floorNoError.label}
-                      onChange={(e) =>
-                        handleInputChange("floorNo", e.target.value)
-                      }
-                    />
+                    <Grid container spacing={1} alignItems="center">
+                      <Grid item style={{ alignSelf: 'center' }}>
+                        <Button variant="outlined" onClick={() => handleFloorDecrement(10)}>-10</Button>
+                      </Grid>
+                      <Grid item style={{ alignSelf: 'center' }}>
+                        <Button variant="outlined" onClick={() => handleFloorDecrement(1)}>-1</Button>
+                      </Grid>
+                      <Grid item xs={2.7} lg={2.5}>
+                        <TextField
+                          error={formData.floorNoError.hasError}
+                          variant="outlined"
+                          value={displayedValue}
+                          helperText={formData.floorNoError.label}
+                          onChange={(e) => setDisplayedValue(e.target.value)}
+                          disabled
+                          sx={{ textAlign: 'center', width: '100%' }}
+                        />
+                      </Grid>
+                      <Grid item style={{ alignSelf: 'center' }}>
+                        <Button variant="outlined" onClick={() => handleFloorIncrement(1)}>+1</Button>
+                      </Grid>
+                      <Grid item style={{ alignSelf: 'center' }}>
+                        <Button variant="outlined" onClick={() => handleFloorIncrement(10)}>+10</Button>
+                      </Grid>
+                    </Grid>
                   </FormControl>
                 </Grid>
               </Grid>

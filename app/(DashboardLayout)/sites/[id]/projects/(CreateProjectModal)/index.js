@@ -32,7 +32,7 @@ export default function CreateModal({ onSubmit }) {
     statusError: { hasError: false, label: "" },
     language: -1,
     languageError: { hasError: false, label: "" },
-    projectCategoryId: -1,
+    projectCategoryId: null,
     projectCategory: null,
     projectCategoryError: { hasError: false, label: "" },
     description: "",
@@ -71,7 +71,8 @@ export default function CreateModal({ onSubmit }) {
     switch (field) {
       case "projectCategory":
       case "basedOnDecorProject":
-        setFormData((prevData) => ({ ...prevData, [`${field}Id`]: value?.id }));
+        setFormData((prevData) => ({ ...prevData, [`${field}Id`]: value }));
+        console.log(value)
         break;
       default:
         break;
@@ -115,6 +116,7 @@ export default function CreateModal({ onSubmit }) {
   }, []);
 
   const handleCreateProject = async () => {
+    console.log(formData);
     try {
       const response = await createProject(formData);
       console.log(response);

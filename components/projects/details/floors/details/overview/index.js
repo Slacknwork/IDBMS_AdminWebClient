@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Button,
   Card,
   FormControl,
   Grid,
@@ -32,8 +33,6 @@ export default function FloorOverview() {
 
   const validateInput = (field, value) => {
     switch (field) {
-      case "floorNo":
-        return value.trim() === "" ? "Floor Number cannot be empty" : "";
       case "description":
         return value.trim() === "" ? "Description cannot be empty" : "";
       case "usePurpose":
@@ -71,6 +70,7 @@ export default function FloorOverview() {
       }
     }
   };
+  const [displayedValue, setDisplayedValue] = useState("");
 
   const mapData = (data) => {
     if (data) {
@@ -80,6 +80,7 @@ export default function FloorOverview() {
         description: data.description ?? "",
         usePurpose: data.usePurpose ?? "Không xác định",
       }));
+      setDisplayedValue(data?.floorNo === 0 ? "Trệt" : (data?.floorNo ?? "Không xác định"));
       setRooms(data.rooms ?? "")
       // setTotal
       const total = data.rooms?.reduce((acc, room) => {
@@ -93,6 +94,26 @@ export default function FloorOverview() {
   useEffect(() => {
     fetchDataFromApi();
   }, []);
+
+  const handleFloorIncrement = (incrementBy) => {
+    const newValue = formData.floorNo + incrementBy;
+    handleInputChange("floorNo", newValue);
+    setDisplayedValue(newValue);
+  };
+
+  const handleFloorDecrement = (decrementBy) => {
+    if (formData.floorNo > 0) {
+      const newValue = Math.max(0, formData.floorNo - decrementBy);
+
+      if (newValue === 0) {
+        handleInputChange("floorNo", newValue);
+        setDisplayedValue("Trệt");
+      } else {
+        handleInputChange("floorNo", newValue.toString());
+        setDisplayedValue(newValue.toString());
+      }
+    }
+  };
 
   return (
     <PageContainer title="Floor Details" description="Details of the floor">
@@ -111,7 +132,7 @@ export default function FloorOverview() {
             }}
           >
             <Typography variant="h2" sx={{ my: "auto" }}>
-              Tầng số {formData.floorNo}
+              Tầng {formData.floorNo === 0 ? "Trệt" : formData.floorNo}
             </Typography>
             <Box sx={{ display: "flex" }}>
               <DeleteModal>Xóa</DeleteModal>
@@ -134,22 +155,37 @@ export default function FloorOverview() {
                 <Grid container spacing={2}>
                   <Grid item xs={4} lg={4}>
                     <Typography variant="h5">
-                      Tầng số
+                      Tầng
                       <span style={{ color: "red" }}>*</span>
                     </Typography>
                   </Grid>
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        value={formData.floorNo}
-                        error={formData.floorNoError.hasError}
-                        helperText={formData.floorNoError.label}
-                        onChange={(e) =>
-                          handleInputChange("floorNo", e.target.value)
-                        }
-                      />
+                      <Grid container spacing={1} alignItems="center">
+                        <Grid item style={{ alignSelf: 'center' }}>
+                          <Button variant="outlined" onClick={() => handleFloorDecrement(10)}>-10</Button>
+                        </Grid>
+                        <Grid item style={{ alignSelf: 'center' }}>
+                          <Button variant="outlined" onClick={() => handleFloorDecrement(1)}>-1</Button>
+                        </Grid>
+                        <Grid item xs={2.7} lg={2.5}>
+                          <TextField
+                            error={formData.floorNoError.hasError}
+                            variant="outlined"
+                            value={displayedValue}
+                            helperText={formData.floorNoError.label}
+                            onChange={(e) => setDisplayedValue(e.target.value)}
+                            disabled
+                            sx={{ textAlign: 'center', width: '100%' }}
+                          />
+                        </Grid>
+                        <Grid item style={{ alignSelf: 'center' }}>
+                          <Button variant="outlined" onClick={() => handleFloorIncrement(1)}>+1</Button>
+                        </Grid>
+                        <Grid item style={{ alignSelf: 'center' }}>
+                          <Button variant="outlined" onClick={() => handleFloorIncrement(10)}>+10</Button>
+                        </Grid>
+                      </Grid>
                     </FormControl>
                   </Grid>
                 </Grid>
