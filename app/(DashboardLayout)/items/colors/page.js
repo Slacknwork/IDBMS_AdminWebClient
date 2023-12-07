@@ -3,7 +3,7 @@
 import { Breadcrumbs, Typography } from "@mui/material";
 import Link from "next/link";
 
-import ProjectList from "/components/items/colors/List";
+import ColorList from "/components/items/colors/List";
 import DashboardCard from "/components/shared/DashboardCard";
 import PageContainer from "/components/container/PageContainer";
 
@@ -17,7 +17,7 @@ export default function ProjectsPage() {
         <Typography color="text.primary">Danh sách màu</Typography>
       </Breadcrumbs>
       <DashboardCard title="Danh sách màu">
-        <ProjectList></ProjectList>
+        <ColorList></ColorList>
       </DashboardCard>
     </PageContainer>
   );

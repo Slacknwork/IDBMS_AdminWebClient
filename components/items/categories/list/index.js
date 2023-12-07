@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
+import { getAllInteriorItemCategories, getInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
 import interiorItemTypeEnum from "/constants/enums/interiorItemType";
 
 const projects = [
@@ -69,7 +69,7 @@ export default function ProjectList() {
       initialized.current = true;
       const fetchDataFromApi = async () => {
         try {
-          const data = await getInteriorItemCategories();
+          const data = await getAllInteriorItemCategories();
           console.log(data);
           setItemCategory(data);
           setLoading(false);
