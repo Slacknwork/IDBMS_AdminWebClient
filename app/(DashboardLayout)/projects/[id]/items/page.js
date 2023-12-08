@@ -20,6 +20,8 @@ import {
   TableRow,
   TextField,
   Typography,
+  Stack,
+  CircularProgress
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -28,6 +30,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import ItemModal from "./(CreateItemModal)";
+import { getItemInTasksByProjectId } from "api/itemInTaskServices";
 
 const interiorItems = [
   {
@@ -74,6 +77,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function InteriorItems() {
+
+  const searchQuery = "search";
+
+  const categoryQuery = "category";
+
+  const statusQuery = "status";
+  const statusAllValue = -1;
+
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -106,6 +123,27 @@ export default function InteriorItems() {
     setPage(0);
     router.push(`/sites/${params.id}/interior-items?page=1`);
   };
+
+  const [loading, setLoading] = useState(true);
+  const [values, setValues] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    try {
+      const projectId = params.id;
+      const data = await getItemInTasksByProjectId(projectId);
+      console.log(data);
+      setValues(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -168,92 +206,104 @@ export default function InteriorItems() {
         </ItemModal>
       </Box>
 
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Mã
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Hình ảnh
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Danh mục
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              <Typography variant="subtitle2" fontWeight={600}>
-                Chi tiết
-              </Typography>
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {interiorItems &&
-            interiorItems.map((item) => (
-              <StyledTableRow key={item.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {item.code}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {item.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.name}
-                    width={50}
-                    height={50}
-                    objectFit="cover"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {item.interiorItemCategory.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={interiorItemStatusOptions[item.interiorItemStatus]}
-                    color={
-                      item.interiorItemStatus === 0 ? "default" : "primary"
-                    }
-                  />
-                </TableCell>
-                <TableCell align="right">
-                  <Button
-                    component={Link}
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    href={`/projects/${params.id}/items/${item.id}`}
-                  >
-                    Chi tiết
-                  </Button>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-        </TableBody>
-      </Table>
+      {(values && values.length) > 0 ? (
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Mã
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Hình ảnh
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Danh mục
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Chi tiết
+                </Typography>
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {interiorItems &&
+              interiorItems.map((item) => (
+                <StyledTableRow key={item.id}>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {item.code}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {item.name}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                      objectFit="cover"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {item.interiorItemCategory.name}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={interiorItemStatusOptions[item.interiorItemStatus]}
+                      color={
+                        item.interiorItemStatus === 0 ? "default" : "primary"
+                      }
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      component={Link}
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      href={`/projects/${params.id}/items/${item.id}`}
+                    >
+                      Chi tiết
+                    </Button>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
+          </TableBody>
+        </Table>
+      ) : loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có dữ liệu.
+          </Typography>
+        </Stack>
+      )}
       <TablePagination
         component="div"
         count={6}
