@@ -13,7 +13,7 @@ import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
 import {
   getProjectTaskById,
   updateProjectTask,
-  getProjectTasksByProjectId,
+  getProjectTasksFilter,
 } from "/api/projectTaskServices";
 import { getFloorsByProjectId } from "/api/floorServices";
 
@@ -105,8 +105,8 @@ export default function TaskOverviewPage() {
           }))
         )
       );
-      const listTask = await getProjectTasksByProjectId(params.id);
-      setTasks(listTask);
+      const listTask = await getProjectTasksFilter({ projectId: params.id });
+      setTasks(listTask.list);
       const listTaskCategory = await getAllTaskCategories();
       setTaskCategories(listTaskCategory);
       const listStagesByProjectId = await getPaymentStagesByProjectId(

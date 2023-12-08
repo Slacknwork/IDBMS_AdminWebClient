@@ -140,30 +140,17 @@ const countProjectTasksFilter = async ({
 
 const getProjectTasksFilter = async ({
   projectId,
-  search,
-  categoryId,
-  status,
-  stageId,
-  roomId,
-  page,
-  pageSize,
+  search = "",
+  categoryId = "",
+  status = "",
+  stageId = "",
+  roomId = "",
+  page = "",
+  pageSize = "",
 }) => {
-  const searchQuery = `(contains(Code, '${search}') or contains(Name, '${search}'))`;
-  const projectIdQuery = projectId ? `ProjectId eq ${projectId} and ` : "";
-  const categoryIdQuery = categoryId
-    ? `TaskCategoryId eq ${categoryId} and `
-    : "";
-  const statusQuery = status ? `Status eq '${status}' and ` : "";
-  const stageOrRoomQuery =
-    stageId || stageId === null
-      ? `PaymentStageId eq ${stageId} and `
-      : roomId || roomId === null
-      ? `RoomId eq ${roomId} and `
-      : "";
-  const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectTasks?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}&${pagination}`,
+      `https://localhost:7062/api/ProjectTasks/project/${projectId}?code=${search}&name=${search}&stageId=${stageId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
 
@@ -172,18 +159,7 @@ const getProjectTasksFilter = async ({
     }
 
     const projectTasks = await response.json();
-    return projectTasks;
-    // return mapFromOdata(projectTasks).map((task) => ({
-    //   ...task,
-    //   status: projectTaskStatusIndex[task.status],
-    //   calculationUnit: calculationUnitIndex[task.calculationUnit],
-    //   parentTask: convertToPascalCase(task.parentTask),
-    //   taskCategory: convertToPascalCase(task.taskCategory),
-    //   room: convertToPascalCase(task.room),
-    //   taskDesign: convertToPascalCase(task.taskDesign),
-    //   interiorItem: convertToPascalCase(task.interiorItem),
-    //   paymentStage: convertToPascalCase(task.paymentStage),
-    // }));
+    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by payment stage ID:", error);
     throw error;

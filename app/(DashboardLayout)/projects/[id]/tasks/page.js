@@ -187,22 +187,16 @@ export default function ProjectTasksPage() {
   const fetchTasks = async () => {
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
-    const categoryId = searchParams.get(categoryQuery);
-    const stageId = searchParams.get(stageQuery) ?? null;
-    const roomId = searchParams.get(roomQuery) ?? null;
-    const status =
-      projectTaskStatusOptionsEnglish[parseInt(searchParams.get(statusQuery))];
+    const categoryId = searchParams.get(categoryQuery) || "";
+    const stageId = searchParams.get(stageQuery) ?? "";
+    const roomId = searchParams.get(roomQuery) ?? "";
+    const status = searchParams.get(statusQuery)
+      ? parseInt(searchParams.get(statusQuery))
+      : "";
     const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const count = await countProjectTasksFilter({
-      projectId,
-      search,
-      categoryId,
-      status,
-      ...(viewMode ? { roomId } : { stageId }),
-    });
     const data = await getProjectTasksFilter({
       projectId,
       search,
@@ -212,8 +206,8 @@ export default function ProjectTasksPage() {
       page,
       pageSize,
     });
-    setCount(count);
-    setTasks(data);
+    setCount(data.totalItem);
+    setTasks(data.list);
   };
 
   const fetchOptionsFromApi = async () => {
