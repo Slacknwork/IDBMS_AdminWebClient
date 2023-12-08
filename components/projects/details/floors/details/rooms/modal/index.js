@@ -293,7 +293,7 @@ export default function CreateFloorModal({ children, floorNo }) {
                     >
                       {roomtypes?.map((value, index) => (
                         <MenuItem value={value.id} key={value.id}>
-                          {value.name} - {value.pricePerArea} VND/m²
+                          {value.name} - {value.pricePerArea} VND/m² - {value.estimateDayPerArea} ngày/m²
                         </MenuItem>
                       ))}
                     </Select>

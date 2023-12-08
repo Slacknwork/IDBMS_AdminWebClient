@@ -28,9 +28,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
+import projectTaskStatus from "/constants/enums/projectTaskStatus";
 import ItemModal from "./(CreateItemModal)";
 import { getItemInTasksByProjectId } from "api/itemInTaskServices";
+import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
+
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import FilterAutocomplete from "/components/shared/FilterAutocomplete";
+import FilterStatus from "/components/shared/FilterStatus";
 
 const interiorItems = [
   {
@@ -110,29 +116,22 @@ export default function InteriorItems() {
     setStatusFilter(parseInt(e.target.value));
   };
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-    router.push(`/sites/${params.id}/interior-items?page=${newPage + 1}`);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-    router.push(`/sites/${params.id}/interior-items?page=1`);
-  };
-
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState([]);
+  const [count, setCount] = useState(0);
+  const [itemCategories, setItemCategories] = useState([]);
 
   const fetchDataFromApi = async () => {
     try {
       const projectId = params.id;
-      const data = await getItemInTasksByProjectId(projectId);
-      console.log(data);
-      setValues(data);
+      const response = await getItemInTasksByProjectId(projectId);
+      console.log(response);
+      setValues(response?.data?.list ?? []);
+      setCount(response?.data?.totalItem ?? 0)
+
+      const categories = await getAllInteriorItemCategories();
+      console.log(categories);
+      setItemCategories(categories)
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -149,57 +148,23 @@ export default function InteriorItems() {
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <FormControl sx={{ minWidth: 300 }}>
-            <TextField
-              label="Tìm kiếm"
-              size="small"
-              variant="outlined"
-              value={search}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconSearch />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-          <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-            <InputLabel id="category-filter-label">Danh mục</InputLabel>
-            <Select
-              labelId="category-filter-label"
-              id="category-filter"
-              value={categoryFilter}
-              label="Danh mục"
-              onChange={handleCategoryFilterChange}
-            >
-              <MenuItem value={-1}>Tất cả</MenuItem>
-              {interiorItemCategoryOptions?.map((category) => (
-                <MenuItem value={category.id} key={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Search></Search>
 
-          <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-            <InputLabel id="status-filter-label">Trạng thái</InputLabel>
-            <Select
-              labelId="status-filter-label"
-              id="status-filter"
-              value={statusFilter}
-              label="Trạng thái"
-              onChange={handleStatusFilterChange}
-            >
-              <MenuItem value={-1}>Tất cả</MenuItem>
-              {interiorItemStatusOptions?.map((status, index) => (
-                <MenuItem value={index} key={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <FilterAutocomplete
+            query={categoryQuery}
+            options={itemCategories}
+            label="Danh mục"
+            allValue={null}
+            allLabel="Tất cả"
+          ></FilterAutocomplete>
+
+          <FilterStatus
+            query={statusQuery}
+            options={projectTaskStatus}
+            label="Trạng thái"
+            allValue={statusAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
         </Box>
         <ItemModal>
           <span>Tạo</span>
@@ -212,12 +177,12 @@ export default function InteriorItems() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Mã
+                  Mã sản phẩm
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Tên
+                  Tên sản phẩm
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
@@ -232,7 +197,7 @@ export default function InteriorItems() {
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Trạng thái
+                  Trạng thái công việc
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align="right">
@@ -243,23 +208,23 @@ export default function InteriorItems() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {interiorItems &&
-              interiorItems.map((item) => (
-                <StyledTableRow key={item.id}>
+            {values &&
+              values.map((item) => (
+                <StyledTableRow key={item?.id}>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {item.code}
+                      {item?.interiorItem?.code ?? ""}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {item.name}
+                      {item?.interiorItem?.name ?? ""}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Image
-                      src={item.imageUrl}
-                      alt={item.name}
+                      src={item?.interiorItem?.imageUrl ?? "/images/results/no-image.png"}
+                      alt={item?.interiorItem?.name ?? ""}
                       width={50}
                       height={50}
                       objectFit="cover"
@@ -267,14 +232,14 @@ export default function InteriorItems() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {item.interiorItemCategory.name}
+                      {item?.interiorItem?.interiorItemCategory?.name ?? ""}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={interiorItemStatusOptions[item.interiorItemStatus]}
+                      label={projectTaskStatus[item?.projectTask?.status] ?? "Không xác định"}
                       color={
-                        item.interiorItemStatus === 0 ? "default" : "primary"
+                        item?.projectTask?.status === 0 ? "default" : "primary"
                       }
                     />
                   </TableCell>
@@ -304,15 +269,7 @@ export default function InteriorItems() {
           </Typography>
         </Stack>
       )}
-      <TablePagination
-        component="div"
-        count={6}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }
