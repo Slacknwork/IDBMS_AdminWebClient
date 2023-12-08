@@ -9,9 +9,7 @@ export default function ProjectsPage({ children }) {
       title="Dự án"
       description="Thông tin chi tiết của dự án & những tài liệu liên quan"
     >
-      <DashboardCard sx={{ minHeight: "32rem" }} title="Dự án">
-        {children}
-      </DashboardCard>
+      {children}
     </PageContainer>
   );
 }

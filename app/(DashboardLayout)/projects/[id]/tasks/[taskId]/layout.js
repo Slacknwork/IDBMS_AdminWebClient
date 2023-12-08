@@ -1,7 +1,22 @@
 "use client";
 
-import TaskDetails from "/components/projects/details/tasks/details";
+import { Box } from "@mui/material";
 
-export default function TaskLayout({ children }) {
-  return <TaskDetails>{children}</TaskDetails>;
+import PageContainer from "/components/container/PageContainer";
+import Tabs from "/components/shared/Tabs";
+
+import TabItems from "./tabItems";
+
+export default function TaskDetailsLayout({ children }) {
+  return (
+    <PageContainer title="Chi tiết công việc">
+      <Tabs
+        borderColor="white"
+        indicatorColor="white"
+        uriPos={5}
+        tabs={TabItems}
+      ></Tabs>
+      <Box sx={{ mt: 2 }}>{children}</Box>
+    </PageContainer>
+  );
 }

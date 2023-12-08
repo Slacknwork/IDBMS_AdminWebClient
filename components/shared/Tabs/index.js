@@ -5,7 +5,13 @@ import { Tab, Tabs } from "@mui/material";
 
 import { useRouter, usePathname } from "next/navigation";
 
-export default function ProjectDetailTabs({ uriPos, tabs }) {
+export default function NavigationTabs({
+  uriPos,
+  tabs,
+  indicatorColor,
+  shadows,
+  borderColor = "whitesmoke",
+}) {
   const router = useRouter();
 
   const paths = usePathname().split("/");
@@ -41,10 +47,24 @@ export default function ProjectDetailTabs({ uriPos, tabs }) {
   };
 
   return (
-    <Tabs value={activeTab}>
+    <Tabs
+      sx={{
+        "& .MuiTabs-indicator": {
+          top: 0,
+          backgroundColor: indicatorColor,
+        },
+      }}
+      value={activeTab}
+    >
       {tabs.map((tab, index) => {
         return (
           <Tab
+            sx={{
+              boxShadow: shadows && activeTab === index ? 4 : 0,
+              borderTop: shadows && activeTab === index ? 2 : 0,
+              borderBottom: activeTab === index ? 0 : 2,
+              borderColor: borderColor,
+            }}
             label={tab.label}
             key={tab.path}
             onClick={(event) => handleTabChange(event, index)}

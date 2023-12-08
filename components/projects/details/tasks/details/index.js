@@ -8,7 +8,7 @@ import TabItems from "./tabItems";
 export default function TaskDetails({ children }) {
   return (
     <PageContainer title="Chi tiết công việc">
-      <Tabs uriPos={5} tabs={TabItems}></Tabs>
+      <Tabs indicatorColor="white" uriPos={5} tabs={TabItems}></Tabs>
       {children}
     </PageContainer>
   );
