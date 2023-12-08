@@ -28,7 +28,6 @@ import {
 } from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
 import { getFloorsByProjectId } from "/api/floorServices";
-import { getRoomsByFloorId } from "/api/roomServices";
 import { getPaymentStagesByProjectId } from "api/paymentStageServices";
 
 import projectTaskStatusOptions, {
@@ -40,7 +39,7 @@ import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
-import TaskModal from "./(CreateTaskModal)";
+import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -188,22 +187,16 @@ export default function ProjectTasksPage() {
   const fetchTasks = async () => {
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
-    const categoryId = searchParams.get(categoryQuery);
-    const stageId = searchParams.get(stageQuery) ?? null;
-    const roomId = searchParams.get(roomQuery) ?? null;
-    const status =
-      projectTaskStatusOptionsEnglish[parseInt(searchParams.get(statusQuery))];
+    const categoryId = searchParams.get(categoryQuery) || "";
+    const stageId = searchParams.get(stageQuery) ?? "";
+    const roomId = searchParams.get(roomQuery) ?? "";
+    const status = searchParams.get(statusQuery)
+      ? parseInt(searchParams.get(statusQuery))
+      : "";
     const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const count = await countProjectTasksFilter({
-      projectId,
-      search,
-      categoryId,
-      status,
-      ...(viewMode ? { roomId } : { stageId }),
-    });
     const data = await getProjectTasksFilter({
       projectId,
       search,
@@ -213,8 +206,8 @@ export default function ProjectTasksPage() {
       page,
       pageSize,
     });
-    setCount(count);
-    setTasks(data);
+    setCount(data.totalItem);
+    setTasks(data.list);
   };
 
   const fetchOptionsFromApi = async () => {
@@ -277,6 +270,7 @@ export default function ProjectTasksPage() {
         </Box>
         <Box sx={{ display: "flex" }}>
           <Button
+            disabled={tasksLoading}
             disableElevation
             variant="contained"
             sx={{ mr: 2 }}
@@ -284,9 +278,10 @@ export default function ProjectTasksPage() {
           >
             {viewModeLabels[viewMode]}
           </Button>
-          <TaskModal>
-            <span>Tạo</span>
-          </TaskModal>
+          <CreateTaskModal
+            hasCallback
+            onCallback={fetchDataFromApi}
+          ></CreateTaskModal>
         </Box>
       </Box>
       {(stages && stages.length) || (floors && floors.length) > 0 ? (
@@ -400,8 +395,8 @@ export default function ProjectTasksPage() {
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startDate
                               ? new Date(task.startDate).toLocaleDateString(
-                                "vi-VN"
-                              )
+                                  "vi-VN"
+                                )
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>

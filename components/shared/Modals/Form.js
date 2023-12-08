@@ -18,6 +18,8 @@ export default function FormModal({
   buttonLabel,
   title,
   submitLabel,
+  hasOpenEvent,
+  onOpen,
   onSubmit,
   size = "",
 }) {
@@ -39,6 +41,7 @@ export default function FormModal({
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
+    hasOpenEvent && onOpen();
     setOpen(true);
   };
   const handleClose = () => {

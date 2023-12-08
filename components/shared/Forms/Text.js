@@ -4,6 +4,8 @@ import { FormControl, Grid, TextField, Typography } from "@mui/material";
 
 export default function FormText({
   sx,
+  titleSpan = 4,
+  fieldSpan = 8,
   title,
   required,
   disabled,
@@ -19,7 +21,7 @@ export default function FormText({
   return (
     <Grid container spacing={2} sx={sx}>
       {title && (
-        <Grid item xs={4} lg={4}>
+        <Grid item xs={titleSpan} lg={titleSpan}>
           <Typography variant="h5">
             {title}
             {required && <span style={{ color: "red" }}>*</span>}
@@ -27,7 +29,7 @@ export default function FormText({
           <Typography variant="p">{subtitle || ""}</Typography>
         </Grid>
       )}
-      <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
+      <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
           <TextField
             disabled={disabled}

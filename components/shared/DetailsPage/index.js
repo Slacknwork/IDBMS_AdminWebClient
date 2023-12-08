@@ -31,7 +31,7 @@ export default function DetailsPage({
             py: 3,
           }}
         >
-          <Typography variant="h2" sx={{ my: "auto" }}>
+          <Typography variant="h3" sx={{ my: "auto" }}>
             {title}
           </Typography>
           <Box sx={{ display: "flex" }}>
