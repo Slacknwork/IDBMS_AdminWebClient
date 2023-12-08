@@ -227,9 +227,8 @@ export default function RoomOverview() {
                   <Grid item xs={8} lg={8}>
                     <FormControl fullWidth>
                       <TextField
-                        type="number"
                         variant="outlined"
-                        value={formData.pricePerArea}
+                        value={formData.pricePerArea?.toLocaleString('en-US')}
                         error={formData.pricePerAreaError.hasError}
                         helperText={formData.pricePerAreaError.label}
                         disabled

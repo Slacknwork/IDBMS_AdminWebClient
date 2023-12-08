@@ -132,7 +132,7 @@ export default function Transactions() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {transaction.amount.toLocaleString("vi-VN")}
+                    {transaction.amount.toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>

@@ -106,7 +106,7 @@ export default function Transactions() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {claim.totalPaid.toLocaleString("vi-VN")}
+                    {claim.totalPaid.toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>

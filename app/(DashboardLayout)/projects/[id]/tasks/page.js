@@ -393,15 +393,15 @@ export default function ProjectTasksPage() {
                           <Typography variant="subtitle2" fontWeight={400}>
                             {(
                               task.pricePerUnit * task.unitInContract
-                            ).toLocaleString("vi-VN")}{" "}
+                            ).toLocaleString("en-US")}{" "}
                           </Typography>
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startDate
                               ? new Date(task.startDate).toLocaleDateString(
-                                  "vi-VN"
-                                )
+                                "vi-VN"
+                              )
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>

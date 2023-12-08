@@ -186,7 +186,7 @@ export default function Sites() {
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {(task.pricePerUnit * task.unitInContract).toLocaleString(
-                      "vi-VN"
+                      "en-US"
                     )}{" "}
                   </Typography>
                 </TableCell>

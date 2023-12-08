@@ -139,12 +139,12 @@ export default function PaymentStages() {
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Số tiền (VND)
+                  Tổng hợp đồng (VND)
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Phát sinh (VND)
+                  Tổng phát sinh (VND)
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
@@ -181,27 +181,34 @@ export default function PaymentStages() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.totalContractPaid?.toLocaleString("vi-VN")}
+                    {stage.totalContractPaid?.toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.totalIncurredPaid?.toLocaleString("vi-VN")}
+                    {stage.totalIncurredPaid?.toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(stage.startedDate).toLocaleDateString("vi-VN")} -{" "}
-                    {new Date(stage.endDate).toLocaleDateString("vi-VN")}
+                    {stage.startedDate ? (
+                      stage.endDate ? (
+                        `${new Date(stage.startedDate).toLocaleDateString("vi-VN")} - ${new Date(stage.endDate).toLocaleDateString("vi-VN")}`
+                      ) : (
+                        `${new Date(stage.startedDate).toLocaleDateString("vi-VN")} - Chưa xác định`
+                      )
+                    ) : (
+                      "Chưa xác định"
+                    )}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(stage.endTimePayment).toLocaleDateString("vi-VN")}
+                    {stage.endTimePayment ? new Date(stage.endTimePayment).toLocaleDateString("vi-VN") : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
-                  {stage.isPaid ? "Yes" : "No"}
+                  {stage.isPaid ? "Chưa" : "Rồi"}
                 </TableCell>
                 <TableCell>
                   <Button
