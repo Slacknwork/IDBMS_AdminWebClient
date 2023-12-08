@@ -13,9 +13,12 @@ const formatNumberWithDots = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-export default function FormText({
+export default function FormNumber({
   sx,
   title,
+  titleSpan = 4,
+  fieldSpan = 8,
+  spacing = 2,
   required,
   disabled,
   variant = "outlined",
@@ -51,9 +54,9 @@ export default function FormText({
   }, [value]);
 
   return (
-    <Grid container spacing={2} sx={sx}>
+    <Grid container spacing={spacing} sx={sx}>
       {title && (
-        <Grid item xs={4} lg={4}>
+        <Grid item xs={titleSpan} lg={titleSpan}>
           <Typography variant="h5">
             {title}
             {required && <span style={{ color: "red" }}>*</span>}
@@ -61,7 +64,7 @@ export default function FormText({
           <Typography variant="p">{subtitle || ""}</Typography>
         </Grid>
       )}
-      <Grid item xs={title ? 8 : 12} lg={title ? 8 : 12}>
+      <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
           <TextField
             disabled={disabled}

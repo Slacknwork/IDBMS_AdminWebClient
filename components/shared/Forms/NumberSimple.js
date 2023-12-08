@@ -2,14 +2,13 @@
 
 import {
   FormControl,
-  FormHelperText,
   Grid,
-  MenuItem,
-  Select,
+  InputAdornment,
+  TextField,
   Typography,
 } from "@mui/material";
 
-export default function FormText({
+export default function FormNumberSimple({
   sx,
   title,
   titleSpan = 4,
@@ -19,13 +18,12 @@ export default function FormText({
   disabled,
   variant = "outlined",
   subtitle = "",
+  inputProps,
   value,
-  options,
-  defaultValue = -1,
-  defaultLabel = "Chọn một",
   error,
   errorLabel,
   onChange,
+  endAdornment,
 }) {
   return (
     <Grid container spacing={spacing} sx={sx}>
@@ -40,23 +38,21 @@ export default function FormText({
       )}
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
-          <Select
+          <TextField
+            type="number"
+            inputProps={inputProps}
             disabled={disabled}
             variant={variant}
             value={value}
-            onChange={(e) => onChange(parseInt(e.target.value))}
             error={error}
-          >
-            <MenuItem disabled value={defaultValue}>
-              {defaultLabel}
-            </MenuItem>
-            {options.map((option, index) => (
-              <MenuItem key={option} value={index}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-          {error && <FormHelperText>{errorLabel}</FormHelperText>}
+            helperText={errorLabel}
+            onChange={(e) => onChange(Number(e.target.value))}
+            InputProps={{
+              endAdornment: endAdornment && (
+                <InputAdornment position="end">{endAdornment}</InputAdornment>
+              ),
+            }}
+          />
         </FormControl>
       </Grid>
     </Grid>

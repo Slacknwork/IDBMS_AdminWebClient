@@ -3,7 +3,7 @@
 import { Autocomplete, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function AutocompleteForm({
+export default function AutocompleteGroupForm({
   sx,
   title,
   titleSpan = 4,
@@ -11,6 +11,7 @@ export default function AutocompleteForm({
   spacing = 2,
   required,
   disabled,
+  groupBy,
   variant = "outlined",
   subtitle = "",
   label,
@@ -44,6 +45,8 @@ export default function AutocompleteForm({
         <Autocomplete
           disabled={disabled}
           options={options}
+          groupBy={(option) => option[groupBy] ?? null}
+          isOptionEqualToValue={(option, value) => option.id === value}
           getOptionLabel={(option) =>
             option.code
               ? `${option.code} - ${option.name}`
@@ -51,7 +54,6 @@ export default function AutocompleteForm({
               ? option.usePurpose
               : option.name
           }
-          isOptionEqualToValue={(option, value) => option.id === value}
           value={selectedObject}
           onChange={(_, newValue) => onSelectedObjectChange(newValue)}
           renderInput={(params) => (
