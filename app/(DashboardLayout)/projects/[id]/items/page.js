@@ -37,6 +37,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
+import { toast } from "react-toastify";
 
 const interiorItems = [
   {
@@ -101,37 +102,21 @@ export default function InteriorItems() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [search, setSearch] = useState("");
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const [categoryFilter, setCategoryFilter] = useState(-1);
-  const handleCategoryFilterChange = (e) => {
-    setCategoryFilter(parseInt(e.target.value));
-  };
-
-  const [statusFilter, setStatusFilter] = useState(-1);
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(parseInt(e.target.value));
-  };
-
-  const [loading, setLoading] = useState(true);
-  const [values, setValues] = useState([]);
-  const [count, setCount] = useState(0);
-  const [itemCategories, setItemCategories] = useState([]);
-
   const fetchDataFromApi = async () => {
     try {
-      const projectId = params.id;
-      const response = await getItemInTasksByProjectId(projectId);
-      console.log(response);
-      setValues(response?.data?.list ?? []);
-      setCount(response?.data?.totalItem ?? 0)
+      await fetchItems();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      const categories = await getAllInteriorItemCategories();
-      console.log(categories);
-      setItemCategories(categories)
+  const fetchOptionsFromApi = async () => {
+    setLoading(true);
+    try {
+      await fetchCategories();
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -141,8 +126,51 @@ export default function InteriorItems() {
   };
 
   useEffect(() => {
-    fetchDataFromApi();
+    fetchOptionsFromApi();
   }, []);
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
+
+  // ITEM IN TASK
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
+
+  const fetchItems = async () => {
+
+    const projectId = params.id;
+    const search = searchParams.get(searchQuery) || "";
+    const categoryId = searchParams.get(categoryQuery) || "";
+    const status = searchParams.get(statusQuery)
+      ? parseInt(searchParams.get(statusQuery))
+      : "";
+    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+    const pageSize =
+      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+    const response = await getItemInTasksByProjectId({
+      projectId,
+      search,
+      categoryId,
+      status,
+      page,
+      pageSize,
+    });
+    console.log(response);
+    setItems(response?.data?.list ?? []);
+    setCount(response?.data?.totalItem ?? 0);
+  };
+
+  // ITEM CATEGORIES
+  const [itemCategories, setItemCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    const response = await getAllInteriorItemCategories();
+    console.log(response);
+    setItemCategories(response)
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -171,7 +199,7 @@ export default function InteriorItems() {
         </ItemModal>
       </Box>
 
-      {(values && values.length) > 0 ? (
+      {(items && items.length) > 0 ? (
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -208,8 +236,8 @@ export default function InteriorItems() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {values &&
-              values.map((item) => (
+            {items &&
+              items.map((item) => (
                 <StyledTableRow key={item?.id}>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>

@@ -17,10 +17,18 @@ const getItemInTaskById = async (itemId) => {
     }
 };
 
-const getItemInTasksByProjectId = async (projectId) => {
+const getItemInTasksByProjectId = async ({
+    projectId,
+    search = "",
+    categoryId = "",
+    status = "",
+    page = "",
+    pageSize = "",
+}) => {
     try {
+        const paramString = `name=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
-            `https://localhost:7062/api/ItemInTasks/project/${projectId}`,
+            `https://localhost:7062/api/ItemInTasks/project/${projectId}?${paramString}`,
             { cache: 'no-store' }
         );
 
