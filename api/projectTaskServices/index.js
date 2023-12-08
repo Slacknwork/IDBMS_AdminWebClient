@@ -163,7 +163,7 @@ const getProjectTasksFilter = async ({
   const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/ProjectTasks?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}&${pagination}`,
+      `https://localhost:7062/api/ProjectTasks?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}&${pagination}`,
       { cache: "no-store" }
     );
 
@@ -172,17 +172,18 @@ const getProjectTasksFilter = async ({
     }
 
     const projectTasks = await response.json();
-    return mapFromOdata(projectTasks).map((task) => ({
-      ...task,
-      status: projectTaskStatusIndex[task.status],
-      calculationUnit: calculationUnitIndex[task.calculationUnit],
-      parentTask: convertToPascalCase(task.parentTask),
-      taskCategory: convertToPascalCase(task.taskCategory),
-      room: convertToPascalCase(task.room),
-      taskDesign: convertToPascalCase(task.taskDesign),
-      interiorItem: convertToPascalCase(task.interiorItem),
-      paymentStage: convertToPascalCase(task.paymentStage),
-    }));
+    return projectTasks;
+    // return mapFromOdata(projectTasks).map((task) => ({
+    //   ...task,
+    //   status: projectTaskStatusIndex[task.status],
+    //   calculationUnit: calculationUnitIndex[task.calculationUnit],
+    //   parentTask: convertToPascalCase(task.parentTask),
+    //   taskCategory: convertToPascalCase(task.taskCategory),
+    //   room: convertToPascalCase(task.room),
+    //   taskDesign: convertToPascalCase(task.taskDesign),
+    //   interiorItem: convertToPascalCase(task.interiorItem),
+    //   paymentStage: convertToPascalCase(task.paymentStage),
+    // }));
   } catch (error) {
     console.error("Error fetching project tasks by payment stage ID:", error);
     throw error;

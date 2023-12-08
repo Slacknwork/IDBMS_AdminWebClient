@@ -28,7 +28,6 @@ import {
 } from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
 import { getFloorsByProjectId } from "/api/floorServices";
-import { getRoomsByFloorId } from "/api/roomServices";
 import { getPaymentStagesByProjectId } from "api/paymentStageServices";
 
 import projectTaskStatusOptions, {
@@ -40,7 +39,7 @@ import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
-import TaskModal from "./(CreateTaskModal)";
+import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -277,6 +276,7 @@ export default function ProjectTasksPage() {
         </Box>
         <Box sx={{ display: "flex" }}>
           <Button
+            disabled={tasksLoading}
             disableElevation
             variant="contained"
             sx={{ mr: 2 }}
@@ -284,9 +284,7 @@ export default function ProjectTasksPage() {
           >
             {viewModeLabels[viewMode]}
           </Button>
-          <TaskModal>
-            <span>Tạo</span>
-          </TaskModal>
+          <CreateTaskModal></CreateTaskModal>
         </Box>
       </Box>
       {(stages && stages.length) || (floors && floors.length) > 0 ? (

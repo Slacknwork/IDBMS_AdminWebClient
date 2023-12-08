@@ -4,40 +4,54 @@ import React, { useState, useEffect } from "react";
 import { FormControl, Grid, Typography } from "@mui/material";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateRangePicker } from "@mui/x-date-pickers/DateRangePicker";
 import moment from "moment-timezone";
 
-export default function DateForm({
+export default function DateRangeForm({
   sx,
   titleSpan = 4,
   fieldSpan = 8,
   spacing = 2,
-  datetime,
   disabled,
   title,
   subtitle,
   required,
-  value,
-  error,
-  errorLabel,
+  valueStart,
+  valueEnd,
+  errorStart,
+  errorEnd,
+  errorLabelStart,
+  errorLabelEnd,
   onChange,
 }) {
   moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-  const [formattedDate, setFormattedDate] = useState(moment(""));
+  const [dateRange, setDateRange] = useState({
+    start: moment(""),
+    end: moment(""),
+  });
 
   useEffect(() => {
-    if (value === null) {
-      setFormattedDate(moment(""));
-      return;
+    if (valueStart === null) {
+      setDateRange({
+        start: moment(""),
+        end: moment(""),
+      });
+    } else {
+      setDateRange({
+        start: moment(valueStart),
+        end: moment(valueEnd),
+      });
     }
-    setFormattedDate(moment(value));
-  }, [value]);
+  }, [valueStart, valueEnd]);
 
-  const handleDateChange = (value) => {
-    const newIsoString = value ? moment(value) : null;
-    setFormattedDate(value);
-    onChange(newIsoString);
+  const handleDateRangeChange = (newDateRange) => {
+    const formattedDateRange = {
+      start: newDateRange.start ? moment(newDateRange.start) : null,
+      end: newDateRange.end ? moment(newDateRange.end) : null,
+    };
+    setDateRange(formattedDateRange);
+    onChange(formattedDateRange);
   };
 
   return (
@@ -57,19 +71,22 @@ export default function DateForm({
             dateAdapter={AdapterMoment}
             dateLibInstance={moment}
           >
-            <DatePicker
+            <DateRangePicker
               disabled={disabled}
-              type={datetime ? "datetime-local" : "date"}
-              format="DD/MM/YYYY"
-              variant="outlined"
-              value={formattedDate}
+              calendars={2} // Number of calendars to show for date range
+              startText="Start Date"
+              endText="End Date"
+              value={dateRange}
               slotProps={{
-                textField: {
-                  error: error,
+                startTextField: {
+                  error: errorStart,
+                },
+                endTextField: {
+                  error: errorEnd,
                 },
               }}
-              helperText={errorLabel}
-              onChange={(newVal) => handleDateChange(newVal)}
+              helperText={errorStart ? errorLabelStart : errorLabelEnd}
+              onChange={(newVal) => handleDateRangeChange(newVal)}
               InputLabelProps={{
                 shrink: true,
               }}
