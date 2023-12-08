@@ -26,7 +26,7 @@ export default function AutocompleteForm({
     onChange(value?.id);
   };
   useEffect(() => {
-    setSelectedObject(options.find((option) => option.id === value));
+    setSelectedObject(options.find((option) => option.id === value) ?? null);
   }, [options, value]);
 
   return (
@@ -51,7 +51,7 @@ export default function AutocompleteForm({
               ? option.usePurpose
               : option.name
           }
-          isOptionEqualToValue={(option, value) => option.id === value}
+          isOptionEqualToValue={(option, value) => option.id === value?.id}
           value={selectedObject}
           onChange={(_, newValue) => onSelectedObjectChange(newValue)}
           renderInput={(params) => (

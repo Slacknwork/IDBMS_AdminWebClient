@@ -284,7 +284,10 @@ export default function ProjectTasksPage() {
           >
             {viewModeLabels[viewMode]}
           </Button>
-          <CreateTaskModal></CreateTaskModal>
+          <CreateTaskModal
+            hasCallback
+            onCallback={fetchDataFromApi}
+          ></CreateTaskModal>
         </Box>
       </Box>
       {(stages && stages.length) || (floors && floors.length) > 0 ? (
@@ -398,8 +401,8 @@ export default function ProjectTasksPage() {
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startDate
                               ? new Date(task.startDate).toLocaleDateString(
-                                "vi-VN"
-                              )
+                                  "vi-VN"
+                                )
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>

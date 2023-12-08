@@ -27,7 +27,7 @@ export default function AutocompleteGroupForm({
     onChange(value?.id);
   };
   useEffect(() => {
-    setSelectedObject(options.find((option) => option.id === value));
+    setSelectedObject(options.find((option) => option.id === value) ?? null);
   }, [options, value]);
 
   return (
@@ -46,7 +46,7 @@ export default function AutocompleteGroupForm({
           disabled={disabled}
           options={options}
           groupBy={(option) => option[groupBy] ?? null}
-          isOptionEqualToValue={(option, value) => option.id === value}
+          isOptionEqualToValue={(option, value) => option.id === value?.id}
           getOptionLabel={(option) =>
             option.code
               ? `${option.code} - ${option.name}`

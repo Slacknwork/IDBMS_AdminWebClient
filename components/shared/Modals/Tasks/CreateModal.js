@@ -29,7 +29,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
 
-export default function CreateTaskModal({ children, request }) {
+export default function CreateTaskModal({ hasCallback, onCallback }) {
   // CONSTANTS
   const roomQuery = "room";
   const stageQuery = "stage";
@@ -160,7 +160,7 @@ export default function CreateTaskModal({ children, request }) {
       const response = await createProjectTask(formData);
       console.log(response);
       toast.success("Thêm thành công!");
-      router.push(`/projects/${params.id}/rooms/${response.data.id}`);
+      hasCallback && onCallback();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
