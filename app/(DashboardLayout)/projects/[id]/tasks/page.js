@@ -252,7 +252,7 @@ export default function ProjectTasksPage() {
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
-          <Search></Search>
+          <Search placeholder="Nhập mã / tên công việc"></Search>
           <FilterStatus
             query={statusQuery}
             options={projectTaskStatusOptions}
