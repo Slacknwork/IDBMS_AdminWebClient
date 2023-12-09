@@ -19,10 +19,8 @@ import {
 import { getProjectCategories } from "/api/projectCategoryServices";
 
 import PageContainer from "/components/container/PageContainer";
-import DashboardCard from "/components/shared/DashboardCard";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
-import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
@@ -111,9 +109,9 @@ export default function ProjectDetails() {
           const listCategories = await getProjectCategories();
           setProjectCategories(listCategories.list);
 
-          const listProjectsBySiteId = await getProjectsBySiteId(
-            project?.siteId
-          );
+          const listProjectsBySiteId = await getProjectsBySiteId({
+            siteId: project?.siteId,
+          });
           setDecorProjects(
             listProjectsBySiteId.list
               .filter(

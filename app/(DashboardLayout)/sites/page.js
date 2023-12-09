@@ -19,9 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getSitesFilter, countSitesFilter } from "/api/siteServices";
-
-import { mapFromOdata } from "/utils/odata";
+import { getSites } from "/api/siteServices";
 
 import CreateSiteModal from "./(CreateSiteModal)";
 import Pagination from "/components/shared/Pagination";
@@ -74,11 +72,9 @@ export default function SitesPage() {
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
-        const count = await countSitesFilter(search);
-        const data = await getSitesFilter(search, page, pageSize);
-        console.log(data);
-        setCount(count);
-        setValues(data);
+        const data = await getSites(search, page, pageSize);
+        setCount(data.totalItem);
+        setValues(data.list);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);

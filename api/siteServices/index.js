@@ -41,11 +41,14 @@ const getSiteById = async (id) => {
   }
 };
 
-const getSites = async () => {
+const getSites = async (search = "", page, pageSize) => {
   try {
-    const response = await fetch(`https://localhost:7062/api/Sites/`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `https://localhost:7062/api/Sites?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`,
+      {
+        cache: "no-store",
+      }
+    );
     const sites = await response.json();
     return sites;
   } catch (error) {
@@ -76,7 +79,7 @@ const getSitesFilter = async (search = "", page, pageSize) => {
   const pagination = `&top=${pageSize}&skip=${page * pageSize}`;
   try {
     const response = await fetch(
-      `https://localhost:7062/odata/Sites?$filter=${searchQuery}${pagination}`,
+      `https://localhost:7062/api/Sites?$filter=${searchQuery}${pagination}`,
       {
         cache: "no-store",
       }

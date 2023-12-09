@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { getFloorsByProjectId } from "/api/floorServices";
 
 import CreateFloorModal from "./(CreateFloorModal)";
+import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 
 // Sample comments data
@@ -61,22 +62,20 @@ export default function FloorsPage() {
   const params = useParams();
 
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
   const [values, setValues] = useState([]);
+  const [count, setCount] = useState(0);
 
   const fetchDataFromApi = async () => {
-    if (!initialized.current) {
-      try {
-        const projectId = params.id;
-        const data = await getFloorsByProjectId(projectId);
-        console.log(data);
-        setValues(data);
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      }
+    setLoading(true);
+    try {
+      const projectId = params.id;
+      const data = await getFloorsByProjectId(projectId);
+      setValues(data.list);
+      setCount(data.totalItem);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
     }
   };
 
@@ -126,11 +125,7 @@ export default function FloorsPage() {
               <StyledTableRow key={floor.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {floor.floorNo === 0 ? (
-                      Trệt
-                    ) : (
-                      floor.floorNo
-                    )}
+                    {floor.floorNo === 0 ? Trệt : floor.floorNo}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -158,6 +153,7 @@ export default function FloorsPage() {
             ))}
         </TableBody>
       </Table>
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }

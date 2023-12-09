@@ -110,10 +110,17 @@ const updateProjectAdvertisementStatus = async (id, status) => {
   }
 };
 
-const getProjectsBySiteId = async (siteId) => {
+const getProjectsBySiteId = async ({
+  siteId = "",
+  search = "",
+  type = "",
+  status = "",
+  page = "",
+  pageSize = "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/Projects/site/${siteId}`,
+      `https://localhost:7062/api/Projects/site/${siteId}?name=${search}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
     const projects = await response.json();
