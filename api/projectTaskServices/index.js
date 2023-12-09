@@ -150,7 +150,7 @@ const getProjectTasksFilter = async ({
 }) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectTasks/project/${projectId}?code=${search}&name=${search}&stageId=${stageId}$roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
+      `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&stageId=${stageId}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
 

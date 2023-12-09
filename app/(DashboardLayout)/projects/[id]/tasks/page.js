@@ -264,7 +264,7 @@ export default function ProjectTasksPage() {
             query={categoryQuery}
             options={categories}
             label="Danh mục"
-            allValue={null}
+            allValue={-1}
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>
