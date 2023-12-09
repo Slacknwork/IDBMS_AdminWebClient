@@ -19,6 +19,8 @@ import {
   TableRow,
   TextField,
   Typography,
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 import {
   IconDownload,
@@ -27,11 +29,21 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import DocumentModal from "./(DocumentModal)";
 import DeleteModal from "./(DeleteDocumentModal)";
+
+import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
+import { getDocumentsByProjectId } from "api/projectDocumentServices";
+import moment from "moment-timezone";
+
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import FilterCategory from "/components/shared/FilterStatus";
+import { toast } from "react-toastify";
+
 
 // Sample projectDocuments data
 const projectDocuments = [
@@ -50,12 +62,6 @@ const projectDocuments = [
     projectDocumentTemplate: { id: 2, name: "Template B" },
   },
   // Add more projectDocuments as needed
-];
-
-const projectDocumentCategories = [
-  { id: 1, name: "Category A" },
-  { id: 2, name: "Category B" },
-  // Add more categories as needed
 ];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -77,27 +83,63 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectDocuments() {
+
+  const searchQuery = "search";
+
+  const categoryQuery = "category";
+  const categoryAllValue = -1;
+
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
   const params = useParams();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState(-1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  // FETCH
+  const fetchDataFromApi = async () => {
+    try {
+      await fetchDocuments();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
+  // DOCUMENTS
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
 
-  const handleCategoryFilterChange = (e) => {
-    setCategoryFilter(parseInt(e.target.value));
+  const fetchDocuments = async () => {
+
+    const projectId = params.id;
+    const search = searchParams.get(searchQuery) || "";
+    const categoryEnum = searchParams.get(categoryQuery) || "";
+    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+    const pageSize =
+      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+    const response = await getDocumentsByProjectId({
+      projectId,
+      search,
+      categoryEnum,
+      page,
+      pageSize,
+    });
+    console.log(response);
+    setDocuments(response?.data?.list ?? []);
+    setCount(response?.data?.totalItem ?? 0);
   };
 
   return (
@@ -105,132 +147,105 @@ export default function ProjectDocuments() {
       {/* Filter and Search */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          {/* Search Text Field with Search Icon */}
-          <FormControl sx={{ minWidth: 300 }}>
-            <TextField
-              label="Tìm kiếm"
-              size="small"
-              variant="outlined"
-              value={search}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconSearch />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
+          <Search></Search>
 
-          {/* Category Select Box */}
-          <FormControl sx={{ ml: 2, minWidth: 200 }} size="small">
-            <InputLabel id="category-filter-label">Danh mục</InputLabel>
-            <Select
-              labelId="category-filter-label"
-              id="category-filter"
-              value={categoryFilter}
-              label="Danh mục"
-              onChange={handleCategoryFilterChange}
-            >
-              <MenuItem value={-1}>Tất cả</MenuItem>
-              {projectDocumentCategories?.map((category) => (
-                <MenuItem value={category.id} key={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <FilterCategory
+            query={categoryQuery}
+            options={projectDocumentCategories}
+            label="Danh mục"
+            allValue={categoryAllValue}
+            allLabel="Tất cả"
+          ></FilterCategory>
+
         </Box>
         <DocumentModal>
           <span>Tạo</span>
         </DocumentModal>
       </Box>
-
       {/* Table */}
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Danh mục
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Ngày tạo
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Mẫu tài liệu
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {projectDocuments.map((document) => (
-            <StyledTableRow key={document.id}>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.name}
+      {(documents && documents.length) > 0 ? (
+        < Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {
-                    projectDocumentCategories.find(
-                      (cat) => cat.id === document.category
-                    )?.name
-                  }
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Mô tả
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.createdDate.toLocaleDateString("vi-VN")}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Danh mục
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {document.projectDocumentTemplate?.name}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ngày tạo
                 </Typography>
-              </TableCell>
-              <TableCell align="right" sx={{ display: "flex" }}>
-                <DeleteModal>
-                  <IconTrash></IconTrash>
-                </DeleteModal>
-                <DocumentModal projectDocument={document}>
-                  <IconPencil></IconPencil>
-                </DocumentModal>
-                <Button
-                  size="small"
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                >
-                  <IconDownload></IconDownload>
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* Pagination */}
-      <TablePagination
-        component="div"
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Box>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {documents.map((document) => (
+              <StyledTableRow key={document?.id}>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {document?.name ?? ""}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {document?.description ?? ""}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectDocumentCategories[document?.category] ?? "Không xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {document?.createdDate ? moment(document?.createdDate).format('L') : "Chưa xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right" sx={{ display: "flex" }}>
+                  <DeleteModal>
+                    <IconTrash></IconTrash>
+                  </DeleteModal>
+                  <DocumentModal projectDocument={document}>
+                    <IconPencil></IconPencil>
+                  </DocumentModal>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                  >
+                    <IconDownload></IconDownload>
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có dữ liệu.
+          </Typography>
+        </Stack>
+      )
+      }
+      <Pagination count={count}></Pagination>
+    </Box >
   );
 }

@@ -36,10 +36,17 @@ const getDocumentsByDocumentTemplateId = async (documentTemplateId) => {
     }
 };
 
-const getDocumentsByProjectId = async (projectId) => {
+const getDocumentsByProjectId = async ({
+    projectId,
+    search = "",
+    categoryEnum = "",
+    page = "",
+    pageSize = "",
+}) => {
     try {
+        const paramString = `name=${search}&category=${categoryEnum}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
-            `https://localhost:7062/api/ProjectDocuments/project/${projectId}`,
+            `https://localhost:7062/api/ProjectDocuments/project/${projectId}?${paramString}`,
             { cache: 'no-store' }
         );
 
@@ -47,8 +54,7 @@ const getDocumentsByProjectId = async (projectId) => {
             throw new Error('Get documents by project ID failed');
         }
 
-        const documents = await response.json();
-        return documents;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching documents by project ID:', error);
         throw error;

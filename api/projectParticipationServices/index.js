@@ -36,10 +36,17 @@ const getParticipationsByUserId = async (userId) => {
     }
 };
 
-const getParticipationsByProjectId = async (projectId) => {
+const getParticipationsByProjectId = async ({
+    projectId,
+    search = "",
+    role = "",
+    page = "",
+    pageSize = "",
+}) => {
     try {
+        const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
-            `https://localhost:7062/api/ProjectParticipations/project/${projectId}`,
+            `https://localhost:7062/api/ProjectParticipations/project/${projectId}?${paramString}`,
             { cache: 'no-store' }
         );
 
@@ -47,8 +54,7 @@ const getParticipationsByProjectId = async (projectId) => {
             throw new Error('Get participations by project ID failed');
         }
 
-        const participations = await response.json();
-        return participations;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching participations by project ID:', error);
         throw error;
