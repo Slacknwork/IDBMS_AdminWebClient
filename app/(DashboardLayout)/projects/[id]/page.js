@@ -109,15 +109,13 @@ export default function ProjectDetails() {
           setPageDescription(project.description);
 
           const listCategories = await getProjectCategories();
-          console.log(listCategories);
-          setProjectCategories(listCategories);
+          setProjectCategories(listCategories.list);
 
           const listProjectsBySiteId = await getProjectsBySiteId(
             project?.siteId
           );
-          console.log(project);
           setDecorProjects(
-            listProjectsBySiteId
+            listProjectsBySiteId.list
               .filter(
                 (project) => project.type === 0 && project.id !== projectId
               )

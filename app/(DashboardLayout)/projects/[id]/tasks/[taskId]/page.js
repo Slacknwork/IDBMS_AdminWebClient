@@ -13,7 +13,7 @@ import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
 import {
   getProjectTaskById,
   updateProjectTask,
-  getProjectTasksFilter,
+  getProjectTasksByProjectId,
 } from "/api/projectTaskServices";
 import { getFloorsByProjectId } from "/api/floorServices";
 
@@ -98,17 +98,17 @@ export default function TaskOverviewPage() {
     try {
       const floors = await getFloorsByProjectId(params.id);
       setRooms(
-        floors.flatMap((floor) =>
+        floors.list.flatMap((floor) =>
           floor.rooms?.map((room) => ({
             ...room,
             floorUsePurpose: floor.usePurpose,
           }))
         )
       );
-      const listTask = await getProjectTasksFilter({ projectId: params.id });
-      setTasks(listTask.list);
+      const listTask = await getProjectTasksByProjectId(params.id);
+      setTasks(listTask.data.list);
       const listTaskCategory = await getAllTaskCategories();
-      setTaskCategories(listTaskCategory);
+      setTaskCategories(listTaskCategory.list);
       const listStagesByProjectId = await getPaymentStagesByProjectId(
         params.id
       );

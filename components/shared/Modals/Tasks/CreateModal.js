@@ -110,7 +110,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     try {
       const floors = await getFloorsByProjectId(params.id);
       setRooms(
-        floors.flatMap((floor) =>
+        floors.list.flatMap((floor) =>
           floor.rooms?.map((room) => ({
             ...room,
             floorUsePurpose: floor.usePurpose,
@@ -118,11 +118,11 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
         )
       );
       const listTask = await getProjectTasksByProjectId(params.id);
-      setTasks(listTask);
+      setTasks(listTask.data.list);
       const listTaskDesign = await getAllTaskDesigns();
-      setTaskDesigns(listTaskDesign);
+      setTaskDesigns(listTaskDesign.list);
       const listTaskCategory = await getAllTaskCategories();
-      setTaskCategories(listTaskCategory);
+      setTaskCategories(listTaskCategory.list);
       const listStagesByProjectId = await getPaymentStagesByProjectId(
         params.id
       );

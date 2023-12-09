@@ -153,11 +153,12 @@ export default function ProjectTasksPage() {
   const [activeFloor, setActiveFloor] = useState(0);
   const fetchFloors = async () => {
     const floors = await getFloorsByProjectId(params.id);
-    setFloors(floors);
+    setFloors(floors.list);
     const active =
-      floors.findIndex((floor) => searchParams.get(floorQuery) === floor.id) +
-      1;
-    setRooms(active ? floors[active - 1].rooms : []);
+      floors.list.findIndex(
+        (floor) => searchParams.get(floorQuery) === floor.id
+      ) + 1;
+    setRooms(active ? floors.list[active - 1].rooms : []);
     setActiveFloor(active);
   };
   const handleFloorChange = (event, newValue) => {
@@ -214,7 +215,7 @@ export default function ProjectTasksPage() {
     setLoading(true);
     try {
       const categories = await getAllTaskCategories();
-      setCategories(categories);
+      setCategories(categories.list);
       await fetchStages();
       await fetchFloors();
     } catch (error) {
