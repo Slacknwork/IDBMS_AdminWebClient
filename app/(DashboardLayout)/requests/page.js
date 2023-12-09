@@ -126,9 +126,9 @@ export default function RequestList() {
   return (
     <Box>
       {/* MAIN SECTION */}
-      <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ mt: 3, display: "flex" }}>
-          <Search query={searchQuery}></Search>
+      <Box sx={{ zIndex: 1 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search placeholder="Nhập tên / email / điện thoại"></Search>
           <FilterStatus
             query={projectTypeQuery}
             options={projectTypeOptions}
