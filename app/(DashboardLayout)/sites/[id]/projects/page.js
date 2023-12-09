@@ -126,8 +126,8 @@ export default function Sites() {
 
   return (
     <PageContainer title="Danh sách dự án" description="Danh sách dự án">
-      <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+      <Box sx={{ zIndex: 1 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
             <Search></Search>
             <FilterStatus

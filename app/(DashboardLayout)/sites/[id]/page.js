@@ -109,7 +109,6 @@ export default function SiteDetails() {
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
-        sx={{ mt: 0 }}
         title="Thông tin khu công trình"
         saveMessage="Lưu thông khu công trình?"
         deleteMessage="Xóa khu công trình?"
