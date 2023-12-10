@@ -54,7 +54,8 @@ const getDocumentsByProjectId = async ({
             throw new Error('Get documents by project ID failed');
         }
 
-        return await response.json();
+        const responseJson = await response.json();
+        return responseJson.data;
     } catch (error) {
         console.error('Error fetching documents by project ID:', error);
         throw error;

@@ -77,8 +77,8 @@ export default function Comments() {
 
   const searchQuery = "search";
 
-  const categoryQuery = "category";
-  const categoryAllValue = -1;
+  const roleQuery = "role";
+  const roleAllValue = -1;
 
   const pageQuery = "page";
   const defaultPage = 1;
@@ -116,7 +116,7 @@ export default function Comments() {
 
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
-    const categoryEnum = searchParams.get(categoryQuery) || "";
+    const role = searchParams.get(roleQuery) || "";
     const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -124,14 +124,14 @@ export default function Comments() {
     const response = await getParticipationsByProjectId({
       projectId,
       search,
-      categoryEnum,
+      role,
       page,
       pageSize,
     });
     console.log(response);
-    // setParticipations(response?.data?.list ?? []);
     setParticipations(response?.list ?? []);
-    setCount(response?.data?.totalItem ?? 0);
+    // const filteredParticipations = (response?.list ?? []).filter(participation => participation.role !== 0);
+    setCount(response?.totalItem ?? 0);
   };
 
   return (
@@ -204,11 +204,23 @@ export default function Comments() {
           </Card>
         </Grid>
       </Grid>
+      <Typography variant="h5" sx={{ mt: 3 }}>Người tham gia dự án</Typography>
       {/* Table */}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
       >
-        <Typography variant="h5">Các thành viên</Typography>
+        <Box sx={{ display: "flex" }}>
+          <Search></Search>
+
+          <FilterComponent
+            query={roleQuery}
+            options={participationRole}
+            label="Vai trò"
+            allValue={roleAllValue}
+            allLabel="Tất cả"
+          ></FilterComponent>
+
+        </Box>
         <ParticipantModal>Thêm</ParticipantModal>
       </Box>
       {(participations && participations.length) > 0 ? (
