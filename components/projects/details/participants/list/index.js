@@ -17,16 +17,27 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
-import { useEffect, useState } from "react";
 import { IconTrash } from "@tabler/icons-react";
-import { useParams } from "next/navigation";
 import LoopIcon from "@mui/icons-material/Loop";
 
-import participationRole from "/constants/enums/participationRole";
 import ParticipantModal from "./modal";
 import DeleteModal from "./deleteModal";
+
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import participationRole from "/constants/enums/participationRole";
+import { getParticipationsByProjectId } from "api/projectParticipationServices";
+import moment from "moment-timezone";
+
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import FilterComponent from "/components/shared/FilterStatus";
+import { toast } from "react-toastify";
 
 const participants = [
   {
@@ -63,20 +74,64 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // Component for displaying comments
 export default function Comments() {
-  const params = useParams();
-  // Set state for pagination
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Handle page change
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const searchQuery = "search";
+
+  const categoryQuery = "category";
+  const categoryAllValue = -1;
+
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+
+  // FETCH
+  const fetchDataFromApi = async () => {
+    try {
+      await fetchParticipations();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
+
+  // PARTICIPATIONS
+  const [participations, setParticipations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
+
+  const fetchParticipations = async () => {
+
+    const projectId = params.id;
+    const search = searchParams.get(searchQuery) || "";
+    const categoryEnum = searchParams.get(categoryQuery) || "";
+    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+    const pageSize =
+      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+    const response = await getParticipationsByProjectId({
+      projectId,
+      search,
+      categoryEnum,
+      page,
+      pageSize,
+    });
+    console.log(response);
+    // setParticipations(response?.data?.list ?? []);
+    setParticipations(response?.list ?? []);
+    setCount(response?.data?.totalItem ?? 0);
   };
 
   return (
@@ -95,7 +150,7 @@ export default function Comments() {
           >
             <Box>
               <Typography variant="h5" sx={{ my: "auto" }}>
-                Quản lý dự án
+                Chủ dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
                 <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
@@ -156,59 +211,63 @@ export default function Comments() {
         <Typography variant="h5">Các thành viên</Typography>
         <ParticipantModal>Thêm</ParticipantModal>
       </Box>
-      <Table aria-label="simple table">
-        {/* Table Head */}
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Thành viên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Vai trò
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        {/* Table Body */}
-        <TableBody>
-          {participants &&
-            participants.map((participant) => (
-              <StyledTableRow key={participant.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {participant.user?.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    <Chip label={participationRole[participant.role]}></Chip>
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <DeleteModal>
-                      <IconTrash></IconTrash>
-                    </DeleteModal>
-                  </Box>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-        </TableBody>
-      </Table>
-      {/* Table Pagination */}
-      <TablePagination
-        component="div"
-        count={10}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {(participations && participations.length) > 0 ? (
+        <Table aria-label="simple table">
+          {/* Table Head */}
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Thành viên
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Vai trò
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          {/* Table Body */}
+          <TableBody>
+            {participations &&
+              participations.map((participant) => (
+                <StyledTableRow key={participant.id}>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {participant.user?.name}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      <Chip label={participationRole[participant.role]}></Chip>
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <DeleteModal>
+                        <IconTrash></IconTrash>
+                      </DeleteModal>
+                    </Box>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
+          </TableBody>
+        </Table>
+      ) : loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có dữ liệu.
+          </Typography>
+        </Stack>
+      )
+      }
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }
