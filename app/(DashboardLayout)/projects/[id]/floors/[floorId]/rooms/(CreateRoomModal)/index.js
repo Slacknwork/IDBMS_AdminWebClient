@@ -116,7 +116,7 @@ export default function CreateFloorModal({ children, floorNo }) {
     if (!initialized.current) {
       initialized.current = true;
       try {
-        const data = await getAllRoomTypes();
+        const data = await getAllRoomTypes({});
         setRoomTypes(data.list);
         setLoading(false);
       } catch (error) {

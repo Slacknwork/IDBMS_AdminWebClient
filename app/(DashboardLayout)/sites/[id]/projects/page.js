@@ -23,15 +23,12 @@ import { toast } from "react-toastify";
 
 import projectTypeOptions, {
   projectTypeChipColors,
-  projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import languageTypeOptions, {
   languageTypeChipColors,
   languageTypeChipImages,
 } from "/constants/enums/language";
-import projectStatusOptions, {
-  projectStatusOptionsEnglish,
-} from "/constants/enums/projectStatus";
+import projectStatusOptions from "/constants/enums/projectStatus";
 
 import { getProjectsBySiteId } from "/api/projectServices";
 
@@ -97,7 +94,6 @@ export default function ProjectListPage() {
       const type = searchParams.get(projectTypeQuery) ?? "";
       const page = searchParams.get(pageQuery) ?? defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
-
       try {
         const data = await getProjectsBySiteId({
           siteId,
@@ -124,7 +120,7 @@ export default function ProjectListPage() {
       <Box sx={{ zIndex: 1 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
-            <Search></Search>
+            <Search placeholder="Tìm tên dự án"></Search>
             <FilterStatus
               query={projectTypeQuery}
               options={projectTypeOptions}
@@ -143,35 +139,30 @@ export default function ProjectListPage() {
           <CreateProjectModal></CreateProjectModal>
         </Box>
         {values && values.length > 0 ? (
-          <Table
-            aria-label="simple table"
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
+          <Table aria-label="simple table" sx={{ mt: 1 }}>
             <TableHead>
               <TableRow>
-                <StyledTableCell>
+                <StyledTableCell width={"40%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Tên
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Loại
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Ngôn ngữ
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Trạng thái
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
+                <StyledTableCell width={"15%"} align="right"></StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>

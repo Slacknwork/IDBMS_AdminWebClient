@@ -19,14 +19,9 @@ import {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
-import stageStatusOptions, {
-  stageStatusOptionsEnglish,
-} from "/constants/enums/stageStatus";
+import stageStatusOptions from "/constants/enums/stageStatus";
 
-import {
-  getPaymentStagesFilter,
-  countPaymentStagesFilter,
-} from "/api/paymentStageServices";
+import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
 
 import CreateStageModal from "/components/shared/Modals/Stages/CreateModal";
 import Search from "/components/shared/Search";
@@ -59,7 +54,7 @@ export default function PaymentStages() {
   const statusAllValue = -1;
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -77,25 +72,22 @@ export default function PaymentStages() {
   useEffect(() => {
     const fetchDataFromApi = async () => {
       const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const status =
-        stageStatusOptionsEnglish[parseInt(searchParams.get(statusQuery))];
-      const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const status = searchParams.get(statusQuery) ?? "";
+      const page = searchParams.get(pageQuery) || defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) || defaultPageSize;
 
       try {
         setLoading(true);
-        const count = await countPaymentStagesFilter(projectId, search, status);
-        const data = await getPaymentStagesFilter(
+        const data = await getPaymentStagesByProjectId({
           projectId,
           search,
           status,
           page,
-          pageSize
-        );
-        setCount(count);
-        setStages(data);
+          pageSize,
+        });
+        setCount(data.totalItem);
+        setStages(data.list);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -191,20 +183,26 @@ export default function PaymentStages() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.startedDate ? (
-                      stage.endDate ? (
-                        `${new Date(stage.startedDate).toLocaleDateString("vi-VN")} - ${new Date(stage.endDate).toLocaleDateString("vi-VN")}`
-                      ) : (
-                        `${new Date(stage.startedDate).toLocaleDateString("vi-VN")} - Chưa xác định`
-                      )
-                    ) : (
-                      "Chưa xác định"
-                    )}
+                    {stage.startedDate
+                      ? stage.endDate
+                        ? `${new Date(stage.startedDate).toLocaleDateString(
+                            "vi-VN"
+                          )} - ${new Date(stage.endDate).toLocaleDateString(
+                            "vi-VN"
+                          )}`
+                        : `${new Date(stage.startedDate).toLocaleDateString(
+                            "vi-VN"
+                          )} - Chưa xác định`
+                      : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {stage.endTimePayment ? new Date(stage.endTimePayment).toLocaleDateString("vi-VN") : "Chưa xác định"}
+                    {stage.endTimePayment
+                      ? new Date(stage.endTimePayment).toLocaleDateString(
+                          "vi-VN"
+                        )
+                      : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">

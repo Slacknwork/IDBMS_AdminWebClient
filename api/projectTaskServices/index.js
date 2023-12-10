@@ -1,7 +1,16 @@
-const getProjectTasksByProjectId = async (projectId) => {
+const getProjectTasksByProjectId = async ({
+  projectId = "",
+  search = "",
+  categoryId = "",
+  status = "",
+  stageId = "",
+  roomId = "",
+  page = "",
+  pageSize = "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectTasks/project/${projectId}`,
+      `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&stageId=${stageId}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
 
@@ -10,7 +19,7 @@ const getProjectTasksByProjectId = async (projectId) => {
     }
 
     const projectTasks = await response.json();
-    return projectTasks;
+    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by project ID:", error);
     throw error;
@@ -90,72 +99,6 @@ const getProjectTasksByPaymentStageId = async (paymentStageId) => {
 
     const projectTasks = await response.json();
     return projectTasks;
-  } catch (error) {
-    console.error("Error fetching project tasks by payment stage ID:", error);
-    throw error;
-  }
-};
-
-const countProjectTasksFilter = async ({
-  projectId,
-  search,
-  categoryId,
-  status,
-  stageId,
-  roomId,
-}) => {
-  const searchQuery = `(contains(Code, '${search}') or contains(Name, '${search}'))`;
-  const projectIdQuery = projectId ? `ProjectId eq ${projectId} and ` : "";
-  const categoryIdQuery = categoryId
-    ? `TaskCategoryId eq ${categoryId} and `
-    : "";
-  const statusQuery = status ? `Status eq '${status}' and ` : "";
-  const stageOrRoomQuery =
-    stageId || stageId === null
-      ? `PaymentStageId eq ${stageId} and `
-      : roomId || roomId === null
-      ? `RoomId eq ${roomId} and `
-      : "";
-  try {
-    const response = await fetch(
-      `https://localhost:7062/odata/ProjectTasks/$count?$filter=${projectIdQuery}${categoryIdQuery}${statusQuery}${stageOrRoomQuery}${searchQuery}`,
-      { cache: "no-store" }
-    );
-
-    if (!response.ok) {
-      throw new Error("Get failed");
-    }
-
-    const count = await response.text();
-    return parseInt(count);
-  } catch (error) {
-    console.error("Error fetching project tasks by payment stage ID:", error);
-    throw error;
-  }
-};
-
-const getProjectTasksFilter = async ({
-  projectId,
-  search = "",
-  categoryId = "",
-  status = "",
-  stageId = "",
-  roomId = "",
-  page = "",
-  pageSize = "",
-}) => {
-  try {
-    const response = await fetch(
-      `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&stageId=${stageId}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
-      { cache: "no-store" }
-    );
-
-    if (!response.ok) {
-      throw new Error("Get failed");
-    }
-
-    const projectTasks = await response.json();
-    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by payment stage ID:", error);
     throw error;
@@ -258,8 +201,6 @@ export {
   getProjectTasksWithItemByProjectId,
   getProjectTasksWithItemByRoomId,
   getProjectTasksByRoomId,
-  countProjectTasksFilter,
-  getProjectTasksFilter,
   createProjectTask,
   getProjectTaskById,
   updateProjectTask,

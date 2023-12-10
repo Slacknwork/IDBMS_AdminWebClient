@@ -100,7 +100,7 @@ export default function ProjectDetails() {
         setPageName(project.name);
         setPageDescription(project.description);
 
-        const listCategories = await getProjectCategories();
+        const listCategories = await getProjectCategories({});
         setProjectCategories(listCategories.list);
 
         const listProjectsBySiteId = await getProjectsBySiteId({

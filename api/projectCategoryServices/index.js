@@ -1,8 +1,8 @@
 const getProjectCategories = async ({
-  isHidden = "",
+  isHidden = false,
   name = "",
   pageSize = "",
-  pageNo= "",
+  pageNo = "",
 }) => {
   try {
     const response = await fetch(

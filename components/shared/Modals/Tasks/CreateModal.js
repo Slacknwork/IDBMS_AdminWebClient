@@ -108,7 +108,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
   const fetchDataFromApi = async () => {
     try {
-      const floors = await getFloorsByProjectId(params.id);
+      const floors = await getFloorsByProjectId({ projectId: params.id });
       setRooms(
         floors.list.flatMap((floor) =>
           floor.rooms?.map((room) => ({
@@ -117,16 +117,18 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           }))
         )
       );
-      const listTask = await getProjectTasksByProjectId(params.id);
-      setTasks(listTask.data.list);
-      const listTaskDesign = await getAllTaskDesigns();
+      const listTask = await getProjectTasksByProjectId({
+        projectId: params.id,
+      });
+      setTasks(listTask.list);
+      const listTaskDesign = await getAllTaskDesigns({});
       setTaskDesigns(listTaskDesign.list);
-      const listTaskCategory = await getAllTaskCategories();
+      const listTaskCategory = await getAllTaskCategories({});
       setTaskCategories(listTaskCategory.list);
-      const listStagesByProjectId = await getPaymentStagesByProjectId(
-        params.id
-      );
-      setStages(listStagesByProjectId);
+      const listStagesByProjectId = await getPaymentStagesByProjectId({
+        projectId: params.id,
+      });
+      setStages(listStagesByProjectId.list);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);

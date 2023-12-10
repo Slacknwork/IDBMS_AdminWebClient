@@ -13,7 +13,7 @@ export default function FormText({
   subtitle = "",
   multiline,
   rows = 4,
-  value,
+  value = "",
   error,
   errorLabel,
   onChange,
@@ -36,7 +36,7 @@ export default function FormText({
             multiline={multiline}
             rows={rows}
             variant={variant}
-            value={value}
+            value={value ?? ""}
             error={error}
             helperText={errorLabel}
             onChange={onChange}

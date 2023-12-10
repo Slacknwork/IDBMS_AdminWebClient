@@ -85,7 +85,7 @@ export default function SitesPage() {
 
   return (
     <Box>
-      <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Search
           query={searchQuery}
           placeholder="Tìm kiếm theo Tên / Địa chỉ"
@@ -97,14 +97,7 @@ export default function SitesPage() {
           <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
         </Stack>
       ) : values && values.length > 0 ? (
-        <Table
-          aria-label="simple table"
-          sx={{
-            maxWidth: 1,
-            overflowX: "hidden",
-            my: 2,
-          }}
-        >
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
               <StyledTableCell width={"30%"}>

@@ -131,7 +131,7 @@ export default function RequestList() {
         </Box>
         <Box>
           {values && values.length > 0 ? (
-            <Table aria-label="simple table" sx={{}}>
+            <Table aria-label="simple table" sx={{ mt: 1 }}>
               <TableHead>
                 <TableRow>
                   <StyledTableCell width={"27.5%"}>

@@ -72,19 +72,22 @@ export default function ReportListPage() {
   const params = useParams();
   const searchParams = useSearchParams();
 
+  const projectTaskId = params.taskId;
+
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState([]);
   const [count, setCount] = useState(0);
 
   const fetchDataFromApi = async () => {
     try {
-      const data = await getTaskReportsByProjectTaskId(params.taskId);
-      console.log(data);
-      setValues(data);
-      setLoading(false);
+      const data = await getTaskReportsByProjectTaskId({ projectTaskId });
+      setValues(data.list);
+      setCount(data.totalItem);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
     }
   };
 

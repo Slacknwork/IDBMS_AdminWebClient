@@ -64,13 +64,20 @@ export default function RoomListPage() {
 
   const fetchDataFromApi = async () => {
     const floorId = params.floorId;
+    const isHidden = false;
     const search = searchParams.get(searchQuery) ?? "";
     const page = searchParams.get(pageQuery) ?? defaultPage;
     const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
     try {
       setLoading(true);
-      const data = await getRoomsByFloorId({ floorId, search, page, pageSize });
+      const data = await getRoomsByFloorId({
+        floorId,
+        search,
+        isHidden,
+        page,
+        pageSize,
+      });
       setValues(data.list);
       setCount(data.totalItem);
     } catch (error) {

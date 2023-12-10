@@ -4,13 +4,13 @@ import { stageStatusIndex } from "/constants/enums/stageStatus";
 const getPaymentStagesByProjectId = async ({
   projectId = "",
   status = "",
-  name = "",
+  search = "",
   pageSize = "",
-  pageNo= "",
+  pageNo = "",
 }) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: "no-store" }
     );
     const paymentStages = await response.json();
