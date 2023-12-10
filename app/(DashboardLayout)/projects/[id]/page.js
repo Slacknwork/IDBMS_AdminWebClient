@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { Avatar, Box, Card, Grid, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import projectLanguageOptions from "/constants/enums/language";
@@ -36,7 +36,7 @@ export default function ProjectDetails() {
     statusError: { hasError: false, label: "" },
     language: -1,
     languageError: { hasError: false, label: "" },
-    projectCategoryId: { id: 0, name: "" },
+    projectCategoryId: null,
     projectCategoryIdError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
@@ -85,58 +85,49 @@ export default function ProjectDetails() {
   const contactLabel = "Thông tin liên hệ chủ dự án";
   const priceLabel = "Thông tin về các giá trị";
 
-  const [projectId, setProjectId] = useState(params.id);
-  const [siteId, setSiteId] = useState("");
-  const [adminId, setAdminId] = useState("");
-  const [adminUsername, setAdminUsername] = useState("");
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
 
   const [projectCategories, setProjectCategories] = useState([]);
   const [decorProjects, setDecorProjects] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      const fetchDataFromApi = async () => {
-        try {
-          const project = await getProjectById(projectId);
-          setFormData((prevData) => ({ ...prevData, ...project }));
-          setPageName(project.name);
-          setPageDescription(project.description);
+    const fetchDataFromApi = async () => {
+      setLoading(true);
+      try {
+        const project = await getProjectById(params.id);
+        setFormData((prevData) => ({ ...prevData, ...project }));
+        setPageName(project.name);
+        setPageDescription(project.description);
 
-          const listCategories = await getProjectCategories();
-          setProjectCategories(listCategories.list);
+        const listCategories = await getProjectCategories();
+        setProjectCategories(listCategories.list);
 
-          const listProjectsBySiteId = await getProjectsBySiteId({
-            siteId: project?.siteId,
-          });
-          setDecorProjects(
-            listProjectsBySiteId.list
-              .filter(
-                (project) => project.type === 0 && project.id !== projectId
-              )
-              .map(({ id, name }) => ({ id, name }))
-          );
-          const participation = project?.projectParticipations.find(
-            (par) => par.role === 0
-          );
-          setProjectOwner(participation?.user ?? "");
-
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
-        }
-      };
-      fetchDataFromApi();
-    }
-  }, [projectId]);
+        const listProjectsBySiteId = await getProjectsBySiteId({
+          siteId: project?.siteId,
+        });
+        setDecorProjects(
+          listProjectsBySiteId.list
+            .filter((project) => project.type === 0 && project.id !== params.id)
+            .map(({ id, name }) => ({ id, name }))
+        );
+        const participation = project?.projectParticipations.find(
+          (par) => par.role === 0
+        );
+        setProjectOwner(participation?.user ?? "");
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDataFromApi();
+  }, []);
 
   const onSaveProject = async () => {
     try {
-      const project = await updateProject(projectId, formData);
+      const project = await updateProject(params.id, formData);
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
@@ -156,6 +147,7 @@ export default function ProjectDetails() {
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
         onSave={onSaveProject}

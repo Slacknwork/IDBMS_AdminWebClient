@@ -1,7 +1,23 @@
 "use client";
 
-import RoomDetails from "/components/projects/details/rooms";
+import { Box, Grid } from "@mui/material";
 
-export default function TaskLayout({ children }) {
-  return <RoomDetails>{children}</RoomDetails>;
+import Tabs from "/components/shared/Tabs";
+import PageContainer from "/components/container/PageContainer";
+
+import TabItems from "./tabItems";
+
+export default function ProjectFloors({ children }) {
+  return (
+    <PageContainer title="Chi tiết phòng">
+      <Grid container spacing={2}>
+        <Grid item xs={2} lg={2}>
+          <Tabs vertical borderColor="white" uriPos={5} tabs={TabItems}></Tabs>
+        </Grid>
+        <Grid item xs={10} lg={10}>
+          <Box>{children}</Box>
+        </Grid>
+      </Grid>
+    </PageContainer>
+  );
 }

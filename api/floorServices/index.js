@@ -1,14 +1,21 @@
-const getFloorsByProjectId = async (projectId) => {
+const getFloorsByProjectId = async ({
+  projectId = "",
+  search = "",
+  page = "",
+  pageSize = "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/Floors/project/${projectId}`,
+      `https://localhost:7062/api/Floors/project/${projectId}?noOfFloor=${
+        !isNaN(search) ? search : ""
+      }&usePurpose=${search}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
     if (!response.ok) {
       throw new Error("Get failed");
     }
     const floors = await response.json();
-    return floors;
+    return floors.data;
   } catch (error) {
     console.error("Error fetching floors by project ID:", error);
     throw error;

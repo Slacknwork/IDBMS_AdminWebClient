@@ -2,13 +2,22 @@ import { mapFromOdata } from "/utils/odata";
 import { projectStatusIndex } from "/constants/enums/projectStatus";
 import { projectTypeIndex } from "/constants/enums/projectType";
 
-const getProjects = async () => {
+const getProjects = async ({
+  search = "",
+  type = "",
+  status = "",
+  page = "",
+  pageSize = "",
+}) => {
   try {
-    const response = await fetch(`https://localhost:7062/api/Projects/`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `https://localhost:7062/api/Projects?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
+      {
+        cache: "no-store",
+      }
+    );
     const projects = await response.json();
-    return projects;
+    return projects.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -120,11 +129,11 @@ const getProjectsBySiteId = async ({
 }) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/Projects/site/${siteId}?name=${search}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
+      `https://localhost:7062/api/Projects/site/${siteId}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
     const projects = await response.json();
-    return projects;
+    return projects.data;
   } catch (error) {
     console.error("Error fetching projects by site ID:", error);
     throw error;

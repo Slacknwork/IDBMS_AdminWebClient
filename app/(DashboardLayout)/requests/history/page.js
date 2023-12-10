@@ -18,20 +18,15 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import {
-  countBookingRequestsFilter,
-  getBookingRequestsFilter,
-} from "/api/bookingRequestServices";
+import { getBookingRequests } from "/api/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,
-  projectTypeIndex,
   projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import bookingRequestStatusOptions, {
   bookingRequestStatusHistoryOptions,
   bookingRequestStatusButtonColors,
-  bookingRequestStatusIndex,
 } from "/constants/enums/bookingRequestStatus";
 
 import FilterStatus from "/components/shared/FilterStatus";
@@ -75,7 +70,6 @@ export default function RequestList() {
 
   const bookingRequestStatusQuery = "status";
   const bookingRequestStatusLabel = "Trạng thái";
-  const bookingRequestStatusAllValue = [1, 2];
 
   // INIT
   const searchParams = useSearchParams();
@@ -90,28 +84,21 @@ export default function RequestList() {
       setLoading(true);
       setValues([]);
       try {
-        const search = searchParams.get(searchQuery) || "";
-        const type =
-          projectTypeOptionsEnglish[
-            parseInt(searchParams.get(projectTypeQuery))
-          ];
-        const status = parseInt(searchParams.get(bookingRequestStatusQuery))
-          ? [parseInt(searchParams.get(bookingRequestStatusQuery))]
-          : bookingRequestStatusAllValue;
-        const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-        const pageSize =
-          parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+        const search = searchParams.get(searchQuery) ?? "";
+        const type = searchParams.get(projectTypeQuery) ?? "";
+        const status = searchParams.get(bookingRequestStatusQuery) ?? "";
+        const page = searchParams.get(pageQuery) ?? defaultPage;
+        const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-        const data = await getBookingRequestsFilter(
+        const data = await getBookingRequests({
           search,
           type,
           status,
           page,
-          pageSize
-        );
-        const count = await countBookingRequestsFilter(search, type, status);
-        setValues(data);
-        setCount(count);
+          pageSize,
+        });
+        setValues(data.list);
+        setCount(data.totalItem);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -126,8 +113,8 @@ export default function RequestList() {
   return (
     <Box>
       {/* MAIN SECTION */}
-      <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ mt: 3, display: "flex" }}>
+      <Box sx={{ zIndex: 1 }}>
+        <Box sx={{ display: "flex" }}>
           <Search query={searchQuery}></Search>
           <FilterStatus
             query={projectTypeQuery}
@@ -144,13 +131,7 @@ export default function RequestList() {
         </Box>
         <Box>
           {values && values.length > 0 ? (
-            <Table
-              aria-label="simple table"
-              sx={{
-                whiteSpace: "nowrap",
-                my: 2,
-              }}
-            >
+            <Table aria-label="simple table" sx={{}}>
               <TableHead>
                 <TableRow>
                   <StyledTableCell width={"27.5%"}>

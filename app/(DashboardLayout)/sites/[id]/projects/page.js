@@ -65,7 +65,7 @@ export default function ProjectListPage() {
   const searchQuery = "search";
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -92,12 +92,11 @@ export default function ProjectListPage() {
   useEffect(() => {
     const fetchDataFromApi = async () => {
       const siteId = params.id;
-      const search = searchParams.get(searchQuery) || "";
+      const search = searchParams.get(searchQuery) ?? "";
       const status = searchParams.get(projectStatusQuery) ?? "";
       const type = searchParams.get(projectTypeQuery) ?? "";
-      const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
         const data = await getProjectsBySiteId({

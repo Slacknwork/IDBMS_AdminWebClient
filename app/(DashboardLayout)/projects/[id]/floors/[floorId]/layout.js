@@ -5,7 +5,7 @@ import { Box, Grid } from "@mui/material";
 import Tabs from "/components/shared/Tabs";
 import TabItems from "./tabItems";
 
-export default function TaskLayout({ children }) {
+export default function FloorDetailsLayout({ children }) {
   return (
     <Grid container columnSpacing={4}>
       <Grid item xs={2} lg={2}>

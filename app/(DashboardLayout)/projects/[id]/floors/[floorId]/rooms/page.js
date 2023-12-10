@@ -4,6 +4,8 @@ import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
+  CircularProgress,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,8 +15,8 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getRoomsByFloorId } from "/api/roomServices";
@@ -41,33 +43,47 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function RoomsPage() {
-  const params = useParams();
+export default function RoomListPage() {
+  // CONSTANTS
+  const searchQuery = "search";
 
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  // INIT
+  const params = useParams();
+  const searchParams = useSearchParams();
+
+  // FETCH DATA FROM API
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
   const [values, setValues] = useState([]);
   const [count, setCount] = useState(0);
 
   const fetchDataFromApi = async () => {
-    if (!initialized.current) {
-      initialized.current = true;
-      try {
-        const data = await getRoomsByFloorId(params.floorId ?? "");
-        setValues(data.list);
-        setCount(data.totalItem);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      }
+    const floorId = params.floorId;
+    const search = searchParams.get(searchQuery) ?? "";
+    const page = searchParams.get(pageQuery) ?? defaultPage;
+    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
+
+    try {
+      setLoading(true);
+      const data = await getRoomsByFloorId({ floorId, search, page, pageSize });
+      setValues(data.list);
+      setCount(data.totalItem);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // localStorage.setItem('floorId', params.floorId.toString());
     fetchDataFromApi();
-  }, []);
+  }, [searchParams]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -76,55 +92,50 @@ export default function RoomsPage() {
         <Search></Search>
         <CreateRoomModal floorNo={params.floorId}>Tạo phòng</CreateRoomModal>
       </Box>
-      <Table aria-label="simple table" sx={{ mt: 1 }}>
-        {/* Table Head */}
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Mục đích
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Mô tả
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Diện tích
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tổng giá tiền (VND)
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại phòng
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Trạng thái
-              </Typography>
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        {/* Table Body */}
-        <TableBody>
-          {values &&
-            values.map((room) => (
+      {loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : values && values.length > 0 ? (
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
+          {/* Table Head */}
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width={"20%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Mục đích
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Diện tích (m<sup>2</sup>)
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tổng giá tiền (VND)
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Loại phòng
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          {/* Table Body */}
+          <TableBody>
+            {values.map((room) => (
               <StyledTableRow key={room.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {room.usePurpose}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {room.description}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -160,8 +171,15 @@ export default function RoomsPage() {
                 </TableCell>
               </StyledTableRow>
             ))}
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có phòng.
+          </Typography>
+        </Stack>
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

@@ -41,7 +41,7 @@ const getSiteById = async (id) => {
   }
 };
 
-const getSites = async (search = "", page, pageSize) => {
+const getSites = async (search = "", page = "", pageSize = "") => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Sites?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`,
@@ -50,42 +50,7 @@ const getSites = async (search = "", page, pageSize) => {
       }
     );
     const sites = await response.json();
-    return sites;
-  } catch (error) {
-    console.error("Error fetching sites:", error);
-    throw error;
-  }
-};
-
-const countSitesFilter = async (search = "") => {
-  const searchQuery = `contains(Name, '${search}') or contains(Address, '${search}')`;
-  try {
-    const response = await fetch(
-      `https://localhost:7062/odata/Sites/$count?$filter=${searchQuery}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const count = await response.text();
-    return parseInt(count, 10);
-  } catch (error) {
-    console.error("Error fetching sites:", error);
-    throw error;
-  }
-};
-
-const getSitesFilter = async (search = "", page, pageSize) => {
-  const searchQuery = `contains(Name, '${search}') or contains(Address, '${search}')`;
-  const pagination = `&top=${pageSize}&skip=${page * pageSize}`;
-  try {
-    const response = await fetch(
-      `https://localhost:7062/api/Sites?$filter=${searchQuery}${pagination}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const sites = await response.json();
-    return mapFromOdata(sites);
+    return sites.data;
   } catch (error) {
     console.error("Error fetching sites:", error);
     throw error;
@@ -157,8 +122,6 @@ export {
   createSite,
   getSiteById,
   getSites,
-  countSitesFilter,
-  getSitesFilter,
   updateSite,
   deleteSiteById,
 };

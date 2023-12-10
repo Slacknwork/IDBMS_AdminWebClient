@@ -19,6 +19,7 @@ const style = {
 export default function MessageModal({
   color = "primary",
   sx,
+  disabled,
   buttonLabel,
   onSubmit,
   title,
@@ -43,6 +44,7 @@ export default function MessageModal({
   return (
     <Box sx={sx}>
       <Button
+        disabled={disabled}
         color={color}
         variant="contained"
         disableElevation
