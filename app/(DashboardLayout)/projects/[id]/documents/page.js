@@ -138,8 +138,8 @@ export default function ProjectDocuments() {
       pageSize,
     });
     console.log(response);
-    setDocuments(response?.data?.list ?? []);
-    setCount(response?.data?.totalItem ?? 0);
+    setDocuments(response?.list ?? []);
+    setCount(response?.totalItem ?? 0);
   };
 
   return (

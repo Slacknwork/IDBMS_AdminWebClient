@@ -77,8 +77,8 @@ export default function Comments() {
 
   const searchQuery = "search";
 
-  const categoryQuery = "category";
-  const categoryAllValue = -1;
+  const roleQuery = "role";
+  const roleAllValue = -1;
 
   const pageQuery = "page";
   const defaultPage = 1;
@@ -109,6 +109,8 @@ export default function Comments() {
 
   // PARTICIPATIONS
   const [participations, setParticipations] = useState([]);
+  const [projectOwner, setProjectOwner] = useState("");
+  const [projectManager, setProjectManager] = useState("");
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
@@ -116,7 +118,7 @@ export default function Comments() {
 
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
-    const categoryEnum = searchParams.get(categoryQuery) || "";
+    const role = searchParams.get(roleQuery) || "";
     const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
     const pageSize =
       parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -124,14 +126,27 @@ export default function Comments() {
     const response = await getParticipationsByProjectId({
       projectId,
       search,
-      categoryEnum,
+      role,
       page,
       pageSize,
     });
     console.log(response);
-    // setParticipations(response?.data?.list ?? []);
-    setParticipations(response?.list ?? []);
-    setCount(response?.data?.totalItem ?? 0);
+
+    const filteredParticipations = (response?.list ?? [])
+      .filter(participation => participation.role !== 0 && participation.role !== 5);
+
+    setParticipations(filteredParticipations);
+    setCount(filteredParticipations?.length ?? 0);
+
+    setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
+    setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+  };
+
+  const getAvatarContent = (name) => {
+    const words = name.split(" ");
+    const lastWord = words.length > 0 ? words[words.length - 1] : "";
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+    return firstCharacter;
   };
 
   return (
@@ -153,12 +168,14 @@ export default function Comments() {
                 Chủ dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                  {getAvatarContent(projectOwner?.user?.name ?? "E")}
+                </Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@mail.com</Typography>
+                  <Typography variant="h6">{projectOwner?.user?.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectOwner?.user?.email ?? "..."}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{projectOwner?.user?.phone ?? "..."}</Typography>
                   <br />
                 </Box>
               </Box>
@@ -186,12 +203,14 @@ export default function Comments() {
                 Quản lý dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                  {getAvatarContent(projectManager?.user?.name ?? "E")}
+                </Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@mail.com</Typography>
+                  <Typography variant="h6">{projectManager?.user?.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectManager?.user?.email ?? "..."}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{projectManager?.user?.phone ?? "..."}</Typography>
                   <br />
                 </Box>
               </Box>
@@ -204,11 +223,23 @@ export default function Comments() {
           </Card>
         </Grid>
       </Grid>
+      <Typography variant="h5" sx={{ mt: 3 }}>Người tham gia dự án</Typography>
       {/* Table */}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
       >
-        <Typography variant="h5">Các thành viên</Typography>
+        <Box sx={{ display: "flex" }}>
+          <Search></Search>
+
+          <FilterComponent
+            query={roleQuery}
+            options={participationRole}
+            label="Vai trò"
+            allValue={roleAllValue}
+            allLabel="Tất cả"
+          ></FilterComponent>
+
+        </Box>
         <ParticipantModal>Thêm</ParticipantModal>
       </Box>
       {(participations && participations.length) > 0 ? (

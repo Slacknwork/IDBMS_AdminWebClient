@@ -54,7 +54,8 @@ const getParticipationsByProjectId = async ({
             throw new Error('Get participations by project ID failed');
         }
 
-        return await response.json();
+        const responseJson = await response.json();
+        return responseJson.data;
     } catch (error) {
         console.error('Error fetching participations by project ID:', error);
         throw error;
