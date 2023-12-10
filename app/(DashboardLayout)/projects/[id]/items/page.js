@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
   Stack,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -84,7 +84,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function InteriorItems() {
-
   const searchQuery = "search";
 
   const categoryQuery = "category";
@@ -139,7 +138,6 @@ export default function InteriorItems() {
   const [count, setCount] = useState(0);
 
   const fetchItems = async () => {
-
     const projectId = params.id;
     const search = searchParams.get(searchQuery) || "";
     const categoryId = searchParams.get(categoryQuery) || "";
@@ -169,7 +167,7 @@ export default function InteriorItems() {
   const fetchCategories = async () => {
     const response = await getAllInteriorItemCategories();
     console.log(response);
-    setItemCategories(response)
+    setItemCategories(response);
   };
 
   return (
@@ -182,7 +180,7 @@ export default function InteriorItems() {
             query={categoryQuery}
             options={itemCategories}
             label="Danh mục"
-            allValue={null}
+            allValue={-1}
             allLabel="Tất cả"
           ></FilterAutocomplete>
 
@@ -251,7 +249,10 @@ export default function InteriorItems() {
                   </TableCell>
                   <TableCell>
                     <Image
-                      src={item?.interiorItem?.imageUrl ?? "/images/results/no-image.png"}
+                      src={
+                        item?.interiorItem?.imageUrl ??
+                        "/images/results/no-image.png"
+                      }
                       alt={item?.interiorItem?.name ?? ""}
                       width={50}
                       height={50}
@@ -265,7 +266,10 @@ export default function InteriorItems() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={projectTaskStatus[item?.projectTask?.status] ?? "Không xác định"}
+                      label={
+                        projectTaskStatus[item?.projectTask?.status] ??
+                        "Không xác định"
+                      }
                       color={
                         item?.projectTask?.status === 0 ? "default" : "primary"
                       }

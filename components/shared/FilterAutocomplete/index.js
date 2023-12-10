@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Autocomplete, FormControl, TextField } from "@mui/material";
 
-export default function FilterStatus({
+export default function FilterAutocomplete({
   query,
   options = [{ id: -1, name: "Tất cả" }],
   label,
@@ -14,7 +14,6 @@ export default function FilterStatus({
   // INIT
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialized = useRef(false);
 
   const defaultOption = { id: allValue, name: allLabel };
 
@@ -25,7 +24,7 @@ export default function FilterStatus({
   };
 
   useEffect(() => {
-    if (options && options.length > 0 && initialized.current) {
+    if (options && options.length > 0) {
       const url = new URL(window.location.href);
       const searchParamsUrl = new URLSearchParams(url.search);
       !filter || filter?.id === allValue
@@ -38,8 +37,7 @@ export default function FilterStatus({
   }, [filter]);
 
   useEffect(() => {
-    if (options && options.length > 0 && !initialized.current) {
-      initialized.current = true;
+    if (options && options.length > 0) {
       options.unshift(defaultOption);
       const id = parseInt(searchParams?.get(query));
       setFilter(options.find((option) => option.id === id) || defaultOption);

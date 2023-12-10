@@ -6,6 +6,7 @@ export default function FormText({
   sx,
   titleSpan = 4,
   fieldSpan = 8,
+  spacing = 2,
   title,
   required,
   disabled,
@@ -19,7 +20,7 @@ export default function FormText({
   onChange,
 }) {
   return (
-    <Grid container spacing={2} sx={sx}>
+    <Grid container spacing={spacing} sx={sx}>
       {title && (
         <Grid item xs={titleSpan} lg={titleSpan}>
           <Typography variant="h5">

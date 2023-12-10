@@ -11,9 +11,12 @@ const getAllInteriorItems = async ({
   pageNo = "",
 }) => {
   try {
-    const response = await fetch(`https://localhost:7062/api/InteriorItems?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `https://localhost:7062/api/InteriorItems?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Get all interior items failed");
@@ -22,7 +25,7 @@ const getAllInteriorItems = async ({
     const items = await response.json();
     return items.data;
   } catch (error) {
-    console.error('Error fetching all interior items:', error);
+    console.error("Error fetching all interior items:", error);
     throw error;
   }
 };
@@ -39,11 +42,11 @@ const getItemsByInteriorItemCategoryId = async ({
   try {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: 'no-store' }
+      { cache: "no-store" }
     );
 
     if (!response.ok) {
-      throw new Error('Get items by interior item category ID failed');
+      throw new Error("Get items by interior item category ID failed");
     }
 
     const items = await response.json();
@@ -56,22 +59,22 @@ const getItemsByInteriorItemCategoryId = async ({
 
 const createInteriorItem = async (request) => {
   try {
-    const response = await fetch('https://localhost:7062/api/InteriorItems', {
-      method: 'POST',
+    const response = await fetch("https://localhost:7062/api/InteriorItems", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(request),
     });
 
     if (!response.ok) {
-      throw new Error('Create interior item failed');
+      throw new Error("Create interior item failed");
     }
 
     const createdItem = await response.json();
     return createdItem;
   } catch (error) {
-    console.error('Error creating interior item:', error);
+    console.error("Error creating interior item:", error);
     throw error;
   }
 };
@@ -81,22 +84,22 @@ const updateInteriorItem = async (itemId, request) => {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}`,
       {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(request),
       }
     );
 
     if (!response.ok) {
-      throw new Error('Update interior item failed');
+      throw new Error("Update interior item failed");
     }
 
     const updatedItem = await response.json();
     return updatedItem;
   } catch (error) {
-    console.error('Error updating interior item:', error);
+    console.error("Error updating interior item:", error);
     throw error;
   }
 };
@@ -106,12 +109,12 @@ const deleteInteriorItem = async (itemId) => {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}`,
       {
-        method: 'DELETE',
+        method: "DELETE",
       }
     );
 
     if (!response.ok) {
-      throw new Error('Delete interior item failed');
+      throw new Error("Delete interior item failed");
     }
 
     // Assuming successful deletion doesn't return data, you can adjust as needed.
@@ -136,60 +139,13 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
     );
 
     if (!response.ok) {
-      throw new Error('Update interior item status failed');
+      throw new Error("Update interior item status failed");
     }
 
     const updatedItem = await response.json();
     return updatedItem;
   } catch (error) {
     console.error("Error updating interior item status:", error);
-    throw error;
-  }
-};
-
-const countInteriorItemsFilter = async (search, category) => {
-  const searchQuery = `(contains(Name, '${search}') or contains(EnglishName, '${search}'))`;
-  const categoryQuery = category
-    ? `and InteriorItemCategoryId eq ${category}`
-    : "";
-  try {
-    const response = await fetch(
-      `https://localhost:7062/odata/InteriorItems/$count?$filter=${searchQuery}${categoryQuery}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const count = await response.text();
-    return parseInt(count, 10);
-  } catch (error) {
-    console.error("Error fetching all interior items:", error);
-    throw error;
-  }
-};
-
-const getInteriorItemsFilter = async (search, category, page, pageSize) => {
-  const expand = `InteriorItemCategory`;
-  const searchQuery = `(contains(Name, '${search}') or contains(EnglishName, '${search}'))`;
-  const categoryQuery = category
-    ? ` and InteriorItemCategoryId eq ${category}`
-    : "";
-  const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
-  try {
-    const response = await fetch(
-      `https://localhost:7062/odata/InteriorItems?$expand=${expand}&$filter=${searchQuery}${categoryQuery}&${pagination}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const interiorItems = await response.json();
-    return mapFromOdata(interiorItems).map((item) => ({
-      ...item,
-      interiorItemCategory: convertToPascalCase(item.interiorItemCategory),
-      calculationUnit: calculationUnitIndex[item.calculationUnit],
-      status: interiorItemStatusIndex[item.status],
-    }));
-  } catch (error) {
-    console.error("Error fetching all interior items:", error);
     throw error;
   }
 };
@@ -210,8 +166,6 @@ const getInteriorItemById = async (itemId) => {
 
 export {
   getAllInteriorItems,
-  countInteriorItemsFilter,
-  getInteriorItemsFilter,
   getInteriorItemById,
   createInteriorItem,
   updateInteriorItem,
