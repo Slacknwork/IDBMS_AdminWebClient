@@ -1,7 +1,11 @@
-const getAllNotifications = async () => {
+const getAllNotifications = async ({
+    category = "",
+    pageSize = "",
+    pageNo = "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/Notifications',
+            `https://localhost:7062/api/Notifications?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,17 +14,22 @@ const getAllNotifications = async () => {
         }
 
         const notifications = await response.json();
-        return notifications;
+        return notifications.data;
     } catch (error) {
         console.error('Error fetching all notifications:', error);
         throw error;
     }
 };
 
-const getNotificationsByUserId = async (userId) => {
+const getNotificationsByUserId = async ({
+    userId = "",
+    category = "",
+    pageSize = "",
+    pageNo = "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Notifications/user/${userId}`,
+            `https://localhost:7062/api/Notifications/user/${userId}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 

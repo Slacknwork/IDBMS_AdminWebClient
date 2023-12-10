@@ -1,7 +1,11 @@
-const getAllTaskReports = async () => {
+const getAllTaskReports = async ({
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/TaskReports',
+            `https://localhost:7062/api/TaskReports?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,17 +14,22 @@ const getAllTaskReports = async () => {
         }
 
         const reports = await response.json();
-        return reports;
+        return reports.data;
     } catch (error) {
         console.error('Error fetching all task reports:', error);
         throw error;
     }
 };
 
-const getTaskReportsByProjectTaskId = async (projectTaskId) => {
+const getTaskReportsByProjectTaskId = async ({
+    projectTaskId = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/TaskReports/project-task/${projectTaskId}`,
+            `https://localhost:7062/api/TaskReports/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -29,7 +38,7 @@ const getTaskReportsByProjectTaskId = async (projectTaskId) => {
         }
 
         const reports = await response.json();
-        return reports;
+        return reports.data;
     } catch (error) {
         console.error('Error fetching task reports by project task ID:', error);
         throw error;

@@ -1,7 +1,12 @@
-const getAllProjectParticipations = async () => {
+const getAllProjectParticipations = async ({
+    role = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/ProjectParticipations',
+            `https://localhost:7062/api/ProjectParticipations?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,17 +15,23 @@ const getAllProjectParticipations = async () => {
         }
 
         const participations = await response.json();
-        return participations;
+        return participations.data;
     } catch (error) {
         console.error('Error fetching all project participations:', error);
         throw error;
     }
 };
 
-const getParticipationsByUserId = async (userId) => {
+const getParticipationsByUserId = async ({
+    userId = "",
+    role = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/ProjectParticipations/user/${userId}`,
+            `https://localhost:7062/api/ProjectParticipations/user/${userId}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -29,7 +40,7 @@ const getParticipationsByUserId = async (userId) => {
         }
 
         const participations = await response.json();
-        return participations;
+        return participations.data;
     } catch (error) {
         console.error('Error fetching participations by user ID:', error);
         throw error;

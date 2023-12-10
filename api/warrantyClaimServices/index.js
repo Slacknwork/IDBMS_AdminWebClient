@@ -1,39 +1,56 @@
-const getAllWarrantyClaims = async () => {
+const getAllWarrantyClaims = async ({
+    isCompanyCover = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/WarrantyClaims`,
+            `https://localhost:7062/api/WarrantyClaims?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const warrantyClaims = await response.json();
-        return warrantyClaims;
+        return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching all warranty claims:', error);
         throw error;
     }
 };
 
-const getWarrantyClaimsByProjectId = async (projectId) => {
+const getWarrantyClaimsByProjectId = async ({
+    projectId = "",
+    isCompanyCover = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/WarrantyClaims/project/${projectId}`,
+            `https://localhost:7062/api/WarrantyClaims/project/${projectId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const warrantyClaims = await response.json();
-        return warrantyClaims;
+        return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching warranty claims by project ID:', error);
         throw error;
     }
 };
 
-const getWarrantyClaimsByUserId = async (userId) => {
+const getWarrantyClaimsByUserId = async ({
+    userId = "",
+    isCompanyCover = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/WarrantyClaims/user/${userId}`,
+            `https://localhost:7062/api/WarrantyClaims/user/${userId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const warrantyClaims = await response.json();
-        return warrantyClaims;
+        return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching warranty claims by user ID:', error);
         throw error;

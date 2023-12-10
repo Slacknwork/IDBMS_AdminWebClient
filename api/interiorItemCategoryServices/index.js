@@ -1,7 +1,12 @@
-const getAllInteriorItemCategories = async () => {
+const getAllInteriorItemCategories = async ({
+    type = "",
+    name = "",
+    pageSize = "",
+    pageNo = "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/InteriorItemCategories',
+            `https://localhost:7062/api/InteriorItemCategories?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,7 +15,7 @@ const getAllInteriorItemCategories = async () => {
         }
 
         const categories = await response.json();
-        return categories;
+        return categories.data;
     } catch (error) {
         console.error('Error fetching all interior item categories:', error);
         throw error;
