@@ -1,7 +1,12 @@
-const getAllProjectDocuments = async () => {
+const getAllProjectDocuments = async ({
+    category = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/ProjectDocuments',
+            `https://localhost:7062/api/ProjectDocuments?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,17 +15,23 @@ const getAllProjectDocuments = async () => {
         }
 
         const documents = await response.json();
-        return documents;
+        return documents.data;
     } catch (error) {
         console.error('Error fetching all project documents:', error);
         throw error;
     }
 };
 
-const getDocumentsByDocumentTemplateId = async (documentTemplateId) => {
+const getDocumentsByDocumentTemplateId = async ({
+    documentTemplateId = "",
+    category = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/ProjectDocuments/document-template/${documentTemplateId}`,
+            `https://localhost:7062/api/ProjectDocuments/document-template/${documentTemplateId}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -29,7 +40,7 @@ const getDocumentsByDocumentTemplateId = async (documentTemplateId) => {
         }
 
         const documents = await response.json();
-        return documents;
+        return documents.data;
     } catch (error) {
         console.error('Error fetching documents by document template ID:', error);
         throw error;

@@ -1,8 +1,14 @@
 const apiUrl = "https://localhost:7062/api/RoomTypes";
 
-const getAllRoomTypes = async () => {
+const getAllRoomTypes = async ({
+  isHidden = "",
+  name = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
-    const response = await fetch(apiUrl, { cache: "no-store" });
+    const paramString = `isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetch(`${apiUrl}?${paramString}`, { cache: "no-store" });
 
     if (!response.ok) {
       throw new Error("Get room types failed");

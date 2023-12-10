@@ -1,7 +1,13 @@
-const getAllProjectDesigns = async () => {
+const getAllProjectDesigns = async ({
+    type = "",
+    name = "",
+    isHidden = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/ProjectDesigns',
+            `https://localhost:7062/api/ProjectDesigns?type=${type}&name=${name}&isHidden=${isHidden}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,7 +16,7 @@ const getAllProjectDesigns = async () => {
         }
 
         const designs = await response.json();
-        return designs;
+        return designs.data;
     } catch (error) {
         console.error('Error fetching all project designs:', error);
         throw error;

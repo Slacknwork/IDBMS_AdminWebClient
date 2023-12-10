@@ -1,27 +1,37 @@
 import { mapFromOdata } from "/utils/odata";
 
-const getSitesByProjectId = async (projectId) => {
+const getSitesByProjectId = async ({
+  projectId = "",
+  nameOrAddress = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/Sites/project/${projectId}`,
+      `https://localhost:7062/api/Sites/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: "no-store" }
     );
     const sites = await response.json();
-    return sites;
+    return sites.data;
   } catch (error) {
     console.error("Error fetching sites by project ID:", error);
     throw error;
   }
 };
 
-const getSitesByUserId = async (userId) => {
+const getSitesByUserId = async ({
+  userId = "",
+  nameOrAddress = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/Sites/user/${userId}`,
+      `https://localhost:7062/api/Sites/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: "no-store" }
     );
     const sites = await response.json();
-    return sites;
+    return sites.data;
   } catch (error) {
     console.error("Error fetching sites by user ID:", error);
     throw error;

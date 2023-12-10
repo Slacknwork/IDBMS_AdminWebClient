@@ -1,39 +1,56 @@
-const getAllTransactions = async () => {
+const getAllTransactions = async ({
+    type = "",
+    status = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions`,
+            `https://localhost:7062/api/Transactions?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
-        return transactions;
+        return transactions.data;
     } catch (error) {
         console.error('Error fetching all transactions:', error);
         throw error;
     }
 };
 
-const getTransactionsByProjectId = async (projectId) => {
+const getTransactionsByProjectId = async ({
+    projectId = "",
+    type = "",
+    status = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/project/${projectId}`,
+            `https://localhost:7062/api/Transactions/project/${projectId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
-        return transactions;
+        return transactions.data;
     } catch (error) {
         console.error('Error fetching transactions by project ID:', error);
         throw error;
     }
 };
 
-const getTransactionsByUserId = async (userId) => {
+const getTransactionsByUserId = async ({
+    userId = "",
+    type = "",
+    status = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/user/${userId}`,
+            `https://localhost:7062/api/Transactions/user/${userId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
-        return transactions;
+        return transactions.data;
     } catch (error) {
         console.error('Error fetching transactions by user ID:', error);
         throw error;

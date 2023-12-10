@@ -6,11 +6,17 @@ const API_BASE_URL = "https://localhost:7062/api/users";
 const API_ODATA_URL = "https://localhost:7062/odata/Users";
 
 // Fetch all users
-const getAllUsers = async () => {
+const getAllUsers = async ({
+  nameOrEmail = "",
+  status = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
-    const response = await fetch(API_BASE_URL);
+    const paramString = `nameOrEmail=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetch(`${API_BASE_URL}?${paramString}`);
     const users = await response.json();
-    return users;
+    return users.data;
   } catch (error) {
     console.error("Error fetching all users:", error);
     throw error;

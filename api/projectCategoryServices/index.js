@@ -1,7 +1,12 @@
-const getProjectCategories = async () => {
+const getProjectCategories = async ({
+  isHidden = "",
+  name = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectCategories`,
+      `https://localhost:7062/api/ProjectCategories?isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: "no-store" }
     );
     const projectCategories = await response.json();

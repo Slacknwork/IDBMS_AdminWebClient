@@ -2,9 +2,16 @@ import { mapFromOdata, convertToPascalCase } from "/utils/odata";
 import { calculationUnitIndex } from "/constants/enums/calculationUnit";
 import { interiorItemStatusIndex } from "/constants/enums/interiorItemStatus";
 
-const getAllInteriorItems = async () => {
+const getAllInteriorItems = async ({
+  itemCategoryId = "",
+  status = "",
+  codeOrName = "",
+  itemType = "",
+  pageSize = "",
+  pageNo = "",
+}) => {
   try {
-    const response = await fetch("https://localhost:7062/api/InteriorItems", {
+    const response = await fetch(`https://localhost:7062/api/InteriorItems?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`, {
       cache: "no-store",
     });
 
@@ -13,17 +20,25 @@ const getAllInteriorItems = async () => {
     }
 
     const items = await response.json();
-    return items;
+    return items.data;
   } catch (error) {
     console.error('Error fetching all interior items:', error);
     throw error;
   }
 };
 
-const getItemsByInteriorItemCategoryId = async (categoryId) => {
+const getItemsByInteriorItemCategoryId = async ({
+  categoryId = "",
+  itemCategoryId = "",
+  status = "",
+  codeOrName = "",
+  itemType = "",
+  pageSize = "",
+  pageNo = "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}`,
+      `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: 'no-store' }
     );
 
@@ -32,7 +47,7 @@ const getItemsByInteriorItemCategoryId = async (categoryId) => {
     }
 
     const items = await response.json();
-    return items;
+    return items.data;
   } catch (error) {
     console.error("Error fetching items by interior item category ID:", error);
     throw error;

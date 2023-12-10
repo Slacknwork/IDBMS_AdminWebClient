@@ -1,6 +1,11 @@
-const getAllTaskCategories = async () => {
+const getAllTaskCategories = async ({
+  type = "",
+  name = "",
+  pageSize = "",
+  pageNo= "",
+}) => {
   try {
-    const response = await fetch("https://localhost:7062/api/TaskCategories", {
+    const response = await fetch(`https://localhost:7062/api/TaskCategories?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`, {
       cache: "no-store",
     });
 
@@ -9,7 +14,7 @@ const getAllTaskCategories = async () => {
     }
 
     const categories = await response.json();
-    return categories;
+    return categories.data;
   } catch (error) {
     console.error("Error fetching all task categories:", error);
     throw error;
