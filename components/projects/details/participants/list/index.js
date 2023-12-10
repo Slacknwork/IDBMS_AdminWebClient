@@ -109,6 +109,8 @@ export default function Comments() {
 
   // PARTICIPATIONS
   const [participations, setParticipations] = useState([]);
+  const [projectOwner, setProjectOwner] = useState("");
+  const [projectManager, setProjectManager] = useState("");
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
@@ -129,9 +131,22 @@ export default function Comments() {
       pageSize,
     });
     console.log(response);
-    setParticipations(response?.list ?? []);
-    // const filteredParticipations = (response?.list ?? []).filter(participation => participation.role !== 0);
-    setCount(response?.totalItem ?? 0);
+
+    const filteredParticipations = (response?.list ?? [])
+      .filter(participation => participation.role !== 0 && participation.role !== 5);
+
+    setParticipations(filteredParticipations);
+    setCount(filteredParticipations?.length ?? 0);
+
+    setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
+    setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+  };
+
+  const getAvatarContent = (name) => {
+    const words = name.split(" ");
+    const lastWord = words.length > 0 ? words[words.length - 1] : "";
+    const firstCharacter = lastWord.charAt(0).toUpperCase();
+    return firstCharacter;
   };
 
   return (
@@ -153,12 +168,14 @@ export default function Comments() {
                 Chủ dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                  {getAvatarContent(projectOwner?.user?.name ?? "E")}
+                </Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@mail.com</Typography>
+                  <Typography variant="h6">{projectOwner?.user?.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectOwner?.user?.email ?? "..."}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{projectOwner?.user?.phone ?? "..."}</Typography>
                   <br />
                 </Box>
               </Box>
@@ -186,12 +203,14 @@ export default function Comments() {
                 Quản lý dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>N</Avatar>
+                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
+                  {getAvatarContent(projectManager?.user?.name ?? "E")}
+                </Avatar>
                 <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">Anthony N</Typography>
-                  <Typography variant="p">anthony@mail.com</Typography>
+                  <Typography variant="h6">{projectManager?.user?.name ?? "Không tìm thấy"}</Typography>
+                  <Typography variant="p">{projectManager?.user?.email ?? "..."}</Typography>
                   <br />
-                  <Typography variant="p">0123456789</Typography>
+                  <Typography variant="p">{projectManager?.user?.phone ?? "..."}</Typography>
                   <br />
                 </Box>
               </Box>
