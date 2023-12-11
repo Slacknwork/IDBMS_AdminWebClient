@@ -1,12 +1,13 @@
 const getAllTransactions = async ({
+    payerName = "",
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 }) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
+            `https://localhost:7062/api/Transactions?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
@@ -19,14 +20,15 @@ const getAllTransactions = async ({
 
 const getTransactionsByProjectId = async ({
     projectId = "",
+    search = "",
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 }) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/project/${projectId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
+            `https://localhost:7062/api/Transactions/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
@@ -39,14 +41,15 @@ const getTransactionsByProjectId = async ({
 
 const getTransactionsByUserId = async ({
     userId = "",
+    payerName = "",
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 }) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Transactions/user/${userId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
+            `https://localhost:7062/api/Transactions/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
         const transactions = await response.json();
