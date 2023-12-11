@@ -38,6 +38,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
+import UserCard from "/components/shared/UserCard";
 
 const participants = [
   {
@@ -141,14 +142,6 @@ export default function Comments() {
     fetchDataFromApi();
   }, [searchParams]);
 
-
-  const getAvatarContent = (name) => {
-    const words = name.split(" ");
-    const lastWord = words.length > 0 ? words[words.length - 1] : "";
-    const firstCharacter = lastWord.charAt(0).toUpperCase();
-    return firstCharacter;
-  };
-
   return (
     <Box sx={{ overflow: "auto" }}>
       <Grid container spacing={4}>
@@ -168,16 +161,11 @@ export default function Comments() {
                 Chủ dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                  {getAvatarContent(projectOwner?.user?.name ?? "E")}
-                </Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">{projectOwner?.user?.name ?? "Không tìm thấy"}</Typography>
-                  <Typography variant="p">{projectOwner?.user?.email ?? "..."}</Typography>
-                  <br />
-                  <Typography variant="p">{projectOwner?.user?.phone ?? "..."}</Typography>
-                  <br />
-                </Box>
+                <UserCard
+                  name={projectOwner?.user?.name ?? "Không tìm thấy"}
+                  email={projectOwner?.user?.email ?? "..."}
+                  phone={projectOwner?.user?.phone ?? "..."}
+                ></UserCard>
               </Box>
             </Box>
             <Box>
@@ -203,16 +191,11 @@ export default function Comments() {
                 Quản lý dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                  {getAvatarContent(projectManager?.user?.name ?? "E")}
-                </Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">{projectManager?.user?.name ?? "Không tìm thấy"}</Typography>
-                  <Typography variant="p">{projectManager?.user?.email ?? "..."}</Typography>
-                  <br />
-                  <Typography variant="p">{projectManager?.user?.phone ?? "..."}</Typography>
-                  <br />
-                </Box>
+                <UserCard
+                  name={projectManager?.user?.name ?? "Không tìm thấy"}
+                  email={projectManager?.user?.email ?? "..."}
+                  phone={projectManager?.user?.phone ?? "..."}
+                ></UserCard>
               </Box>
             </Box>
             <Box>

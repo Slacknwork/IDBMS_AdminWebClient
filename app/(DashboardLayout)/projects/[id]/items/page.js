@@ -198,9 +198,9 @@ export default function InteriorItems() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <ItemModal>
+        {/* <ItemModal>
           <span>Tạo</span>
-        </ItemModal>
+        </ItemModal> */}
       </Box>
 
       {(items && items.length) > 0 ? (
