@@ -11,7 +11,7 @@ const getAllUsers = async ({
   status = "",
   pageSize = "",
   pageNo= "",
-}) => {
+} = {}) => {
   try {
     const paramString = `nameOrEmail=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetch(`${API_BASE_URL}?${paramString}`);

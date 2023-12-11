@@ -7,7 +7,7 @@ const getProjectTasksByProjectId = async ({
   roomId = "",
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&stageId=${stageId}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,

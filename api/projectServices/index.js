@@ -8,7 +8,7 @@ const getProjects = async ({
   status = "",
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Projects?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
@@ -126,7 +126,7 @@ const getProjectsBySiteId = async ({
   status = "",
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Projects/site/${siteId}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,

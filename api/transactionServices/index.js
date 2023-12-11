@@ -3,8 +3,8 @@ const getAllTransactions = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo = "",
-}) => {
+    pageNo= "",
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -24,8 +24,8 @@ const getTransactionsByProjectId = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo = "",
-}) => {
+    pageNo= "",
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -45,8 +45,8 @@ const getTransactionsByUserId = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo = "",
-}) => {
+    pageNo= "",
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,

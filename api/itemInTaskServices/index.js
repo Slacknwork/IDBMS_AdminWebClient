@@ -25,7 +25,7 @@ const getItemInTasksByProjectId = async ({
     status = "",
     page = "",
     pageSize = "",
-}) => {
+} = {}) => {
     try {
         const paramString = `name=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(

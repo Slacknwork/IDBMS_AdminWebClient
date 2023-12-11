@@ -3,7 +3,7 @@ const getAllProjectParticipations = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -28,7 +28,7 @@ const getParticipationsByUserId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/user/${userId}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -53,7 +53,7 @@ const getParticipationsByProjectId = async ({
     role = "",
     page = "",
     pageSize = "",
-}) => {
+} = {}) => {
     try {
         const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
