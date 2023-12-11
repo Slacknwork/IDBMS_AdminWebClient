@@ -35,7 +35,8 @@ const userOptions = [
   { id: "2", name: "user 2", email: "user2@mail.com", phone: "01234567890" },
 ];
 
-export default function DocumentModal({ children }) {
+export default function ParticipationModal({ children }) {
+
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -58,6 +59,25 @@ export default function DocumentModal({ children }) {
       [field]: value,
       [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
     }));
+  };
+
+  const [filterList, setFilterList] = useState([]);
+
+  const handleRoleChange = () => {
+    // check role hien tai
+    // filter list user
+    // setFilterList = listuser.filter(role===role hien tai)
+  }
+
+  const handleCreateParticipation = () => {
+    const request = {
+      description: "formData.description" ?? "",
+      usePurpose: "formData.usePurpose" ?? "",
+      floorNo: "formData.floorNo" ?? "",
+      projectId: "params.id" ?? "",
+    };
+
+    // handleClose()
   };
 
   return (
@@ -116,7 +136,7 @@ export default function DocumentModal({ children }) {
                   <FormControl fullWidth>
                     <Autocomplete
                       multiple
-                      options={userOptions} // Assuming you have an array of user options
+                      options={userOptions} // filterList
                       getOptionLabel={(option) => option.name} // Replace with the actual property for user name
                       value={formData.user}
                       onChange={(event, newValue) =>
@@ -182,7 +202,7 @@ export default function DocumentModal({ children }) {
                 <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={handleCreateParticipation}
                 >
                   Tạo
                 </Button>

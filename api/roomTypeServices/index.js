@@ -5,7 +5,7 @@ const getAllRoomTypes = async ({
   name = "",
   pageSize = "",
   pageNo = "",
-}) => {
+} = {}) => {
   try {
     const paramString = `isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetch(`${apiUrl}?${paramString}`, {

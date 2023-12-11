@@ -10,7 +10,8 @@ const getItemInTaskById = async (itemId) => {
             throw new Error(`Get ItemInTask by ID ${itemId} failed`);
         }
 
-        return await response.json();
+        const items = await response.json();
+        return items.data;
     } catch (error) {
         console.error(`Error fetching ItemInTask by ID ${itemId}:`, error);
         throw error;
@@ -36,7 +37,8 @@ const getItemInTasksByProjectId = async ({
             throw new Error(`Get ItemInTasks by Project ID ${projectId} failed`);
         }
 
-        return await response.json();
+        const items = await response.json();
+        return items.data;
     } catch (error) {
         console.error(`Error fetching ItemInTasks by Project ID ${projectId}:`, error);
         throw error;
@@ -54,7 +56,8 @@ const getItemInTasksByTaskId = async (taskId) => {
             throw new Error(`Get ItemInTasks by Task ID ${taskId} failed`);
         }
 
-        return await response.json();
+        const items = await response.json();
+        return items.data;
     } catch (error) {
         console.error(`Error fetching ItemInTasks by Task ID ${taskId}:`, error);
         throw error;

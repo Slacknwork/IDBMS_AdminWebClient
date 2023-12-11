@@ -129,8 +129,8 @@ export default function InteriorItems() {
           pageSize,
         });
         console.log(response);
-        setItems(response?.data?.list ?? []);
-        setCount(response?.data?.totalItem ?? 0);
+        setItems(response?.list ?? []);
+        setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
