@@ -3,10 +3,14 @@
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
-import { getAllInteriorItems } from "/api/interiorItemServices";
+import {
+  getAllInteriorItems,
+  createInteriorItem,
+} from "/api/interiorItemServices";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
@@ -15,17 +19,24 @@ import TextForm from "/components/shared/Forms/Text";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 
 export default function CreateItemModal() {
+  // INIT
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     code: "",
+    codeError: { hasError: false, label: "" },
     name: "",
     nameError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
     englishName: "",
     englishNameError: { hasError: false, label: "" },
+    image: null,
+    imageError: { hasError: false, label: "" },
     length: 0,
     lengthError: { hasError: false, label: "" },
     width: 0,
@@ -46,7 +57,7 @@ export default function CreateItemModal() {
     interiorItemCategoryIdError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
-    parentItemId: { id: 1, name: "" },
+    parentItemId: "",
     parentItemIdError: { hasError: false, label: "" },
   });
 
@@ -111,13 +122,40 @@ export default function CreateItemModal() {
     }));
   };
 
+  const onCreateInteriorItem = async () => {
+    try {
+      const response = await createInteriorItem(formData);
+      toast.success(`Đã tạo '${formData?.name}!'`);
+      router.push(`/items/${response?.id}`);
+    } catch (error) {
+      console.log(`Error creating item: ${error}`);
+      toast.error(`Lỗi tạo sản phẩm!`);
+    }
+  };
+
   return (
     <FormModal
       buttonLabel="Tạo đồ dùng"
       title="Tạo đồ dùng"
       submitLabel="Tạo"
+      onSubmit={onCreateInteriorItem}
       size="big"
     >
+      {/* CODE */}
+      <Grid item xs={12} lg={12}>
+        <TextForm
+          title="Mã"
+          titleSpan={3}
+          fieldSpan={9}
+          required
+          subtitle="Mã sản phẩm"
+          value={formData.code}
+          error={formData.codeError.hasError}
+          errorLabel={formData.codeError.label}
+          onChange={(e) => handleInputChange("code", e.target.value)}
+        ></TextForm>
+      </Grid>
+
       {/* NAME */}
       <Grid item xs={12} lg={12}>
         <TextForm
@@ -131,6 +169,21 @@ export default function CreateItemModal() {
           errorLabel={formData.nameError.label}
           onChange={(e) => handleInputChange("name", e.target.value)}
         ></TextForm>
+      </Grid>
+
+      {/* IMAGE */}
+      <Grid item xs={12} lg={12}>
+        <FileForm
+          title="Hình ảnh"
+          titleSpan={3}
+          fieldSpan={9}
+          required
+          subtitle="Kéo thả / chọn hình ảnh cho sản phẩm"
+          value={formData.image}
+          error={formData.imageError.hasError}
+          errorLabel={formData.imageError.label}
+          onChange={(file) => handleInputChange("image", file)}
+        ></FileForm>
       </Grid>
 
       {/* LENGTH */}
@@ -308,8 +361,8 @@ export default function CreateItemModal() {
         <AutocompleteForm
           titleSpan={3}
           fieldSpan={9}
-          title="Sản phẩm tiền bối"
-          subtitle="Chọn sản phẩm tiền bối"
+          title="Sản phẩm mẫu"
+          subtitle="Chọn sản phẩm mẫu của phiên bản này"
           value={formData.parentItemId}
           options={parentItems}
           error={formData.parentItemIdError.hasError}

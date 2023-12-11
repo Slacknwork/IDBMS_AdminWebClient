@@ -59,12 +59,17 @@ const getItemsByInteriorItemCategoryId = async ({
 
 const createInteriorItem = async (request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch("https://localhost:7062/api/InteriorItems", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+      body: formData,
     });
 
     if (!response.ok) {

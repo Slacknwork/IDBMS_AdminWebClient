@@ -177,17 +177,17 @@ export default function ItemListPage() {
               <StyledTableRow key={item.id}>
                 <TableCell>
                   <Image
-                    src={
-                      item?.interiorItem?.imageUrl ??
-                      "/images/results/no-image.png"
-                    }
-                    alt={item?.interiorItem?.name ?? ""}
+                    src={item.imageUrl ?? "/images/results/no-image.png"}
+                    alt={item.name ?? ""}
                     width={100}
                     height={100}
                     objectFit="cover"
                   />
                 </TableCell>
                 <TableCell>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    {item?.code}
+                  </Typography>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {item?.name}
                   </Typography>
