@@ -15,6 +15,8 @@ import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices"
 import {
   getAllInteriorItems,
   getInteriorItemById,
+  updateInteriorItem,
+  deleteInteriorItem,
 } from "/api/interiorItemServices";
 
 import DetailsPage from "/components/shared/DetailsPage";
@@ -131,8 +133,24 @@ export default function ItemDetails() {
     fetchDataFromApi();
   }, []);
 
-  const onSaveInteriorItem = () => {};
-  const onDeleteInteriorItem = () => {};
+  const onSaveInteriorItem = () => {
+    try {
+      const response = updateInteriorItem(params.id, formData);
+      toast.success("Cập nhật thành công!");
+    } catch (error) {
+      toast.error("Lỗi cập nhật!");
+      console.log(error);
+    }
+  };
+  const onDeleteInteriorItem = () => {
+    try {
+      const response = deleteInteriorItem(params.id);
+      toast.success("Cập nhật thành công!");
+    } catch (error) {
+      toast.error("Lỗi cập nhật!");
+      console.log(error);
+    }
+  };
 
   return (
     <PageContainer title={formData.name} description="Chi tiết sản phẩm">
