@@ -3,7 +3,7 @@ const getAllInteriorItemColors = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemColors?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -28,7 +28,7 @@ const getColorByInteriorItemCategoryId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemColors/interior-item-category/${categoryId}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,

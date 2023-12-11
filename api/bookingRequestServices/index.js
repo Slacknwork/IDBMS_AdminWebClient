@@ -4,7 +4,7 @@ const getBookingRequests = async ({
   search = "",
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/BookingRequests?type=${type}&status=${status}&contactName=${search}&pageNo=${page}&pageSize=${pageSize}`,

@@ -3,7 +3,7 @@ const getAllProjectDocuments = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -28,7 +28,7 @@ const getDocumentsByDocumentTemplateId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/document-template/${documentTemplateId}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -53,7 +53,7 @@ const getDocumentsByProjectId = async ({
     categoryEnum = "",
     page = "",
     pageSize = "",
-}) => {
+} = {}) => {
     try {
         const paramString = `name=${search}&category=${categoryEnum}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
