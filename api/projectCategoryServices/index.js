@@ -3,7 +3,7 @@ const getProjectCategories = async ({
   name = "",
   pageSize = "",
   pageNo = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/ProjectCategories?isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,

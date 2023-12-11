@@ -3,7 +3,7 @@ const getAllTransactions = async ({
     status = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -23,7 +23,7 @@ const getTransactionsByProjectId = async ({
     status = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions/project/${projectId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -43,7 +43,7 @@ const getTransactionsByUserId = async ({
     status = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Transactions/user/${userId}?type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,

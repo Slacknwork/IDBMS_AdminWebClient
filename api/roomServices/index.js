@@ -4,7 +4,7 @@ const getRoomsByFloorId = async ({
   isHidden = false,
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Rooms/floor/${floorId}?usePurpose=${search}&isHidden=${isHidden}&pageNo=${page}&pageSize=${pageSize}`,

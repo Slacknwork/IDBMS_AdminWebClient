@@ -2,7 +2,7 @@ const getAllNotifications = async ({
     category = "",
     pageSize = "",
     pageNo = "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Notifications?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -26,7 +26,7 @@ const getNotificationsByUserId = async ({
     category = "",
     pageSize = "",
     pageNo = "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/Notifications/user/${userId}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`,
