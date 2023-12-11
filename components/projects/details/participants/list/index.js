@@ -38,6 +38,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
+import UserCard from "/components/shared/UserCard";
 
 const participants = [
   {
@@ -91,22 +92,6 @@ export default function Comments() {
   const searchParams = useSearchParams();
   moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-  // FETCH
-  const fetchDataFromApi = async () => {
-    try {
-      await fetchParticipations();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, [searchParams]);
-
   // PARTICIPATIONS
   const [participations, setParticipations] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
@@ -114,40 +99,48 @@ export default function Comments() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  const fetchParticipations = async () => {
+  // FETCH DATA 
+  const fetchDataFromApi = async () => {
+    const fetchParticipations = async () => {
 
-    const projectId = params.id;
-    const search = searchParams.get(searchQuery) || "";
-    const role = searchParams.get(roleQuery) || "";
-    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const projectId = params.id;
+      const search = searchParams.get(searchQuery) || "";
+      const role = searchParams.get(roleQuery) || "";
+      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const response = await getParticipationsByProjectId({
-      projectId,
-      search,
-      role,
-      page,
-      pageSize,
-    });
-    console.log(response);
+      try {
+        const response = await getParticipationsByProjectId({
+          projectId,
+          search,
+          role,
+          page,
+          pageSize,
+        });
+        console.log(response);
 
-    const filteredParticipations = (response?.list ?? [])
-      .filter(participation => participation.role !== 0 && participation.role !== 5);
+        const filteredParticipations = (response?.list ?? [])
+          .filter(participation => participation.role !== 0 && participation.role !== 5);
 
-    setParticipations(filteredParticipations);
-    setCount(filteredParticipations?.length ?? 0);
+        setParticipations(filteredParticipations);
+        setCount(filteredParticipations?.length ?? 0);
 
-    setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
-    setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+        setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
+        setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchParticipations(),
+    ]);
+    setLoading(false);
   };
 
-  const getAvatarContent = (name) => {
-    const words = name.split(" ");
-    const lastWord = words.length > 0 ? words[words.length - 1] : "";
-    const firstCharacter = lastWord.charAt(0).toUpperCase();
-    return firstCharacter;
-  };
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
 
   return (
     <Box sx={{ overflow: "auto" }}>
@@ -168,16 +161,11 @@ export default function Comments() {
                 Chủ dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                  {getAvatarContent(projectOwner?.user?.name ?? "E")}
-                </Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">{projectOwner?.user?.name ?? "Không tìm thấy"}</Typography>
-                  <Typography variant="p">{projectOwner?.user?.email ?? "..."}</Typography>
-                  <br />
-                  <Typography variant="p">{projectOwner?.user?.phone ?? "..."}</Typography>
-                  <br />
-                </Box>
+                <UserCard
+                  name={projectOwner?.user?.name ?? "Không tìm thấy"}
+                  email={projectOwner?.user?.email ?? "..."}
+                  phone={projectOwner?.user?.phone ?? "..."}
+                ></UserCard>
               </Box>
             </Box>
             <Box>
@@ -203,16 +191,11 @@ export default function Comments() {
                 Quản lý dự án
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
-                <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                  {getAvatarContent(projectManager?.user?.name ?? "E")}
-                </Avatar>
-                <Box sx={{ my: "auto", mx: 2 }}>
-                  <Typography variant="h6">{projectManager?.user?.name ?? "Không tìm thấy"}</Typography>
-                  <Typography variant="p">{projectManager?.user?.email ?? "..."}</Typography>
-                  <br />
-                  <Typography variant="p">{projectManager?.user?.phone ?? "..."}</Typography>
-                  <br />
-                </Box>
+                <UserCard
+                  name={projectManager?.user?.name ?? "Không tìm thấy"}
+                  email={projectManager?.user?.email ?? "..."}
+                  phone={projectManager?.user?.phone ?? "..."}
+                ></UserCard>
               </Box>
             </Box>
             <Box>
@@ -229,7 +212,9 @@ export default function Comments() {
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
       >
         <Box sx={{ display: "flex" }}>
-          <Search></Search>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
           <FilterComponent
             query={roleQuery}

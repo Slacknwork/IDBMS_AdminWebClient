@@ -20,11 +20,20 @@ import {
   InputAdornment,
   Select,
   MenuItem,
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getProjectCategories } from "../../../api/projectCategoryServices";
 import Image from "next/image";
+
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import FilterAutocomplete from "/components/shared/FilterAutocomplete";
+import FilterStatus from "/components/shared/FilterStatus";
 
 const projects = [
   {
@@ -58,29 +67,66 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const isHiddenOptions = ["Đang hoạt động", "Đang ẩn"];
+
 export default function ProjectList() {
 
+  const searchQuery = "search";
+
+  const isHiddenQuery = "isHidden";
+  const isHiddenAllValue = -1;
+
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // ROOMTYPES
   const [projectCategories, setProjectCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
+  const [count, setCount] = useState(0);
+
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+    const fetchRoomTypes = async () => {
+      const name = searchParams.get(searchQuery) || "";
+      const isHidden =
+        searchParams.get(isHiddenQuery) === '1' ?
+          true : searchParams.get(isHiddenQuery) === null ?
+            "" : false;
+      const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+      try {
+        const response = await getProjectCategories({
+          isHidden,
+          name,
+          pageSize,
+          pageNo,
+        });
+        console.log(response);
+        setProjectCategories(response?.list ?? []);
+        setCount(response?.totalItem ?? 0);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Phân Loại Dự Án' từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchRoomTypes(),
+    ]);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      const fetchDataFromApi = async () => {
-        try {
-          const data = await getProjectCategories();
-          console.log(data);
-          setProjectCategories(data);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
-        }
-      };
-      fetchDataFromApi();
-    }
-  }, []);
+    fetchDataFromApi();
+  }, [searchParams]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>

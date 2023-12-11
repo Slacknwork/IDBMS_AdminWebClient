@@ -108,7 +108,6 @@ export default function DocumentModal({ children, projectDocument }) {
       >
         <Box sx={{ ...style }} component="div">
           <Box
-            container
             sx={{
               display: "flex",
               justifyContent: "space-between",

@@ -12,11 +12,20 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllRoomTypes } from "../../../api/roomTypeServices";
 import Image from "next/image";
+
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+
+import Pagination from "/components/shared/Pagination";
+import Search from "/components/shared/Search";
+import FilterAutocomplete from "/components/shared/FilterAutocomplete";
+import FilterStatus from "/components/shared/FilterStatus";
 
 const products = [
   {
@@ -49,132 +58,201 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const isHiddenOptions = ["Đang hoạt động", "Đang ẩn"];
+
 export default function ProjectList() {
 
+  const searchQuery = "search";
+
+  const isHiddenQuery = "isHidden";
+  const isHiddenAllValue = -1;
+
+  const pageQuery = "page";
+  const defaultPage = 1;
+
+  const pageSizeQuery = "size";
+  const defaultPageSize = 5;
+
+  const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // ROOMTYPES
   const [roomTypes, setRoomTypes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
+  const [count, setCount] = useState(0);
+
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+    const fetchRoomTypes = async () => {
+      const name = searchParams.get(searchQuery) || "";
+      const isHidden =
+        searchParams.get(isHiddenQuery) === '1' ?
+          true : searchParams.get(isHiddenQuery) === null ?
+            "" : false;
+      const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+      try {
+        const response = await getAllRoomTypes({
+          isHidden,
+          name,
+          pageSize,
+          pageNo,
+        });
+        console.log(response);
+        setRoomTypes(response?.list ?? []);
+        setCount(response?.totalItem ?? 0);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Loại Phòng' từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchRoomTypes(),
+    ]);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      const fetchDataFromApi = async () => {
-        try {
-          const data = await getAllRoomTypes();
-          console.log(data);
-          setRoomTypes(data);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
-        }
-      };
-      fetchDataFromApi();
-    }
-  }, []);
+    fetchDataFromApi();
+  }, [searchParams]);
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Table
-        aria-label="simple table"
-        sx={{
-          whiteSpace: "nowrap",
-          mt: 2,
-        }}
-      >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Ảnh 
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Mô tả
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Giá mỗi diện tích
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Icon
-              </Typography>
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {roomTypes.map((roomType) => (
-            <StyledTableRow key={roomType.id}>
-              <TableCell>
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {roomType.id}
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
+
+          <FilterStatus
+            query={isHiddenQuery}
+            options={isHiddenOptions}
+            label="Trạng thái"
+            allValue={isHiddenAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
+        </Box>
+        {/* <ItemModal>
+          <span>Tạo</span>
+        </ItemModal> */}
+      </Box>
+      {(roomTypes && roomTypes.length) > 0 ? (
+        <Table
+          aria-label="simple table"
+          sx={{
+            whiteSpace: "nowrap",
+            mt: 2,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Số
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {roomType.name}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên
                 </Typography>
-              </TableCell>
-              <TableCell>
-              <Image src={roomType.imageUrl}
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ảnh
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Mô tả
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Giá mỗi diện tích (VND)
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Icon
+                </Typography>
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {roomTypes.map((roomType) => (
+              <StyledTableRow key={roomType.id}>
+                <TableCell>
+                  <Typography
+                    sx={{
+                      fontSize: "15px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {roomType.id}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Image src={roomType.imageUrl}
                     alt=""
                     width={0}
                     height={0}
                     style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true}/>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {roomType.description}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {roomType.pricePerArea.toLocaleString('en-US') + ' VND'}
-                </Typography>
-              </TableCell>
-              <TableCell>
-              <Image src={roomType.iconImageUrl}
+                    unoptimized={true} />
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType.pricePerArea.toLocaleString('en-US')}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Image src={roomType.iconImageUrl}
                     alt=""
                     width={0}
                     height={0}
                     style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
-                    unoptimized={true}/>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/RoomTypes/${roomType.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+                    unoptimized={true} />
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/RoomTypes/${roomType.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có dữ liệu.
+          </Typography>
+        </Stack>
+      )
+      }
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }

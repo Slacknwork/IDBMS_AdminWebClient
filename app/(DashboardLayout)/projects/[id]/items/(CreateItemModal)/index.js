@@ -112,7 +112,6 @@ export default function ItemModal({ children }) {
       >
         <Box sx={{ ...style }} component="div">
           <Box
-            container
             sx={{
               display: "flex",
               justifyContent: "space-between",
