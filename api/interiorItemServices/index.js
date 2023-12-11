@@ -1,7 +1,3 @@
-import { mapFromOdata, convertToPascalCase } from "/utils/odata";
-import { calculationUnitIndex } from "/constants/enums/calculationUnit";
-import { interiorItemStatusIndex } from "/constants/enums/interiorItemStatus";
-
 const getAllInteriorItems = async ({
   itemCategoryId = "",
   status = "",
@@ -86,14 +82,19 @@ const createInteriorItem = async (request) => {
 
 const updateInteriorItem = async (itemId, request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/${itemId}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        body: formData,
       }
     );
 
