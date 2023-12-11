@@ -1,4 +1,3 @@
-export default {
-  0: "Chưa xác nhận",
-  1: "Đang hoạt động",
-};
+const adminStatusOptions = ["Chưa xác nhận", "Đang hoạt động"];
+
+export default adminStatusOptions;
