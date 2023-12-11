@@ -27,6 +27,8 @@ import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
 
+import isHiddenOptions from "../../../constants/enums/isHidden";
+
 const products = [
   {
     id: "1",
@@ -57,8 +59,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-const isHiddenOptions = ["Đang hoạt động", "Đang ẩn"];
 
 export default function ProjectList() {
 
@@ -151,7 +151,7 @@ export default function ProjectList() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Số
+                  Id
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
@@ -179,6 +179,11 @@ export default function ProjectList() {
                   Icon
                 </Typography>
               </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -200,12 +205,15 @@ export default function ProjectList() {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Image src={roomType.imageUrl}
+                  <Image src={roomType?.imageUrl ?? "/images/results/no-image.png"}
                     alt=""
                     width={0}
                     height={0}
                     style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true} />
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }} />
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -224,6 +232,11 @@ export default function ProjectList() {
                     height={0}
                     style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
                     unoptimized={true} />
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType?.isHidden ? isHiddenOptions[1] : isHiddenOptions[0]}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Button

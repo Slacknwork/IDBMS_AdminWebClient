@@ -35,6 +35,8 @@ import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
 
+import isHiddenOptions from "../../../constants/enums/isHidden";
+
 const projects = [
   {
     id: "1",
@@ -67,8 +69,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const isHiddenOptions = ["Đang hoạt động", "Đang ẩn"];
-
 export default function ProjectList() {
 
   const searchQuery = "search";
@@ -93,7 +93,7 @@ export default function ProjectList() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    const fetchRoomTypes = async () => {
+    const fetchProjectCategories = async () => {
       const name = searchParams.get(searchQuery) || "";
       const isHidden =
         searchParams.get(isHiddenQuery) === '1' ?
@@ -119,7 +119,7 @@ export default function ProjectList() {
       }
     };
     await Promise.all([
-      fetchRoomTypes(),
+      fetchProjectCategories(),
     ]);
     setLoading(false);
   };
@@ -130,109 +130,145 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ mt: 2 }}>
-        <FormControl sx={{ mt: 2, minWidth: 300 }}>
-          <TextField
-            label="Tìm kiếm"
-            size="small"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconSearch />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-        {/* <FormControl sx={{ mx: 4, mt: 2, minWidth: 200 }} size="small">
-          <InputLabel>Age</InputLabel>
-          <Select labelId="demo-simple-select-label" label="Age">
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl> */}
+      <Box sx={{ display: "flex", mt: 2 }}>
+        <Search
+          placeholder="Tìm theo tên.."
+        ></Search>
+
+        <FilterStatus
+          query={isHiddenQuery}
+          options={isHiddenOptions}
+          label="Trạng thái"
+          allValue={isHiddenAllValue}
+          allLabel="Tất cả"
+        ></FilterStatus>
       </Box>
-      <Table
-        aria-label="simple table"
-        sx={{
-          whiteSpace: "nowrap",
-          mt: 2,
-        }}
-      >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Id
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên loại dự án
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Icon
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {projectCategories.map((projectCategory) => (
-            <StyledTableRow key={projectCategory.id}>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {projectCategory.id}
+      {/* <ItemModal>
+          <span>Tạo</span>
+        </ItemModal> */}
+
+      {(projectCategories && projectCategories.length) > 0 ? (
+        <Table
+          aria-label="simple table"
+          sx={{
+            whiteSpace: "nowrap",
+            mt: 2,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Id
                 </Typography>
-              </TableCell>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {projectCategory.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên loại dự án
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Icon
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Trạng thái
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {projectCategories.map((projectCategory) => (
+              <StyledTableRow key={projectCategory.id}>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectCategory.id}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {projectCategory.name}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          fontSize: "13px",
+                        }}
+                      >
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Image src={projectCategory.iconImageUrl}
-                  alt=""
-                  width={0}
-                  height={0}
-                  style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                  unoptimized={true} />
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/ProjectCategories/${projectCategory.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell>
+                  <Image src={projectCategory?.iconImageUrl ?? "/images/results/no-image.png"}
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }} />
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {projectCategory?.isHidden ? isHiddenOptions[1] : isHiddenOptions[0]}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          fontSize: "13px",
+                        }}
+                      >
+                      </Typography>
+                    </Box>
+                  </Box>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/ProjectCategories/${projectCategory.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (
+        <Stack sx={{ my: 5 }}>
+          <Typography variant="p" sx={{ textAlign: "center" }}>
+            Không có dữ liệu.
+          </Typography>
+        </Stack>
+      )
+      }
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }

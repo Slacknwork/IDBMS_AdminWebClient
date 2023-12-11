@@ -3,8 +3,8 @@ const getAllProjectDesigns = async ({
     name = "",
     isHidden = "",
     pageSize = "",
-    pageNo= "",
-}) => {
+    pageNo = "",
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns?type=${type}&name=${name}&isHidden=${isHidden}&pageSize=${pageSize}&pageNo=${pageNo}`,
