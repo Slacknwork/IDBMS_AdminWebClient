@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback } from "react";
-import { FormControl, Grid, Paper, Typography } from "@mui/material";
+import Image from "next/image";
+import { useCallback, useState } from "react"; // Import useState
+import { Box, FormControl, Grid, Paper, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "@mui/system";
 
@@ -9,8 +10,11 @@ export default function FormFile({
   sx,
   height = 120,
   titleSpan = 4,
-  fieldSpan = 8,
+  imgSpan = 2,
+  fieldSpan = 6,
   spacing = 2,
+  imgDisplay = "/images/results/no-image.png",
+  imgAlt = "",
   title,
   required,
   disabled,
@@ -21,10 +25,26 @@ export default function FormFile({
   onChange,
 }) {
   const theme = useTheme();
+  const [previewImage, setPreviewImage] = useState(null); // State for image preview
 
-  const onDrop = useCallback((acceptedFiles) => {
-    onChange(acceptedFiles[0]);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      onChange(file);
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          setPreviewImage(reader.result);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    },
+    [onChange]
+  );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
@@ -39,50 +59,69 @@ export default function FormFile({
         </Grid>
       )}
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
-        <FormControl fullWidth>
-          <Paper
-            {...getRootProps()}
+        <Box sx={{ display: "flex" }}>
+          <Box
             sx={{
-              p: 2,
-              border: isDragActive
-                ? "2px dashed " + theme.palette.primary.main
-                : "2px dashed #ddd",
-              borderRadius: "8px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              cursor: "pointer",
-              outline: "none",
-              justifyContent: "center",
-              height: height,
+              mr: 3,
+              borderRadius: 4,
+              border: 1,
+              borderColor: "whitesmoke",
+              position: "relative",
+              width: "10rem",
             }}
           >
-            <input {...getInputProps()} />
-            {value ? (
-              <Typography
-                variant="body1"
-                sx={{ color: theme.palette.text.primary }}
-              >
-                {value.name}
-              </Typography>
-            ) : isDragActive ? (
-              <Typography
-                variant="body1"
-                sx={{ color: theme.palette.primary.main }}
-              >
-                Drop the files here ...
-              </Typography>
-            ) : (
-              <Typography
-                variant="body1"
-                sx={{ color: theme.palette.text.secondary }}
-              >
-                Drag and drop some files here, or click to select files
-              </Typography>
-            )}
-          </Paper>
-        </FormControl>
+            <Image
+              src={previewImage || imgDisplay || "/images/results/no-image.png"}
+              alt={imgAlt || ""}
+              layout="fill"
+              objectFit="contain"
+            />
+          </Box>
+          <FormControl fullWidth>
+            <Paper
+              {...getRootProps()}
+              sx={{
+                p: 2,
+                border: isDragActive
+                  ? "2px dashed " + theme.palette.primary.main
+                  : "2px dashed #ddd",
+                borderRadius: "8px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                cursor: "pointer",
+                outline: "none",
+                justifyContent: "center",
+                height: height,
+              }}
+            >
+              <input {...getInputProps()} />
+              {value ? (
+                <Typography
+                  variant="body1"
+                  sx={{ color: theme.palette.text.primary }}
+                >
+                  {value.name}
+                </Typography>
+              ) : isDragActive ? (
+                <Typography
+                  variant="body1"
+                  sx={{ color: theme.palette.primary.main }}
+                >
+                  Drop the files here ...
+                </Typography>
+              ) : (
+                <Typography
+                  variant="body1"
+                  sx={{ color: theme.palette.text.secondary }}
+                >
+                  Drag and drop some files here, or click to select files
+                </Typography>
+              )}
+            </Paper>
+          </FormControl>
+        </Box>
       </Grid>
     </Grid>
   );
