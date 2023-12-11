@@ -3,7 +3,7 @@ const getAllTaskDesigns = async ({
     taskCategoryId = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/TaskDesigns?codeOrName=${codeOrName}&taskCategoryId=${taskCategoryId}&pageSize=${pageSize}&pageNo=${pageNo}`,

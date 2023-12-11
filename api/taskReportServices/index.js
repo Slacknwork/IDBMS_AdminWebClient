@@ -2,7 +2,7 @@ const getAllTaskReports = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/TaskReports?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -26,7 +26,7 @@ const getTaskReportsByProjectTaskId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/TaskReports/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,

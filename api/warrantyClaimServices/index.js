@@ -3,7 +3,7 @@ const getAllWarrantyClaims = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -23,7 +23,7 @@ const getWarrantyClaimsByProjectId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/project/${projectId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -43,7 +43,7 @@ const getWarrantyClaimsByUserId = async ({
     name = "",
     pageSize = "",
     pageNo= "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/user/${userId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,

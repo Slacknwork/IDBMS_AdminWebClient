@@ -5,7 +5,7 @@ const getSitesByProjectId = async ({
   nameOrAddress = "",
   pageSize = "",
   pageNo= "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Sites/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -24,7 +24,7 @@ const getSitesByUserId = async ({
   nameOrAddress = "",
   pageSize = "",
   pageNo= "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Sites/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -51,7 +51,7 @@ const getSiteById = async (id) => {
   }
 };
 
-const getSites = async (search = "", page = "", pageSize = "") => {
+const getSites = async ({search = "", page = "", pageSize = ""} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Sites?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`,

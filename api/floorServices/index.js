@@ -3,7 +3,7 @@ const getFloorsByProjectId = async ({
   search = "",
   page = "",
   pageSize = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/Floors/project/${projectId}?noOfFloor=${

@@ -9,7 +9,7 @@ const getAllInteriorItems = async ({
   itemType = "",
   pageSize = "",
   pageNo = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -38,7 +38,7 @@ const getItemsByInteriorItemCategoryId = async ({
   itemType = "",
   pageSize = "",
   pageNo = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
@@ -59,12 +59,17 @@ const getItemsByInteriorItemCategoryId = async ({
 
 const createInteriorItem = async (request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch("https://localhost:7062/api/InteriorItems", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+      body: formData,
     });
 
     if (!response.ok) {

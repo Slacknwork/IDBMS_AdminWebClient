@@ -7,7 +7,7 @@ const getPaymentStagesByProjectId = async ({
   search = "",
   pageSize = "",
   pageNo = "",
-}) => {
+} = {}) => {
   try {
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
