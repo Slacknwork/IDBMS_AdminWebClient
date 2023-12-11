@@ -86,7 +86,7 @@ export default function ProjectList() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ROOMTYPES
+  // INIT CONST
   const [projectCategories, setProjectCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);

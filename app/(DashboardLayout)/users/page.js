@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
@@ -20,7 +19,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 
-import { getUsersFilter, countUsersFilter } from "/api/userServices";
+import { getAllUsers } from "/api/userServices";
 
 import userStatusOptions from "/constants/enums/userStatus";
 
@@ -29,6 +28,7 @@ import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
 import CreateUserModal from "./(CreateUserModal)";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,11 +50,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function UserList() {
-  // CONSTANTS
+
   const searchQuery = "search";
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -66,35 +66,46 @@ export default function UserList() {
   const statusAllValue = -1;
   const statusAllLabel = "Tất cả";
 
-  // INIT
+  const params = useParams();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  // FETCH DATA FROM API
+  // INIT CONST
   const [users, setUsers] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const search = searchParams.get(searchQuery) || "";
-    const status = searchParams.get(statusQuery)
-      ? [parseInt(searchParams.get(statusQuery))]
-      : defaultStatus;
-    const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+    const fetchUsers = async () => {
+      const nameOrEmail = searchParams.get(searchQuery) || "";
+      const status = searchParams.get(statusQuery) || "";
+      const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const fetchDataFromApi = async () => {
       try {
-        const data = await getUsersFilter(search, status, page, pageSize);
-        const count = await countUsersFilter(search, status);
-        setCount(count);
-        setUsers(data);
-        setLoading(false);
+        const response = await getAllUsers({
+          nameOrEmail,
+          status,
+          pageSize,
+          pageNo,
+        });
+        console.log(response);
+        setUsers(response?.list ?? []);
+        setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Người Dùng' từ hệ thống");
       }
     };
+    await Promise.all([
+      fetchUsers(),
+    ]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchDataFromApi();
   }, [searchParams]);
 

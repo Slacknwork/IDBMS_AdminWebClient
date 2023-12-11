@@ -1,14 +1,20 @@
 
 const apiUrl = "https://localhost:7062/api";
 
-const getAllAdmins = async () => {
+const getAllAdmins = async ({
+    search = "",
+    status = "",
+    pageSize = "",
+    pageNo = "",
+} = {}) => {
     try {
-        const response = await fetch(`${apiUrl}/admins`);
+        const paramString = `searchValue=${search}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
+        const response = await fetch(`${apiUrl}/admins?${paramString}`);
         if (!response.ok) {
             throw new Error('Get failed');
         }
         const admins = await response.json();
-        return admins;
+        return admins.data;
     } catch (error) {
         console.error("Error fetching admins:", error);
         throw error;
