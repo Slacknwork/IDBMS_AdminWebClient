@@ -100,54 +100,57 @@ export default function ProjectDocuments() {
   const searchParams = useSearchParams();
   moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-  // FETCH
-  const fetchDataFromApi = async () => {
-    try {
-      await fetchDocuments();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, [searchParams]);
 
   // DOCUMENTS
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  const fetchDocuments = async () => {
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+    const fetchDocuments = async () => {
 
-    const projectId = params.id;
-    const search = searchParams.get(searchQuery) || "";
-    const categoryEnum = searchParams.get(categoryQuery) || "";
-    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const projectId = params.id;
+      const search = searchParams.get(searchQuery) || "";
+      const categoryEnum = searchParams.get(categoryQuery) || "";
+      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const response = await getDocumentsByProjectId({
-      projectId,
-      search,
-      categoryEnum,
-      page,
-      pageSize,
-    });
-    console.log(response);
-    setDocuments(response?.list ?? []);
-    setCount(response?.totalItem ?? 0);
+      try {
+        const response = await getDocumentsByProjectId({
+          projectId,
+          search,
+          categoryEnum,
+          page,
+          pageSize,
+        });
+        console.log(response);
+        setDocuments(response?.list ?? []);
+        setCount(response?.totalItem ?? 0);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+      }
+    };
+
+    await Promise.all([
+      fetchDocuments(),
+    ]);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Filter and Search */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search></Search>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
           <FilterCategory
             query={categoryQuery}

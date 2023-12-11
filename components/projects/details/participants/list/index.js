@@ -91,22 +91,6 @@ export default function Comments() {
   const searchParams = useSearchParams();
   moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-  // FETCH
-  const fetchDataFromApi = async () => {
-    try {
-      await fetchParticipations();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, [searchParams]);
-
   // PARTICIPATIONS
   const [participations, setParticipations] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
@@ -114,33 +98,49 @@ export default function Comments() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  const fetchParticipations = async () => {
+  // FETCH DATA 
+  const fetchDataFromApi = async () => {
+    const fetchParticipations = async () => {
 
-    const projectId = params.id;
-    const search = searchParams.get(searchQuery) || "";
-    const role = searchParams.get(roleQuery) || "";
-    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const projectId = params.id;
+      const search = searchParams.get(searchQuery) || "";
+      const role = searchParams.get(roleQuery) || "";
+      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
-    const response = await getParticipationsByProjectId({
-      projectId,
-      search,
-      role,
-      page,
-      pageSize,
-    });
-    console.log(response);
+      try {
+        const response = await getParticipationsByProjectId({
+          projectId,
+          search,
+          role,
+          page,
+          pageSize,
+        });
+        console.log(response);
 
-    const filteredParticipations = (response?.list ?? [])
-      .filter(participation => participation.role !== 0 && participation.role !== 5);
+        const filteredParticipations = (response?.list ?? [])
+          .filter(participation => participation.role !== 0 && participation.role !== 5);
 
-    setParticipations(filteredParticipations);
-    setCount(filteredParticipations?.length ?? 0);
+        setParticipations(filteredParticipations);
+        setCount(filteredParticipations?.length ?? 0);
 
-    setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
-    setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+        setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
+        setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchParticipations(),
+    ]);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
+
 
   const getAvatarContent = (name) => {
     const words = name.split(" ");
@@ -229,7 +229,9 @@ export default function Comments() {
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
       >
         <Box sx={{ display: "flex" }}>
-          <Search></Search>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
           <FilterComponent
             query={roleQuery}

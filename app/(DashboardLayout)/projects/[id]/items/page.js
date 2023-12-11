@@ -101,80 +101,86 @@ export default function InteriorItems() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // ITEM IN TASK
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
+
+  // FETCH DATA
   const fetchDataFromApi = async () => {
-    try {
-      await fetchItems();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
+    const fetchItems = async () => {
+      const projectId = params.id;
+      const search = searchParams.get(searchQuery) || "";
+      const categoryId = searchParams.get(categoryQuery) || "";
+      const status = searchParams.get(statusQuery)
+        ? parseInt(searchParams.get(statusQuery))
+        : "";
+      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+
+      try {
+        const response = await getItemInTasksByProjectId({
+          projectId,
+          search,
+          categoryId,
+          status,
+          page,
+          pageSize,
+        });
+        console.log(response);
+        setItems(response?.data?.list ?? []);
+        setCount(response?.data?.totalItem ?? 0);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchItems(),
+    ]);
+    setLoading(false);
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+  }, [searchParams]);
+
+
+  // ITEM CATEGORIES
+  const [itemCategories, setItemCategories] = useState([]);
+
+
+  // FETCH OPTIONS
   const fetchOptionsFromApi = async () => {
     setLoading(true);
-    try {
-      await fetchCategories();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllInteriorItemCategories();
+        console.log(response);
+        setItemCategories(response.list);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchCategories(),
+    ]);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchOptionsFromApi();
   }, []);
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, [searchParams]);
-
-  // ITEM IN TASK
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState(0);
-
-  const fetchItems = async () => {
-    const projectId = params.id;
-    const search = searchParams.get(searchQuery) || "";
-    const categoryId = searchParams.get(categoryQuery) || "";
-    const status = searchParams.get(statusQuery)
-      ? parseInt(searchParams.get(statusQuery))
-      : "";
-    const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
-
-    const response = await getItemInTasksByProjectId({
-      projectId,
-      search,
-      categoryId,
-      status,
-      page,
-      pageSize,
-    });
-    console.log(response);
-    setItems(response?.data?.list ?? []);
-    setCount(response?.data?.totalItem ?? 0);
-  };
-
-  // ITEM CATEGORIES
-  const [itemCategories, setItemCategories] = useState([]);
-
-  const fetchCategories = async () => {
-    const response = await getAllInteriorItemCategories();
-    console.log(response);
-    setItemCategories(response);
-  };
-
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search></Search>
+          <Search
+            placeholder="Tìm theo mã / tên.."
+          ></Search>
 
           <FilterAutocomplete
             query={categoryQuery}

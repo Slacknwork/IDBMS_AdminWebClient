@@ -3,7 +3,7 @@ const getAllInteriorItemCategories = async ({
     name = "",
     pageSize = "",
     pageNo = "",
-}) => {
+} = {}) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemCategories?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
