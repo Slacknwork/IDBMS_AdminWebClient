@@ -136,9 +136,7 @@ export default function InteriorItems() {
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchItems(),
-    ]);
+    await Promise.all([fetchItems()]);
     setLoading(false);
   };
 
@@ -146,10 +144,8 @@ export default function InteriorItems() {
     fetchDataFromApi();
   }, [searchParams]);
 
-
   // ITEM CATEGORIES
   const [itemCategories, setItemCategories] = useState([]);
-
 
   // FETCH OPTIONS
   const fetchOptionsFromApi = async () => {
@@ -164,9 +160,7 @@ export default function InteriorItems() {
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchCategories(),
-    ]);
+    await Promise.all([fetchCategories()]);
     setLoading(false);
   };
 
@@ -178,9 +172,7 @@ export default function InteriorItems() {
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo mã / tên.."
-          ></Search>
+          <Search placeholder="Tìm theo mã / tên.."></Search>
 
           <FilterAutocomplete
             query={categoryQuery}
@@ -204,7 +196,7 @@ export default function InteriorItems() {
       </Box>
 
       {(items && items.length) > 0 ? (
-        <Table aria-label="simple table">
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
               <StyledTableCell>
