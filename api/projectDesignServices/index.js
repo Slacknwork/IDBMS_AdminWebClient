@@ -3,7 +3,7 @@ const getAllProjectDesigns = async ({
     name = "",
     isHidden = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
