@@ -23,17 +23,14 @@ import { toast } from "react-toastify";
 
 import projectTypeOptions, {
   projectTypeChipColors,
-  projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import languageTypeOptions, {
   languageTypeChipColors,
   languageTypeChipImages,
 } from "/constants/enums/language";
-import projectStatusOptions, {
-  projectStatusOptionsEnglish,
-} from "/constants/enums/projectStatus";
+import projectStatusOptions from "/constants/enums/projectStatus";
 
-import { getProjectsFilter, countProjectsFilter } from "/api/projectServices";
+import { getProjectsBySiteId } from "/api/projectServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";
@@ -60,12 +57,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function Sites() {
+export default function ProjectListPage() {
   // CONSTANTS
   const searchQuery = "search";
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -92,28 +89,22 @@ export default function Sites() {
   useEffect(() => {
     const fetchDataFromApi = async () => {
       const siteId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const status =
-        projectStatusOptionsEnglish[
-          parseInt(searchParams.get(projectStatusQuery))
-        ];
-      const type =
-        projectTypeOptionsEnglish[parseInt(searchParams.get(projectTypeQuery))];
-      const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const status = searchParams.get(projectStatusQuery) ?? "";
+      const type = searchParams.get(projectTypeQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
       try {
-        const count = await countProjectsFilter(siteId, search, type, status);
-        const data = await getProjectsFilter(
+        const data = await getProjectsBySiteId({
           siteId,
           search,
           type,
           status,
           page,
-          pageSize
-        );
-        setCount(count);
-        setValues(data);
+          pageSize,
+        });
+        setCount(data.totalItem);
+        setValues(data.list);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -126,10 +117,10 @@ export default function Sites() {
 
   return (
     <PageContainer title="Danh sách dự án" description="Danh sách dự án">
-      <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+      <Box sx={{ zIndex: 1 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
-            <Search></Search>
+            <Search placeholder="Tìm tên dự án"></Search>
             <FilterStatus
               query={projectTypeQuery}
               options={projectTypeOptions}
@@ -148,35 +139,30 @@ export default function Sites() {
           <CreateProjectModal></CreateProjectModal>
         </Box>
         {values && values.length > 0 ? (
-          <Table
-            aria-label="simple table"
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
+          <Table aria-label="simple table" sx={{ mt: 1 }}>
             <TableHead>
               <TableRow>
-                <StyledTableCell>
+                <StyledTableCell width={"40%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Tên
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Loại
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Ngôn ngữ
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Trạng thái
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
+                <StyledTableCell width={"15%"} align="right"></StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>

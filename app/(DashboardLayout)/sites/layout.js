@@ -1,7 +1,7 @@
 "use client";
 
+import { Box, Typography } from "@mui/material";
 import PageContainer from "/components/container/PageContainer";
-import DashboardCard from "/components/shared/DashboardCard";
 
 export default function SitesLayout({ children }) {
   return (
@@ -9,9 +9,10 @@ export default function SitesLayout({ children }) {
       title="Khu công trình"
       description="Danh sách các khu công trình"
     >
-      <DashboardCard sx={{ minHeight: "32rem" }} title="Khu công trình">
-        {children}
-      </DashboardCard>
+      <Typography variant="h2">Khu công trình</Typography>
+      <Box sx={{ mt: 3, minHeight: "30rem" }}>
+        <Box sx={{ mt: 3 }}>{children}</Box>
+      </Box>
     </PageContainer>
   );
 }

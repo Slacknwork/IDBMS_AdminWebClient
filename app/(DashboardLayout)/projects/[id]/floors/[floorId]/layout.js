@@ -1,7 +1,19 @@
 "use client";
 
-import FloorDetails from "/components/projects/details/floors/details";
+import { Box, Grid } from "@mui/material";
 
-export default function TaskLayout({ children }) {
-  return <FloorDetails>{children}</FloorDetails>;
+import Tabs from "/components/shared/Tabs";
+import TabItems from "./tabItems";
+
+export default function FloorDetailsLayout({ children }) {
+  return (
+    <Grid container columnSpacing={4}>
+      <Grid item xs={2} lg={2}>
+        <Tabs vertical borderColor="white" uriPos={5} tabs={TabItems}></Tabs>
+      </Grid>
+      <Grid item xs={10} lg={10}>
+        <Box>{children}</Box>
+      </Grid>
+    </Grid>
+  );
 }

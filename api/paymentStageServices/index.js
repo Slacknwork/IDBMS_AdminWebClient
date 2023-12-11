@@ -1,14 +1,20 @@
 import { mapFromOdata } from "/utils/odata";
 import { stageStatusIndex } from "/constants/enums/stageStatus";
 
-const getPaymentStagesByProjectId = async (projectId) => {
+const getPaymentStagesByProjectId = async ({
+  projectId = "",
+  status = "",
+  search = "",
+  pageSize = "",
+  pageNo = "",
+}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/project/${projectId}`,
+      `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
       { cache: "no-store" }
     );
     const paymentStages = await response.json();
-    return paymentStages;
+    return paymentStages.data;
   } catch (error) {
     console.error("Error fetching payment stages by project ID:", error);
     throw error;

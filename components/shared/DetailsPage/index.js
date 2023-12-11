@@ -1,11 +1,12 @@
 "use client";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 
 import MessageModal from "/components/shared/Modals/Message";
 
 export default function DetailsPage({
   sx,
+  loading,
   title = "Tiêu đề",
   saveLabel = "Lưu",
   saveMessage = "Lưu thông tin?",
@@ -36,6 +37,7 @@ export default function DetailsPage({
           </Typography>
           <Box sx={{ display: "flex" }}>
             <MessageModal
+              disabled={loading}
               sx={hasDelete ? { mr: 2 } : null}
               buttonLabel={saveLabel}
               onSubmit={onSave}
@@ -46,6 +48,7 @@ export default function DetailsPage({
             </MessageModal>
             {hasDelete ? (
               <MessageModal
+                disabled={loading}
                 color="error"
                 buttonLabel={deleteLabel}
                 onSubmit={onDelete}
@@ -57,7 +60,15 @@ export default function DetailsPage({
             ) : null}
           </Box>
         </Grid>
-        {children}
+        {loading ? (
+          <Grid item xs={12} lg={12} sx={{ my: 10 }}>
+            <Stack>
+              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+            </Stack>
+          </Grid>
+        ) : (
+          children
+        )}
       </Grid>
     </Box>
   );

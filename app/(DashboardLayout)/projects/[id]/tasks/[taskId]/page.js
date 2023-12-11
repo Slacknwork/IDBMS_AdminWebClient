@@ -13,7 +13,7 @@ import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
 import {
   getProjectTaskById,
   updateProjectTask,
-  getProjectTasksFilter,
+  getProjectTasksByProjectId,
 } from "/api/projectTaskServices";
 import { getFloorsByProjectId } from "/api/floorServices";
 
@@ -29,6 +29,9 @@ import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
 
 export default function TaskOverviewPage() {
   const params = useParams();
+
+  const projectId = params.id;
+  const taskId = params.taskId;
 
   const [formData, setFormData] = useState({
     code: null,
@@ -96,24 +99,24 @@ export default function TaskOverviewPage() {
 
   const fetchDataFromApi = async () => {
     try {
-      const floors = await getFloorsByProjectId(params.id);
+      const floors = await getFloorsByProjectId({ projectId });
       setRooms(
-        floors.flatMap((floor) =>
+        floors.list.flatMap((floor) =>
           floor.rooms?.map((room) => ({
             ...room,
             floorUsePurpose: floor.usePurpose,
           }))
         )
       );
-      const listTask = await getProjectTasksFilter({ projectId: params.id });
+      const listTask = await getProjectTasksByProjectId({ projectId });
       setTasks(listTask.list);
-      const listTaskCategory = await getAllTaskCategories();
-      setTaskCategories(listTaskCategory);
-      const listStagesByProjectId = await getPaymentStagesByProjectId(
-        params.id
-      );
-      setStages(listStagesByProjectId);
-      const task = await getProjectTaskById(params.taskId);
+      const listTaskCategory = await getAllTaskCategories({});
+      setTaskCategories(listTaskCategory.list);
+      const listStagesByProjectId = await getPaymentStagesByProjectId({
+        projectId,
+      });
+      setStages(listStagesByProjectId.list);
+      const task = await getProjectTaskById(taskId);
       setFormData((prevData) => ({ ...prevData, ...task }));
       setLoading(false);
     } catch (error) {

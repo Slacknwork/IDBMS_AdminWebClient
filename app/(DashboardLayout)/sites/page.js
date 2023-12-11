@@ -19,9 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getSitesFilter, countSitesFilter } from "/api/siteServices";
-
-import { mapFromOdata } from "/utils/odata";
+import { getSites } from "/api/siteServices";
 
 import CreateSiteModal from "./(CreateSiteModal)";
 import Pagination from "/components/shared/Pagination";
@@ -51,7 +49,7 @@ export default function SitesPage() {
   const searchQuery = "search";
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -68,17 +66,14 @@ export default function SitesPage() {
 
   useEffect(() => {
     const fetchDataFromApi = async () => {
-      const search = searchParams.get(searchQuery) || "";
-      const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
-        const count = await countSitesFilter(search);
-        const data = await getSitesFilter(search, page, pageSize);
-        console.log(data);
-        setCount(count);
-        setValues(data);
+        const data = await getSites(search, page, pageSize);
+        setCount(data.totalItem);
+        setValues(data.list);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -90,22 +85,19 @@ export default function SitesPage() {
 
   return (
     <Box>
-      <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Search
           query={searchQuery}
           placeholder="Tìm kiếm theo Tên / Địa chỉ"
         ></Search>
         <CreateSiteModal>Tạo công trình</CreateSiteModal>
       </Box>
-      {values && values.length > 0 ? (
-        <Table
-          aria-label="simple table"
-          sx={{
-            maxWidth: 1,
-            overflowX: "hidden",
-            my: 2,
-          }}
-        >
+      {loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : values && values.length > 0 ? (
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
               <StyledTableCell width={"30%"}>
@@ -169,10 +161,6 @@ export default function SitesPage() {
             ))}
           </TableBody>
         </Table>
-      ) : loading ? (
-        <Stack sx={{ my: 5 }}>
-          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-        </Stack>
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>

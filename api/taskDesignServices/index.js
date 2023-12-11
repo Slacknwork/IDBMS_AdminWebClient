@@ -1,7 +1,12 @@
-const getAllTaskDesigns = async () => {
+const getAllTaskDesigns = async ({
+    codeOrName = "",
+    taskCategoryId = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/TaskDesigns',
+            `https://localhost:7062/api/TaskDesigns?codeOrName=${codeOrName}&taskCategoryId=${taskCategoryId}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,7 +15,7 @@ const getAllTaskDesigns = async () => {
         }
 
         const designs = await response.json();
-        return designs;
+        return designs.data;
     } catch (error) {
         console.error('Error fetching all task designs:', error);
         throw error;

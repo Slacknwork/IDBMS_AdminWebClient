@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useParams, useRouter } from "next/navigation";
-import { createFloor } from "../../../../../../api/floorServices";
+import { createFloor } from "/api/floorServices";
 import { toast } from "react-toastify";
 
 const style = {
@@ -83,24 +83,25 @@ export default function CreateFloorModal({ children }) {
       description: formData.description ?? "",
       usePurpose: formData.usePurpose ?? "",
       floorNo: formData.floorNo ?? "",
-      projectId: params.id ?? ""
-    }
+      projectId: params.id ?? "",
+    };
     const transformedValue = transformEmptyToNull(request);
-    console.log(transformedValue)
+    console.log(transformedValue);
     try {
       const response = await createFloor(transformedValue);
       console.log(response);
       toast.success("Thêm thành công!");
       // handleClose()
       router.push(`/projects/${params.id}/floors/${response.data.id}`);
-
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
     }
   };
 
-  const [displayedValue, setDisplayedValue] = useState(formData.floorNo === 0 ? "Trệt" : formData.floorNo);
+  const [displayedValue, setDisplayedValue] = useState(
+    formData.floorNo === 0 ? "Trệt" : formData.floorNo
+  );
 
   const handleFloorIncrement = (incrementBy) => {
     const newValue = formData.floorNo + incrementBy;
@@ -135,7 +136,6 @@ export default function CreateFloorModal({ children }) {
       >
         <Box sx={{ ...style }} component="div">
           <Box
-
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -178,11 +178,21 @@ export default function CreateFloorModal({ children }) {
                 <Grid item xs={8} lg={8}>
                   <FormControl fullWidth>
                     <Grid container spacing={1} alignItems="center">
-                      <Grid item style={{ alignSelf: 'center' }}>
-                        <Button variant="outlined" onClick={() => handleFloorDecrement(10)}>-10</Button>
+                      <Grid item style={{ alignSelf: "center" }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleFloorDecrement(10)}
+                        >
+                          -10
+                        </Button>
                       </Grid>
-                      <Grid item style={{ alignSelf: 'center' }}>
-                        <Button variant="outlined" onClick={() => handleFloorDecrement(1)}>-1</Button>
+                      <Grid item style={{ alignSelf: "center" }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleFloorDecrement(1)}
+                        >
+                          -1
+                        </Button>
                       </Grid>
                       <Grid item xs={2.7} lg={2.5}>
                         <TextField
@@ -192,14 +202,24 @@ export default function CreateFloorModal({ children }) {
                           helperText={formData.floorNoError.label}
                           onChange={(e) => setDisplayedValue(e.target.value)}
                           disabled
-                          sx={{ textAlign: 'center', width: '100%' }}
+                          sx={{ textAlign: "center", width: "100%" }}
                         />
                       </Grid>
-                      <Grid item style={{ alignSelf: 'center' }}>
-                        <Button variant="outlined" onClick={() => handleFloorIncrement(1)}>+1</Button>
+                      <Grid item style={{ alignSelf: "center" }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleFloorIncrement(1)}
+                        >
+                          +1
+                        </Button>
                       </Grid>
-                      <Grid item style={{ alignSelf: 'center' }}>
-                        <Button variant="outlined" onClick={() => handleFloorIncrement(10)}>+10</Button>
+                      <Grid item style={{ alignSelf: "center" }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleFloorIncrement(10)}
+                        >
+                          +10
+                        </Button>
                       </Grid>
                     </Grid>
                   </FormControl>
@@ -258,7 +278,9 @@ export default function CreateFloorModal({ children }) {
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
               <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
-                <Button variant="contained" disableElevation
+                <Button
+                  variant="contained"
+                  disableElevation
                   onClick={handleCreate}
                 >
                   Tạo

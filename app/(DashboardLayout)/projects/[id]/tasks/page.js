@@ -22,17 +22,12 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import {
-  getProjectTasksFilter,
-  countProjectTasksFilter,
-} from "/api/projectTaskServices";
+import { getProjectTasksByProjectId } from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
 import { getFloorsByProjectId } from "/api/floorServices";
 import { getPaymentStagesByProjectId } from "api/paymentStageServices";
 
-import projectTaskStatusOptions, {
-  projectTaskStatusOptionsEnglish,
-} from "/constants/enums/projectTaskStatus";
+import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
@@ -79,7 +74,7 @@ export default function ProjectTasksPage() {
   const statusAllValue = -1;
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -116,11 +111,12 @@ export default function ProjectTasksPage() {
   const [stages, setStages] = useState([]);
   const [activeStage, setActiveStage] = useState(0);
   const fetchStages = async () => {
-    const stages = await getPaymentStagesByProjectId(params.id);
-    setStages(stages);
+    const stages = await getPaymentStagesByProjectId({ projectId: params.id });
+    setStages(stages.list);
     const active =
-      stages.findIndex((stage) => searchParams.get(stageQuery) === stage.id) +
-      1;
+      stages.list.findIndex(
+        (stage) => searchParams.get(stageQuery) === stage.id
+      ) + 1;
     setActiveStage(active);
   };
   const handleStageChange = (event, newValue) => {
@@ -152,12 +148,13 @@ export default function ProjectTasksPage() {
   const [floors, setFloors] = useState([]);
   const [activeFloor, setActiveFloor] = useState(0);
   const fetchFloors = async () => {
-    const floors = await getFloorsByProjectId(params.id);
-    setFloors(floors);
+    const floors = await getFloorsByProjectId({ projectId: params.id });
+    setFloors(floors.list);
     const active =
-      floors.findIndex((floor) => searchParams.get(floorQuery) === floor.id) +
-      1;
-    setRooms(active ? floors[active - 1].rooms : []);
+      floors.list.findIndex(
+        (floor) => searchParams.get(floorQuery) === floor.id
+      ) + 1;
+    setRooms(active ? floors.list[active - 1].rooms : []);
     setActiveFloor(active);
   };
   const handleFloorChange = (event, newValue) => {
@@ -186,18 +183,15 @@ export default function ProjectTasksPage() {
 
   const fetchTasks = async () => {
     const projectId = params.id;
-    const search = searchParams.get(searchQuery) || "";
-    const categoryId = searchParams.get(categoryQuery) || "";
+    const search = searchParams.get(searchQuery) ?? "";
+    const categoryId = searchParams.get(categoryQuery) ?? "";
     const stageId = searchParams.get(stageQuery) ?? "";
     const roomId = searchParams.get(roomQuery) ?? "";
-    const status = searchParams.get(statusQuery)
-      ? parseInt(searchParams.get(statusQuery))
-      : "";
-    const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-    const pageSize =
-      parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+    const status = searchParams.get(statusQuery) ?? "";
+    const page = searchParams.get(pageQuery) ?? defaultPage;
+    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-    const data = await getProjectTasksFilter({
+    const data = await getProjectTasksByProjectId({
       projectId,
       search,
       categoryId,
@@ -213,8 +207,8 @@ export default function ProjectTasksPage() {
   const fetchOptionsFromApi = async () => {
     setLoading(true);
     try {
-      const categories = await getAllTaskCategories();
-      setCategories(categories);
+      const categories = await getAllTaskCategories({});
+      setCategories(categories.list);
       await fetchStages();
       await fetchFloors();
     } catch (error) {
@@ -252,7 +246,7 @@ export default function ProjectTasksPage() {
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
-          <Search></Search>
+          <Search placeholder="Nhập mã / tên công việc"></Search>
           <FilterStatus
             query={statusQuery}
             options={projectTaskStatusOptions}
@@ -264,7 +258,7 @@ export default function ProjectTasksPage() {
             query={categoryQuery}
             options={categories}
             label="Danh mục"
-            allValue={null}
+            allValue={-1}
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>

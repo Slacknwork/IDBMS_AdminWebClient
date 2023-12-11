@@ -1,23 +1,25 @@
-"use client";
+import {
+  FormControl,
+  Grid,
+  InputAdornment,
+  Slider,
+  Typography,
+} from "@mui/material";
 
-import { FormControl, Grid, TextField, Typography } from "@mui/material";
-
-export default function FormText({
+export default function FormSlider({
   sx,
+  title,
   titleSpan = 4,
   fieldSpan = 8,
   spacing = 2,
-  title,
   required,
   disabled,
-  variant = "outlined",
   subtitle = "",
-  multiline,
-  rows = 4,
-  value = "",
-  error,
-  errorLabel,
+  value,
+  min,
+  max,
   onChange,
+  endAdornment,
 }) {
   return (
     <Grid container spacing={spacing} sx={sx}>
@@ -32,16 +34,17 @@ export default function FormText({
       )}
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
-          <TextField
+          <Slider
+            value={value}
+            onChange={(event, newValue) => onChange(newValue)}
+            valueLabelDisplay="auto"
             disabled={disabled}
-            multiline={multiline}
-            rows={rows}
-            variant={variant}
-            value={value ?? ""}
-            error={error}
-            helperText={errorLabel}
-            onChange={onChange}
           />
+          {endAdornment && (
+            <Typography variant="caption" sx={{ mt: 1 }}>
+              {endAdornment}
+            </Typography>
+          )}
         </FormControl>
       </Grid>
     </Grid>

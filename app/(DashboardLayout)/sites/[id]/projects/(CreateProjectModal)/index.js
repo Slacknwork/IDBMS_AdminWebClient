@@ -72,7 +72,7 @@ export default function CreateModal({ onSubmit }) {
       case "projectCategory":
       case "basedOnDecorProject":
         setFormData((prevData) => ({ ...prevData, [`${field}Id`]: value }));
-        console.log(value)
+        console.log(value);
         break;
       default:
         break;
@@ -86,32 +86,25 @@ export default function CreateModal({ onSubmit }) {
   };
 
   const [decorProjects, setDecorProjects] = useState([]);
-  const initialized = useRef(false);
 
   const [loading, setLoading] = useState(true);
   const [projectCategories, setProjectCategories] = useState([]);
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      const fetchDataFromApi = async () => {
-        try {
-          const listCategories = await getProjectCategories();
-          console.log(listCategories);
-          setProjectCategories(listCategories);
-
-          const projects = await getProjectsBySiteId(params.id);
-          console.log(projects);
-          setDecorProjects(projects.filter((project) => project.type === 0));
-
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          toast.error("Lỗi nạp dữ liệu từ hệ thống");
-        }
-      };
-      fetchDataFromApi();
-    }
+    const fetchDataFromApi = async () => {
+      const isHidden = false;
+      try {
+        const listCategories = await getProjectCategories({ isHidden });
+        setProjectCategories(listCategories.list);
+        const projects = await getProjectsBySiteId({ siteId: params.id });
+        setDecorProjects(projects.list.filter((project) => project.type === 0));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    fetchDataFromApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,7 +1,12 @@
-const getAllInteriorItemColors = async () => {
+const getAllInteriorItemColors = async ({
+    type = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            'https://localhost:7062/api/InteriorItemColors',
+            `https://localhost:7062/api/InteriorItemColors?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 
@@ -10,17 +15,23 @@ const getAllInteriorItemColors = async () => {
         }
 
         const colors = await response.json();
-        return colors;
+        return colors.data;
     } catch (error) {
         console.error('Error fetching all interior item colors:', error);
         throw error;
     }
 };
 
-const getColorByInteriorItemCategoryId = async (categoryId) => {
+const getColorByInteriorItemCategoryId = async ({
+    categoryId = "",
+    type = "",
+    name = "",
+    pageSize = "",
+    pageNo= "",
+}) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/InteriorItemColors/interior-item-category/${categoryId}`,
+            `https://localhost:7062/api/InteriorItemColors/interior-item-category/${categoryId}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
             { cache: 'no-store' }
         );
 

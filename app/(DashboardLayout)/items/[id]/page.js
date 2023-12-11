@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
+import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 import PageContainer from "/components/container/PageContainer";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
+
+import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
+import {
+  getAllInteriorItems,
+  getInteriorItemById,
+} from "/api/interiorItemServices";
 
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
@@ -15,6 +24,9 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 export default function ItemDetails() {
+  // INIT
+  const params = useParams();
+
   const [formData, setFormData] = useState({
     code: "",
     name: "Sản phẩm",
@@ -39,28 +51,19 @@ export default function ItemDetails() {
     estimatePriceError: { hasError: false, label: "" },
     laborCost: 0,
     laborCostError: { hasError: false, label: "" },
-    interiorItemColor: { id: 1, name: "", hex: "" },
-    interiorItemColorError: { hasError: false, label: "" },
-    interiorItemCategory: { id: 1, name: "" },
-    interiorItemCategoryError: { hasError: false, label: "" },
+    interiorItemColorId: null,
+    interiorItemColorIdError: { hasError: false, label: "" },
+    interiorItemCategoryId: null,
+    interiorItemCategoryIdError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
-    parentItem: { id: 1, name: "" },
-    parentItemError: { hasError: false, label: "" },
+    parentItemId: null,
+    parentItemIdError: { hasError: false, label: "" },
   });
 
-  const interiorItemColorOptions = [
-    { id: 1, name: "Color1", hex: "#ffffff" },
-    { id: 2, name: "Color2", hex: "#000000" },
-  ];
-  const interiorItemCategoryOptions = [
-    { id: 1, name: "Category1" },
-    { id: 2, name: "Category2" },
-  ];
-  const parentItemOptions = [
-    { id: 1, name: "ParentItem1" },
-    { id: 2, name: "ParentItem2" },
-  ];
+  const [interiorItemColors, setInteriorItemColors] = useState([]);
+  const [interiorItemCategories, setInteriorItemCategories] = useState([]);
+  const [parentItems, setParentItems] = useState([]);
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -79,6 +82,55 @@ export default function ItemDetails() {
     }));
   };
 
+  const fetchDataFromApi = async () => {
+    const fetchInteriorItemColors = async () => {
+      try {
+        const colors = await getAllInteriorItemColors({});
+        setInteriorItemColors(colors.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Màu");
+        console.log(error);
+      }
+    };
+    const fetchInteriorItemCategories = async () => {
+      try {
+        const categories = await getAllInteriorItemCategories({});
+        setInteriorItemCategories(categories.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Danh mục");
+        console.log(error);
+      }
+    };
+    const fetchParentItems = async () => {
+      try {
+        const items = await getAllInteriorItems({});
+        setParentItems(items.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Sản phẩm");
+        console.log(error);
+      }
+    };
+    const fetchItem = async () => {
+      try {
+        const items = await getInteriorItemById(params.id);
+        setFormData((prevData) => ({ ...prevData, ...items }));
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Thông tin sản phẩm");
+        console.log(error);
+      }
+    };
+    await Promise.all([
+      fetchInteriorItemColors(),
+      fetchInteriorItemCategories(),
+      fetchParentItems(),
+      fetchItem(),
+    ]);
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   const onSaveInteriorItem = () => {};
   const onDeleteInteriorItem = () => {};
 
@@ -89,16 +141,17 @@ export default function ItemDetails() {
         saveMessage="Lưu thông tin đồ nội thất?"
         deleteMessage="Xóa món đồ này?"
         onSave={onSaveInteriorItem}
+        hasDelete
         onDelete={onDeleteInteriorItem}
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={3}>
             {/* NAME */}
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12} lg={12}>
               <TextForm
-                multiline
-                rows={3}
                 title="Tên"
+                titleSpan={3}
+                fieldSpan={9}
                 required
                 subtitle="Nhập tên đồ dùng"
                 value={formData.name}
@@ -112,8 +165,11 @@ export default function ItemDetails() {
             <Grid item xs={12} lg={6}>
               <NumberForm
                 title="Chiều dài"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 required
-                subtitle="Nhập chiều dài"
+                subtitle="Nhập chiều dài của sản phẩm"
                 value={formData.length}
                 error={formData.lengthError.hasError}
                 errorLabel={formData.lengthError.label}
@@ -127,7 +183,10 @@ export default function ItemDetails() {
               <NumberForm
                 title="Chiều rộng"
                 required
-                subtitle="Nhập chiều rộng"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                subtitle="Nhập chiều rộng của sản phẩm"
                 value={formData.width}
                 error={formData.widthError.hasError}
                 errorLabel={formData.widthError.label}
@@ -141,11 +200,14 @@ export default function ItemDetails() {
               <NumberForm
                 title="Chiều cao"
                 required
-                subtitle="Nhập chiều cao"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                subtitle="Nhập chiều cao của sản phẩm"
                 value={formData.height}
                 error={formData.heightError.hasError}
                 errorLabel={formData.heightError.label}
-                onChange={(value) => handleInputChange("width", value)}
+                onChange={(value) => handleInputChange("height", value)}
                 endAdornment={<>m</>}
               ></NumberForm>
             </Grid>
@@ -155,6 +217,9 @@ export default function ItemDetails() {
               <SelectForm
                 title="Đơn vị tính"
                 required
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Chọn một đơn vị tính"
                 value={formData.calculationUnit}
                 options={calculationUnitOptions}
@@ -172,7 +237,9 @@ export default function ItemDetails() {
             <Grid item xs={12} lg={6}>
               <TextForm
                 title="Chất liệu"
-                required
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Nhập chất liệu đồ dùng"
                 value={formData.material}
                 error={formData.materialError.hasError}
@@ -185,7 +252,9 @@ export default function ItemDetails() {
             <Grid item xs={12} lg={6}>
               <TextForm
                 title="Xuất xứ"
-                required
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Nhập xuất xứ đồ dùng"
                 value={formData.origin}
                 error={formData.originError.hasError}
@@ -199,6 +268,9 @@ export default function ItemDetails() {
               <NumberForm
                 title="Giá ước tính"
                 required
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Nhập giá tiền ước tính của sản phẩm"
                 value={formData.estimatePrice}
                 error={formData.estimatePriceError.hasError}
@@ -208,31 +280,20 @@ export default function ItemDetails() {
               ></NumberForm>
             </Grid>
 
-            {/* LABOR COST */}
-            <Grid item xs={12} lg={6}>
-              <NumberForm
-                title="Chi phí lao động"
-                required
-                subtitle="Nhập chi phí lao động"
-                value={formData.laborCost}
-                error={formData.laborCostError.hasError}
-                errorLabel={formData.laborCostError.label}
-                onChange={(value) => handleInputChange("laborCost", value)}
-                endAdornment={<>VND</>}
-              ></NumberForm>
-            </Grid>
-
             {/* INTERIOR ITEM COLOR */}
             <Grid item xs={12} lg={6}>
               <AutocompleteForm
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 title="Màu"
                 subtitle="Chọn màu sắc sản phẩm"
-                value={formData.interiorItemColor}
-                options={interiorItemColorOptions}
-                error={formData.interiorItemColorError.hasError}
-                errorLabel={formData.interiorItemColorError.label}
+                value={formData.interiorItemColorId}
+                options={interiorItemColors}
+                error={formData.interiorItemColorIdError.hasError}
+                errorLabel={formData.interiorItemColorIdError.label}
                 onChange={(value) =>
-                  handleInputChange("interiorItemColor", value)
+                  handleInputChange("interiorItemColorId", value)
                 }
               ></AutocompleteForm>
             </Grid>
@@ -241,13 +302,16 @@ export default function ItemDetails() {
             <Grid item xs={12} lg={6}>
               <AutocompleteForm
                 title="Danh mục"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Chọn danh mục sản phẩm"
-                value={formData.interiorItemCategory}
-                options={interiorItemCategoryOptions}
-                error={formData.interiorItemCategoryError.hasError}
-                errorLabel={formData.interiorItemCategoryError.label}
+                value={formData.interiorItemCategoryId}
+                options={interiorItemCategories}
+                error={formData.interiorItemCategoryIdError.hasError}
+                errorLabel={formData.interiorItemCategoryIdError.label}
                 onChange={(value) =>
-                  handleInputChange("interiorItemCategory", value)
+                  handleInputChange("interiorItemCategoryId", value)
                 }
               ></AutocompleteForm>
             </Grid>
@@ -257,6 +321,9 @@ export default function ItemDetails() {
               <SelectForm
                 title="Trạng thái"
                 required
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
                 subtitle="Chọn trạng thái hiển thị của sản phẩm"
                 value={formData.status}
                 options={interiorItemStatusOptions}
@@ -269,21 +336,25 @@ export default function ItemDetails() {
             </Grid>
 
             {/* PARENT ITEM */}
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12} lg={12}>
               <AutocompleteForm
-                title="Sản phẩm tiền bối"
-                subtitle="Chọn sản phẩm tiền bối"
-                value={formData.parentItem}
-                options={parentItemOptions}
-                error={formData.parentItemError.hasError}
-                errorLabel={formData.parentItemError.label}
-                onChange={(value) => handleInputChange("parentItem", value)}
+                titleSpan={3}
+                fieldSpan={9}
+                title="Sản phẩm gốc"
+                subtitle="Chọn sản phẩm gốc"
+                value={formData.parentItemId}
+                options={parentItems}
+                error={formData.parentItemIdError.hasError}
+                errorLabel={formData.parentItemIdError.label}
+                onChange={(value) => handleInputChange("parentItemId", value)}
               ></AutocompleteForm>
             </Grid>
 
             {/* DESCRIPTION */}
             <Grid item xs={12} lg={12}>
               <TextForm
+                titleSpan={3}
+                fieldSpan={9}
                 multiline
                 rows={4}
                 title="Mô tả"

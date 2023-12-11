@@ -18,11 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import {
-  countBookingRequestsFilter,
-  getBookingRequestsFilter,
-  updateBookingRequest,
-} from "/api/bookingRequestServices";
+import { getBookingRequests } from "/api/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,
@@ -61,7 +57,7 @@ export default function RequestList() {
   const searchQuery = "search";
 
   const pageQuery = "page";
-  const defaultPage = 0;
+  const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
@@ -86,29 +82,21 @@ export default function RequestList() {
       setLoading(true);
       setValues([]);
       try {
-        const search = searchParams.get(searchQuery) || "";
-        const type =
-          projectTypeOptionsEnglish[
-            parseInt(searchParams.get(projectTypeQuery))
-          ];
-        const page = parseInt(searchParams.get(pageQuery)) - 1 || defaultPage;
-        const pageSize =
-          parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+        const search = searchParams.get(searchQuery) ?? "";
+        const type = searchParams.get(projectTypeQuery) ?? "";
+        const status = defaultStatus;
+        const pageNo = searchParams.get(pageQuery) ?? defaultPage;
+        const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-        const data = await getBookingRequestsFilter(
+        const data = await getBookingRequests({
           search,
           type,
-          defaultStatus,
-          page,
-          pageSize
-        );
-        const count = await countBookingRequestsFilter(
-          search,
-          type,
-          defaultStatus
-        );
-        setValues(data);
-        setCount(count);
+          status,
+          pageNo,
+          pageSize,
+        });
+        setValues(data.list);
+        setCount(data.totalItem);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -126,9 +114,9 @@ export default function RequestList() {
   return (
     <Box>
       {/* MAIN SECTION */}
-      <Box sx={{ overflow: "auto" }}>
-        <Box sx={{ mt: 3, display: "flex" }}>
-          <Search query={searchQuery}></Search>
+      <Box sx={{ zIndex: 1 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search placeholder="Nhập tên / email / điện thoại"></Search>
           <FilterStatus
             query={projectTypeQuery}
             options={projectTypeOptions}
@@ -139,13 +127,7 @@ export default function RequestList() {
         </Box>
         <Box>
           {values && values.length > 0 ? (
-            <Table
-              aria-label="simple table"
-              sx={{
-                whiteSpace: "nowrap",
-                my: 2,
-              }}
-            >
+            <Table aria-label="simple table" sx={{ mt: 1 }}>
               <TableHead>
                 <TableRow>
                   <StyledTableCell width={"27.5%"}>

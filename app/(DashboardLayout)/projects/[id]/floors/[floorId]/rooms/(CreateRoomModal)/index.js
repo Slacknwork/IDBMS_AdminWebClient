@@ -16,8 +16,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { getAllRoomTypes } from "../../../../../../../api/roomTypeServices";
-import { createRoom } from "../../../../../../../api/roomServices";
+import { getAllRoomTypes } from "/api/roomTypeServices";
+import { createRoom } from "/api/roomServices";
 
 const style = {
   position: "absolute",
@@ -42,7 +42,6 @@ const initialValues = {
   roomType: "",
   roomTypeError: { hasError: false, label: "" },
 };
-
 
 export default function CreateFloorModal({ children, floorNo }) {
   const params = useParams();
@@ -93,17 +92,16 @@ export default function CreateFloorModal({ children, floorNo }) {
       floorId: params.floorId ?? "",
       area: parseInt(formData.area, 10) ?? 0,
       roomTypeId: formData.roomType ?? "",
-      projectId: params.id ?? ""
-    }
+      projectId: params.id ?? "",
+    };
     const transformedValue = transformEmptyToNull(request);
-    console.log(transformedValue)
+    console.log(transformedValue);
     try {
       const response = await createRoom(transformedValue);
       console.log(response);
       toast.success("Thêm thành công!");
-      handleClose()
+      handleClose();
       router.push(`/projects/${params.id}/rooms/${response.data.id}`);
-
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -118,9 +116,8 @@ export default function CreateFloorModal({ children, floorNo }) {
     if (!initialized.current) {
       initialized.current = true;
       try {
-        const data = await getAllRoomTypes();
-        console.log(data);
-        setRoomTypes(data)
+        const data = await getAllRoomTypes({});
+        setRoomTypes(data.list);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -146,7 +143,6 @@ export default function CreateFloorModal({ children, floorNo }) {
       >
         <Box sx={{ ...style }} component="div">
           <Box
-
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -268,7 +264,9 @@ export default function CreateFloorModal({ children, floorNo }) {
                       variant="outlined"
                       value={formData.area}
                       helperText={formData.areaError.label}
-                      onChange={(e) => handleInputChange("area", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("area", e.target.value)
+                      }
                     />
                   </FormControl>
                 </Grid>
@@ -289,17 +287,19 @@ export default function CreateFloorModal({ children, floorNo }) {
                       error={formData.roomTypeError.hasError}
                       variant="outlined"
                       value={formData.roomType}
-                      onChange={(e) => handleInputChange("roomType", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("roomType", e.target.value)
+                      }
                     >
                       {roomtypes?.map((value, index) => (
                         <MenuItem value={value.id} key={value.id}>
-                          {value.name} - {value.pricePerArea} VND/m² - {value.estimateDayPerArea} ngày/m²
+                          {value.name} - {value.pricePerArea} VND/m² -{" "}
+                          {value.estimateDayPerArea} ngày/m²
                         </MenuItem>
                       ))}
                     </Select>
 
                     {formData.roomTypeError.label}
-
                   </FormControl>
                 </Grid>
               </Grid>
@@ -308,7 +308,9 @@ export default function CreateFloorModal({ children, floorNo }) {
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
               <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}>
-                <Button variant="contained" disableElevation
+                <Button
+                  variant="contained"
+                  disableElevation
                   onClick={handleCreate}
                 >
                   Tạo

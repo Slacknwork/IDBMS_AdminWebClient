@@ -108,25 +108,27 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
   const fetchDataFromApi = async () => {
     try {
-      const floors = await getFloorsByProjectId(params.id);
+      const floors = await getFloorsByProjectId({ projectId: params.id });
       setRooms(
-        floors.flatMap((floor) =>
+        floors.list.flatMap((floor) =>
           floor.rooms?.map((room) => ({
             ...room,
             floorUsePurpose: floor.usePurpose,
           }))
         )
       );
-      const listTask = await getProjectTasksByProjectId(params.id);
-      setTasks(listTask);
-      const listTaskDesign = await getAllTaskDesigns();
-      setTaskDesigns(listTaskDesign);
-      const listTaskCategory = await getAllTaskCategories();
-      setTaskCategories(listTaskCategory);
-      const listStagesByProjectId = await getPaymentStagesByProjectId(
-        params.id
-      );
-      setStages(listStagesByProjectId);
+      const listTask = await getProjectTasksByProjectId({
+        projectId: params.id,
+      });
+      setTasks(listTask.list);
+      const listTaskDesign = await getAllTaskDesigns({});
+      setTaskDesigns(listTaskDesign.list);
+      const listTaskCategory = await getAllTaskCategories({});
+      setTaskCategories(listTaskCategory.list);
+      const listStagesByProjectId = await getPaymentStagesByProjectId({
+        projectId: params.id,
+      });
+      setStages(listStagesByProjectId.list);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);

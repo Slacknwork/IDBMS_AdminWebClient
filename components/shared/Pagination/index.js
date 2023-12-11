@@ -45,6 +45,11 @@ export default function Pagination({
       onPageChange={handleChangePage}
       rowsPerPage={rowsPerPage}
       rowsPerPageOptions={[2, 5, 10, 25, 50]}
+      labelDisplayedRows={(page) =>
+        `${page.from} - ${page.to === -1 ? page.count : page.to} trên ${
+          page.count
+        }`
+      }
       onRowsPerPageChange={handleChangeRowsPerPage}
       labelRowsPerPage={label}
     />
