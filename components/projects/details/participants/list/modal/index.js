@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -18,6 +18,12 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import participationRoleOptions from "/constants/enums/participationRole";
+import { getAllUsers } from "../../../../../../api/userServices";
+import { createProjectParticipation, getAllProjectParticipations } from "../../../../../../api/projectParticipationServices";
+import participationRole from "../../../../../../constants/enums/participationRole";
+import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
+
 
 const style = {
   position: "absolute",
@@ -59,17 +65,48 @@ export default function ParticipationModal({ children }) {
       [field]: value,
       [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
     }));
+    setSelectedUser(value);
+    console.log(selectedUser);
   };
 
   const [filterList, setFilterList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedRole, setSelectedRole] = useState([]);
 
-  const handleRoleChange = () => {
+  const handleRoleChange = (event) => {
     // check role hien tai
     // filter list user
     // setFilterList = listuser.filter(role===role hien tai)
+    // setSelectedRole(event.target.value)
+    console.log(event.target.value)
+    console.log(formData.user);
+
+    const filterRole = event.target.value;
+
+    const allowedAllRoles = ["Chủ dự án", "Người xem"];
+    const allowedDecorRoles = ["Kĩ sư thiết kế trưởng", "Kĩ sư thiết kế"];
+    const allowedConstructionRoles = ["Quản lý công trình"];
+
+    if (!allowedAllRoles.includes(participationRole[filterRole])) {
+
+      if (allowedDecorRoles.includes(participationRole[filterRole])) {
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 4)));
+      }
+
+      if (allowedConstructionRoles.includes(participationRole[filterRole])) {
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 5)));
+      }
+      console.log("Yes");
+      handleInputChange("user", filteredUsers);
+    } else {
+      setFilteredUsers(users)
+      console.log("No");
+            // handleInputChange("user", filteredUsers);
+    }
+
   }
 
-  const handleCreateParticipation = () => {
+  const handleCreateParticipation = async () => {
     const request = {
       description: "formData.description" ?? "",
       usePurpose: "formData.usePurpose" ?? "",
@@ -77,8 +114,50 @@ export default function ParticipationModal({ children }) {
       projectId: "params.id" ?? "",
     };
 
-    // handleClose()
+    const participation = {
+      userId: selectedUser.id ?? "dde26b1b-ea61-4bb3-b6a6-d6456e88c85b",
+      projectId: "e0b9fafc-fd55-4afc-a4b5-f2ca39a63bc9" ?? "e0b9fafc-fd55-4afc-a4b5-f2ca39a63bc9",
+      role: parseInt(selectedRole, 10) ?? 5,
+    };
+    console.log(participation)
+
+    try {
+      const response = await createProjectParticipation(participation);
+      console.log(response);
+      if (response.data != null) {
+        toast.success("Thêm thành công!");
+      } else {
+        throw new Error("Create failed!");
+      }
+    } catch (error) {
+      console.error("Error login :", error);
+      toast.error("Lỗi!");
+    }
+    handleClose()
   };
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const initialized = useRef(false);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      const fetchDataFromApi = async () => {
+        try {
+          const data = await getAllUsers();
+          console.log(data);
+          setUsers(data?.list ?? []);
+          handleRoleChange;
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+      };
+      fetchDataFromApi();
+    }
+  }, []);
 
   return (
     <Box>
@@ -136,7 +215,7 @@ export default function ParticipationModal({ children }) {
                   <FormControl fullWidth>
                     <Autocomplete
                       multiple
-                      options={userOptions} // filterList
+                      options={users} // filterList
                       getOptionLabel={(option) => option.name} // Replace with the actual property for user name
                       value={formData.user}
                       onChange={(event, newValue) =>
