@@ -75,12 +75,17 @@ const getDocumentsByProjectId = async ({
 
 const createProjectDocument = async (request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+        
         const response = await fetch('https://localhost:7062/api/ProjectDocuments', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(request),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -97,14 +102,19 @@ const createProjectDocument = async (request) => {
 
 const updateProjectDocument = async (documentId, request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/${documentId}`,
             {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
+                body: formData,
             }
         );
 

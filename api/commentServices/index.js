@@ -57,12 +57,18 @@ const getCommentsByProjectId = async (projectId) => {
 
 const createComment = async (request) => {
     try {
+
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch('https://localhost:7062/api/Comments', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(request),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -79,14 +85,19 @@ const createComment = async (request) => {
 
 const updateComment = async (commentId, request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch(
             `https://localhost:7062/api/Comments/${commentId}`,
             {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
+                body: formData,
             }
         );
 
