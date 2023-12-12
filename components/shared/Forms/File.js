@@ -109,14 +109,14 @@ export default function FormFile({
                   variant="body1"
                   sx={{ color: theme.palette.primary.main }}
                 >
-                  Drop the files here ...
+                  Thả ảnh ...
                 </Typography>
               ) : (
                 <Typography
                   variant="body1"
                   sx={{ color: theme.palette.text.secondary }}
                 >
-                  Drag and drop some files here, or click to select files
+                  Kéo thả ảnh vào đây, hoặc bấm để chọn ảnh
                 </Typography>
               )}
             </Paper>

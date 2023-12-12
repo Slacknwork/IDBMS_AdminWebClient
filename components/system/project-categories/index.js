@@ -36,6 +36,7 @@ import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
 
 import isHiddenOptions from "../../../constants/enums/isHidden";
+import CreateProjectCategoryModal from "../../shared/Modals/ProjectCategories/CreateModal";
 
 const projects = [
   {
@@ -130,23 +131,24 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ display: "flex", mt: 2 }}>
-        <Search
-          placeholder="Tìm theo tên.."
-        ></Search>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
-        <FilterStatus
-          query={isHiddenQuery}
-          options={isHiddenOptions}
-          label="Trạng thái"
-          allValue={isHiddenAllValue}
-          allLabel="Tất cả"
-        ></FilterStatus>
+          <FilterStatus
+            query={isHiddenQuery}
+            options={isHiddenOptions}
+            label="Trạng thái"
+            allValue={isHiddenAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
+        </Box>
+        <CreateProjectCategoryModal>
+          Tạo
+        </CreateProjectCategoryModal>
       </Box>
-      {/* <ItemModal>
-          <span>Tạo</span>
-        </ItemModal> */}
-
       {(projectCategories && projectCategories.length) > 0 ? (
         <Table
           aria-label="simple table"

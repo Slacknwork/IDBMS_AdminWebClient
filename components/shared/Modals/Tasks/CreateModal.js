@@ -148,7 +148,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
         name: selectedTaskDesign.name || "",
         description: selectedTaskDesign.description || "",
         percentage: 0,
-        calculationUnit: selectedTaskDesign.calculationUnit || -1,
+        calculationUnit: selectedTaskDesign?.calculationUnit ?? -1,
         pricePerUnit: selectedTaskDesign.estimatePricePerUnit || 0,
         designCategoryId: selectedTaskDesign.interiorItemCategoryId || null,
         taskCategoryId: selectedTaskDesign.taskCategoryId || null,
