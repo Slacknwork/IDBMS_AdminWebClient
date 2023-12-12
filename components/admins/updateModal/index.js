@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import { updateAdmin } from "../../../api/adminServices";
+import { updateAdmin } from "/api/adminServices";
 
 const style = {
   position: "absolute",
