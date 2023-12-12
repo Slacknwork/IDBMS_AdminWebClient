@@ -167,7 +167,7 @@ export default function ProjectDocuments() {
       </Box>
       {/* Table */}
       {(documents && documents.length) > 0 ? (
-        < Table aria-label="simple table">
+        < Table aria-label="simple table" sx={{mt: 1}}>
           <TableHead>
             <TableRow>
               <StyledTableCell>

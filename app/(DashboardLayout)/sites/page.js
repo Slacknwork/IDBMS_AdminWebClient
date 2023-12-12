@@ -67,11 +67,11 @@ export default function SitesPage() {
   useEffect(() => {
     const fetchDataFromApi = async () => {
       const search = searchParams.get(searchQuery) ?? "";
-      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageNo = searchParams.get(pageQuery) ?? defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
-        const data = await getSites(search, page, pageSize);
+        const data = await getSites({ search, pageNo, pageSize });
         setCount(data.totalItem);
         setValues(data.list);
         setLoading(false);

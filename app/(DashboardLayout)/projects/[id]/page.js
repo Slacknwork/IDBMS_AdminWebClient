@@ -167,39 +167,6 @@ export default function ProjectDetails() {
               ></TextForm>
             </Grid>
 
-            {/* PROJECT TYPE */}
-            <Grid item xs={12} lg={12}>
-              <SelectForm
-                title="Kiểu dự án"
-                required
-                subtitle="Chọn kiểu dự án"
-                value={formData.type}
-                options={projectTypeOptions}
-                defaultValue={-1}
-                defaultLabel="Chọn kiểu dự án"
-                error={formData.typeError.hasError}
-                errorLabel={formData.typeError.label}
-                onChange={(value) => handleInputChange("type", value)}
-                disabled
-              ></SelectForm>
-            </Grid>
-
-            {/* PROJECT STATUS */}
-            <Grid item xs={12} lg={12}>
-              <SelectForm
-                title="Trạng thái"
-                required
-                subtitle="Chọn trạng thái của dự án"
-                value={formData.status}
-                options={projectStatusOptions}
-                defaultValue={-1}
-                defaultLabel="Chọn trạng thái"
-                error={formData.statusError.hasError}
-                errorLabel={formData.statusError.label}
-                onChange={(value) => handleInputChange("status", value)}
-              ></SelectForm>
-            </Grid>
-
             {/* PROJECT CATEGORY */}
             <Grid item xs={12} lg={12}>
               <AutocompleteForm
@@ -213,97 +180,6 @@ export default function ProjectDetails() {
                   handleInputChange("projectCategoryId", value)
                 }
               ></AutocompleteForm>
-            </Grid>
-
-            {/* ESTIMATED PRICE */}
-            {/* <Grid item xs={12} lg={12}>
-                <NumberForm
-                  title="Giá ước tính"
-                  required
-                  subtitle="Nhập giá tiền ước tính của dự án"
-                  value={formData.estimatedPrice}
-                  error={formData.estimatedPriceError.hasError}
-                  errorLabel={formData.estimatedPriceError.label}
-                  onChange={(value) =>
-                    handleInputChange("estimatedPrice", value)
-                  }
-                  endAdornment={<>VND</>}
-                ></NumberForm>
-              </Grid> */}
-
-            {/* FINAL PRICE */}
-            {/* <Grid item xs={12} lg={12}>
-                <NumberForm
-                  title="Giá thực tế"
-                  required
-                  subtitle="Nhập giá tiền quyết toán của dự án"
-                  value={formData.finalPrice}
-                  error={formData.finalPriceError.hasError}
-                  errorLabel={formData.finalPriceError.label}
-                  onChange={(value) => handleInputChange("finalPrice", value)}
-                  endAdornment={<>VND</>}
-                ></NumberForm>
-              </Grid> */}
-
-            {/* TOTAL WARRANTY PAID */}
-            {/* <Grid item xs={12} lg={12}>
-                <NumberForm
-                  title="Bảo hiểm đã trả"
-                  subtitle="Nhập số tiền bảo hiểm khách đã trả"
-                  value={formData.totalWarrantyPaid}
-                  error={formData.totalWarrantyPaidError.hasError}
-                  errorLabel={formData.totalWarrantyPaidError.label}
-                  onChange={(value) =>
-                    handleInputChange("totalWarrantyPaid", value)
-                  }
-                  endAdornment={<>VND</>}
-                ></NumberForm>
-              </Grid> */}
-
-            {/* AREA */}
-            {/* <Grid item xs={12} lg={12}>
-                <NumberForm
-                  title="Tổng diện tích"
-                  required
-                  subtitle="Tổng diện tích của dự án"
-                  value={formData.area}
-                  error={formData.areaError.hasError}
-                  errorLabel={formData.areaError.label}
-                  onChange={(value) => handleInputChange("area", value)}
-                  endAdornment={<>m²</>}
-                ></NumberForm>
-              </Grid> */}
-
-            {/* ESTIMATE BUSINESS DAY */}
-            {/* <Grid item xs={12} lg={12}>
-                <NumberForm
-                  title="Ước tính thời gian"
-                  required
-                  subtitle="Ước tính số ngày làm việc để hoàn thành dự án"
-                  value={formData.estimateBusinessDay}
-                  error={formData.estimateBusinessDayError.hasError}
-                  errorLabel={formData.estimateBusinessDayError.label}
-                  onChange={(value) =>
-                    handleInputChange("estimateBusinessDay", value)
-                  }
-                  endAdornment={<>ngày</>}
-                ></NumberForm>
-              </Grid> */}
-
-            {/* LANGUAGE */}
-            <Grid item xs={12} lg={12}>
-              <SelectForm
-                title="Ngôn ngữ"
-                required
-                subtitle="Chọn ngôn ngữ của dự án"
-                value={formData.language}
-                options={projectLanguageOptions}
-                defaultValue={-1}
-                defaultLabel="Chọn một..."
-                error={formData.languageError.hasError}
-                errorLabel={formData.languageError.label}
-                onChange={(value) => handleInputChange("language", value)}
-              ></SelectForm>
             </Grid>
 
             {/* ADVERTISEMENT STATUS */}

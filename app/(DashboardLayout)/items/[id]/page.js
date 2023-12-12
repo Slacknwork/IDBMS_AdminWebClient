@@ -15,6 +15,8 @@ import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices"
 import {
   getAllInteriorItems,
   getInteriorItemById,
+  updateInteriorItem,
+  deleteInteriorItem,
 } from "/api/interiorItemServices";
 
 import DetailsPage from "/components/shared/DetailsPage";
@@ -22,6 +24,7 @@ import TextForm from "/components/shared/Forms/Text";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import FileForm from "/components/shared/Forms/File";
 
 export default function ItemDetails() {
   // INIT
@@ -35,6 +38,9 @@ export default function ItemDetails() {
     descriptionError: { hasError: false, label: "" },
     englishName: "",
     englishNameError: { hasError: false, label: "" },
+    image: null,
+    imageError: { hasError: false, label: "" },
+    imageUrl: "",
     length: 0,
     lengthError: { hasError: false, label: "" },
     width: 0,
@@ -51,13 +57,13 @@ export default function ItemDetails() {
     estimatePriceError: { hasError: false, label: "" },
     laborCost: 0,
     laborCostError: { hasError: false, label: "" },
-    interiorItemColorId: null,
+    interiorItemColorId: "",
     interiorItemColorIdError: { hasError: false, label: "" },
-    interiorItemCategoryId: null,
+    interiorItemCategoryId: "",
     interiorItemCategoryIdError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
-    parentItemId: null,
+    parentItemId: "",
     parentItemIdError: { hasError: false, label: "" },
   });
 
@@ -113,7 +119,11 @@ export default function ItemDetails() {
     const fetchItem = async () => {
       try {
         const items = await getInteriorItemById(params.id);
-        setFormData((prevData) => ({ ...prevData, ...items }));
+        setFormData((prevData) => ({
+          ...prevData,
+          ...items,
+          parentItemId: items.parentItemId ?? "",
+        }));
       } catch (error) {
         toast.error("Lỗi dữ liệu: Thông tin sản phẩm");
         console.log(error);
@@ -131,8 +141,25 @@ export default function ItemDetails() {
     fetchDataFromApi();
   }, []);
 
-  const onSaveInteriorItem = () => {};
-  const onDeleteInteriorItem = () => {};
+  const onSaveInteriorItem = () => {
+    try {
+      updateInteriorItem(params.id, formData);
+      toast.success("Cập nhật thành công!");
+    } catch (error) {
+      toast.error("Lỗi cập nhật!");
+      console.log(error);
+    }
+  };
+  const onDeleteInteriorItem = () => {
+    try {
+      deleteInteriorItem(params.id);
+      toast.success("Cập nhật thành công!");
+      router.push(`/items`);
+    } catch (error) {
+      toast.error("Lỗi cập nhật!");
+      console.log(error);
+    }
+  };
 
   return (
     <PageContainer title={formData.name} description="Chi tiết sản phẩm">
@@ -159,6 +186,22 @@ export default function ItemDetails() {
                 errorLabel={formData.nameError.label}
                 onChange={(e) => handleInputChange("name", e.target.value)}
               ></TextForm>
+            </Grid>
+
+            {/* IMAGE */}
+            <Grid item xs={12} lg={12}>
+              <FileForm
+                title="Hình ảnh"
+                titleSpan={3}
+                fieldSpan={9}
+                required
+                subtitle="Kéo thả / chọn hình ảnh cho sản phẩm"
+                value={formData.image}
+                imgDisplay={formData.imageUrl}
+                error={formData.imageError.hasError}
+                errorLabel={formData.imageError.label}
+                onChange={(file) => handleInputChange("image", file)}
+              ></FileForm>
             </Grid>
 
             {/* LENGTH */}

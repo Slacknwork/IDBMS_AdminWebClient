@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Grid, Modal } from "@mui/material";
+import { Box, Button, Chip, Grid, Modal, Tooltip } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -19,8 +19,13 @@ const style = {
 export default function MessageModal({
   color = "primary",
   sx,
+  chip,
   disabled,
   buttonLabel,
+  buttonVariant,
+  buttonEndIcon,
+  tooltipTitle,
+  tooltipPlacement,
   onSubmit,
   title,
   cancelLabel,
@@ -43,15 +48,29 @@ export default function MessageModal({
 
   return (
     <Box sx={sx}>
-      <Button
-        disabled={disabled}
-        color={color}
-        variant="contained"
-        disableElevation
-        onClick={handleOpen}
-      >
-        {buttonLabel}
-      </Button>
+      {chip ? (
+        <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
+          <Chip
+            variant={buttonVariant ?? "contained"}
+            label={buttonLabel}
+            color={color}
+            onClick={handleOpen}
+            icon={buttonEndIcon}
+          ></Chip>
+        </Tooltip>
+      ) : (
+        <Button
+          disabled={disabled}
+          color={color}
+          variant={buttonVariant ?? "contained"}
+          disableElevation
+          onClick={handleOpen}
+          endIcon={buttonEndIcon}
+        >
+          {buttonLabel}
+        </Button>
+      )}
+
       <Modal
         open={open}
         onClose={handleClose}
