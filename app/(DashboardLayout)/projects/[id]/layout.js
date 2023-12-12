@@ -99,95 +99,102 @@ export default function ProjectDetailsLayout({ children }) {
               buttonEndIcon={<ChangeCircleIcon />}
             >
               <Grid item xs={12} lg={12}>
-                {projectStatusOptions.map(
-                  (status, index) =>
-                    ![0, 5, 6].includes(index) && (
-                      <Box
-                        key={status}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          py: 1,
-                          borderBottom: 1,
-                          borderColor: "lightgray",
-                        }}
-                      >
-                        <Box sx={{ display: "flex" }}>
+                {project.status === 6 ? (
+                  <Box>
+                    <Typography variant="h4">Dự án đã hủy.</Typography>
+                  </Box>
+                ) : (
+                  projectStatusOptions.map(
+                    (status, index) =>
+                      ![0, 5, 6].includes(index) && (
+                        <Box
+                          key={status}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            py: 1,
+                            borderBottom: 1,
+                            borderColor: "lightgray",
+                          }}
+                        >
+                          <Box sx={{ display: "flex" }}>
+                            {project.status === 5 && index === 4 ? (
+                              <PauseCircleIcon
+                                sx={{ my: "auto", mr: 2 }}
+                                color="error"
+                              ></PauseCircleIcon>
+                            ) : project.status === 7 ||
+                              index < project.status ? (
+                              <CheckCircleIcon
+                                sx={{ my: "auto", mr: 2 }}
+                                color="success"
+                              ></CheckCircleIcon>
+                            ) : project.status === index ? (
+                              <CircularProgress
+                                sx={{ my: "auto", mr: 2 }}
+                                variant="determinate"
+                                value={75}
+                                size={25}
+                                thickness={8}
+                              ></CircularProgress>
+                            ) : (
+                              <PendingIcon
+                                sx={{ my: "auto", mr: 2 }}
+                                color="disabled"
+                              ></PendingIcon>
+                            )}
+                            <Typography
+                              variant="h6"
+                              fontWeight={project.status === index ? 700 : 400}
+                              sx={{ my: "auto" }}
+                            >
+                              {projectStatusOptions[index]}
+                            </Typography>
+                          </Box>
                           {project.status === 5 && index === 4 ? (
-                            <PauseCircleIcon
-                              sx={{ my: "auto", mr: 2 }}
-                              color="error"
-                            ></PauseCircleIcon>
-                          ) : project.status === 7 || index < project.status ? (
-                            <CheckCircleIcon
-                              sx={{ my: "auto", mr: 2 }}
-                              color="success"
-                            ></CheckCircleIcon>
-                          ) : project.status === index ? (
-                            <CircularProgress
-                              sx={{ my: "auto", mr: 2 }}
-                              variant="determinate"
-                              value={75}
-                              size={25}
-                              thickness={8}
-                            ></CircularProgress>
-                          ) : (
-                            <PendingIcon
-                              sx={{ my: "auto", mr: 2 }}
-                              color="disabled"
-                            ></PendingIcon>
-                          )}
-                          <Typography
-                            variant="h6"
-                            fontWeight={project.status === index ? 700 : 400}
-                            sx={{ my: "auto" }}
-                          >
-                            {projectStatusOptions[index]}
-                          </Typography>
-                        </Box>
-                        {project.status === 5 && index === 4 ? (
-                          <MessageModal
-                            buttonSize="small"
-                            buttonLabel="Tiếp tục"
-                            buttonVariant="contained"
-                            onSubmit={() => onUpdateStatus(4)}
-                          ></MessageModal>
-                        ) : project.status === 4 && index === 4 ? (
-                          <MessageModal
-                            color="error"
-                            buttonSize="small"
-                            buttonLabel="Hoãn"
-                            buttonVariant="contained"
-                            onSubmit={() => onUpdateStatus(5)}
-                          ></MessageModal>
-                        ) : project.status === index && project.status < 4 ? (
-                          <MessageModal
-                            color="error"
-                            buttonSize="small"
-                            buttonLabel="Hủy"
-                            buttonVariant="contained"
-                            onSubmit={() => onUpdateStatus(6)}
-                          ></MessageModal>
-                        ) : project.status === 4 && index === 7 ? (
-                          <MessageModal
-                            buttonSize="small"
-                            buttonLabel="Hoàn thành"
-                            buttonVariant="contained"
-                            onSubmit={() => onUpdateStatus(7)}
-                          ></MessageModal>
-                        ) : (
-                          project.status < 4 &&
-                          index === project.status + 1 && (
                             <MessageModal
                               buttonSize="small"
-                              buttonLabel="Tiếp"
+                              buttonLabel="Tiếp tục"
                               buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(index)}
+                              onSubmit={() => onUpdateStatus(4)}
                             ></MessageModal>
-                          )
-                        )}
-                      </Box>
-                    )
+                          ) : project.status === 4 && index === 4 ? (
+                            <MessageModal
+                              color="error"
+                              buttonSize="small"
+                              buttonLabel="Hoãn"
+                              buttonVariant="contained"
+                              onSubmit={() => onUpdateStatus(5)}
+                            ></MessageModal>
+                          ) : project.status === index && project.status < 4 ? (
+                            <MessageModal
+                              color="error"
+                              buttonSize="small"
+                              buttonLabel="Hủy"
+                              buttonVariant="contained"
+                              onSubmit={() => onUpdateStatus(6)}
+                            ></MessageModal>
+                          ) : project.status === 4 && index === 7 ? (
+                            <MessageModal
+                              buttonSize="small"
+                              buttonLabel="Hoàn thành"
+                              buttonVariant="contained"
+                              onSubmit={() => onUpdateStatus(7)}
+                            ></MessageModal>
+                          ) : (
+                            project.status < 4 &&
+                            index === project.status + 1 && (
+                              <MessageModal
+                                buttonSize="small"
+                                buttonLabel="Tiếp"
+                                buttonVariant="contained"
+                                onSubmit={() => onUpdateStatus(index)}
+                              ></MessageModal>
+                            )
+                          )}
+                        </Box>
+                      )
+                  )
                 )}
               </Grid>
             </FormModal>
