@@ -181,7 +181,7 @@ export default function CreateRoomTypeModal({ onCreate }) {
                     title="Ẩn"
                     subtitle="Check vào ô nếu muốn ẩn"
                     value={formData.isHidden}
-                    onChange={(e) => handleInputChange("isHidden", e.target.value)}
+                    onChange={(e) => handleInputChange("isHidden", e.target.checked)}
                 ></CheckboxForm>
             </Grid>
         </FormModal>

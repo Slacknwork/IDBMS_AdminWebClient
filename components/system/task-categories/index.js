@@ -26,7 +26,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import { getAllTaskCategories } from "../../../api/taskCategoryServices";
+import { getAllTaskCategories } from "/api/taskCategoryServices";
 import projectType from "../../../constants/enums/projectType";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -35,6 +35,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterComponent from "/components/shared/FilterStatus";
+import CreateTaskCategoryModal from "../../shared/Modals/TaskCategories/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -113,21 +114,26 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ display: "flex", mt: 2 }}>
 
-        <Search
-          placeholder="Tìm theo tên.."
-        ></Search>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
-        <FilterComponent
-          query={typeQuery}
-          options={projectType}
-          label="Loại dự án"
-          allValue={typeAllValue}
-          allLabel="Tất cả"
-        ></FilterComponent>
-
+          <FilterComponent
+            query={typeQuery}
+            options={projectType}
+            label="Loại dự án"
+            allValue={typeAllValue}
+            allLabel="Tất cả"
+          ></FilterComponent>
+        </Box>
+        <CreateTaskCategoryModal>
+          Tạo
+        </CreateTaskCategoryModal>
       </Box>
+
       {(taskCategories && taskCategories.length) > 0 ? (
         <Table
           aria-label="simple table"
