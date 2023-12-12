@@ -31,7 +31,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
-import { getTransactionsByProjectId } from "../../../../../api/transactionServices";
+import { getTransactionsByProjectId } from "/api/transactionServices";
 
 // Sample transaction data
 const transactions = [
@@ -169,7 +169,7 @@ export default function Transactions() {
       </Box>
       {/* Table */}
       {(transactions && transactions.length) > 0 ? (
-        <Table aria-label="simple table">
+        <Table sx={{mt: 1}} aria-label="simple table">
           {/* Table Head */}
           <TableHead>
             <TableRow>
