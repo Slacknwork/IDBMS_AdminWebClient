@@ -19,7 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import participationRoleOptions from "/constants/enums/participationRole";
 import { getAllUsers } from "../../../../../../api/userServices";
-import { createProjectParticipation, getAllProjectParticipations } from "../../../../../../api/projectParticipationServices";
+import { createEmployees, createProjectParticipation, getAllProjectParticipations } from "../../../../../../api/projectParticipationServices";
 import participationRole from "../../../../../../constants/enums/participationRole";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
@@ -105,6 +105,7 @@ export default function ParticipationModal({ children }) {
     }
 
   }
+  const project = useParams();
 
   const handleCreateParticipation = async () => {
     const request = {
@@ -113,16 +114,22 @@ export default function ParticipationModal({ children }) {
       floorNo: "formData.floorNo" ?? "",
       projectId: "params.id" ?? "",
     };
-
-    const participation = {
+    const parti = [{
       userId: selectedUser.id ?? "dde26b1b-ea61-4bb3-b6a6-d6456e88c85b",
-      projectId: "e0b9fafc-fd55-4afc-a4b5-f2ca39a63bc9" ?? "e0b9fafc-fd55-4afc-a4b5-f2ca39a63bc9",
-      role: parseInt(selectedRole, 10) ?? 5,
+      projectId: project.id,
+      role: 5,
+    }];
+    const listUserId = ['e3d987ba-424e-42ea-92ee-1b2d293299ec','a3c81d01-8cf6-46b7-84df-dcf39eb7d4cf']
+    const userId = ['e3d987ba-424e-42ea-92ee-1b2d293299ec']
+    const listParticipation = 
+    {
+      listUserId: listUserId,
+      projectId: project.id,
+      role: 3,
     };
-    console.log(participation)
-
+    console.log(listParticipation);
     try {
-      const response = await createProjectParticipation(participation);
+      const response = await createEmployees(listParticipation);
       console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");

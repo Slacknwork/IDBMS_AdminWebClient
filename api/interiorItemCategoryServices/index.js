@@ -24,12 +24,17 @@ const getAllInteriorItemCategories = async ({
 
 const createInteriorItemCategory = async (request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch('https://localhost:7062/api/InteriorItemCategories', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(request),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -46,14 +51,19 @@ const createInteriorItemCategory = async (request) => {
 
 const updateInteriorItemCategory = async (categoryId, request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+        
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemCategories/${categoryId}`,
             {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
+                body: formData,
             }
         );
 

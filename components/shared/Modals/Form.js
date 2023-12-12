@@ -16,7 +16,10 @@ import CloseIcon from "@mui/icons-material/Close";
 export default function FormModal({
   children,
   buttonLabel,
+  buttonEndIcon,
   title,
+  disableSubmit,
+  submitVariant,
   submitLabel,
   hasOpenEvent,
   onOpen,
@@ -32,7 +35,12 @@ export default function FormModal({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: size === "big" && isBigScreen ? "60rem" : "40rem",
+    width:
+      size === "big" && isBigScreen
+        ? "60rem"
+        : size === "small"
+        ? "25rem"
+        : "40rem",
     bgcolor: "background.paper",
     overflowY: "auto",
     boxShadow: 24,
@@ -47,10 +55,19 @@ export default function FormModal({
   const handleClose = () => {
     setOpen(false);
   };
+  const handleSubmit = () => {
+    onSubmit();
+    handleClose();
+  };
 
   return (
     <Box>
-      <Button variant="contained" disableElevation onClick={handleOpen}>
+      <Button
+        variant="contained"
+        disableElevation
+        onClick={handleOpen}
+        endIcon={buttonEndIcon}
+      >
         {buttonLabel || ""}
       </Button>
       <Modal
@@ -102,12 +119,9 @@ export default function FormModal({
                 spacing={2}
               >
                 <Button
-                  variant="contained"
+                  variant={submitVariant ?? "contained"}
                   disableElevation
-                  onClick={() => {
-                    onSubmit();
-                    handleClose();
-                  }}
+                  onClick={disableSubmit ? handleClose : handleSubmit}
                 >
                   {submitLabel || ""}
                 </Button>

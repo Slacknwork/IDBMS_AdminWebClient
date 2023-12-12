@@ -23,12 +23,17 @@ const getAllTaskCategories = async ({
 
 const createTaskCategory = async (request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch("https://localhost:7062/api/TaskCategories", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -45,14 +50,19 @@ const createTaskCategory = async (request) => {
 
 const updateTaskCategory = async (categoryId, request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch(
       `https://localhost:7062/api/TaskCategories/${categoryId}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        body: formData,
       }
     );
 
