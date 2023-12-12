@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { IconPencil } from "@tabler/icons-react";
 
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
 
@@ -97,6 +98,7 @@ export default function DocumentModal({ children, projectDocument }) {
         variant="contained"
         disableElevation
         onClick={handleOpen}
+        endIcon={projectDocument && <IconPencil></IconPencil>}
       >
         {children}
       </Button>

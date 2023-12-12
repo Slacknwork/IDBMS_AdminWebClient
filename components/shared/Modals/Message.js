@@ -20,12 +20,14 @@ export default function MessageModal({
   color = "primary",
   sx,
   chip,
-  disabled,
+  disabled = false,
   buttonLabel,
+  buttonSize,
   buttonVariant,
   buttonEndIcon,
   tooltipTitle,
   tooltipPlacement,
+  disableSubmit,
   onSubmit,
   title,
   cancelLabel,
@@ -47,10 +49,11 @@ export default function MessageModal({
   };
 
   return (
-    <Box sx={sx}>
+    <Box>
       {chip ? (
         <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
           <Chip
+            disabled={disabled}
             variant={buttonVariant ?? "contained"}
             label={buttonLabel}
             color={color}
@@ -60,6 +63,8 @@ export default function MessageModal({
         </Tooltip>
       ) : (
         <Button
+          sx={sx}
+          size={buttonSize ?? ""}
           disabled={disabled}
           color={color}
           variant={buttonVariant ?? "contained"}
@@ -85,20 +90,22 @@ export default function MessageModal({
             </Grid>
             <Grid item xs={12} lg={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {!disableSubmit && (
+                  <Button
+                    color={color}
+                    variant="outlined"
+                    disableElevation
+                    onClick={handleClose}
+                    sx={{ mr: 2 }}
+                  >
+                    {cancelLabel || "Hủy"}
+                  </Button>
+                )}
                 <Button
                   color={color}
-                  variant="outlined"
+                  variant={disableSubmit ? "outlined" : "contained"}
                   disableElevation
-                  onClick={handleClose}
-                  sx={{ mr: 2 }}
-                >
-                  {cancelLabel || "Hủy"}
-                </Button>
-                <Button
-                  color={color}
-                  variant="contained"
-                  disableElevation
-                  onClick={handleSubmit}
+                  onClick={disableSubmit ? handleClose : handleSubmit}
                 >
                   {submitLabel || "Chấp nhận"}
                 </Button>

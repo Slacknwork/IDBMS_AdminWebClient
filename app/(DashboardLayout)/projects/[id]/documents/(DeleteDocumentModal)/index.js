@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Box, Button, Grid, Modal } from "@mui/material";
+import { IconTrash } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -21,7 +22,7 @@ const style = {
 const modalTitle = "Xóa";
 const modalMessage = "Xóa thông tin công trình?";
 
-export default function SiteModal({ children, documentId }) {
+export default function DeleteDocumentModal({ children, documentId }) {
   const router = useRouter();
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
@@ -53,6 +54,7 @@ export default function SiteModal({ children, documentId }) {
         color="error"
         disableElevation
         onClick={handleOpen}
+        endIcon={<IconTrash></IconTrash>}
       >
         {children}
       </Button>

@@ -44,7 +44,6 @@ import Search from "/components/shared/Search";
 import FilterCategory from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
 
-
 // Sample projectDocuments data
 const projectDocuments = [
   {
@@ -83,7 +82,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectDocuments() {
-
   const searchQuery = "search";
 
   const categoryQuery = "category";
@@ -100,7 +98,6 @@ export default function ProjectDocuments() {
   const searchParams = useSearchParams();
   moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-
   // DOCUMENTS
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,12 +106,12 @@ export default function ProjectDocuments() {
   // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchDocuments = async () => {
-
       const projectId = params.id;
       const search = searchParams.get(searchQuery) || "";
       const categoryEnum = searchParams.get(categoryQuery) || "";
       const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
         const response = await getDocumentsByProjectId({
@@ -133,9 +130,7 @@ export default function ProjectDocuments() {
       }
     };
 
-    await Promise.all([
-      fetchDocuments(),
-    ]);
+    await Promise.all([fetchDocuments()]);
     setLoading(false);
   };
 
@@ -148,9 +143,7 @@ export default function ProjectDocuments() {
       {/* Filter and Search */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo tên.."
-          ></Search>
+          <Search placeholder="Tìm theo tên.."></Search>
 
           <FilterCategory
             query={categoryQuery}
@@ -159,7 +152,6 @@ export default function ProjectDocuments() {
             allValue={categoryAllValue}
             allLabel="Tất cả"
           ></FilterCategory>
-
         </Box>
         <DocumentModal>
           <span>Tạo</span>
@@ -167,7 +159,7 @@ export default function ProjectDocuments() {
       </Box>
       {/* Table */}
       {(documents && documents.length) > 0 ? (
-        < Table aria-label="simple table" sx={{mt: 1}}>
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
               <StyledTableCell>
@@ -208,28 +200,29 @@ export default function ProjectDocuments() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {projectDocumentCategories[document?.category] ?? "Không xác định"}
+                    {projectDocumentCategories[document?.category] ??
+                      "Không xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {document?.createdDate ? moment(document?.createdDate).format('L') : "Chưa xác định"}
+                    {document?.createdDate
+                      ? moment(document?.createdDate).format("L")
+                      : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ display: "flex" }}>
-                  <DeleteModal>
-                    <IconTrash></IconTrash>
-                  </DeleteModal>
-                  <DocumentModal projectDocument={document}>
-                    <IconPencil></IconPencil>
-                  </DocumentModal>
+                  <DeleteModal>Xóa</DeleteModal>
+                  <DocumentModal projectDocument={document}>Sửa</DocumentModal>
                   <Button
+                    sx={{ width: 75 }}
                     size="small"
                     variant="contained"
                     disableElevation
                     color="primary"
+                    endIcon={<IconDownload></IconDownload>}
                   >
-                    <IconDownload></IconDownload>
+                    Tải
                   </Button>
                 </TableCell>
               </StyledTableRow>
@@ -246,9 +239,8 @@ export default function ProjectDocuments() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
-    </Box >
+    </Box>
   );
 }
