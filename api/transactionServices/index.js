@@ -76,14 +76,19 @@ const getTransactionById = async (id) => {
 
 const createTransaction = async (request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions`,
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
+                body: formData,
             }
         );
 
@@ -100,14 +105,19 @@ const createTransaction = async (request) => {
 
 const updateTransaction = async (id, request) => {
     try {
+        const formData = new FormData();
+
+        Object.keys(request).forEach((key) => {
+          if (!key.endsWith("Error")) {
+            formData.append(key, request[key]);
+          }
+        });
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/${id}`,
             {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
+                body: formData,
             }
         );
 
