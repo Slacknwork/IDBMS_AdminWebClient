@@ -4,17 +4,11 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjectData } from "/store/reducers/data";
-import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, CircularProgress, Grid, Typography } from "@mui/material";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
+import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 
 import languageOptions, {
   languageTypeChipImages,
@@ -25,12 +19,15 @@ import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
 
+import { updateProjectStatus } from "/api/projectServices";
+
 import PageContainer from "/components/container/PageContainer";
 import Tabs from "/components/shared/Tabs";
 import MessageModal from "/components/shared/Modals/Message";
 import FormModal from "/components/shared/Modals/Form";
 
 import TabItems from "./tabItems";
+import { toast } from "react-toastify";
 
 export default function ProjectDetailsLayout({ children }) {
   // INIT
@@ -38,6 +35,17 @@ export default function ProjectDetailsLayout({ children }) {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
   const project = data.project;
+
+  const onUpdateStatus = async (status) => {
+    try {
+      await updateProjectStatus(params.id, status);
+      dispatch(fetchProjectData(params.id));
+      toast.success("Cập nhật thành công!");
+    } catch (error) {
+      toast.error("Lỗi cập nhật trạng thái dự án!");
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchProjectData(params.id));
@@ -105,7 +113,12 @@ export default function ProjectDetailsLayout({ children }) {
                         }}
                       >
                         <Box sx={{ display: "flex" }}>
-                          {index < project.status || project.status === 7 ? (
+                          {project.status === 5 && index === 4 ? (
+                            <PauseCircleIcon
+                              sx={{ my: "auto", mr: 2 }}
+                              color="error"
+                            ></PauseCircleIcon>
+                          ) : project.status === 7 || index < project.status ? (
                             <CheckCircleIcon
                               sx={{ my: "auto", mr: 2 }}
                               color="success"
@@ -132,20 +145,44 @@ export default function ProjectDetailsLayout({ children }) {
                             {projectStatusOptions[index]}
                           </Typography>
                         </Box>
-                        {project.status === index && index < 7 ? (
+                        {project.status === 5 && index === 4 ? (
+                          <MessageModal
+                            buttonSize="small"
+                            buttonLabel="Tiếp tục"
+                            buttonVariant="contained"
+                            onSubmit={() => onUpdateStatus(4)}
+                          ></MessageModal>
+                        ) : project.status === 4 && index === 4 ? (
                           <MessageModal
                             color="error"
                             buttonSize="small"
-                            buttonLabel={project.status < 4 ? "Hủy" : "Hoãn"}
+                            buttonLabel="Hoãn"
                             buttonVariant="contained"
+                            onSubmit={() => onUpdateStatus(5)}
+                          ></MessageModal>
+                        ) : project.status === index && project.status < 4 ? (
+                          <MessageModal
+                            color="error"
+                            buttonSize="small"
+                            buttonLabel="Hủy"
+                            buttonVariant="contained"
+                            onSubmit={() => onUpdateStatus(6)}
+                          ></MessageModal>
+                        ) : project.status === 4 && index === 7 ? (
+                          <MessageModal
+                            buttonSize="small"
+                            buttonLabel="Hoàn thành"
+                            buttonVariant="contained"
+                            onSubmit={() => onUpdateStatus(7)}
                           ></MessageModal>
                         ) : (
-                          (project.status + 1 === index ||
-                            (project.status === 4 && index === 7)) && (
+                          project.status < 4 &&
+                          index === project.status + 1 && (
                             <MessageModal
                               buttonSize="small"
                               buttonLabel="Tiếp"
                               buttonVariant="contained"
+                              onSubmit={() => onUpdateStatus(index)}
                             ></MessageModal>
                           )
                         )}
