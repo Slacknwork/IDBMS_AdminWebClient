@@ -25,13 +25,20 @@ const getAllRoomTypes = async ({
 };
 
 const createRoomType = async (request) => {
+
+  const formData = new FormData();
+
+  Object.keys(request).forEach((key) => {
+    if (!key.endsWith("Error")) {
+      formData.append(key, request[key]);
+    }
+  });
+  console.log(formData)
+
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+      body: formData,
     });
 
     if (!response.ok) {

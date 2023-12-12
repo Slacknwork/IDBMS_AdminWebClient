@@ -19,14 +19,21 @@ const getProjectCategories = async ({
 
 const createProjectCategory = async (request) => {
   try {
+
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+    console.log(formData)
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectCategories`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        body: formData,
       }
     );
 

@@ -28,6 +28,7 @@ import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
 
 import isHiddenOptions from "../../../constants/enums/isHidden";
+import CreateRoomTypeModal from "../../shared/Modals/RoomTypes/createModal";
 
 const products = [
   {
@@ -135,9 +136,9 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        {/* <ItemModal>
-          <span>Tạo</span>
-        </ItemModal> */}
+        <CreateRoomTypeModal>
+          Tạo
+        </CreateRoomTypeModal>
       </Box>
       {(roomTypes && roomTypes.length) > 0 ? (
         <Table

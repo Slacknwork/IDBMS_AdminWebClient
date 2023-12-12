@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllProjectDesigns } from "../../../api/projectDesignServices";
+import { getAllProjectDesigns } from "/api/projectDesignServices";
 import projectType from "../../../constants/enums/projectType";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -37,6 +37,7 @@ import FilterStatus from "/components/shared/FilterStatus";
 
 import isHiddenOptions from "../../../constants/enums/isHidden";
 import projectTypeOptions from "../../../constants/enums/projectType";
+import CreateProjectDesignModal from "../../shared/Modals/ProjectDesigns/CreateModal";
 
 const projects = [
   {
@@ -136,32 +137,33 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ display: "flex", mt: 2 }}>
 
-        <Search
-          placeholder="Tìm theo tên.."
-        ></Search>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search
+            placeholder="Tìm theo tên.."
+          ></Search>
 
-        <FilterStatus
-          query={typeQuery}
-          options={projectTypeOptions}
-          label="Loại dự án"
-          allValue={typeAllValue}
-          allLabel="Tất cả"
-        ></FilterStatus>
+          <FilterStatus
+            query={typeQuery}
+            options={projectTypeOptions}
+            label="Loại dự án"
+            allValue={typeAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
 
-        <FilterStatus
-          query={isHiddenQuery}
-          options={isHiddenOptions}
-          label="Trạng thái"
-          allValue={isHiddenAllValue}
-          allLabel="Tất cả"
-        ></FilterStatus>
-
+          <FilterStatus
+            query={isHiddenQuery}
+            options={isHiddenOptions}
+            label="Trạng thái"
+            allValue={isHiddenAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
+        </Box>
+        <CreateProjectDesignModal>
+          Tạo
+        </CreateProjectDesignModal>
       </Box>
-      {/* <ItemModal>
-          <span>Tạo</span>
-        </ItemModal> */}
 
       {(projectDesigns && projectDesigns.length) > 0 ? (
         <Table
