@@ -62,7 +62,7 @@ export default function CreateProjectDesignModal({ onCreate }) {
     return (
         <FormModal
             buttonLabel="Tạo"
-            title="Tạo phân loại dự án"
+            title="Tạo thiết kế dự án"
             submitLabel="Tạo"
             onSubmit={handleCreate}
             size="big"

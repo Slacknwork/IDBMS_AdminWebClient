@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllTaskDesigns } from "../../../api/taskDesignServices";
+import { getAllTaskDesigns } from "/api/taskDesignServices";
 import calculationUnit from "../../../constants/enums/calculationUnit";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -34,7 +34,8 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterComponent from "/components/shared/FilterStatus";
-import { getAllTaskCategories } from "../../../api/taskCategoryServices";
+import { getAllTaskCategories } from "/api/taskCategoryServices";
+import CreateTaskDesignModal from "../../shared/Modals/TaskDesigns/CreateModal";
 
 const projects = [
   {
@@ -153,21 +154,26 @@ export default function ProjectList() {
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-      <Box sx={{ display: "flex", mt: 2 }}>
 
-        <Search
-          placeholder="Tìm theo mã / tên.."
-        ></Search>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box sx={{ display: "flex" }}>
+          <Search
+            placeholder="Tìm theo mã / tên.."
+          ></Search>
 
-        <FilterAutocomplete
-          query={categoryQuery}
-          options={taskCategories}
-          label="Phân loại"
-          allValue={categoryAllValue}
-          allLabel="Tất cả"
-        ></FilterAutocomplete>
-
+          <FilterAutocomplete
+            query={categoryQuery}
+            options={taskCategories}
+            label="Phân loại"
+            allValue={categoryAllValue}
+            allLabel="Tất cả"
+          ></FilterAutocomplete>
+        </Box>
+        <CreateTaskDesignModal>
+          Tạo
+        </CreateTaskDesignModal>
       </Box>
+
       {(taskDesigns && taskDesigns.length) > 0 ? (
         <Table
           aria-label="simple table"

@@ -27,9 +27,9 @@ const createInteriorItemCategory = async (request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const response = await fetch('https://localhost:7062/api/InteriorItemCategories', {
@@ -54,11 +54,11 @@ const updateInteriorItemCategory = async (categoryId, request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
-        
+
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemCategories/${categoryId}`,
             {

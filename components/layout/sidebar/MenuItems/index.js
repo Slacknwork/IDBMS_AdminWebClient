@@ -106,7 +106,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Danh sách quản lý (Admin)",
+    title: "Danh sách quản lý",
     icon: IconUserStar,
     href: "/admins",
   },

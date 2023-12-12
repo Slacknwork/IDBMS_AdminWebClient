@@ -27,8 +27,8 @@ import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
-import CreateUserModal from "./(CreateUserModal)";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import CreateUserModal from "/components/shared/Modals/Users/CreateModal"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -126,7 +126,9 @@ export default function UserList() {
               allLabel={statusAllLabel}
             ></FilterStatus>
           </Box>
-          <CreateUserModal></CreateUserModal>
+          <CreateUserModal>
+            Tạo
+          </CreateUserModal>
         </Box>
         {users && users.length > 0 ? (
           <Table

@@ -60,7 +60,7 @@ export default function CreateTaskCategoryModal({ onCreate }) {
     return (
         <FormModal
             buttonLabel="Tạo"
-            title="Tạo phân loại dự án"
+            title="Tạo phân loại công việc"
             submitLabel="Tạo"
             onSubmit={handleCreate}
             size="big"
