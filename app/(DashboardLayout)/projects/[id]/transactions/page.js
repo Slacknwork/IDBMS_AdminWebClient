@@ -20,7 +20,7 @@ import {
 import transactionTypeOptions from "/constants/enums/transactionType";
 import transactionStatusOptions from "/constants/enums/transactionStatus";
 
-import TransactionModal from "./(CreateTransactionModal)";
+import TransactionModal from "../../../../../components/shared/Modals/Transactions/CreateModal";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

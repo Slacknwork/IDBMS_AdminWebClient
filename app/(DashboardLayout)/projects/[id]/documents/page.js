@@ -32,7 +32,7 @@ import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import DocumentModal from "./(DocumentModal)";
+import DocumentModal from "../../../../../components/shared/Modals/ProjectDocuments/CreateModal";
 import DeleteModal from "./(DeleteDocumentModal)";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";

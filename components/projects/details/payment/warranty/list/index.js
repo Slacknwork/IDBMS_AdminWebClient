@@ -17,7 +17,7 @@ import {
   CircularProgress
 } from "@mui/material";
 
-import WarrantyModal from "./modal";
+import WarrantyModal from "../../../../../../components/shared/Modals/WarrantyClaims/CreateModal";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
