@@ -27,6 +27,7 @@ import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import CreateAdminModal from "../shared/Modals/Admins/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -118,19 +119,9 @@ export default function ProjectList() {
           ></FilterStatus>
 
         </Box>
-        <CreateModal
-          request={{
-            name: "John Doe",
-            username: "john_doe",
-            email: "john.doe@example.com",
-            password: "securepassword",
-            status: 0,
-            isDeleted: false,
-            creatorId: null,
-          }}
-        >
-          Lưu
-        </CreateModal>
+        <CreateAdminModal>
+          Tạo
+        </CreateAdminModal>
       </Box>
       <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
         {admins && admins.length > 0 ? (

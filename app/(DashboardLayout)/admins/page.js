@@ -7,7 +7,7 @@ import AdminList from "/components/admins";
 import DashboardCard from "/components/shared/DashboardCard";
 import PageContainer from "/components/container/PageContainer";
 
-export default function UsersPage() {
+export default function AdminsPage() {
   return (
     <PageContainer title="Danh sách quản lý" description="">
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>

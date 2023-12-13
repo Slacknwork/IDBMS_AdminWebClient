@@ -15,7 +15,7 @@ import {
 import { updateProject } from "/api/projectServices";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import { createAdmin } from "../../../api/adminServices";
+import { createAdmin } from "/api/adminServices";
 
 
 const style = {
