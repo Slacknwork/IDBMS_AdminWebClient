@@ -4,11 +4,20 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjectData } from "/store/reducers/data";
-import { Avatar, Box, CircularProgress, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Chip,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
+
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import languageOptions, {
   languageTypeChipImages,
@@ -59,36 +68,27 @@ export default function ProjectDetailsLayout({ children }) {
         </Grid>
         <Grid item xs={12} lg={5} sx={{ my: "auto" }}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <MessageModal
-              disableSubmit
-              submitLabel="Đóng"
-              buttonLabel={projectTypeOptions[project.type]}
+            <Chip
+              label={projectTypeOptions[project.type]}
               color={projectTypeChipColors[project.type]}
-              sx={{ mr: 2 }}
-            >
-              <Typography sx={{ mb: 1 }} variant="h4">
-                Loại dự án: {projectTypeOptions[project.type]}
-              </Typography>
-            </MessageModal>
-            <MessageModal
-              disableSubmit
-              submitLabel="Đóng"
-              buttonVariant="outlined"
-              buttonLabel={languageOptions[project.language]}
-              color={languageTypeChipColors[project.language]}
-              buttonEndIcon={
+              sx={{ mr: 2, my: "auto" }}
+            ></Chip>
+            <Chip
+              avatar={
                 <Avatar
                   sx={{ width: 18, height: 18 }}
                   src={languageTypeChipImages[project.language]}
                 />
               }
-              sx={{ mr: 2 }}
-            >
-              <Typography sx={{ mb: 1 }} variant="h4">
-                Ngôn ngữ dự án: {languageOptions[project.language]}
-              </Typography>
-            </MessageModal>
+              variant="outlined"
+              label={languageOptions[project.language]}
+              color={languageTypeChipColors[project.language]}
+              sx={{ mr: 2, my: "auto" }}
+            ></Chip>
             <FormModal
+              chip
+              tooltipTitle="Cập nhật trạng thái"
+              tooltipPlacement="top"
               size="small"
               disableSubmit
               submitLabel="Đóng"
@@ -100,8 +100,40 @@ export default function ProjectDetailsLayout({ children }) {
             >
               <Grid item xs={12} lg={12}>
                 {project.status === 6 ? (
-                  <Box>
-                    <Typography variant="h4">Dự án đã hủy.</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CancelIcon
+                      color="error"
+                      sx={{ fontSize: 60 }}
+                    ></CancelIcon>
+                    <Typography
+                      variant="h4"
+                      sx={{ mt: 1, textAlign: "center" }}
+                    >
+                      Đã hủy dự án.
+                    </Typography>
+                    <Typography variant="p" sx={{ mt: 1, textAlign: "center" }}>
+                      Dự án đã bị hủy. Bắt đầu lại dự án ở giai đoạn Trao đổi?
+                    </Typography>
+                    <MessageModal
+                      sx={{ mt: 2 }}
+                      color="success"
+                      buttonLabel="Bắt đầu"
+                      buttonVariant="contained"
+                      onSubmit={() => onUpdateStatus(2)}
+                    >
+                      <Typography variant="h4" sx={{ mb: 2 }}>
+                        Xác nhận
+                      </Typography>
+                      <Typography variant="p">
+                        Bắt đầu lại dự án từ giai đoạn Trao đổi?
+                      </Typography>
+                    </MessageModal>
                   </Box>
                 ) : (
                   projectStatusOptions.map(

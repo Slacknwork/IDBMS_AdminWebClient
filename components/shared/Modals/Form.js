@@ -4,9 +4,11 @@ import { useState } from "react";
 import {
   Box,
   Button,
+  Chip,
   Grid,
   IconButton,
   Modal,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -16,8 +18,15 @@ import CloseIcon from "@mui/icons-material/Close";
 export default function FormModal({
   children,
   buttonLabel,
+  buttonSize,
+  buttonVariant,
   buttonEndIcon,
+  chip,
+  tooltipTitle,
+  tooltipPlacement,
   title,
+  disabled,
+  color,
   disableSubmit,
   submitVariant,
   submitLabel,
@@ -62,14 +71,48 @@ export default function FormModal({
 
   return (
     <Box>
-      <Button
-        variant="contained"
-        disableElevation
-        onClick={handleOpen}
-        endIcon={buttonEndIcon}
-      >
-        {buttonLabel || ""}
-      </Button>
+      {chip ? (
+        <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
+          <Chip
+            disabled={disabled}
+            variant={buttonVariant ?? "contained"}
+            label={buttonLabel}
+            color={color ?? "primary"}
+            onClick={handleOpen}
+            icon={buttonEndIcon}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              "& .MuiChip-label": {
+                paddingRight: "6px",
+              },
+              "& .MuiChip-icon": {
+                order: 1,
+                paddingLeft: "0px",
+                marginLeft: "0px",
+                marginRight: "4px",
+              },
+            }}
+          ></Chip>
+        </Tooltip>
+      ) : (
+        <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
+          <span>
+            <Button
+              sx={sx}
+              size={buttonSize ?? ""}
+              disabled={disabled}
+              color={color}
+              variant={buttonVariant ?? "contained"}
+              disableElevation
+              onClick={handleOpen}
+              endIcon={buttonEndIcon}
+            >
+              {buttonLabel}
+            </Button>
+          </span>
+        </Tooltip>
+      )}
       <Modal
         open={open}
         onClose={handleClose}
