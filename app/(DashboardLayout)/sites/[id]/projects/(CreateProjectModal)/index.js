@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 
 import projectTypeOptions from "/constants/enums/projectType";
@@ -15,7 +15,6 @@ import { getProjectCategories } from "/api/projectCategoryServices";
 import PageContainer from "/components/container/PageContainer";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
@@ -319,6 +318,8 @@ export default function CreateModal({ onSubmit }) {
           <TextForm
             title="Mô tả"
             multiline
+            titleSpan={2}
+            fieldSpan={10}
             rows={4}
             subtitle="Mô tả dự án"
             value={formData.description}

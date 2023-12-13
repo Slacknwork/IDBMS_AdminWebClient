@@ -298,12 +298,15 @@ export default function ProjectTasksPage() {
     try {
       await updateProjectTaskStage({ projectId, stageId, tasks });
       removeAllSelectedTasks();
+      handleStageChange(
+        null,
+        stages.findIndex((stage) => stage.id === stageId) + 1
+      );
       toast.success("Cập nhật thành công!");
     } catch (error) {
       console.error("Error updating task status: ", error);
       toast.error("Lỗi cập nhật giai đoạn công việc!");
     } finally {
-      await fetchDataFromApi();
     }
   };
 

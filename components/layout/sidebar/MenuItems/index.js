@@ -4,6 +4,7 @@ import {
   IconCategory2,
   IconDoor,
   IconHome,
+  IconHomeStar,
   IconLayoutDashboard,
   IconListDetails,
   IconUser,
@@ -33,9 +34,15 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Danh sách",
+    title: "Khu công trình",
     icon: IconHome,
     href: "/sites",
+  },
+  {
+    id: uniqueId(),
+    title: "Quảng cáo",
+    icon: IconHomeStar,
+    href: "/advertisement",
   },
   {
     navlabel: true,
