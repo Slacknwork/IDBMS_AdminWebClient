@@ -137,13 +137,6 @@ export default function ProjectDetails() {
     }
   };
 
-  const getAvatarContent = (name) => {
-    const words = name.split(" ");
-    const lastWord = words.length > 0 ? words[words.length - 1] : "";
-    const firstCharacter = lastWord.charAt(0).toUpperCase();
-    return firstCharacter;
-  };
-
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
@@ -244,24 +237,12 @@ export default function ProjectDetails() {
             <Typography variant="h5" sx={{ my: "auto" }}>
               {contactLabel}
             </Typography>
-            <Box sx={{ display: "flex", mt: 2 }}>
-              <Avatar sx={{ bgcolor: deepOrange[500], my: "auto" }}>
-                {getAvatarContent(projectOwner?.name ?? "E")}
-              </Avatar>
-              <Box sx={{ my: "auto", mx: 2 }}>
-                <Typography variant="h6">
-                  {projectOwner?.name ?? "Không tìm thấy"}
-                </Typography>
-                <Typography variant="p">
-                  {projectOwner?.email ?? "..."}
-                </Typography>
-                <br />
-                <Typography variant="p">
-                  {projectOwner?.phone ?? "..."}
-                </Typography>
-                <br />
-              </Box>
-            </Box>
+            <UserCard
+              sx={{ mt: 2 }}
+              name={projectOwner?.name ?? "Không tìm thấy"}
+              email={projectOwner?.email ?? "..."}
+              phone={projectOwner?.phone ?? "..."}
+            ></UserCard>
           </Card>
 
           <Grid item xs={12} lg={12}>

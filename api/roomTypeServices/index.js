@@ -24,6 +24,24 @@ const getAllRoomTypes = async ({
   }
 };
 
+const getRoomTypeById = async (id) => {
+  try {
+    const response = await fetch(`${apiUrl}/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Get room type by ID ${id} failed`);
+    }
+
+    const roomType = await response.json();
+    return roomType.data;
+  } catch (error) {
+    console.error(`Error fetching room type by ID ${id}:`, error);
+    throw error;
+  }
+};
+
 const createRoomType = async (request) => {
 
   const formData = new FormData();
@@ -96,6 +114,7 @@ const updateRoomTypeHiddenStatus = async (id, newHiddenStatus) => {
 
 export {
   getAllRoomTypes,
+  getRoomTypeById,
   createRoomType,
   updateRoomType,
   updateRoomTypeHiddenStatus,

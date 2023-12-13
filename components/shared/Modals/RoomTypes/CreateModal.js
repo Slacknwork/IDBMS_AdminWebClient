@@ -129,6 +129,7 @@ export default function CreateRoomTypeModal({ onCreate }) {
                     error={formData.pricePerAreaError.hasError}
                     errorLabel={formData.pricePerAreaError.label}
                     onChange={(value) => handleInputChange("pricePerArea", value)}
+                    endAdornment={<>VND/m²</>}
                 ></NumberForm>
             </Grid>
 
@@ -142,6 +143,7 @@ export default function CreateRoomTypeModal({ onCreate }) {
                     error={formData.estimateDayPerAreaError.hasError}
                     errorLabel={formData.estimateDayPerAreaError.label}
                     onChange={(value) => handleInputChange("estimateDayPerArea", value)}
+                    endAdornment={<>Ngày/m²</>}
                 ></NumberForm>
             </Grid>
 

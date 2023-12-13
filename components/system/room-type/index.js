@@ -245,7 +245,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/RoomTypes/${roomType.id}`}
+                    href={`/system/room-type/${roomType.id}`}
                   >
                     Thông tin
                   </Button>
