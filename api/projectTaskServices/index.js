@@ -4,13 +4,15 @@ const getProjectTasksByProjectId = async ({
   categoryId = "",
   status = "",
   stageId = "",
+  includeRoomIdFilter = false,
+  includeStageIdFilter = false,
   roomId = "",
   page = "",
   pageSize = "",
 } = {}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&stageId=${stageId}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
+      `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&includeStageIdFilter=${includeStageIdFilter}&stageId=${stageId}&includeRoomIdFilter=${includeRoomIdFilter}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
 

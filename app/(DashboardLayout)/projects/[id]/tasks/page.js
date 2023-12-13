@@ -109,6 +109,8 @@ export default function ProjectTasksPage() {
     newViewMode
       ? searchParams.set(viewModeQuery, newViewMode)
       : searchParams.delete(viewModeQuery);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
     router.push(url.toString(), undefined, { scroll: false });
   };
@@ -137,6 +139,8 @@ export default function ProjectTasksPage() {
     newValue
       ? searchParams.set(stageQuery, stages[newValue - 1]?.id)
       : searchParams.delete(stageQuery);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
     router.push(url.toString(), undefined, { scroll: false });
   };
@@ -150,6 +154,8 @@ export default function ProjectTasksPage() {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
     searchParams.set(roomQuery, rooms[newValue]?.id);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
     router.push(url.toString(), undefined, { scroll: false });
   };
@@ -181,6 +187,8 @@ export default function ProjectTasksPage() {
       searchParams.delete(floorQuery);
       searchParams.delete(roomQuery);
     }
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
     router.push(url.toString(), undefined, { scroll: false });
   };
@@ -241,7 +249,9 @@ export default function ProjectTasksPage() {
       search,
       categoryId,
       status,
-      ...(viewMode ? { roomId } : { stageId }),
+      ...(viewMode
+        ? { roomId, includeRoomIdFilter: true }
+        : { stageId, includeStageIdFilter: true }),
       page,
       pageSize,
     });
