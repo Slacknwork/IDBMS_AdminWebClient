@@ -106,7 +106,6 @@ export default function ProjectDetailsLayout({ children }) {
               submitLabel="Đóng"
               submitVariant="outlined"
               title="Trạng thái dự án"
-              disabled={project.status > 6}
               buttonLabel={projectStatusOptions[project.status]}
               buttonEndIcon={<ChangeCircleIcon />}
             >
