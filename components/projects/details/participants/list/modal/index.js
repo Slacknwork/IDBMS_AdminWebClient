@@ -66,20 +66,26 @@ export default function ParticipationModal({ children }) {
       [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
     }));
     setSelectedUser(value);
-    console.log(selectedUser);
+    console.log(formData);
   };
 
   const [filterList, setFilterList] = useState([]);
   const [selectedUser, setSelectedUser] = useState([]);
-  const [selectedRole, setSelectedRole] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState([]);
+  const [selectedRole, setSelectedRole] = useState(1);
+
+  const handleUserChange = (event, newValue) => {
+    setSelectedUser(newValue);
+    console.log(selectedUser);
+  };
 
   const handleRoleChange = (event) => {
     // check role hien tai
     // filter list user
     // setFilterList = listuser.filter(role===role hien tai)
     // setSelectedRole(event.target.value)
+    setSelectedRole(event.target.value)
     console.log(event.target.value)
-    console.log(formData.user);
 
     const filterRole = event.target.value;
 
@@ -90,17 +96,18 @@ export default function ParticipationModal({ children }) {
     if (!allowedAllRoles.includes(participationRole[filterRole])) {
 
       if (allowedDecorRoles.includes(participationRole[filterRole])) {
-        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 4)));
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 1)));
       }
 
       if (allowedConstructionRoles.includes(participationRole[filterRole])) {
-        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 5)));
+        setFilteredUsers(users.filter((user) => user.userRoles.some(companyRole => companyRole.role === 2)));
       }
-      console.log("Yes");
-      handleInputChange("user", filteredUsers);
+      console.log(filteredUsers);
     } else {
       setFilteredUsers(users)
       console.log("No");
+      console.log(filteredUsers);
+
             // handleInputChange("user", filteredUsers);
     }
 
@@ -121,11 +128,16 @@ export default function ParticipationModal({ children }) {
     }];
     const listUserId = ['e3d987ba-424e-42ea-92ee-1b2d293299ec','a3c81d01-8cf6-46b7-84df-dcf39eb7d4cf']
     const userId = ['e3d987ba-424e-42ea-92ee-1b2d293299ec']
+
+    selectedUser.forEach((user)=>
+      selectedUserId.push(user.id)
+    );
+
     const listParticipation = 
     {
-      listUserId: listUserId,
+      listUserId: selectedUserId,
       projectId: project.id,
-      role: 3,
+      role: parseInt(selectedRole, 10),
     };
     console.log(listParticipation);
     try {
@@ -141,6 +153,7 @@ export default function ParticipationModal({ children }) {
       toast.error("Lỗi!");
     }
     handleClose()
+    location.reload();
   };
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -155,7 +168,7 @@ export default function ParticipationModal({ children }) {
           const data = await getAllUsers();
           console.log(data);
           setUsers(data?.list ?? []);
-          handleRoleChange;
+          setFilteredUsers(data?.list ?? []);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -222,18 +235,16 @@ export default function ParticipationModal({ children }) {
                   <FormControl fullWidth>
                     <Autocomplete
                       multiple
-                      options={users} // filterList
+                      options={filteredUsers} // filterList
                       getOptionLabel={(option) => option.name} // Replace with the actual property for user name
-                      value={formData.user}
-                      onChange={(event, newValue) =>
-                        handleInputChange("user", newValue)
-                      }
+                      noOptionsText="Không tìm thấy"
+                      value={selectedUser} 
+                      onChange={handleUserChange}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           variant="outlined"
-                          error={formData.userError?.hasError}
-                          helperText={formData.userError?.label}
+                          label="Người dùng" 
                         />
                       )}
                     />
@@ -254,10 +265,8 @@ export default function ParticipationModal({ children }) {
                   <FormControl fullWidth>
                     <Select
                       variant="outlined"
-                      value={formData.role}
-                      onChange={(e) =>
-                        handleInputChange("role", e.target.value)
-                      }
+                      value={selectedRole}
+                      onChange={handleRoleChange}
                       error={formData.roleError?.hasError}
                     >
                       <MenuItem disabled value="">
