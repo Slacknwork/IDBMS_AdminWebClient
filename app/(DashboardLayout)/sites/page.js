@@ -100,12 +100,12 @@ export default function SitesPage() {
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell width={"30%"}>
+              <StyledTableCell width={"27.5%"}>
                 <Typography variant="subtitle2" fontWeight={600} noWrap>
                   Tên công trình
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"30%"}>
+              <StyledTableCell width={"27.5%"}>
                 <Typography variant="subtitle2" fontWeight={600} noWrap>
                   Địa chỉ
                 </Typography>
@@ -120,7 +120,7 @@ export default function SitesPage() {
                   Ngày tạo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"15%"} align="right"></StyledTableCell>
+              <StyledTableCell width={"20%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,6 +148,7 @@ export default function SitesPage() {
                 </TableCell>
                 <TableCell align="right">
                   <Button
+                    sx={{ mr: 2 }}
                     component={Link}
                     variant="contained"
                     disableElevation
@@ -155,6 +156,15 @@ export default function SitesPage() {
                     href={`/sites/${site.id}`}
                   >
                     Chi tiết
+                  </Button>
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/sites/${site.id}/projects`}
+                  >
+                    Dự án
                   </Button>
                 </TableCell>
               </StyledTableRow>

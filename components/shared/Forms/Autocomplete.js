@@ -49,7 +49,7 @@ export default function AutocompleteForm({
               ? `${option.code} - ${option.name}`
               : option.usePurpose
               ? option.usePurpose
-              : option.name
+              : option.name ?? option
           }
           isOptionEqualToValue={(option, value) => option.id === value?.id}
           value={selectedObject}

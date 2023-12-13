@@ -6,8 +6,10 @@ import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Grid,
+  IconButton,
   LinearProgress,
   Stack,
   Tab,
@@ -20,21 +22,28 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { getProjectTasksByProjectId } from "/api/projectTaskServices";
+
+import {
+  getProjectTasksByProjectId,
+  updateProjectTaskStage,
+} from "/api/projectTaskServices";
 import { getAllTaskCategories } from "/api/taskCategoryServices";
 import { getFloorsByProjectId } from "/api/floorServices";
-import { getPaymentStagesByProjectId } from "api/paymentStageServices";
+import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
 
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
+import FormModal from "/components/shared/Modals/Form";
 import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
 import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
+import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -100,8 +109,10 @@ export default function ProjectTasksPage() {
     newViewMode
       ? searchParams.set(viewModeQuery, newViewMode)
       : searchParams.delete(viewModeQuery);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
   };
 
   // FETCH DATA FROM API
@@ -118,6 +129,7 @@ export default function ProjectTasksPage() {
         (stage) => searchParams.get(stageQuery) === stage.id
       ) + 1;
     setActiveStage(active);
+    setSelectedStageId(stages.list[0]?.id);
   };
   const handleStageChange = (event, newValue) => {
     setTasksLoading(true);
@@ -127,8 +139,10 @@ export default function ProjectTasksPage() {
     newValue
       ? searchParams.set(stageQuery, stages[newValue - 1]?.id)
       : searchParams.delete(stageQuery);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
   };
 
   // ROOMS
@@ -140,8 +154,10 @@ export default function ProjectTasksPage() {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search);
     searchParams.set(roomQuery, rooms[newValue]?.id);
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
   };
 
   // FLOORS
@@ -171,8 +187,45 @@ export default function ProjectTasksPage() {
       searchParams.delete(floorQuery);
       searchParams.delete(roomQuery);
     }
+    searchParams.delete(pageQuery);
+    searchParams.delete(pageSizeQuery);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
+  };
+
+  // SELECTED TASKS
+  const [selectedTasks, setSelectedTasks] = useState([]);
+  const [selectedStageId, setSelectedStageId] = useState(null);
+  const [selectedStageIdError, setSelectedStageIdError] = useState({
+    hasError: false,
+    label: "",
+  });
+  const handleSelectedStageIdChange = (newValue) => {
+    setSelectedStageId(newValue);
+  };
+  const onSelectedChange = (id) => {
+    setSelectedTasks((prevSelectedTasks) => {
+      if (prevSelectedTasks.includes(id)) {
+        return prevSelectedTasks.filter((taskId) => taskId !== id);
+      } else {
+        return [...prevSelectedTasks, id];
+      }
+    });
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => ({
+        ...task,
+        selected: task.id === id ? !task.selected : task.selected,
+      }))
+    );
+  };
+  const removeAllSelectedTasks = () => {
+    setSelectedTasks([]);
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => ({
+        ...task,
+        selected: false,
+      }))
+    );
   };
 
   // TASKS
@@ -196,12 +249,19 @@ export default function ProjectTasksPage() {
       search,
       categoryId,
       status,
-      ...(viewMode ? { roomId } : { stageId }),
+      ...(viewMode
+        ? { roomId, includeRoomIdFilter: true }
+        : { stageId, includeStageIdFilter: true }),
       page,
       pageSize,
     });
     setCount(data.totalItem);
-    setTasks(data.list);
+    setTasks(
+      data.list.map((task) => ({
+        ...task,
+        selected: selectedTasks.includes(task.id),
+      }))
+    );
   };
 
   const fetchOptionsFromApi = async () => {
@@ -231,11 +291,43 @@ export default function ProjectTasksPage() {
     }
   };
 
+  const updateSelectedTaskStage = async () => {
+    const projectId = params.id;
+    const stageId = selectedStageId;
+    const tasks = selectedTasks;
+    try {
+      await updateProjectTaskStage({ projectId, stageId, tasks });
+      removeAllSelectedTasks();
+      handleStageChange(
+        null,
+        stages.findIndex((stage) => stage.id === stageId) + 1
+      );
+      toast.success("Cập nhật thành công!");
+    } catch (error) {
+      console.error("Error updating task status: ", error);
+      toast.error("Lỗi cập nhật giai đoạn công việc!");
+    } finally {
+    }
+  };
+
   useEffect(() => {
     fetchOptionsFromApi();
   }, []);
 
   useEffect(() => {
+    setViewMode(
+      searchParams.get(viewModeQuery)
+        ? parseInt(searchParams.get(viewModeQuery))
+        : defaultViewMode
+    );
+    setActiveStage(
+      stages.findIndex((stage) => searchParams.get(stageQuery) === stage.id) + 1
+    );
+    const active =
+      floors.findIndex((floor) => searchParams.get(floorQuery) === floor.id) +
+      1;
+    setRooms(active ? floors[active - 1].rooms : []);
+    setActiveFloor(active);
     fetchDataFromApi();
   }, [searchParams]);
 
@@ -328,12 +420,59 @@ export default function ProjectTasksPage() {
                 </Tabs>
               )}
             </Grid>
-
             <Grid
               item
+              sx={{ minHeight: "27rem" }}
               xs={12}
               lg={viewMode === 1 && rooms && rooms.length > 0 ? 10 : 12}
             >
+              {selectedTasks && selectedTasks.length > 0 && (
+                <Box
+                  sx={{
+                    backgroundColor: "aliceblue",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    px: 4,
+                    py: 1,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Đã chọn {selectedTasks.length} công việc
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    <FormModal
+                      size="small"
+                      sx={{ my: "auto", mr: 1 }}
+                      submitLabel="Chọn"
+                      title="Chọn giai đoạn"
+                      buttonLabel="Chọn giai đoạn"
+                      onSubmit={updateSelectedTaskStage}
+                    >
+                      <Grid item xs={12}>
+                        <Typography variant="h6" sx={{ mb: 1 }}>
+                          Chọn giai đoạn cho {selectedTasks?.length} công việc:
+                        </Typography>
+                        {/* PAYMENT STAGE */}
+                        <AutocompleteForm
+                          value={selectedStageId}
+                          options={stages}
+                          error={selectedStageIdError?.hasError}
+                          errorLabel={selectedStageIdError?.label}
+                          onChange={(value) =>
+                            handleSelectedStageIdChange(value)
+                          }
+                        ></AutocompleteForm>
+                      </Grid>
+                    </FormModal>
+                    <IconButton
+                      onClick={removeAllSelectedTasks}
+                      aria-label="remove-all-selected"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+              )}
               {/* TABLE */}
               {tasksLoading ? (
                 <Stack sx={{ my: 5 }}>
@@ -343,6 +482,7 @@ export default function ProjectTasksPage() {
                 <Table aria-label="simple table">
                   <TableHead>
                     <TableRow>
+                      <StyledTableCell width={"2%"}></StyledTableCell>
                       <StyledTableCell width={"30%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Công việc
@@ -358,7 +498,7 @@ export default function ProjectTasksPage() {
                           Ngày bắt đầu
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"25%"}>
+                      <StyledTableCell width={"23%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Tiến độ
                         </Typography>
@@ -370,6 +510,13 @@ export default function ProjectTasksPage() {
                     {tasks?.map((task) => (
                       <StyledTableRow key={task.id}>
                         <TableCell>
+                          <Checkbox
+                            color="primary"
+                            checked={task?.selected}
+                            onChange={(e) => onSelectedChange(task.id)}
+                          />
+                        </TableCell>
+                        <TableCell>
                           <Typography variant="p" fontWeight={600}>
                             {task.code}
                           </Typography>
@@ -377,7 +524,6 @@ export default function ProjectTasksPage() {
                             {task.name}
                           </Typography>
                         </TableCell>
-
                         <TableCell>
                           <Typography variant="subtitle2" fontWeight={400}>
                             {(

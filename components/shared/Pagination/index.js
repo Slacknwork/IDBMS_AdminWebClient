@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TablePagination } from "@mui/material";
 export default function Pagination({
   query = "page",
@@ -25,7 +25,7 @@ export default function Pagination({
     searchParams.set(query, newPage + 1);
     searchParams.set(sizeQuery, newRowsPerPage);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -36,6 +36,11 @@ export default function Pagination({
     setPage(0);
     changeSearchParams(0, event.target.value);
   };
+
+  useEffect(() => {
+    setRowsPerPage(parseInt(searchParams.get(sizeQuery)) || 5);
+    setPage(Math.max(searchParams.get(query) - 1, 0));
+  }, [searchParams]);
 
   return (
     <TablePagination

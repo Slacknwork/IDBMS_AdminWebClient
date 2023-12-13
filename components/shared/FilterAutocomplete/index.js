@@ -31,7 +31,7 @@ export default function FilterAutocomplete({
         ? searchParamsUrl.delete(query)
         : searchParamsUrl.set(query, filter?.id);
       url.search = searchParamsUrl.toString();
-      router.push(url.toString());
+      router.push(url.toString(), undefined, { scroll: false });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
@@ -57,7 +57,7 @@ export default function FilterAutocomplete({
         defaultValue={defaultOption}
         noOptionsText="Không có lựa chọn"
         isOptionEqualToValue={(option, value) => option.id === value.id}
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => option.name ?? option}
         renderInput={(params) => (
           <TextField
             size="small"
