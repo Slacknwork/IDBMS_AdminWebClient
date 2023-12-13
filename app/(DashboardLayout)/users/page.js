@@ -22,13 +22,14 @@ import { toast } from "react-toastify";
 import { getAllUsers } from "/api/userServices";
 
 import userStatusOptions from "/constants/enums/userStatus";
+import companyRoleOptions from "/constants/enums/companyRole";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import CreateUserModal from "/components/shared/Modals/Users/CreateModal"
+import CreateUserModal from "/components/shared/Modals/Users/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -157,7 +158,7 @@ export default function UserList() {
                 </StyledTableCell>
                 <StyledTableCell>
                   <Typography variant="subtitle2" fontWeight={600}>
-                    Số dư
+                    Vai trò
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell>
@@ -191,26 +192,15 @@ export default function UserList() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Box
+                    <Chip
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
+                        px: "4px",
+                        backgroundColor: "success",
                       }}
-                    >
-                      <Box>
-                        <Typography variant="subtitle2" fontWeight={600}>
-                          {user.balance}
-                        </Typography>
-                        <Typography
-                          color="textSecondary"
-                          sx={{
-                            fontSize: "13px",
-                          }}
-                        ></Typography>
-                      </Box>
-                    </Box>
+                      size="small"
+                      label={companyRoleOptions[user.role]}
+                    ></Chip>
                   </TableCell>
-
                   <TableCell>
                     <Chip
                       sx={{

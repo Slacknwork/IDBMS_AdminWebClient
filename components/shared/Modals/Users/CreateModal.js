@@ -13,7 +13,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
-import { createUser } from "../../../../api/UserServices";
+import { createUser } from "/api/UserServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit"
@@ -21,6 +21,7 @@ import { getAllTaskCategories } from "../../../../api/taskCategoryServices";
 import { getAllInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
 
 import languageOptions from "/constants/enums/language";
+import companyRoleOptions from "../../../../constants/enums/companyRole";
 
 export default function CreateUserModal({ onCreate }) {
     const params = useParams();
@@ -46,6 +47,8 @@ export default function CreateUserModal({ onCreate }) {
         phoneError: { hasError: false, label: "" },
         dateOfBirthError: { hasError: false, label: "" },
         languageError: { hasError: false, label: "" },
+        role: 0,
+        roleError: { hasError: false, label: "" },
     });
 
     const handleInputChange = (field, value) => {
@@ -207,6 +210,21 @@ export default function CreateUserModal({ onCreate }) {
                     error={formData.languageError.hasError}
                     errorLabel={formData.languageError.label}
                     onChange={(value) => handleInputChange("language", value)}
+                ></SelectForm>
+            </Grid>
+
+            {/* COMPANY ROLE */}
+            <Grid item xs={12} lg={6}>
+                <SelectForm
+                    title="Vai trò trong công ty"
+                    required
+                    subtitle="Chọn vai trò"
+                    value={formData.role}
+                    options={companyRoleOptions}
+                    defaultLabel="Chọn một..."
+                    error={formData.roleError.hasError}
+                    errorLabel={formData.roleError.label}
+                    onChange={(value) => handleInputChange("role", value)}
                 ></SelectForm>
             </Grid>
 

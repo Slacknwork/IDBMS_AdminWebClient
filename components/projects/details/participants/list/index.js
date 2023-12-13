@@ -39,6 +39,9 @@ import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
 import UserCard from "/components/shared/UserCard";
+import CreateParticipationModal from "../../../../shared/Modals/Participations/CreateModal";
+import UpdateProjectOwnerParticipationModal from "../../../../shared/Modals/Participations/UpdateProjectOwnerModal";
+import UpdateProjectManagerParticipationModal from "../../../../shared/Modals/Participations/UpdateProjectManagerModal";
 
 const participants = [
   {
@@ -119,14 +122,12 @@ export default function Comments() {
         });
         console.log(response);
 
-        const filteredParticipations = (response?.list ?? [])
-          .filter(participation => participation.role !== 0 && participation.role !== 5);
 
-        setParticipations(filteredParticipations);
-        setCount(filteredParticipations?.length ?? 0);
+        setParticipations(response?.paginatedList?.list ?? []);
+        setCount(response?.paginatedList?.totalItem ?? 0);
 
-        setProjectOwner((response?.list ?? []).find(participation => participation.role === 0));
-        setProjectManager((response?.list ?? []).find(participation => participation.role === 5));
+        setProjectOwner(response?.productOwner ?? []);
+        setProjectManager(response?.projectManager ?? []);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
@@ -171,6 +172,9 @@ export default function Comments() {
             <Box>
               <Button variant="contained" disableElevation color="primary">
                 <LoopIcon></LoopIcon>
+                <UpdateProjectOwnerParticipationModal
+                  participationId={projectOwner?.id}
+                ></UpdateProjectOwnerParticipationModal>
               </Button>
             </Box>
           </Card>
@@ -201,6 +205,9 @@ export default function Comments() {
             <Box>
               <Button variant="contained" disableElevation color="primary">
                 <LoopIcon></LoopIcon>
+                <UpdateProjectManagerParticipationModal
+                  participationId={projectManager?.id}
+                ></UpdateProjectManagerParticipationModal>
               </Button>
             </Box>
           </Card>
@@ -225,7 +232,7 @@ export default function Comments() {
           ></FilterComponent>
 
         </Box>
-        <ParticipantModal>Thêm</ParticipantModal>
+        <CreateParticipationModal>Tạo</CreateParticipationModal>
       </Box>
       {(participations && participations.length) > 0 ? (
         <Table aria-label="simple table">
