@@ -16,6 +16,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function FormModal({
+  sx,
   children,
   buttonLabel,
   buttonSize,
@@ -70,7 +71,7 @@ export default function FormModal({
   };
 
   return (
-    <Box>
+    <Box sx={sx}>
       {chip ? (
         <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
           <Chip
@@ -85,6 +86,7 @@ export default function FormModal({
               justifyContent: "space-between",
               "& .MuiChip-label": {
                 paddingRight: "6px",
+                paddingTop: "1px",
               },
               "& .MuiChip-icon": {
                 order: 1,
@@ -97,20 +99,18 @@ export default function FormModal({
         </Tooltip>
       ) : (
         <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
-          <span>
-            <Button
-              sx={sx}
-              size={buttonSize ?? ""}
-              disabled={disabled}
-              color={color}
-              variant={buttonVariant ?? "contained"}
-              disableElevation
-              onClick={handleOpen}
-              endIcon={buttonEndIcon}
-            >
-              {buttonLabel}
-            </Button>
-          </span>
+          <Button
+            sx={sx}
+            size={buttonSize ?? ""}
+            disabled={disabled}
+            color={color}
+            variant={buttonVariant ?? "contained"}
+            disableElevation
+            onClick={handleOpen}
+            endIcon={buttonEndIcon}
+          >
+            {buttonLabel}
+          </Button>
         </Tooltip>
       )}
       <Modal

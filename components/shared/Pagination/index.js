@@ -25,7 +25,7 @@ export default function Pagination({
     searchParams.set(query, newPage + 1);
     searchParams.set(sizeQuery, newRowsPerPage);
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

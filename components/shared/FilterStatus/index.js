@@ -31,7 +31,7 @@ export default function FilterStatus({
       : searchParams.set(query, filter);
 
     url.search = searchParams.toString();
-    router.push(url.toString());
+    router.push(url.toString(), undefined, { scroll: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 

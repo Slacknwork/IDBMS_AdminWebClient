@@ -195,6 +195,35 @@ const updateProjectTaskStatus = async (taskId, status) => {
   }
 };
 
+const updateProjectTaskStage = async ({
+  projectId = "",
+  stageId = "",
+  tasks = [],
+} = {}) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/ProjectTasks/payment-stage/${stageId}?projectId=${projectId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tasks),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Update failed");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error updating project task stage:", error);
+    throw error;
+  }
+};
+
 export {
   getProjectTasksByProjectId,
   getProjectTasksByPaymentStageId,
@@ -205,4 +234,5 @@ export {
   getProjectTaskById,
   updateProjectTask,
   updateProjectTaskStatus,
+  updateProjectTaskStage,
 };

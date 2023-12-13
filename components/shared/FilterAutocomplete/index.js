@@ -31,7 +31,7 @@ export default function FilterAutocomplete({
         ? searchParamsUrl.delete(query)
         : searchParamsUrl.set(query, filter?.id);
       url.search = searchParamsUrl.toString();
-      router.push(url.toString());
+      router.push(url.toString(), undefined, { scroll: false });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);

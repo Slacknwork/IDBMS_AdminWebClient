@@ -71,7 +71,13 @@ export default function ProjectDetailsLayout({ children }) {
             <Chip
               label={projectTypeOptions[project.type]}
               color={projectTypeChipColors[project.type]}
-              sx={{ mr: 2, my: "auto" }}
+              sx={{
+                mr: 2,
+                my: "auto",
+                "& .MuiChip-label": {
+                  paddingTop: "1px",
+                },
+              }}
             ></Chip>
             <Chip
               avatar={
@@ -83,7 +89,13 @@ export default function ProjectDetailsLayout({ children }) {
               variant="outlined"
               label={languageOptions[project.language]}
               color={languageTypeChipColors[project.language]}
-              sx={{ mr: 2, my: "auto" }}
+              sx={{
+                mr: 2,
+                my: "auto",
+                "& .MuiChip-label": {
+                  paddingTop: "1px",
+                },
+              }}
             ></Chip>
             <FormModal
               chip
