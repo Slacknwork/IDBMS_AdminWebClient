@@ -1,6 +1,16 @@
 "use client";
 
-import { FormControl, Grid, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import {
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function FormText({
   sx,
@@ -18,7 +28,10 @@ export default function FormText({
   error,
   errorLabel,
   onChange,
+  password = false,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Grid container spacing={spacing} sx={sx}>
       {title && (
@@ -41,6 +54,19 @@ export default function FormText({
             error={error}
             helperText={errorLabel}
             onChange={onChange}
+            type={!password || showPassword ? "text" : "password"} // Toggle between text and password
+            InputProps={{
+              endAdornment: password && (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
       </Grid>

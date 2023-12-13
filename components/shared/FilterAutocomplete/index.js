@@ -57,7 +57,7 @@ export default function FilterAutocomplete({
         defaultValue={defaultOption}
         noOptionsText="Không có lựa chọn"
         isOptionEqualToValue={(option, value) => option.id === value.id}
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => option.name ?? option}
         renderInput={(params) => (
           <TextField
             size="small"
