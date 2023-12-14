@@ -77,8 +77,8 @@ export default function RoomTypeList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-          ? ""
-          : false;
+            ? ""
+            : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -241,7 +241,7 @@ export default function RoomTypeList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/RoomTypes/${roomType.id}`}
+                    href={`/system/room-type/${roomType.id}`}
                   >
                     Thông tin
                   </Button>
