@@ -51,11 +51,11 @@ export default function ItemDetails() {
     }));
   };
 
-  const onSaveUser = () => {};
-  const onDeleteUser = () => {};
+  const onSaveUser = () => { };
+  const onDeleteUser = () => { };
 
   return (
-    <PageContainer title={formData.name} description="Chi tiết sản phẩm">
+    <PageContainer title={formData.name} description="Chi tiết người dùng">
       <DashboardCard>
         <DetailsPage
           title="Thông tin người dùng"
