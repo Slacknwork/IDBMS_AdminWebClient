@@ -169,13 +169,13 @@ export default function Comments() {
                 ></UserCard>
               </Box>
             </Box>
-            <Box>
-              <Button variant="contained" disableElevation color="primary">
-                <LoopIcon></LoopIcon>
-                <UpdateProjectOwnerParticipationModal
-                  participationId={projectOwner?.id}
-                ></UpdateProjectOwnerParticipationModal>
-              </Button>
+            <Box borderColor="primary.main" padding={2}>
+              <Box display="flex" alignItems="center">
+                <LoopIcon />
+                <UpdateProjectManagerParticipationModal
+                  participationId={projectManager?.id}
+                />
+              </Box>
             </Box>
           </Card>
         </Grid>
@@ -202,13 +202,13 @@ export default function Comments() {
                 ></UserCard>
               </Box>
             </Box>
-            <Box>
-              <Button variant="contained" disableElevation color="primary">
-                <LoopIcon></LoopIcon>
+            <Box borderColor="primary.main" padding={2}>
+              <Box display="flex" alignItems="center">
+                <LoopIcon />
                 <UpdateProjectManagerParticipationModal
                   participationId={projectManager?.id}
-                ></UpdateProjectManagerParticipationModal>
-              </Button>
+                />
+              </Box>
             </Box>
           </Card>
         </Grid>
@@ -269,7 +269,7 @@ export default function Comments() {
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <DeleteModal>
+                      <DeleteModal id={participant.id}>
                         <IconTrash></IconTrash>
                       </DeleteModal>
                     </Box>

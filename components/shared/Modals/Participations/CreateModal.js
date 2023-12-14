@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Autocomplete, FormControl, Grid, TextField, Typography } from "@mui/material";
+import { Autocomplete, FormControl, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
@@ -24,7 +24,7 @@ export default function CreateParticipationModal({ onCreate }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
-        role: 1,
+        role: -1,
         roleError: { hasError: false, label: "" },
         projectId: params.id,
         listUserId: [],
@@ -143,16 +143,35 @@ export default function CreateParticipationModal({ onCreate }) {
 
             {/* PARTICIPATION ROLE */}
             <Grid item xs={12} lg={12}>
-                <SelectForm
-                    title="Vai trò"
-                    required
-                    subtitle="Chọn vai trò"
-                    value={formData.role}
-                    options={participationRoleOptions.filter(option => option !== "Chủ dự án" && option !== "Quản lý dự án")}
-                    error={formData.roleError.hasError}
-                    errorLabel={formData.roleError.label}
-                    onChange={(value) => handleInputChange("role", value)}
-                />
+                <Grid container spacing={2} sx={12}>
+                    <Grid item xs={4} lg={4}>
+                        <Typography variant="h5">
+                            Vai trò
+                            <span style={{ color: "red" }}>*</span>
+                        </Typography>
+                        <Typography variant="p">Chọn vai trò</Typography>
+                    </Grid>
+                    <Grid item xs={8} lg={8}>
+                        <FormControl fullWidth>
+                            <Select
+                                variant="outlined"
+                                value={formData.role}
+                                onChange={(e) => handleInputChange("role", parseInt(e.target.value))}
+                                error={formData.roleError.hasError}
+                            >
+                                {participationRoleOptions.map((option, index) => (
+                                    <MenuItem key={index} value={index}
+                                        disabled={index === 0 || index === 5}
+                                    >
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {formData.roleError.hasError &&
+                                <FormHelperText>{formData.roleError.label}</FormHelperText>}
+                        </FormControl>
+                    </Grid>
+                </Grid>
             </Grid>
 
             {/* USER */}

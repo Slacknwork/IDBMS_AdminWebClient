@@ -23,6 +23,8 @@ import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import UserCard from "/components/shared/UserCard";
+
 
 export default function ProjectDetails() {
   const params = useParams();
