@@ -121,33 +121,33 @@ export default function CreateRoomTypeModal({ onCreate }) {
         ></TextForm>
       </Grid>
 
-            {/* PRICE PER AREA */}
-            <Grid item xs={12} lg={6}>
-                <NumberForm
-                    title="Giá trên mỗi diện tích"
-                    required
-                    subtitle="Nhập giá trên mỗi diện tích"
-                    value={formData.pricePerArea}
-                    error={formData.pricePerAreaError.hasError}
-                    errorLabel={formData.pricePerAreaError.label}
-                    onChange={(value) => handleInputChange("pricePerArea", value)}
-                    endAdornment={<>VND/m²</>}
-                ></NumberForm>
-            </Grid>
+      {/* PRICE PER AREA */}
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Giá trên mỗi diện tích"
+          required
+          subtitle="Nhập giá trên mỗi diện tích"
+          value={formData.pricePerArea}
+          error={formData.pricePerAreaError.hasError}
+          errorLabel={formData.pricePerAreaError.label}
+          onChange={(value) => handleInputChange("pricePerArea", value)}
+          endAdornment={<>VND/m²</>}
+        ></NumberForm>
+      </Grid>
 
-            {/* ESTIMATE DAY PER AREA */}
-            <Grid item xs={12} lg={6}>
-                <NumberForm
-                    title="Số ngày trên diện tích"
-                    required
-                    subtitle="Ước tính trên 1 m²"
-                    value={formData.estimateDayPerArea}
-                    error={formData.estimateDayPerAreaError.hasError}
-                    errorLabel={formData.estimateDayPerAreaError.label}
-                    onChange={(value) => handleInputChange("estimateDayPerArea", value)}
-                    endAdornment={<>Ngày/m²</>}
-                ></NumberForm>
-            </Grid>
+      {/* ESTIMATE DAY PER AREA */}
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Số ngày trên diện tích"
+          required
+          subtitle="Ước tính trên 1 m²"
+          value={formData.estimateDayPerArea}
+          error={formData.estimateDayPerAreaError.hasError}
+          errorLabel={formData.estimateDayPerAreaError.label}
+          onChange={(value) => handleInputChange("estimateDayPerArea", value)}
+          endAdornment={<>Ngày/m²</>}
+        ></NumberForm>
+      </Grid>
 
       {/* IMAGE */}
       <Grid item xs={12} lg={6}>
@@ -155,7 +155,6 @@ export default function CreateRoomTypeModal({ onCreate }) {
           title="Hình ảnh"
           titleSpan={3}
           fieldSpan={9}
-          required
           subtitle="Chọn hình ảnh minh họa"
           value={formData.image}
           error={formData.imageError.hasError}
@@ -170,7 +169,6 @@ export default function CreateRoomTypeModal({ onCreate }) {
           title="Biểu tượng"
           titleSpan={3}
           fieldSpan={9}
-          required
           subtitle="Chọn biểu tượng minh họa"
           value={formData.iconImage}
           error={formData.iconImageError.hasError}

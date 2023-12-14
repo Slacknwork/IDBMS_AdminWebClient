@@ -98,12 +98,8 @@ const updateRoomType = async (id, request) => {
 
 const updateRoomTypeHiddenStatus = async (id, newHiddenStatus) => {
   try {
-    const response = await fetch(`${apiUrl}/${id}/isHidden`, {
+    const response = await fetch(`${apiUrl}/${id}/isHidden?isHidden=${newHiddenStatus}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ isHidden: newHiddenStatus }),
     });
 
     if (!response.ok) {
