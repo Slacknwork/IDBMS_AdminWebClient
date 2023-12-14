@@ -12,7 +12,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import FileForm from "/components/shared/Forms/File";
-import { createTaskCategory } from "../../../../api/TaskCategoryServices";
+import { createTaskCategory } from "../../../../api/taskCategoryServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
 export default function CreateTaskCategoryModal({ onCreate }) {
