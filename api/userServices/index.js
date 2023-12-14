@@ -65,7 +65,7 @@ const getUserById = async (userId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${userId}`);
     const user = await response.json();
-    return user;
+    return user.data;
   } catch (error) {
     console.error("Error fetching user by ID:", error);
     throw error;

@@ -55,6 +55,25 @@ const getCommentsByProjectId = async (projectId) => {
     }
 };
 
+const getCommentsById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Comments/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get comments by ID failed');
+        }
+
+        const comments = await response.json();
+        return comments;
+    } catch (error) {
+        console.error('Error fetching comments by ID:', error);
+        throw error;
+    }
+};
+
 const createComment = async (request) => {
     try {
 
@@ -162,6 +181,7 @@ export {
     getAllComments,
     getCommentsByProjectTaskId,
     getCommentsByProjectId,
+    getCommentsById,
     createComment,
     updateComment,
     deleteComment,

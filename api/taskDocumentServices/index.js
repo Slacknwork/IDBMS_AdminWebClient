@@ -17,6 +17,25 @@ const getAllTaskDocuments = async () => {
     }
 };
 
+const getTaskDocumentById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/TaskDocuments/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get task document by ID failed');
+        }
+
+        const documents = await response.json();
+        return documents.data;
+    } catch (error) {
+        console.error('Error fetching task document by ID: ', error);
+        throw error;
+    }
+};
+
 const getTaskDocumentsByTaskReportId = async (taskReportId) => {
     try {
         const response = await fetch(
@@ -81,6 +100,7 @@ const deleteTaskDocument = async (documentId) => {
 
 export {
     getAllTaskDocuments,
+    getTaskDocumentById,
     getTaskDocumentsByTaskReportId,
     createTaskDocument,
     deleteTaskDocument,

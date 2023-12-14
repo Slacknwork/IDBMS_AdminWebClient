@@ -47,6 +47,25 @@ const getColorByInteriorItemCategoryId = async ({
     }
 };
 
+const getColorById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItemColors/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get color by ID failed');
+        }
+
+        const colors = await response.json();
+        return colors;
+    } catch (error) {
+        console.error('Error fetching color by ID:', error);
+        throw error;
+    }
+};
+
 const createInteriorItemColor = async (request) => {
     try {
         const response = await fetch('https://localhost:7062/api/InteriorItemColors', {
@@ -118,6 +137,7 @@ const deleteInteriorItemColor = async (colorId) => {
 export {
     getAllInteriorItemColors,
     getColorByInteriorItemCategoryId,
+    getColorById,
     createInteriorItemColor,
     updateInteriorItemColor,
     deleteInteriorItemColor,

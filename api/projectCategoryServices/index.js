@@ -17,6 +17,20 @@ const getProjectCategories = async ({
   }
 };
 
+const getProjectCategoryById = async (id) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/ProjectCategories/${id}`,
+      { cache: "no-store" }
+    );
+    const projectCategories = await response.json();
+    return projectCategories.data;
+  } catch (error) {
+    console.error("Error fetching project category by ID:", error);
+    throw error;
+  }
+};
+
 const createProjectCategory = async (request) => {
   try {
 
@@ -50,14 +64,19 @@ const createProjectCategory = async (request) => {
 
 const updateProjectCategory = async (id, request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectCategories/${id}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        body: formData,
       }
     );
 
@@ -101,6 +120,7 @@ const updateProjectCategoryHiddenStatus = async (id, newHiddenStatus) => {
 
 export {
   getProjectCategories,
+  getProjectCategoryById,
   createProjectCategory,
   updateProjectCategory,
   updateProjectCategoryHiddenStatus,

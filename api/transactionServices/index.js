@@ -67,7 +67,7 @@ const getTransactionById = async (id) => {
             { cache: 'no-store' }
         );
         const transaction = await response.json();
-        return transaction;
+        return transaction.data;
     } catch (error) {
         console.error('Error fetching transaction by ID:', error);
         throw error;
