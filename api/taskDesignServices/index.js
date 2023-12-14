@@ -22,6 +22,25 @@ const getAllTaskDesigns = async ({
     }
 };
 
+const getAllTaskDesignById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/TaskDesigns/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get task design by ID failed');
+        }
+
+        const designs = await response.json();
+        return designs.data;
+    } catch (error) {
+        console.error('Error fetching task design by ID:', error);
+        throw error;
+    }
+};
+
 const createTaskDesign = async (request) => {
     try {
         const response = await fetch('https://localhost:7062/api/TaskDesigns', {
@@ -92,6 +111,7 @@ const deleteTaskDesign = async (designId) => {
 
 export {
     getAllTaskDesigns,
+    getAllTaskDesignById,
     createTaskDesign,
     updateTaskDesign,
     deleteTaskDesign,

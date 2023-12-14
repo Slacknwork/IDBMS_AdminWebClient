@@ -44,7 +44,7 @@ const getSiteById = async (id) => {
       cache: "no-store",
     });
     const sites = await response.json();
-    return sites;
+    return sites.data;
   } catch (error) {
     console.error("Error fetching site by ID:", error);
     throw error;

@@ -23,6 +23,25 @@ const getAllProjectDesigns = async ({
     }
 };
 
+const getProjectDesignById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectDesigns/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get project design by ID failed');
+        }
+
+        const designs = await response.json();
+        return designs.data;
+    } catch (error) {
+        console.error('Error fetching project design by ID:', error);
+        throw error;
+    }
+};
+
 const createProjectDesign = async (request) => {
     try {
         const response = await fetch('https://localhost:7062/api/ProjectDesigns', {
@@ -97,6 +116,7 @@ const updateProjectDesignHiddenStatus = async (designId, newHiddenStatus) => {
 
 export {
     getAllProjectDesigns,
+    getProjectDesignById,
     createProjectDesign,
     updateProjectDesign,
     updateProjectDesignHiddenStatus,

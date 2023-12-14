@@ -28,9 +28,9 @@ const getPaymentStagesById = async (id) => {
       { cache: "no-store" }
     );
     const paymentStages = await response.json();
-    return paymentStages;
+    return paymentStages.data;
   } catch (error) {
-    console.error("Error fetching payment stages by project ID:", error);
+    console.error("Error fetching payment stage by ID:", error);
     throw error;
   }
 };

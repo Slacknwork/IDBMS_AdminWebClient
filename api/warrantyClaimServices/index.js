@@ -64,7 +64,7 @@ const getWarrantyClaimById = async (id) => {
             { cache: 'no-store' }
         );
         const warrantyClaim = await response.json();
-        return warrantyClaim;
+        return warrantyClaim.data;
     } catch (error) {
         console.error('Error fetching warranty claim by ID:', error);
         throw error;

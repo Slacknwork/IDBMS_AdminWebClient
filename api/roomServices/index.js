@@ -34,7 +34,7 @@ const getRoomById = async (roomId) => {
     }
 
     const room = await response.json();
-    return room;
+    return room.data;
   } catch (error) {
     console.error("Error fetching room by ID:", error);
     throw error;

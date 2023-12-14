@@ -22,6 +22,25 @@ const getAllInteriorItemCategories = async ({
     }
 };
 
+const getInteriorItemCategoryById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/InteriorItemCategories/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get all interior item categories by ID failed');
+        }
+
+        const categories = await response.json();
+        return categories.data;
+    } catch (error) {
+        console.error('Error fetching interior item category by ID:', error);
+        throw error;
+    }
+};
+
 const createInteriorItemCategory = async (request) => {
     try {
         const formData = new FormData();
@@ -101,6 +120,7 @@ const deleteInteriorItemCategory = async (categoryId) => {
 
 export {
     getAllInteriorItemCategories,
+    getInteriorItemCategoryById,
     createInteriorItemCategory,
     updateInteriorItemCategory,
     deleteInteriorItemCategory,
