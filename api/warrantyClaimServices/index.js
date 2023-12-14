@@ -76,8 +76,10 @@ const createWarrantyClaim = async (request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-            if (key.endsWith("Date") || key.endsWith("Time")) {
-                formData.append(key, request[key].format("YYYY-MM-DD"))
+            const value = request[key];
+
+            if ((key.endsWith("Date") || key.endsWith("Time")) && (value !== null && value !== "")) {
+                formData.append(key, value.format("YYYY-MM-DD"))
             }
             else
                 if (!key.endsWith("Error")) {
