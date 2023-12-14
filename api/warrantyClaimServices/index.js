@@ -2,7 +2,7 @@ const getAllWarrantyClaims = async ({
     isCompanyCover = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
@@ -22,7 +22,7 @@ const getWarrantyClaimsByProjectId = async ({
     isCompanyCover = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
@@ -42,7 +42,7 @@ const getWarrantyClaimsByUserId = async ({
     isCompanyCover = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
@@ -76,9 +76,13 @@ const createWarrantyClaim = async (request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (key.endsWith("Date") || key.endsWith("Time")) {
+                formData.append(key, request[key].format("YYYY-MM-DD"))
+            }
+            else
+                if (!key.endsWith("Error")) {
+                    formData.append(key, request[key]);
+                }
         });
 
         const response = await fetch(
@@ -105,9 +109,9 @@ const updateWarrantyClaim = async (id, request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const response = await fetch(
