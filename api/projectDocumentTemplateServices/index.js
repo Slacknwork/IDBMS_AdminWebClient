@@ -22,6 +22,25 @@ const getAllProjectDocumentTemplates = async ({
     }
 };
 
+const getProjectDocumentTemplateById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/DocumentTemplates/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get project document by ID failed');
+        }
+
+        const documents = await response.json();
+        return documents.data;
+    } catch (error) {
+        console.error('Error fetching project document template by ID:', error);
+        throw error;
+    }
+};
+
 const createProjectDocumentTemplates = async (request) => {
     try {
         const formData = new FormData();
@@ -102,6 +121,7 @@ const deleteProjectDocumentTemplates = async (documentId) => {
 
 export {
     getAllProjectDocumentTemplates,
+    getProjectDocumentTemplateById,
     createProjectDocumentTemplates,
     updateProjectDocumentTemplates,
     deleteProjectDocumentTemplates,

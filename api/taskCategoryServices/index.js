@@ -21,6 +21,24 @@ const getAllTaskCategories = async ({
   }
 };
 
+const getAllTaskCategoryById = async (id) => {
+  try {
+    const response = await fetch(`https://localhost:7062/api/TaskCategories/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("Get task category by ID failed");
+    }
+
+    const categories = await response.json();
+    return categories.data;
+  } catch (error) {
+    console.error("Error fetching task category by ID:", error);
+    throw error;
+  }
+};
+
 const createTaskCategory = async (request) => {
   try {
     const formData = new FormData();
@@ -101,6 +119,7 @@ const deleteTaskCategory = async (categoryId) => {
 
 export {
   getAllTaskCategories,
+  getAllTaskCategoryById,
   createTaskCategory,
   updateTaskCategory,
   deleteTaskCategory,

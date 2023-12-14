@@ -125,7 +125,7 @@ const getTaskReportById = async (reportId) => {
         }
 
         const report = await response.json();
-        return report;
+        return report.data;
     } catch (error) {
         console.error('Error fetching task report by ID:', error);
         throw error;

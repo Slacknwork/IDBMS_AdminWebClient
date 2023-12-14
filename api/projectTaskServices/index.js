@@ -141,7 +141,7 @@ const getProjectTaskById = async (taskId) => {
     }
 
     const projectTask = await response.json();
-    return projectTask;
+    return projectTask.data;
   } catch (error) {
     console.error("Error fetching project task by ID:", error);
     throw error;

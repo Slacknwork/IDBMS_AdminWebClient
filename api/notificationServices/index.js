@@ -45,6 +45,25 @@ const getNotificationsByUserId = async ({
     }
 };
 
+const getNotificationById = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Notifications/${id}`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get notification by ID failed');
+        }
+
+        const notifications = await response.json();
+        return notifications;
+    } catch (error) {
+        console.error('Error fetching notification by ID:', error);
+        throw error;
+    }
+};
+
 const createNotification = async (request) => {
     try {
         const response = await fetch('https://localhost:7062/api/Notifications', {
@@ -170,6 +189,7 @@ const updateNotificationSeenStatusByUserId = async (userId) => {
 export {
     getAllNotifications,
     getNotificationsByUserId,
+    getNotificationById,
     createNotification,
     createNotificationByUserId,
     createNotificationForAllUsers,

@@ -72,12 +72,17 @@ const createRoomType = async (request) => {
 
 const updateRoomType = async (id, request) => {
   try {
+    const formData = new FormData();
+
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
+
     const response = await fetch(`${apiUrl}/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+      body: formData,
     });
 
     if (!response.ok) {
