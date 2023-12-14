@@ -141,7 +141,7 @@ const updateNotificationSeenStatus = async (notificationId) => {
         const response = await fetch(
             `https://localhost:7062/api/Notifications/${notificationId}/is-seen`,
             {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
