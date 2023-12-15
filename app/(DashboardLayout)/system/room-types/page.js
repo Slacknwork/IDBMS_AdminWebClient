@@ -77,8 +77,8 @@ export default function RoomTypeList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-            ? ""
-            : false;
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -134,11 +134,6 @@ export default function RoomTypeList() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Id
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
@@ -167,21 +162,12 @@ export default function RoomTypeList() {
                   Trạng thái
                 </Typography>
               </StyledTableCell>
+              <StyledTableCell></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {roomTypes.map((roomType) => (
               <StyledTableRow key={roomType.id}>
-                <TableCell>
-                  <Typography
-                    sx={{
-                      fontSize: "15px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {roomType.id}
-                  </Typography>
-                </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {roomType.name}
@@ -194,8 +180,8 @@ export default function RoomTypeList() {
                     width={0}
                     height={0}
                     style={{
-                      width: "10rem",
-                      height: "10rem",
+                      width: "8rem",
+                      height: "8rem",
                       objectFit: "cover",
                     }}
                     unoptimized={true}
