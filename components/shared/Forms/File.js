@@ -73,8 +73,9 @@ export default function FormFile({
             <Image
               src={previewImage || imgDisplay || "/images/results/no-image.png"}
               alt={imgAlt || ""}
-              layout="fill"
-              objectFit="contain"
+              width={500}
+              height={500}
+              style={{ objectFit: "contain", width: "100%", height: "100%" }}
             />
           </Box>
           <FormControl fullWidth>

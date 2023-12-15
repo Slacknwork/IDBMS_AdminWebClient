@@ -155,13 +155,9 @@ const deleteComment = async (commentId) => {
 const updateCommentStatus = async (commentId, newStatus) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Comments/${commentId}/status`,
+            `https://localhost:7062/api/Comments/${commentId}/status?status=${newStatus}`,
             {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus }),
+                method: 'PUT',
             }
         );
 

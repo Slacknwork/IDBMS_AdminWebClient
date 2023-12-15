@@ -92,13 +92,9 @@ const updateProjectDesign = async (designId, request) => {
 const updateProjectDesignHiddenStatus = async (designId, newHiddenStatus) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/ProjectDesigns/${designId}/isHidden`,
+            `https://localhost:7062/api/ProjectDesigns/${designId}/isHidden?isHidden=${newHiddenStatus}`,
             {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ isHidden: newHiddenStatus }),
+                method: 'PUT',
             }
         );
 

@@ -1,15 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Avatar, Box, Card, Grid, Typography } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
+import { Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-import projectLanguageOptions from "/constants/enums/language";
-import projectTypeOptions from "/constants/enums/projectType";
-import projectStatusOptions from "/constants/enums/projectStatus";
-import projectAdvertisementStatusOptions from "/constants/enums/advertisementStatus";
 
 import {
   getProjectById,
@@ -20,12 +14,10 @@ import { getProjectCategories } from "/api/projectCategoryServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
-import TextForm from "/components/shared/Forms/Text";
-import SelectForm from "/components/shared/Forms/Select";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import RichTextForm from "/components/shared/Forms/RichText";
 import UserCard from "/components/shared/UserCard";
 
-export default function ProjectDetails() {
+export default function AdvertisementDetailsPage() {
   const params = useParams();
 
   const [formData, setFormData] = useState({
@@ -149,85 +141,18 @@ export default function ProjectDetails() {
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
-            {/* NAME */}
-            <Grid item xs={12} lg={12}>
-              <TextForm
-                title="Tên"
-                required
-                subtitle="Nhập tên dự án"
-                value={formData.name}
-                error={formData.nameError.hasError}
-                errorLabel={formData.nameError.label}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-              ></TextForm>
-            </Grid>
-
-            {/* PROJECT CATEGORY */}
-            <Grid item xs={12} lg={12}>
-              <AutocompleteForm
-                title="Phân loại"
-                subtitle="Chọn phân loại dự án"
-                value={formData.projectCategoryId}
-                options={projectCategories}
-                error={formData.projectCategoryIdError.hasError}
-                errorLabel={formData.projectCategoryIdError.label}
-                onChange={(value) =>
-                  handleInputChange("projectCategoryId", value)
-                }
-              ></AutocompleteForm>
-            </Grid>
-
-            {/* ADVERTISEMENT STATUS */}
-            <Grid item xs={12} lg={12}>
-              <SelectForm
-                title="Quảng cáo"
-                required
-                subtitle="Cho phép hệ thống quảng cáo dự án này"
-                value={formData.advertisementStatus}
-                options={projectAdvertisementStatusOptions}
-                defaultValue={-1}
-                defaultLabel="Chọn một..."
-                error={formData.advertisementStatusError.hasError}
-                errorLabel={formData.advertisementStatusError.label}
-                onChange={(value) =>
-                  handleInputChange("advertisementStatus", value)
-                }
-              ></SelectForm>
-            </Grid>
-
-            {/* BASED ON DECOR PROJECT */}
-            {formData.type && formData.type === 1 ? (
-              <Grid item xs={12} lg={12}>
-                <AutocompleteForm
-                  title="Thiết kế"
-                  subtitle="Chọn dự án thiết kế cho dự án thi công này"
-                  value={formData.basedOnDecorProjectId}
-                  options={decorProjects}
-                  getOptionLabel={(option) => option.name}
-                  error={formData.basedOnDecorProjectErrorId.hasError}
-                  errorLabel={formData.basedOnDecorProjectErrorId.label}
-                  onChange={(value) =>
-                    handleInputChange("basedOnDecorProjectId", value)
-                  }
-                  disabled={true}
-                ></AutocompleteForm>
-              </Grid>
-            ) : null}
-
             {/* DESCRIPTION */}
             <Grid item xs={12} lg={12}>
-              <TextForm
+              <RichTextForm
                 title="Mô tả"
-                multiline
-                rows={4}
+                titleSpan={2}
+                fieldSpan={10}
                 subtitle="Mô tả dự án"
                 value={formData.description}
                 error={formData.descriptionError.hasError}
                 errorLabel={formData.descriptionError.label}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
-              ></TextForm>
+                onChange={(e) => handleInputChange("description", e)}
+              ></RichTextForm>
             </Grid>
           </Grid>
         </Grid>

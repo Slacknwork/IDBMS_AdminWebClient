@@ -77,8 +77,8 @@ export default function RoomTypeList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-            ? ""
-            : false;
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -132,56 +132,37 @@ export default function RoomTypeList() {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Id
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Ảnh
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mô tả
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Giá mỗi diện tích (VND)
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Icon
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Giá mỗi diện tích (VND)
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Trạng thái
                 </Typography>
               </StyledTableCell>
+              <StyledTableCell width={"20%"}></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {roomTypes.map((roomType) => (
               <StyledTableRow key={roomType.id}>
-                <TableCell>
-                  <Typography
-                    sx={{
-                      fontSize: "15px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {roomType.id}
-                  </Typography>
-                </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {roomType.name}
@@ -194,8 +175,8 @@ export default function RoomTypeList() {
                     width={0}
                     height={0}
                     style={{
-                      width: "10rem",
-                      height: "10rem",
+                      width: "8rem",
+                      height: "8rem",
                       objectFit: "cover",
                     }}
                     unoptimized={true}
@@ -203,16 +184,6 @@ export default function RoomTypeList() {
                       e.target.src = "/images/results/no-image.png";
                     }}
                   />
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {roomType.description}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {roomType.pricePerArea.toLocaleString("en-US")}
-                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Image
@@ -230,6 +201,11 @@ export default function RoomTypeList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType.pricePerArea.toLocaleString("en-US")}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
                     {roomType?.isHidden
                       ? isHiddenOptions[1]
                       : isHiddenOptions[0]}
@@ -243,7 +219,7 @@ export default function RoomTypeList() {
                     color="primary"
                     href={`/system/room-types/${roomType.id}`}
                   >
-                    Thông tin
+                    Chi tiết
                   </Button>
                 </TableCell>
               </StyledTableRow>

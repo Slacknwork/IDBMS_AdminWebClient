@@ -18,7 +18,7 @@ export const fetchProjectData = (id) => {
   return async (dispatch) => {
     try {
       const response = await getProjectById(id);
-      dispatch(setProject({ project: response }));
+      dispatch(setProject({ project: response.data }));
     } catch (error) {
       dispatch(
         setProject({
