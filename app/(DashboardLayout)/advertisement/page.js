@@ -194,7 +194,7 @@ export default function AdvertisementPage() {
                       variant="contained"
                       disableElevation
                       color="primary"
-                      href={`/projects/${project.id}`}
+                      href={`/advertisement/${project.id}`}
                     >
                       Chi tiết
                     </Button>
@@ -210,7 +210,7 @@ export default function AdvertisementPage() {
         ) : (
           <Stack sx={{ my: 5 }}>
             <Typography variant="p" sx={{ textAlign: "center" }}>
-              Không có yêu cầu.
+              Không có dự án.
             </Typography>
           </Stack>
         )}
