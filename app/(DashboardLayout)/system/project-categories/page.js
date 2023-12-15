@@ -77,8 +77,8 @@ export default function ProjectList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-          ? ""
-          : false;
+            ? ""
+            : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -216,7 +216,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/ProjectCategories/${projectCategory.id}`}
+                    href={`/system/project-categories/${projectCategory.id}`}
                   >
                     Thông tin
                   </Button>

@@ -241,7 +241,7 @@ export default function RoomTypeList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/system/room-type/${roomType.id}`}
+                    href={`/system/room-types/${roomType.id}`}
                   >
                     Thông tin
                   </Button>

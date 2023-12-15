@@ -94,13 +94,9 @@ const updateProjectCategory = async (id, request) => {
 const updateProjectCategoryHiddenStatus = async (id, newHiddenStatus) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ProjectCategories/${id}/isHidden`,
+      `https://localhost:7062/api/ProjectCategories/${id}/isHidden?isHidden=${newHiddenStatus}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isHidden: newHiddenStatus }),
       }
     );
 

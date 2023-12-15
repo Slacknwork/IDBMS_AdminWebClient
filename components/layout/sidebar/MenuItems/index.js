@@ -75,7 +75,7 @@ const Menuitems = [
     id: uniqueId(),
     title: "Loại phòng",
     icon: IconDoor,
-    href: "/system/room-type",
+    href: "/system/room-types",
   },
   {
     id: uniqueId(),

@@ -15,7 +15,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
 
-import { getRoomTypeById } from "/api/roomTypeServices"
+import { getRoomTypeById, updateRoomType, updateRoomTypeHiddenStatus } from "/api/roomTypeServices"
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -27,6 +27,7 @@ export default function RoomTypeDetails() {
         englishName: "",
         englishNameError: { hasError: false, label: "" },
         image: null,
+        imageUrl: null,
         imageError: { hasError: false, label: "" },
         description: "",
         descriptionError: { hasError: false, label: "" },
@@ -39,7 +40,10 @@ export default function RoomTypeDetails() {
         isHidden: false,
         isHiddenError: { hasError: false, label: "" },
         iconImage: null,
+        iconImageUrl: null,
         iconImageError: { hasError: false, label: "" },
+        imageChange: false,
+        iconImageChange: false,
     });
 
     const handleInputChange = (field, value) => {
@@ -49,6 +53,18 @@ export default function RoomTypeDetails() {
             [`${field}Error`]: { hasError: false, label: "" },
         }));
         handleInputError(field, false, "");
+
+        //check file change
+        if (field === "iconImageUrl")
+            setFormData((prevData) => ({
+                ...prevData,
+                iconImageChange: true,
+            }));
+        if (field === "imageUrl")
+            setFormData((prevData) => ({
+                ...prevData,
+                imageChange: true,
+            }));
     };
 
     const handleInputError = (field, hasError, label) => {
@@ -90,25 +106,62 @@ export default function RoomTypeDetails() {
 
 
     // HANDLE BUTTON CLICK
-    const handleSave = () => {
-        console.log(formData)
+    const handleSave = async () => {
+
+        const transformedValue = transformData(formData);
+        console.log(transformedValue)
+
+        try {
+            const response = await updateRoomType(params.id, transformedValue);
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
     }
-    const handleDelete = () => {
-        console.log("del")
+    const handleUpdateStatus = async () => {
+        try {
+            const response = await updateRoomTypeHiddenStatus(params.id, formData?.isHidden ? false : true);
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
+    };
+
+    const transformData = (obj) => {
+        const result = { ...obj };
+        for (const key in result) {
+            if (result[key] === null) {
+                result[key] = "";
+            }
+        }
+
+        //set file for changes
+        if (result.iconImageChange === true)
+            result.iconImage = result.iconImageUrl
+        if (result.imageChange === true)
+            result.image = result.imageUrl
+
+        return result;
     };
 
     return (
-        <PageContainer title={formData.name} description="Chi tiết loại phòng">
+        <PageContainer title={formData?.name} description="Chi tiết loại phòng">
             <DashboardCard>
                 <DetailsPage
                     title="Thông tin loại phòng"
                     saveMessage="Lưu thông tin loại phòng?"
                     onSave={handleSave}
 
-                    deleteMessage="Ẩn loại phòng này?"
-                    deleteLabel="Ẩn"
+                    deleteMessage={formData?.isHidden ? "Hiện loại phòng này?" : "Ẩn loại phòng này?"}
+                    deleteLabel={formData?.isHidden ? "Hiện" : "Ẩn"}
                     hasDelete
-                    onDelete={handleDelete}
+                    onDelete={handleUpdateStatus}
 
                 >
                     <Grid item xs={12} lg={12}>
@@ -198,10 +251,10 @@ export default function RoomTypeDetails() {
                                     fieldSpan={9}
                                     required
                                     subtitle="Chọn hình ảnh minh họa"
-                                    value={formData.image}
+                                    value={formData.imageUrl}
                                     error={formData.imageError.hasError}
                                     errorLabel={formData.imageError.label}
-                                    onChange={(file) => handleInputChange("image", file)}
+                                    onChange={(file) => handleInputChange("imageUrl", file)}
                                 ></FileForm>
                             </Grid>
 
@@ -213,10 +266,10 @@ export default function RoomTypeDetails() {
                                     fieldSpan={9}
                                     required
                                     subtitle="Chọn biểu tượng minh họa"
-                                    value={formData.iconImage}
+                                    value={formData.iconImageUrl}
                                     error={formData.iconImageError.hasError}
                                     errorLabel={formData.iconImageError.label}
-                                    onChange={(file) => handleInputChange("iconImage", file)}
+                                    onChange={(file) => handleInputChange("iconImageUrl", file)}
                                 ></FileForm>
                             </Grid>
 
