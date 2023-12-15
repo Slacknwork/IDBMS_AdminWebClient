@@ -70,6 +70,7 @@ export default function RequestList() {
 
   const bookingRequestStatusQuery = "status";
   const bookingRequestStatusLabel = "Trạng thái";
+  const bookingRequestStatusAllValue = 0;
 
   // INIT
   const searchParams = useSearchParams();
@@ -127,6 +128,7 @@ export default function RequestList() {
             query={bookingRequestStatusQuery}
             options={bookingRequestStatusHistoryOptions}
             label={bookingRequestStatusLabel}
+            allValue={bookingRequestStatusAllValue}
           ></FilterStatus>
         </Box>
         <Box>

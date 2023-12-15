@@ -139,14 +139,14 @@ export default function ItemListPage() {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell width={"10%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Hình ảnh
-                </Typography>
-              </StyledTableCell>
               <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"10%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Hình ảnh
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"15%"}>
@@ -176,21 +176,25 @@ export default function ItemListPage() {
             {interiorItems.map((item) => (
               <StyledTableRow key={item.id}>
                 <TableCell>
-                  <Image
-                    src={item.imageUrl ?? "/images/results/no-image.png"}
-                    alt={item.name ?? ""}
-                    width={100}
-                    height={100}
-                    objectFit="cover"
-                  />
-                </TableCell>
-                <TableCell>
                   <Typography variant="subtitle2" fontWeight={600}>
                     {item?.code}
                   </Typography>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {item?.name}
                   </Typography>
+                </TableCell>
+                <TableCell>
+                  <Image
+                    src={item.imageUrl ?? "/images/results/no-image.png"}
+                    alt={item.name ?? ""}
+                    width={200}
+                    height={200}
+                    style={{
+                      objectFit: "cover",
+                      width: "7rem",
+                      height: "7rem",
+                    }}
+                  />
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>

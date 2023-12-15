@@ -132,37 +132,32 @@ export default function RoomTypeList() {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Ảnh
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mô tả
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Giá mỗi diện tích (VND)
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Icon
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Giá mỗi diện tích (VND)
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Trạng thái
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell></StyledTableCell>
+              <StyledTableCell width={"20%"}></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -191,16 +186,6 @@ export default function RoomTypeList() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {roomType.description}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {roomType.pricePerArea.toLocaleString("en-US")}
-                  </Typography>
-                </TableCell>
-                <TableCell>
                   <Image
                     src={roomType.iconImageUrl}
                     alt=""
@@ -213,6 +198,11 @@ export default function RoomTypeList() {
                     }}
                     unoptimized={true}
                   />
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {roomType.pricePerArea.toLocaleString("en-US")}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -229,7 +219,7 @@ export default function RoomTypeList() {
                     color="primary"
                     href={`/system/room-types/${roomType.id}`}
                   >
-                    Thông tin
+                    Chi tiết
                   </Button>
                 </TableCell>
               </StyledTableRow>
