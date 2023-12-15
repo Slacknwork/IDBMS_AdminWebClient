@@ -1,28 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Autocomplete, Grid } from "@mui/material";
-import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { Grid } from "@mui/material";
 
-import FormModal from "/components/shared/Modals/Form";
+import languageOptions from "/constants/enums/language";
+
+import DashboardCard from "/components/shared/DashboardCard";
+import PageContainer from "/components/container/PageContainer";
+import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
+import SelectForm from "/components/shared/Forms/Select";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
-import SelectForm from "/components/shared/Forms/Select";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
-import { createTaskDesign } from "../../../../api/taskDesignServices";
-import projectTypeOptions from "../../../../constants/enums/projectType";
+import calculationUnitOptions from "../../../../../constants/enums/calculationUnit";
+import { getAllTaskCategories } from "../../../../../api/taskCategoryServices";
+import { getAllInteriorItemCategories } from "../../../../../api/interiorItemCategoryServices";
 
-import calculationUnitOptions from "/constants/enums/calculationUnit"
-import { getAllTaskCategories } from "../../../../api/taskCategoryServices";
-import { getAllInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
+import {
+    getTaskDesignById,
+    updateTaskDesign,
+    deleteTaskDesign,
+} from "../../../../../api/taskDesignServices";
 
-export default function CreateTaskDesignModal({ onCreate }) {
-    const params = useParams();
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+import AutocompleteForm from "../../../../../components/shared/Forms/Autocomplete";
 
+export default function TaskDesignDetails() {
     const [formData, setFormData] = useState({
         code: "",
         codeError: { hasError: false, label: "" },
@@ -45,9 +51,14 @@ export default function CreateTaskDesignModal({ onCreate }) {
     });
 
     const handleInputChange = (field, value) => {
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: { hasError: false, label: "" },
+        }));
         handleInputError(field, false, "");
     };
+
     const handleInputError = (field, hasError, label) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -55,25 +66,27 @@ export default function CreateTaskDesignModal({ onCreate }) {
         }));
     };
 
-    const handleCreate = async () => {
-        console.log(formData)
-        try {
-            const response = await createTaskDesign(formData);
-            toast.success("Thêm thành công!");
-            console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
-        } catch (error) {
-            console.error("Error :", error);
-            toast.error("Lỗi!");
-        }
-    };
+    const params = useParams();
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
+    // INIT CONST
     const [loading, setLoading] = useState(true);
     const [taskCategories, setTaskCategories] = useState([]);
     const [itemCategories, setItemCategories] = useState([]);
 
-    // FETCH OPTIONS
-    const fetchOptionsFromApi = async () => {
+    // FETCH DATA
+    const fetchDataFromApi = async () => {
+        const fetchTaskDesign = async () => {
+            try {
+                const response = await getTaskDesignById(params.id);
+                console.log(response);
+                setFormData((prevData) => ({ ...prevData, ...response }));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                toast.error("Lỗi nạp dữ liệu 'phân loại công việc' từ hệ thống");
+            }
+        };
         const fetchTaskCategories = async () => {
             try {
                 const response = await getAllTaskCategories();
@@ -95,6 +108,7 @@ export default function CreateTaskDesignModal({ onCreate }) {
             }
         };
         await Promise.all([
+            fetchTaskDesign(),
             fetchTaskCategories(),
             fetchItemCategories(),
         ]);
@@ -102,18 +116,60 @@ export default function CreateTaskDesignModal({ onCreate }) {
     };
 
     useEffect(() => {
-        fetchOptionsFromApi();
+        fetchDataFromApi();
     }, []);
 
+    // HANDLE BUTTON CLICK
+    const handleSave = async () => {
+        const transformedValue = transformData(formData);
+        console.log(transformedValue);
+
+        try {
+            const response = await updateTaskDesign(params.id, transformedValue);
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
+    };
+    const handleDelete = async () => {
+        try {
+            const response = await deleteTaskDesign(
+                params.id
+            );
+            console.log(response);
+            toast.success("Xoá thành công!");
+            window.location.replace("/system/task-designs");
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
+    };
+
+    const transformData = (obj) => {
+        const result = { ...obj };
+        for (const key in result) {
+            if (result[key] === null) {
+                result[key] = "";
+            }
+        }
+
+        return result;
+    };
+
     return (
-        <FormModal
-            buttonLabel="Tạo"
-            title="Tạo thiết kế công việc"
-            submitLabel="Tạo"
-            onSubmit={handleCreate}
-            size="big"
-        >
-            {/* NAME */}
+        <PageContainer title={formData.name} description="Chi tiết thiết kế công việc">
+            <DetailsPage
+                title="Thông tin thiết kế công việc"
+                saveMessage="Lưu thông tin thiết kế công việc?"
+                onSave={handleSave}
+                deleteMessage={"Xoá thiết kế công việc này?"}
+                deleteLabel={"Xoá"}
+                hasDelete
+                onDelete={handleDelete}
+            >
+                 {/* NAME */}
             <Grid item xs={12} lg={6}>
                 <TextForm
                     title="Tên"
@@ -228,7 +284,10 @@ export default function CreateTaskDesignModal({ onCreate }) {
                     onChange={(e) => handleInputChange("code", e.target.value)}
                 ></TextForm>
             </Grid>
-
-        </FormModal>
+                <Grid item xs={12} lg={4}>
+                    {/* Additional details can be added here */}
+                </Grid>
+            </DetailsPage>
+        </PageContainer>
     );
 }

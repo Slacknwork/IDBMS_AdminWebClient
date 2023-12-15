@@ -21,7 +21,7 @@ const getAllTaskCategories = async ({
   }
 };
 
-const getAllTaskCategoryById = async (id) => {
+const getTaskCategoryById = async (id) => {
   try {
     const response = await fetch(`https://localhost:7062/api/TaskCategories/${id}`, {
       cache: "no-store",
@@ -119,7 +119,7 @@ const deleteTaskCategory = async (categoryId) => {
 
 export {
   getAllTaskCategories,
-  getAllTaskCategoryById,
+  getTaskCategoryById,
   createTaskCategory,
   updateTaskCategory,
   deleteTaskCategory,
