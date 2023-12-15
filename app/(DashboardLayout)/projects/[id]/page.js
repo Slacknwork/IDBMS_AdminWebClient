@@ -25,7 +25,6 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import UserCard from "/components/shared/UserCard";
 
-
 export default function ProjectDetails() {
   const params = useParams();
 
@@ -97,16 +96,17 @@ export default function ProjectDetails() {
     const fetchDataFromApi = async () => {
       setLoading(true);
       try {
-        const project = await getProjectById(params.id);
+        const projectResponse = await getProjectById(params.id);
+        const project = projectResponse.data;
         setFormData((prevData) => ({ ...prevData, ...project }));
         setPageName(project.name);
         setPageDescription(project.description);
 
         const listCategories = await getProjectCategories({});
         setProjectCategories(listCategories.list);
-
+        console.log(project);
         const listProjectsBySiteId = await getProjectsBySiteId({
-          siteId: project?.siteId,
+          siteId: project.siteId,
         });
         setDecorProjects(
           listProjectsBySiteId.list
