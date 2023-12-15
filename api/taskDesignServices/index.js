@@ -22,7 +22,7 @@ const getAllTaskDesigns = async ({
     }
 };
 
-const getAllTaskDesignById = async (id) => {
+const getTaskDesignById = async (id) => {
     try {
         const response = await fetch(
             `https://localhost:7062/api/TaskDesigns/${id}`,
@@ -111,7 +111,7 @@ const deleteTaskDesign = async (designId) => {
 
 export {
     getAllTaskDesigns,
-    getAllTaskDesignById,
+    getTaskDesignById,
     createTaskDesign,
     updateTaskDesign,
     deleteTaskDesign,
