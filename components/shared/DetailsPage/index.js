@@ -10,6 +10,13 @@ export default function DetailsPage({
   title = "Tiêu đề",
   saveLabel = "Lưu",
   saveMessage = "Lưu thông tin?",
+  hasHide,
+  isHidden = false,
+  hideLabel = "Ẩn",
+  hideMessage = "Ẩn thông tin?",
+  showLabel = "Hiện",
+  showMessage = "Hiện thông tin?",
+  onHiddenStatusChange,
   deleteLabel = "Xóa",
   deleteMessage = "Xóa thông tin?",
   onSave,
@@ -38,7 +45,6 @@ export default function DetailsPage({
           <Box sx={{ display: "flex" }}>
             <MessageModal
               disabled={loading}
-              sx={hasDelete ? { mr: 2 } : null}
               buttonLabel={saveLabel}
               onSubmit={onSave}
               title={saveLabel}
@@ -46,10 +52,36 @@ export default function DetailsPage({
             >
               <Typography variant="p">{saveMessage}</Typography>
             </MessageModal>
+            {hasHide ? (
+              isHidden ? (
+                <MessageModal
+                  disabled={loading}
+                  sx={{ ml: 2 }}
+                  buttonLabel={showLabel}
+                  onSubmit={onHiddenStatusChange}
+                  title={showLabel}
+                  submitLabel={showLabel}
+                >
+                  <Typography variant="p">{showMessage}</Typography>
+                </MessageModal>
+              ) : (
+                <MessageModal
+                  disabled={loading}
+                  sx={{ ml: 2 }}
+                  buttonLabel={hideLabel}
+                  onSubmit={onHiddenStatusChange}
+                  title={hideLabel}
+                  submitLabel={hideLabel}
+                >
+                  <Typography variant="p">{hideMessage}</Typography>
+                </MessageModal>
+              )
+            ) : null}
             {hasDelete ? (
               <MessageModal
                 disabled={loading}
                 color="error"
+                sx={{ ml: 2 }}
                 buttonLabel={deleteLabel}
                 onSubmit={onDelete}
                 title={deleteLabel}

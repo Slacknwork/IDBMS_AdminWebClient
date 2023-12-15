@@ -33,6 +33,7 @@ export default function MessageModal({
   cancelLabel,
   submitLabel,
   children,
+  bottomLeftContent,
 }) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
@@ -89,26 +90,29 @@ export default function MessageModal({
               {children}
             </Grid>
             <Grid item xs={12} lg={12}>
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                {!disableSubmit && (
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Box>{bottomLeftContent}</Box>
+                <Box>
+                  {!disableSubmit && (
+                    <Button
+                      color={color}
+                      variant="outlined"
+                      disableElevation
+                      onClick={handleClose}
+                      sx={{ mr: 2 }}
+                    >
+                      {cancelLabel || "Hủy"}
+                    </Button>
+                  )}
                   <Button
                     color={color}
-                    variant="outlined"
+                    variant={disableSubmit ? "outlined" : "contained"}
                     disableElevation
-                    onClick={handleClose}
-                    sx={{ mr: 2 }}
+                    onClick={disableSubmit ? handleClose : handleSubmit}
                   >
-                    {cancelLabel || "Hủy"}
+                    {submitLabel || "Chấp nhận"}
                   </Button>
-                )}
-                <Button
-                  color={color}
-                  variant={disableSubmit ? "outlined" : "contained"}
-                  disableElevation
-                  onClick={disableSubmit ? handleClose : handleSubmit}
-                >
-                  {submitLabel || "Chấp nhận"}
-                </Button>
+                </Box>
               </Box>
             </Grid>
           </Grid>
