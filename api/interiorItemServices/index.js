@@ -134,13 +134,9 @@ const deleteInteriorItem = async (itemId) => {
 const updateInteriorItemStatus = async (itemId, newStatus) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/${itemId}/status`,
+      `https://localhost:7062/api/InteriorItems/${itemId}/status?status=${newStatus}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus }),
       }
     );
 
