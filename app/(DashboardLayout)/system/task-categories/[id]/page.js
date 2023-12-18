@@ -107,7 +107,7 @@ export default function TaskCategoryDetails() {
             );
             console.log(response);
             toast.success("Xoá thành công!");
-            window.location.replace("/system/task-categories");
+            router.push("/system/task-categories");
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");
