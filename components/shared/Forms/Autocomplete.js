@@ -44,12 +44,13 @@ export default function AutocompleteForm({
         <Autocomplete
           disabled={disabled}
           options={options}
+          noOptionsText="Không tìm thấy.."
           getOptionLabel={(option) =>
             option.code
               ? `${option.code} - ${option.name}`
               : option.usePurpose
-              ? option.usePurpose
-              : option.name ?? option
+                ? option.usePurpose
+                : option.name ?? option
           }
           isOptionEqualToValue={(option, value) => option.id === value?.id}
           value={selectedObject}

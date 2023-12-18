@@ -183,7 +183,7 @@ export default function RoomListPage() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có phòng.
+            Không có dữ liệu.
           </Typography>
         </Stack>
       )}

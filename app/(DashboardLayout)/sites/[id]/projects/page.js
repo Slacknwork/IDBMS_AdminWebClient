@@ -36,7 +36,7 @@ import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import Search from "/components/shared/Search";
-import CreateProjectModal from "./(CreateProjectModal)";
+import CreateProjectModal from "/components/shared/Modals/projects/CreateModal"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -221,7 +221,7 @@ export default function ProjectListPage() {
         ) : (
           <Stack sx={{ my: 5 }}>
             <Typography variant="p" sx={{ textAlign: "center" }}>
-              Không có yêu cầu.
+              Không có dữ liệu.
             </Typography>
           </Stack>
         )}

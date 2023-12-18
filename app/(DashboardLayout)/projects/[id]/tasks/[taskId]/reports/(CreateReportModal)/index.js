@@ -232,7 +232,7 @@ export default function CreateReportModal({ children }) {
           ) : (
             <Stack sx={{ my: 5 }}>
               <Typography variant="p" sx={{ textAlign: "center" }}>
-                Chưa có tài liệu.
+                Không có dữ liệu.
               </Typography>
             </Stack>
           )}

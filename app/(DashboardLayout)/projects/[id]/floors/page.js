@@ -168,7 +168,7 @@ export default function FloorsPage() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có tầng.
+            Không có dữ liệu.
           </Typography>
         </Stack>
       )}

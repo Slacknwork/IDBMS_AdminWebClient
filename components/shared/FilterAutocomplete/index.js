@@ -55,7 +55,7 @@ export default function FilterAutocomplete({
         options={options}
         placeholder={allLabel}
         defaultValue={defaultOption}
-        noOptionsText="Không có lựa chọn"
+        noOptionsText="Không tìm thấy.."
         isOptionEqualToValue={(option, value) => option.id === value.id}
         getOptionLabel={(option) => option.name ?? option}
         renderInput={(params) => (

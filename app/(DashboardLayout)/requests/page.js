@@ -109,7 +109,7 @@ export default function RequestList() {
   }, [searchParams]);
 
   // UPDATE BOOKING STATUS
-  const onUpdateSubmit = (request, status) => {};
+  const onUpdateSubmit = (request, status) => { };
 
   return (
     <Box>
@@ -250,7 +250,7 @@ export default function RequestList() {
           ) : (
             <Stack sx={{ my: 5 }}>
               <Typography variant="p" sx={{ textAlign: "center" }}>
-                Không có yêu cầu.
+                Không có dữ liệu.
               </Typography>
             </Stack>
           )}

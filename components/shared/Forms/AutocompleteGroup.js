@@ -44,6 +44,7 @@ export default function AutocompleteGroupForm({
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <Autocomplete
           disabled={disabled}
+          noOptionsText="Không tìm thấy.."
           options={options}
           groupBy={(option) => option[groupBy] ?? null}
           isOptionEqualToValue={(option, value) => option.id === value?.id}
@@ -51,8 +52,8 @@ export default function AutocompleteGroupForm({
             option.code
               ? `${option.code} - ${option.name}`
               : option.usePurpose
-              ? option.usePurpose
-              : option.name
+                ? option.usePurpose
+                : option.name
           }
           value={selectedObject}
           onChange={(_, newValue) => onSelectedObjectChange(newValue)}
