@@ -234,7 +234,7 @@ export default function UserList() {
         ) : (
           <Stack sx={{ my: 5 }}>
             <Typography variant="p" sx={{ textAlign: "center" }}>
-              Không có yêu cầu.
+              Không có dữ liệu.
             </Typography>
           </Stack>
         )}

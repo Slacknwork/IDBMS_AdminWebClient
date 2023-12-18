@@ -535,8 +535,8 @@ export default function ProjectTasksPage() {
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startDate
                               ? new Date(task.startDate).toLocaleDateString(
-                                  "vi-VN"
-                                )
+                                "vi-VN"
+                              )
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>
@@ -567,7 +567,7 @@ export default function ProjectTasksPage() {
               ) : (
                 <Stack sx={{ my: 5 }}>
                   <Typography variant="p" sx={{ textAlign: "center" }}>
-                    Không có công việc.
+                    Không có dữ liệu.
                   </Typography>
                 </Stack>
               )}

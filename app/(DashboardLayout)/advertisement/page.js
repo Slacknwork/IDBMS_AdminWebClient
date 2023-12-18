@@ -210,7 +210,7 @@ export default function AdvertisementPage() {
         ) : (
           <Stack sx={{ my: 5 }}>
             <Typography variant="p" sx={{ textAlign: "center" }}>
-              Không có dự án.
+              Không có dữ liệu.
             </Typography>
           </Stack>
         )}

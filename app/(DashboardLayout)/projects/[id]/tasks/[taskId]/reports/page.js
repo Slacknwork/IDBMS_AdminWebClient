@@ -181,7 +181,7 @@ export default function ReportListPage() {
           ) : (
             <Stack sx={{ my: 5 }}>
               <Typography variant="p" sx={{ textAlign: "center" }}>
-                Không có báo cáo.
+                Không có dữ liệu.
               </Typography>
             </Stack>
           )}
