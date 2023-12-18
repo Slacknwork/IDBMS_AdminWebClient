@@ -66,6 +66,7 @@ export default function TaskCategoryDetails() {
 
     // FETCH DATA
     const fetchDataFromApi = async () => {
+        setLoading(true)
         const fetchTaskCategory = async () => {
             try {
                 const response = await getTaskCategoryById(params.id);
@@ -93,6 +94,7 @@ export default function TaskCategoryDetails() {
             const response = await updateTaskCategory(params.id, transformedValue);
             console.log(response);
             toast.success("Cập nhật thành công!");
+            await fetchDataFromApi()
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");
@@ -133,86 +135,87 @@ export default function TaskCategoryDetails() {
                 deleteLabel={"Xoá"}
                 hasDelete
                 onDelete={handleDelete}
+                loading={loading}
             >
-                 {/* NAME */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Tên"
-                    required
-                    subtitle="Nhập tên danh mục"
-                    value={formData.name}
-                    error={formData.nameError.hasError}
-                    errorLabel={formData.nameError.label}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                ></TextForm>
-            </Grid>
+                {/* NAME */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Tên"
+                        required
+                        subtitle="Nhập tên danh mục"
+                        value={formData.name}
+                        error={formData.nameError.hasError}
+                        errorLabel={formData.nameError.label}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-            {/* ENGLISH NAME */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Tên tiếng Anh"
-                    subtitle="Nhập tên tiếng Anh (nếu có)"
-                    value={formData.englishName}
-                    error={formData.englishNameError.hasError}
-                    errorLabel={formData.englishNameError.label}
-                    onChange={(e) => handleInputChange("englishName", e.target.value)}
-                ></TextForm>
-            </Grid>
+                {/* ENGLISH NAME */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Tên tiếng Anh"
+                        subtitle="Nhập tên tiếng Anh (nếu có)"
+                        value={formData.englishName}
+                        error={formData.englishNameError.hasError}
+                        errorLabel={formData.englishNameError.label}
+                        onChange={(e) => handleInputChange("englishName", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-            {/* DESCRIPTION */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Mô tả"
-                    subtitle="Nhập mô tả cho phân loại công việc"
-                    value={formData.description}
-                    error={formData.descriptionError.hasError}
-                    errorLabel={formData.descriptionError.label}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
-                ></TextForm>
-            </Grid>
+                {/* DESCRIPTION */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Mô tả"
+                        subtitle="Nhập mô tả cho phân loại công việc"
+                        value={formData.description}
+                        error={formData.descriptionError.hasError}
+                        errorLabel={formData.descriptionError.label}
+                        onChange={(e) => handleInputChange("description", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-            {/* ENGLISH DESCRIPTION */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Mô tả tiếng Anh"
-                    subtitle="Nhập mô tả tiếng Anh (nếu có)"
-                    value={formData.englishDescription}
-                    error={formData.englishDescriptionError.hasError}
-                    errorLabel={formData.englishDescriptionError.label}
-                    onChange={(e) => handleInputChange("englishDescription", e.target.value)}
-                ></TextForm>
-            </Grid>
+                {/* ENGLISH DESCRIPTION */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Mô tả tiếng Anh"
+                        subtitle="Nhập mô tả tiếng Anh (nếu có)"
+                        value={formData.englishDescription}
+                        error={formData.englishDescriptionError.hasError}
+                        errorLabel={formData.englishDescriptionError.label}
+                        onChange={(e) => handleInputChange("englishDescription", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-            {/* PROJECT TYPE */}
-            <Grid item xs={12} lg={6}>
-                <SelectForm
-                    title="Loại dự án"
-                    required
-                    subtitle="Nhập loại dự án"
-                    value={formData.projectType}
-                    options={projectTypeOptions}
-                    defaultValue={-1}
-                    defaultLabel="Chọn một..."
-                    error={formData.projectTypeError.hasError}
-                    errorLabel={formData.projectTypeError.label}
-                    onChange={(value) => handleInputChange("projectType", value)}
-                ></SelectForm>
-            </Grid>
+                {/* PROJECT TYPE */}
+                <Grid item xs={12} lg={6}>
+                    <SelectForm
+                        title="Loại dự án"
+                        required
+                        subtitle="Nhập loại dự án"
+                        value={formData.projectType}
+                        options={projectTypeOptions}
+                        defaultValue={-1}
+                        defaultLabel="Chọn một..."
+                        error={formData.projectTypeError.hasError}
+                        errorLabel={formData.projectTypeError.label}
+                        onChange={(value) => handleInputChange("projectType", value)}
+                    ></SelectForm>
+                </Grid>
 
-            {/* ICON IMAGE */}
-            <Grid item xs={12} lg={6}>
-                <FileForm
-                    title="Biểu tượng"
-                    titleSpan={3}
-                    fieldSpan={9}
-                    required
-                    subtitle="Chọn biểu tượng minh họa"
-                    value={formData.iconImage}
-                    error={formData.iconImageError.hasError}
-                    errorLabel={formData.iconImageError.label}
-                    onChange={(file) => handleInputChange("iconImage", file)}
-                ></FileForm>
-            </Grid>
+                {/* ICON IMAGE */}
+                <Grid item xs={12} lg={6}>
+                    <FileForm
+                        title="Biểu tượng"
+                        titleSpan={3}
+                        fieldSpan={9}
+                        required
+                        subtitle="Chọn biểu tượng minh họa"
+                        value={formData.iconImage}
+                        error={formData.iconImageError.hasError}
+                        errorLabel={formData.iconImageError.label}
+                        onChange={(file) => handleInputChange("iconImage", file)}
+                    ></FileForm>
+                </Grid>
                 <Grid item xs={12} lg={4}>
                     {/* Additional details can be added here */}
                 </Grid>
