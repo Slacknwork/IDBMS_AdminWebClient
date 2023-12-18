@@ -272,7 +272,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/TaskDesigns/${taskDesign.id}`}
+                    href={`/system/task-designs/${taskDesign.id}`}
                   >
                     Thông tin
                   </Button>

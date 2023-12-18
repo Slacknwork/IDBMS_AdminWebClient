@@ -225,7 +225,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/ProjectCategories/${projectCategory.id}`}
+                    href={`/system/task-categories/${projectCategory.id}`}
                   >
                     Thông tin
                   </Button>
