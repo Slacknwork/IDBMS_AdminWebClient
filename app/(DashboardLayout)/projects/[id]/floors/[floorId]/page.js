@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Button,
   Card,
@@ -24,6 +24,7 @@ import TextForm from "/components/shared/Forms/Text";
 
 export default function FloorDetailsPage() {
   const params = useParams();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     floorNo: 0,
@@ -64,9 +65,9 @@ export default function FloorDetailsPage() {
     if (!initialized.current) {
       initialized.current = true;
       try {
-        const data = await getFloorsById(params.floorId);
-        console.log(data);
-        mapData(data);
+        const response = await getFloorsById(params.floorId);
+        console.log(response);
+        mapData(response);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -134,6 +135,7 @@ export default function FloorDetailsPage() {
     try {
       const response = await deleteFloorById(params.floorId);
       toast.success("Xóa thành công!");
+      router.push(`/projects/${params.id}/floors`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
