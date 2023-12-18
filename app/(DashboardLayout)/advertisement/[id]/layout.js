@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Avatar, Box, Chip, Grid, Typography } from "@mui/material";
@@ -28,6 +28,7 @@ import TabItems from "./tabItems";
 
 export default function ProjectDetailsLayout({ children }) {
   // INIT
+  const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
@@ -38,6 +39,9 @@ export default function ProjectDetailsLayout({ children }) {
       await updateAdvertisementProjectStatus(params.id, status);
       dispatch(fetchProjectData(params.id));
       toast.success("Cập nhật thành công!");
+      if (status === 0) {
+        router.push(`/advertisement`);
+      }
     } catch (error) {
       toast.error("Lỗi cập nhật trạng thái dự án!");
       console.log(error);
@@ -107,6 +111,7 @@ export default function ProjectDetailsLayout({ children }) {
                   sx={{ width: 125 }}
                   color="error"
                   buttonLabel="Chưa đồng ý"
+                  onSubmit={() => onUpdateAdvertisementStatus(0)}
                 >
                   a
                 </MessageModal>

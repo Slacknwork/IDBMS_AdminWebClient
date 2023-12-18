@@ -98,6 +98,7 @@ export default function TaskOverviewPage() {
   const [stages, setStages] = useState([]);
 
   const fetchDataFromApi = async () => {
+    setLoading(true);
     try {
       const floors = await getFloorsByProjectId({ projectId });
       setRooms(
@@ -118,10 +119,11 @@ export default function TaskOverviewPage() {
       setStages(listStagesByProjectId.list);
       const task = await getProjectTaskById(taskId);
       setFormData((prevData) => ({ ...prevData, ...task }));
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,6 +149,7 @@ export default function TaskOverviewPage() {
         title="Thông tin công việc"
         saveMessage="Lưu thông tin công việc?"
         onSave={onSaveTask}
+        loading={loading}
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={4}>

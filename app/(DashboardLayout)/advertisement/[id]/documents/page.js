@@ -1,67 +1,35 @@
 "use client";
 
-// Import necessary components and libraries
+import Link from "next/link";
+import Image from "next/image";
 import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
   tableCellClasses,
   TableHead,
-  TablePagination,
   TableRow,
-  TextField,
   Typography,
   Stack,
   CircularProgress,
 } from "@mui/material";
-import {
-  IconDownload,
-  IconPencil,
-  IconTrash,
-  IconSearch,
-} from "@tabler/icons-react";
-import Link from "next/link";
+import { IconDownload } from "@tabler/icons-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import DocumentModal from "../../../../../components/shared/Modals/ProjectDocuments/CreateModal";
-import DeleteModal from "./(DeleteDocumentModal)";
+import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
-import { getDocumentsByProjectId } from "api/projectDocumentServices";
+import { getAdvertisementProjectDocuments } from "api/advertisementServices";
 import moment from "moment-timezone";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterCategory from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
-
-// Sample projectDocuments data
-const projectDocuments = [
-  {
-    id: 1,
-    name: "Document 1",
-    category: 1,
-    createdDate: new Date("2023-01-20"),
-    projectDocumentTemplate: { id: 1, name: "Template A" },
-  },
-  {
-    id: 2,
-    name: "Document 2",
-    category: 2,
-    createdDate: new Date("2023-02-10"),
-    projectDocumentTemplate: { id: 2, name: "Template B" },
-  },
-  // Add more projectDocuments as needed
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -84,6 +52,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectDocuments() {
   const searchQuery = "search";
 
+  const statusQuery = "status";
+
   const categoryQuery = "category";
   const categoryAllValue = -1;
 
@@ -93,6 +63,7 @@ export default function ProjectDocuments() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
+  // INIT
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -107,21 +78,21 @@ export default function ProjectDocuments() {
   const fetchDataFromApi = async () => {
     const fetchDocuments = async () => {
       const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const categoryEnum = searchParams.get(categoryQuery) || "";
-      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const status = searchParams.get(statusQuery) ?? "";
+      const category = searchParams.get(categoryQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
-        const response = await getDocumentsByProjectId({
+        const response = await getAdvertisementProjectDocuments({
           projectId,
           search,
-          categoryEnum,
+          status,
+          category,
           page,
           pageSize,
         });
-        console.log(response);
         setDocuments(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
       } catch (error) {
@@ -162,27 +133,27 @@ export default function ProjectDocuments() {
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
+              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Mô tả
+                  Hình ảnh
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Danh mục
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Ngày tạo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell width={"25%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -194,9 +165,17 @@ export default function ProjectDocuments() {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {document?.description ?? ""}
-                  </Typography>
+                  <Image
+                    src={document?.url}
+                    alt={document.name ?? ""}
+                    width={500}
+                    height={500}
+                    style={{
+                      width: "7rem",
+                      height: "7rem",
+                      objectFit: "cover",
+                    }}
+                  ></Image>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
@@ -211,19 +190,32 @@ export default function ProjectDocuments() {
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
-                <TableCell align="right" sx={{ display: "flex" }}>
-                  <DeleteModal>Xóa</DeleteModal>
-                  <DocumentModal projectDocument={document}>Sửa</DocumentModal>
-                  <Button
-                    sx={{ width: 75 }}
-                    size="small"
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    endIcon={<IconDownload></IconDownload>}
+                <TableCell align="right">
+                  <Box
+                    sx={{
+                      my: "auto",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
                   >
-                    Tải
-                  </Button>
+                    <Button
+                      sx={{ mr: 2 }}
+                      variant="contained"
+                      disableElevation
+                      component={Link}
+                      href={`/advertisement/${params.id}/documents/${document.id}`}
+                    >
+                      Chi tiết
+                    </Button>
+                    <Button
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      endIcon={<IconDownload></IconDownload>}
+                    >
+                      Tải
+                    </Button>
+                  </Box>
                 </TableCell>
               </StyledTableRow>
             ))}

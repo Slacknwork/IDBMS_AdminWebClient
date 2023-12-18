@@ -11,6 +11,7 @@ import { updateAdvertisementProjectDescription } from "/api/advertisementService
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import RichTextForm from "/components/shared/Forms/RichText";
+import FileForm from "/components/shared/Forms/File";
 import UserCard from "/components/shared/UserCard";
 
 export default function AdvertisementDetailsPage() {
@@ -19,6 +20,9 @@ export default function AdvertisementDetailsPage() {
   const [formData, setFormData] = useState({
     advertisementDescription: "",
     advertisementDescriptionError: { hasError: false, label: "" },
+    file: null,
+    fileError: { hasError: false, label: "" },
+    representImageUrl: "",
   });
 
   const validateInput = (field, value) => {
@@ -78,10 +82,10 @@ export default function AdvertisementDetailsPage() {
 
   const onSaveAdvertisementProject = async () => {
     try {
-      await updateAdvertisementProjectDescription(
-        params.id,
-        formData.advertisementDescription
-      );
+      await updateAdvertisementProjectDescription(params.id, {
+        description: formData.advertisementDescription,
+        representImage: formData.file,
+      });
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
@@ -101,6 +105,21 @@ export default function AdvertisementDetailsPage() {
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
+            {/* REPRESENT IMAGE */}
+            <Grid item xs={12} lg={12}>
+              <FileForm
+                title="Hình ảnh"
+                titleSpan={2}
+                fieldSpan={10}
+                subtitle="Chọn hình ảnh minh họa"
+                value={formData.file}
+                imgDisplay={formData.representImageUrl}
+                error={formData.fileError.hasError}
+                errorLabel={formData.fileError.label}
+                onChange={(file) => handleInputChange("file", file)}
+              ></FileForm>
+            </Grid>
+
             {/* ADVERTISEMENT DESCRIPTION */}
             <Grid item xs={12} lg={12}>
               <RichTextForm
