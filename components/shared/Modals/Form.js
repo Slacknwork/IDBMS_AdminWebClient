@@ -34,6 +34,7 @@ export default function FormModal({
   hasOpenEvent,
   onOpen,
   onSubmit,
+  bottomLeftContent,
   size = "",
 }) {
   // STYLE
@@ -158,9 +159,10 @@ export default function FormModal({
             {/* SUBMIT */}
             <Grid item xs={12} lg={12}>
               <Box
-                sx={{ mb: 2, display: "flex", justifyContent: "flex-end" }}
+                sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}
                 spacing={2}
               >
+                <Box>{bottomLeftContent}</Box>
                 <Button
                   variant={submitVariant ?? "contained"}
                   disableElevation

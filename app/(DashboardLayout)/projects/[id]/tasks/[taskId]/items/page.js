@@ -19,16 +19,18 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
-import { getItemInTasksByProjectId } from "api/itemInTaskServices";
+
+import ItemModal from "./(CreateItemModal)";
+import { getItemInTasksByTaskId } from "api/itemInTaskServices";
 import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
-import { toast } from "react-toastify";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,35 +75,28 @@ export default function InteriorItems() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    const fetchItems = async () => {
-      const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const categoryId = searchParams.get(categoryQuery) || "";
-      const status = searchParams.get(statusQuery)
-        ? parseInt(searchParams.get(statusQuery))
-        : "";
-      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+    const taskId = params.taskId;
+    const search = searchParams.get(searchQuery) ?? "";
+    const categoryId = searchParams.get(categoryQuery) ?? "";
+    const status = searchParams.get(statusQuery) ?? "";
+    const page = searchParams.get(pageQuery) ?? defaultPage;
+    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-      try {
-        const response = await getItemInTasksByProjectId({
-          projectId,
-          search,
-          categoryId,
-          status,
-          page,
-          pageSize,
-        });
-        console.log(response);
-        setItems(response?.list ?? []);
-        setCount(response?.totalItem ?? 0);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      }
-    };
-    await Promise.all([fetchItems()]);
+    try {
+      const response = await getItemInTasksByTaskId({
+        taskId,
+        search,
+        categoryId,
+        status,
+        page,
+        pageSize,
+      });
+      setItems(response?.list ?? []);
+      setCount(response?.totalItem ?? 0);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
     setLoading(false);
   };
 
@@ -118,7 +113,6 @@ export default function InteriorItems() {
     const fetchCategories = async () => {
       try {
         const response = await getAllInteriorItemCategories();
-        console.log(response);
         setItemCategories(response.list);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -131,7 +125,7 @@ export default function InteriorItems() {
 
   useEffect(() => {
     fetchOptionsFromApi();
-  }, []);
+  }, [searchParams]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -155,20 +149,15 @@ export default function InteriorItems() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        {/* <ItemModal>
+        <ItemModal>
           <span>Tạo</span>
-        </ItemModal> */}
+        </ItemModal>
       </Box>
 
       {(items && items.length) > 0 ? (
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mã sản phẩm
-                </Typography>
-              </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
@@ -201,11 +190,9 @@ export default function InteriorItems() {
               items.map((item) => (
                 <StyledTableRow key={item?.id}>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
+                    <Typography variant="p" fontWeight={600}>
                       {item?.interiorItem?.code ?? ""}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
                       {item?.interiorItem?.name ?? ""}
                     </Typography>
@@ -217,9 +204,13 @@ export default function InteriorItems() {
                         "/images/results/no-image.png"
                       }
                       alt={item?.interiorItem?.name ?? ""}
-                      width={50}
-                      height={50}
-                      objectFit="cover"
+                      width={500}
+                      height={500}
+                      style={{
+                        objectFit: "cover",
+                        width: "6rem",
+                        height: "6rem",
+                      }}
                     />
                   </TableCell>
                   <TableCell>
