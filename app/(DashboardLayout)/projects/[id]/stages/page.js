@@ -186,13 +186,13 @@ export default function PaymentStages() {
                     {stage.startedDate
                       ? stage.endDate
                         ? `${new Date(stage.startedDate).toLocaleDateString(
-                            "vi-VN"
-                          )} - ${new Date(stage.endDate).toLocaleDateString(
-                            "vi-VN"
-                          )}`
+                          "vi-VN"
+                        )} - ${new Date(stage.endDate).toLocaleDateString(
+                          "vi-VN"
+                        )}`
                         : `${new Date(stage.startedDate).toLocaleDateString(
-                            "vi-VN"
-                          )} - Chưa xác định`
+                          "vi-VN"
+                        )} - Chưa xác định`
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
@@ -200,8 +200,8 @@ export default function PaymentStages() {
                   <Typography variant="subtitle2" fontWeight={400}>
                     {stage.endTimePayment
                       ? new Date(stage.endTimePayment).toLocaleDateString(
-                          "vi-VN"
-                        )
+                        "vi-VN"
+                      )
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
@@ -230,7 +230,7 @@ export default function PaymentStages() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Chưa có giai đoạn.
+            Không có dữ liệu.
           </Typography>
         </Stack>
       )}
