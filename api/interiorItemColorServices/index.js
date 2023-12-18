@@ -59,7 +59,7 @@ const getColorById = async (id) => {
         }
 
         const colors = await response.json();
-        return colors;
+        return colors.data;
     } catch (error) {
         console.error('Error fetching color by ID:', error);
         throw error;
