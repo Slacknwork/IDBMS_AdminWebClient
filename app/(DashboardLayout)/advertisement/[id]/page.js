@@ -5,48 +5,24 @@ import { Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import {
-  getProjectById,
-  getProjectsBySiteId,
-  updateProject,
-} from "/api/projectServices";
-import { getProjectCategories } from "/api/projectCategoryServices";
+import { getProjectById } from "/api/projectServices";
+import { updateAdvertisementProjectDescription } from "/api/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import RichTextForm from "/components/shared/Forms/RichText";
+import FileForm from "/components/shared/Forms/File";
 import UserCard from "/components/shared/UserCard";
 
 export default function AdvertisementDetailsPage() {
   const params = useParams();
 
   const [formData, setFormData] = useState({
-    name: "",
-    nameError: { hasError: false, label: "" },
-    type: -1,
-    typeError: { hasError: false, label: "" },
-    status: -1,
-    statusError: { hasError: false, label: "" },
-    language: -1,
-    languageError: { hasError: false, label: "" },
-    projectCategoryId: null,
-    projectCategoryIdError: { hasError: false, label: "" },
-    description: "",
-    descriptionError: { hasError: false, label: "" },
-    advertisementStatus: -1,
-    advertisementStatusError: { hasError: false, label: "" },
-    basedOnDecorProjectId: null,
-    basedOnDecorProjectErrorId: { hasError: false, label: "" },
-    estimatedPrice: 0,
-    estimatedPriceError: { hasError: false, label: "" },
-    finalPrice: 0,
-    finalPriceError: { hasError: false, label: "" },
-    totalWarrantyPaid: 0,
-    totalWarrantyPaidError: { hasError: false, label: "" },
-    area: 0,
-    areaError: { hasError: false, label: "" },
-    estimateBusinessDay: 0,
-    estimateBusinessDayError: { hasError: false, label: "" },
+    advertisementDescription: "",
+    advertisementDescriptionError: { hasError: false, label: "" },
+    file: null,
+    fileError: { hasError: false, label: "" },
+    representImageUrl: "",
   });
 
   const validateInput = (field, value) => {
@@ -79,9 +55,6 @@ export default function AdvertisementDetailsPage() {
   const priceLabel = "Tổng quan";
 
   const [loading, setLoading] = useState(true);
-
-  const [projectCategories, setProjectCategories] = useState([]);
-  const [decorProjects, setDecorProjects] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
 
   useEffect(() => {
@@ -93,18 +66,6 @@ export default function AdvertisementDetailsPage() {
         setFormData((prevData) => ({ ...prevData, ...project }));
         setPageName(project.name);
         setPageDescription(project.description);
-
-        const listCategories = await getProjectCategories({});
-        setProjectCategories(listCategories.list);
-        console.log(project);
-        const listProjectsBySiteId = await getProjectsBySiteId({
-          siteId: project.siteId,
-        });
-        setDecorProjects(
-          listProjectsBySiteId.list
-            .filter((project) => project.type === 0 && project.id !== params.id)
-            .map(({ id, name }) => ({ id, name }))
-        );
         const participation = project?.projectParticipations.find(
           (par) => par.role === 0
         );
@@ -119,9 +80,12 @@ export default function AdvertisementDetailsPage() {
     fetchDataFromApi();
   }, []);
 
-  const onSaveProject = async () => {
+  const onSaveAdvertisementProject = async () => {
     try {
-      const project = await updateProject(params.id, formData);
+      await updateAdvertisementProjectDescription(params.id, {
+        description: formData.advertisementDescription,
+        representImage: formData.file,
+      });
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
@@ -137,21 +101,38 @@ export default function AdvertisementDetailsPage() {
         loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
-        onSave={onSaveProject}
+        onSave={onSaveAdvertisementProject}
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
-            {/* DESCRIPTION */}
+            {/* REPRESENT IMAGE */}
+            <Grid item xs={12} lg={12}>
+              <FileForm
+                title="Hình ảnh"
+                titleSpan={2}
+                fieldSpan={10}
+                subtitle="Chọn hình ảnh minh họa"
+                value={formData.file}
+                imgDisplay={formData.representImageUrl}
+                error={formData.fileError.hasError}
+                errorLabel={formData.fileError.label}
+                onChange={(file) => handleInputChange("file", file)}
+              ></FileForm>
+            </Grid>
+
+            {/* ADVERTISEMENT DESCRIPTION */}
             <Grid item xs={12} lg={12}>
               <RichTextForm
                 title="Mô tả"
                 titleSpan={2}
                 fieldSpan={10}
                 subtitle="Mô tả dự án"
-                value={formData.description}
-                error={formData.descriptionError.hasError}
-                errorLabel={formData.descriptionError.label}
-                onChange={(e) => handleInputChange("description", e)}
+                value={formData.advertisementDescription}
+                error={formData.advertisementDescriptionError.hasError}
+                errorLabel={formData.advertisementDescriptionError.label}
+                onChange={(e) =>
+                  handleInputChange("advertisementDescription", e)
+                }
               ></RichTextForm>
             </Grid>
           </Grid>
