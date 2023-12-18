@@ -62,10 +62,11 @@ export default function SiteDetails() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDataFromApi = async () => {
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+    setLoading(true)
+    const fetchSite = async () => {
       try {
-        setLoading(true);
         const data = await getSiteById(params.id);
         console.log(data);
         setFormData((prevData) => ({
@@ -74,14 +75,18 @@ export default function SiteDetails() {
         }));
         setPageName(data?.name);
         setPageDescription(data?.pageDescription);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
       }
     };
+    await Promise.all([fetchSite()]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchDataFromApi();
-  }, [params.id]);
+  }, []);
 
   const onSaveSite = async () => {
     try {
@@ -89,6 +94,7 @@ export default function SiteDetails() {
       toast.success("Cập nhật thành công!");
       setPageName(formData?.name);
       setPageDescription(formData?.description);
+      await fetchDataFromApi()
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

@@ -76,7 +76,7 @@ export default function AdvertisementDetailsPage() {
 
   // CONTACT
   const contactLabel = "Thông tin liên hệ chủ dự án";
-  const priceLabel = "Thông tin về các giá trị";
+  const priceLabel = "Tổng quan";
 
   const [loading, setLoading] = useState(true);
 
