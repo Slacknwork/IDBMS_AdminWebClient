@@ -41,8 +41,12 @@ export default function TaskCategoryDetails() {
         englishDescriptionError: { hasError: false, label: "" },
         bannerImage: null,
         bannerImageError: { hasError: false, label: "" },
+        bannerImageUrl: null,
+        bannerImageUrlError: { hasError: false, label: "" },
         iconImage: null,
         iconImageError: { hasError: false, label: "" },
+        iconImageUrl: null,
+        iconImageUrlError: { hasError: false, label: "" },
         interiorItemType: 0,
         interiorItemTypeError: { hasError: false, label: "" },
         parentCategoryId: "",
@@ -227,6 +231,7 @@ export default function TaskCategoryDetails() {
           fieldSpan={9}
           subtitle="Kéo thả / chọn hình ảnh banner cho sản phẩm"
           value={formData.bannerImage}
+          imgDisplay={formData.bannerImageUrl}
           error={formData.bannerImageError.hasError}
           errorLabel={formData.bannerImageError.label}
           onChange={(file) => handleInputChange("bannerImage", file)}
@@ -241,6 +246,7 @@ export default function TaskCategoryDetails() {
           fieldSpan={9}
           subtitle="Kéo thả / chọn hình ảnh icon cho sản phẩm"
           value={formData.iconImage}
+          imgDisplay={formData.iconImageUrl}
           error={formData.iconImageError.hasError}
           errorLabel={formData.iconImageError.label}
           onChange={(file) => handleInputChange("iconImage", file)}
