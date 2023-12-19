@@ -4,18 +4,27 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import {
+  Autocomplete,
   Box,
-  Button,
-  Chip,
+  Grid,
   Table,
   TableHead,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
+import { getAllInteriorItems } from "/api/interiorItemServices";
 
 import FormModal from "/components/shared/Modals/Form";
+import ItemModal from "./ItemModal";
+import { useParams } from "next/navigation";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,6 +45,79 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CreateItemModal() {
+  // INIT
+  const params = useParams();
+  const [items, setItems] = useState([]);
+
+  const [interiorItemColors, setInteriorItemColors] = useState([]);
+  const [interiorItemCategories, setInteriorItemCategories] = useState([]);
+  const [parentItems, setParentItems] = useState([]);
+
+  const fetchDataFromApi = async () => {
+    const fetchInteriorItemColors = async () => {
+      try {
+        const colors = await getAllInteriorItemColors({});
+        setInteriorItemColors(colors.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Màu");
+        console.log(error);
+      }
+    };
+    const fetchInteriorItemCategories = async () => {
+      try {
+        const categories = await getAllInteriorItemCategories({});
+        setInteriorItemCategories(categories.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Danh mục");
+        console.log(error);
+      }
+    };
+    const fetchParentItems = async () => {
+      try {
+        const items = await getAllInteriorItems({});
+        setParentItems(items.list);
+      } catch (error) {
+        toast.error("Lỗi dữ liệu: Sản phẩm");
+        console.log(error);
+      }
+    };
+    await Promise.all([
+      fetchInteriorItemColors(),
+      fetchInteriorItemCategories(),
+      fetchParentItems(),
+    ]);
+  };
+
+  const [selectedItem, setSelectedItem] = useState(null);
+  const handleSelectedItemChange = (event, newValue) => {
+    const item = {
+      quantity: 1,
+      projectId: params.id,
+      projectTaskId: params.taskId,
+      interiorItemId: newValue.id,
+      interiorItem: newValue,
+    };
+    setItems((prevData) => [...prevData, item]);
+  };
+
+  const addItem = (data) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const updatedData = {
+        quantity: 0,
+        projectId: params.id,
+        projectTaskId: params.taskId,
+        interiorItemId: null,
+        interiorItem: {
+          ...data,
+          imageUrl: e.target.result,
+        },
+      };
+      setItems((prevData) => [...prevData, updatedData]);
+    };
+    reader.readAsDataURL(data.image);
+  };
+
   const onCreateItemInTask = async () => {
     try {
     } catch (error) {
@@ -43,6 +125,10 @@ export default function CreateItemModal() {
       toast.error(`Lỗi tạo sản phẩm!`);
     }
   };
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
 
   return (
     <FormModal
@@ -52,36 +138,26 @@ export default function CreateItemModal() {
       onSubmit={onCreateItemInTask}
       size="big"
     >
-      <Box sx={{ zIndex: 1 }}>
-        <Table aria-label="simple table" sx={{ mt: 1 }}>
+      <Grid item xs={12} lg={12}>
+        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mã sản phẩm
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"40%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Hình ảnh
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Danh mục
+                  Số lượng (Qty)
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Trạng thái công việc
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="right">
+              <StyledTableCell width={"30%"} align="right">
                 <Typography variant="subtitle2" fontWeight={600}>
                   Chi tiết
                 </Typography>
@@ -90,14 +166,12 @@ export default function CreateItemModal() {
           </TableHead>
           <TableBody>
             {items &&
-              items.map((item) => (
+              items.map((item, index) => (
                 <StyledTableRow key={item?.id}>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
+                    <Typography variant="p" fontWeight={600}>
                       {item?.interiorItem?.code ?? ""}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
                       {item?.interiorItem?.name ?? ""}
                     </Typography>
@@ -109,43 +183,87 @@ export default function CreateItemModal() {
                         "/images/results/no-image.png"
                       }
                       alt={item?.interiorItem?.name ?? ""}
-                      width={50}
-                      height={50}
-                      objectFit="cover"
+                      width={500}
+                      height={500}
+                      style={{
+                        objectFit: "cover",
+                        width: "5rem",
+                        height: "5rem",
+                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {item?.interiorItem?.interiorItemCategory?.name ?? ""}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={
-                        projectTaskStatus[item?.projectTask?.status] ??
-                        "Không xác định"
-                      }
-                      color={
-                        item?.projectTask?.status === 0 ? "default" : "primary"
-                      }
+                    <TextField
+                      type="number"
+                      inputProps={{
+                        min: 1,
+                        step: 1,
+                      }}
+                      value={item?.quantity ?? ""}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value, 10) || 0;
+                        setItems((prevData) =>
+                          prevData.map((prevItem, idx) =>
+                            idx === index
+                              ? {
+                                  ...prevItem,
+                                  quantity: newQuantity,
+                                }
+                              : prevItem
+                          )
+                        );
+                      }}
                     />
                   </TableCell>
                   <TableCell align="right">
-                    <Button
-                      component={Link}
-                      variant="contained"
-                      disableElevation
-                      color="primary"
-                      href={`/projects/${params.id}/items/${item.id}`}
-                    >
-                      Chi tiết
-                    </Button>
+                    <ItemModal
+                      buttonLabel={"Sửa"}
+                      item={item?.interiorItem}
+                      interiorItemColors={interiorItemColors}
+                      interiorItemCategories={interiorItemCategories}
+                      parentItems={parentItems}
+                      onCreateItemInTask={addItem}
+                    ></ItemModal>
                   </TableCell>
                 </StyledTableRow>
               ))}
           </TableBody>
         </Table>
-      </Box>
+        <Box sx={{ mt: 2, display: "flex" }}>
+          <ItemModal
+            sx={{ my: "auto" }}
+            interiorItemColors={interiorItemColors}
+            interiorItemCategories={interiorItemCategories}
+            parentItems={parentItems}
+            onCreateItemInTask={addItem}
+          ></ItemModal>
+          <Typography sx={{ my: "auto", mx: 2 }} variant="p">
+            hoặc
+          </Typography>
+          <Autocomplete
+            sx={{ width: "20rem" }}
+            size="small"
+            disableClearable
+            options={parentItems.filter((parentItem) =>
+              items.every((item) => item.interiorItemId !== parentItem.id)
+            )}
+            value={selectedItem}
+            onChange={handleSelectedItemChange}
+            noOptionsText="Không tìm thấy.."
+            getOptionLabel={(option) => option.name}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.id}>
+                  {option.name}
+                </li>
+              );
+            }}
+            renderInput={(params) => {
+              return <TextField {...params} label="Chọn một sản phẩm" />;
+            }}
+          ></Autocomplete>
+        </Box>
+      </Grid>
     </FormModal>
   );
 }
