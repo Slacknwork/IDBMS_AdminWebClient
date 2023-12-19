@@ -90,6 +90,7 @@ export default function CreateItemModal() {
       console.log(formData)
       const response = await createInteriorItemCategory(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
+      console.log(response);
       router.push(`/items/categories/${response?.id}`);
     } catch (error) {
       console.log(`Error creating item: ${error}`);

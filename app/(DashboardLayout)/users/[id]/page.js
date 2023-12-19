@@ -14,6 +14,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import {
   getUserById,
   updateUser,
+  updateUserStatus,
 } from "../../../../api/userServices";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -101,7 +102,27 @@ export default function ItemDetails() {
             toast.error("Lỗi!");
         }
   };
-  const onDeleteUser = () => { };
+  const onSuspendUser = async () => { 
+    try {
+      if (formData?.status === 2){
+        const response = await updateUserStatus(
+          params.id,
+          0,
+      );
+      toast.success("Phục hồi thành công!");
+      }else if (formData?.status === 0){
+        const response = await updateUserStatus(
+          params.id,
+          2,
+      );
+      toast.success("Đình chỉ thành công!");
+      }
+      await fetchDataFromApi();
+  } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+  }
+  };
 
   const transformData = (obj) => {
     const result = { ...obj };
@@ -119,9 +140,15 @@ export default function ItemDetails() {
         <DetailsPage
           title="Thông tin người dùng"
           saveMessage="Lưu thông tin người dùng?"
-          deleteMessage="Xóa người dùng này?"
+          deleteMessage={
+            (formData?.status === 2)
+                ? "Phục hồi người dùng này?"
+                : "Đình chỉ người dùng này?"
+          }
           onSave={onSaveUser}
-          onDelete={onDeleteUser}
+          deleteLabel={(formData?.status === 2) ? "Phục hồi" : "Đình chỉ"}
+          hasDelete
+          onDelete={onSuspendUser}
           loading={loading}
         >
           <Grid item xs={12} lg={12}>

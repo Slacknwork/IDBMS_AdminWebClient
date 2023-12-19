@@ -61,7 +61,7 @@ const createInteriorItemCategory = async (request) => {
         }
 
         const createdCategory = await response.json();
-        return createdCategory;
+        return createdCategory.data;
     } catch (error) {
         console.error('Error creating interior item category:', error);
         throw error;
