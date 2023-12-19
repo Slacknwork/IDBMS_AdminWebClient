@@ -203,14 +203,36 @@ export default function ItemCategoriesList() {
                   />
               </TableCell> */}
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory.bannerImageUrl}
-                </Typography>
+                  <Image
+                    src={itemCategory.bannerImageUrl ?? "/images/results/no-image.png"}
+                    alt={itemCategory.name ?? ""}
+                    width={200}
+                    height={200}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }}
+                    style={{
+                      objectFit: "cover",
+                      width: "7rem",
+                      height: "7rem",
+                    }}
+                  />
               </TableCell>
               <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory.iconImageUrl}
-                </Typography>
+                  <Image
+                    src={itemCategory.iconImageUrl ?? "/images/results/no-image.png"}
+                    alt={itemCategory.name ?? ""}
+                    width={200}
+                    height={200}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }}
+                    style={{
+                      objectFit: "cover",
+                      width: "7rem",
+                      height: "7rem",
+                    }}
+                  />
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={400}>
