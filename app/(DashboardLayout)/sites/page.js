@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 
 import { getSites } from "/api/siteServices";
 
-import CreateSiteModal from "./(CreateSiteModal)";
+import CreateSiteModal from "/components/shared/Modals/sites/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 
@@ -174,7 +174,7 @@ export default function SitesPage() {
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có yêu cầu.
+            Không có dữ liệu.
           </Typography>
         </Stack>
       )}

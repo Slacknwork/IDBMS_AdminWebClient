@@ -23,7 +23,7 @@ import { getRoomsByFloorId } from "/api/roomServices";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-import CreateRoomModal from "./(CreateRoomModal)";
+import CreateRoomModal from "components/shared/Modals/rooms/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -97,7 +97,7 @@ export default function RoomListPage() {
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Search></Search>
-        <CreateRoomModal floorNo={params.floorId}>Tạo phòng</CreateRoomModal>
+        <CreateRoomModal>Tạo phòng</CreateRoomModal>
       </Box>
       {loading ? (
         <Stack sx={{ my: 5 }}>
