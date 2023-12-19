@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
-import ItemModal from "./(CreateItemModal)";
+import ItemInTaskModal from "/components/shared/Modals/ItemInTask/CreateModal";
 import { getItemInTasksByTaskId } from "api/itemInTaskServices";
 import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
 
@@ -149,9 +149,7 @@ export default function InteriorItems() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <ItemModal>
-          <span>Tạo</span>
-        </ItemModal>
+        <ItemInTaskModal></ItemInTaskModal>
       </Box>
 
       {(items && items.length) > 0 ? (
