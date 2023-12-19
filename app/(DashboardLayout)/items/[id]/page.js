@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 import PageContainer from "/components/container/PageContainer";
@@ -17,7 +17,7 @@ import {
   getInteriorItemById,
   updateInteriorItem,
   deleteInteriorItem,
-} from "/api/interiorItemServices";
+} from "../../../../api/interiorItemServices";
 
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
@@ -29,10 +29,12 @@ import FileForm from "/components/shared/Forms/File";
 export default function ItemDetails() {
   // INIT
   const params = useParams();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     code: "",
-    name: "Sản phẩm",
+    codeError: { hasError: false, label: "" },
+    name: "",
     nameError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
@@ -70,6 +72,7 @@ export default function ItemDetails() {
   const [interiorItemColors, setInteriorItemColors] = useState([]);
   const [interiorItemCategories, setInteriorItemCategories] = useState([]);
   const [parentItems, setParentItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -89,6 +92,7 @@ export default function ItemDetails() {
   };
 
   const fetchDataFromApi = async () => {
+    setLoading(true);
     const fetchInteriorItemColors = async () => {
       try {
         const colors = await getAllInteriorItemColors({});
@@ -122,7 +126,7 @@ export default function ItemDetails() {
         setFormData((prevData) => ({
           ...prevData,
           ...items,
-          parentItemId: items.parentItemId ?? "",
+          parentItemId: items?.parentItemId ?? "",
         }));
       } catch (error) {
         toast.error("Lỗi dữ liệu: Thông tin sản phẩm");
@@ -135,22 +139,24 @@ export default function ItemDetails() {
       fetchParentItems(),
       fetchItem(),
     ]);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
   }, []);
 
-  const onSaveInteriorItem = () => {
+  const onSaveInteriorItem = async () => {
     try {
       updateInteriorItem(params.id, formData);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi()
     } catch (error) {
       toast.error("Lỗi cập nhật!");
       console.log(error);
     }
   };
-  const onDeleteInteriorItem = () => {
+  const onDeleteInteriorItem = async () => {
     try {
       deleteInteriorItem(params.id);
       toast.success("Cập nhật thành công!");
@@ -170,9 +176,25 @@ export default function ItemDetails() {
         onSave={onSaveInteriorItem}
         hasDelete
         onDelete={onDeleteInteriorItem}
+        loading={loading}
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={3}>
+            {/* CODE */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+              title="Mã"
+              titleSpan={3}
+              fieldSpan={9}
+              required
+              subtitle="Mã sản phẩm"
+              value={formData.code}
+              error={formData.codeError.hasError}
+              errorLabel={formData.codeError.label}
+              onChange={(e) => handleInputChange("code", e.target.value)}
+            ></TextForm>
+          </Grid>
+            
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <TextForm

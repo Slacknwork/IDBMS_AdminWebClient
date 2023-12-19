@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 
 import languageOptions from "/constants/enums/language";
@@ -11,6 +11,12 @@ import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
 import SelectForm from "/components/shared/Forms/Select";
+import {
+  getUserById,
+  updateUser,
+} from "../../../../api/userServices";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ItemDetails() {
   const [formData, setFormData] = useState({
@@ -51,9 +57,62 @@ export default function ItemDetails() {
     }));
   };
 
-  const onSaveUser = () => { };
+  const params = useParams();
+  const router = useRouter();
+  const [users, setUsers] = useState([]);
+
+  // INIT CONST
+  const [loading, setLoading] = useState(true);
+
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+      setLoading(true)
+      const fetchUser = async () => {
+          try {
+              const response = await getUserById(params.id);
+              console.log(response);
+              setFormData((prevData) => ({ ...prevData, ...response }));
+          } catch (error) {
+              console.error("Error fetching data:", error);
+              toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
+          }
+      };
+        await Promise.all([
+          fetchUser(),
+        ]);
+      setLoading(false);
+  };
+
+  useEffect(() => {
+      fetchDataFromApi();
+  }, []);
+
+
+  const onSaveUser = async () => {
+    const transformedValue = transformData(formData);
+        console.log(transformedValue);
+        try {
+            const response = await updateUser(params.id, transformedValue);
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+            await fetchDataFromApi()
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
+  };
   const onDeleteUser = () => { };
 
+  const transformData = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+        if (result[key] === null) {
+            result[key] = "";
+        }
+    }
+
+    return result;
+};
   return (
     <PageContainer title={formData.name} description="Chi tiết người dùng">
       <DashboardCard>
@@ -63,6 +122,7 @@ export default function ItemDetails() {
           deleteMessage="Xóa người dùng này?"
           onSave={onSaveUser}
           onDelete={onDeleteUser}
+          loading={loading}
         >
           <Grid item xs={12} lg={12}>
             <Grid container columnSpacing={8} rowSpacing={3}>

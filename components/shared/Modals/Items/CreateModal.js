@@ -51,9 +51,9 @@ export default function CreateItemModal() {
     originError: { hasError: false, label: "" },
     estimatePrice: 0,
     estimatePriceError: { hasError: false, label: "" },
-    interiorItemColorId: null,
+    interiorItemColorId: "",
     interiorItemColorIdError: { hasError: false, label: "" },
-    interiorItemCategoryId: null,
+    interiorItemCategoryId: "",
     interiorItemCategoryIdError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
@@ -260,6 +260,7 @@ export default function CreateItemModal() {
       <Grid item xs={12} lg={6}>
         <TextForm
           title="Chất liệu"
+          required
           titleSpan={6}
           fieldSpan={6}
           spacing={5}
