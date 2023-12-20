@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 
 import languageOptions from "/constants/enums/language";
@@ -11,6 +11,13 @@ import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
 import SelectForm from "/components/shared/Forms/Select";
+import {
+  getUserById,
+  updateUser,
+  updateUserStatus,
+} from "../../../../api/userServices";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ItemDetails() {
   const [formData, setFormData] = useState({
@@ -51,18 +58,98 @@ export default function ItemDetails() {
     }));
   };
 
-  const onSaveUser = () => { };
-  const onDeleteUser = () => { };
+  const params = useParams();
+  const router = useRouter();
+  const [users, setUsers] = useState([]);
 
+  // INIT CONST
+  const [loading, setLoading] = useState(true);
+
+  // FETCH DATA
+  const fetchDataFromApi = async () => {
+      setLoading(true)
+      const fetchUser = async () => {
+          try {
+              const response = await getUserById(params.id);
+              console.log(response);
+              setFormData((prevData) => ({ ...prevData, ...response }));
+          } catch (error) {
+              console.error("Error fetching data:", error);
+              toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
+          }
+      };
+        await Promise.all([
+          fetchUser(),
+        ]);
+      setLoading(false);
+  };
+
+  useEffect(() => {
+      fetchDataFromApi();
+  }, []);
+
+
+  const onSaveUser = async () => {
+    const transformedValue = transformData(formData);
+        console.log(transformedValue);
+        try {
+            const response = await updateUser(params.id, transformedValue);
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+            await fetchDataFromApi()
+        } catch (error) {
+            console.error("Error :", error);
+            toast.error("Lỗi!");
+        }
+  };
+  const onSuspendUser = async () => { 
+    try {
+      if (formData?.status === 2){
+        const response = await updateUserStatus(
+          params.id,
+          0,
+      );
+      toast.success("Phục hồi thành công!");
+      }else if (formData?.status === 0){
+        const response = await updateUserStatus(
+          params.id,
+          2,
+      );
+      toast.success("Đình chỉ thành công!");
+      }
+      await fetchDataFromApi();
+  } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+  }
+  };
+
+  const transformData = (obj) => {
+    const result = { ...obj };
+    for (const key in result) {
+        if (result[key] === null) {
+            result[key] = "";
+        }
+    }
+
+    return result;
+};
   return (
     <PageContainer title={formData.name} description="Chi tiết người dùng">
       <DashboardCard>
         <DetailsPage
           title="Thông tin người dùng"
           saveMessage="Lưu thông tin người dùng?"
-          deleteMessage="Xóa người dùng này?"
+          deleteMessage={
+            (formData?.status === 2)
+                ? "Phục hồi người dùng này?"
+                : "Đình chỉ người dùng này?"
+          }
           onSave={onSaveUser}
-          onDelete={onDeleteUser}
+          deleteLabel={(formData?.status === 2) ? "Phục hồi" : "Đình chỉ"}
+          hasDelete
+          onDelete={onSuspendUser}
+          loading={loading}
         >
           <Grid item xs={12} lg={12}>
             <Grid container columnSpacing={8} rowSpacing={3}>

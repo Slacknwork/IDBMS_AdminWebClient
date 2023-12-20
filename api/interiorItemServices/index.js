@@ -159,7 +159,7 @@ const getInteriorItemById = async (itemId) => {
       { cache: "no-store" }
     );
     const interiorItem = await response.json();
-    return interiorItem;
+    return interiorItem.data;
   } catch (error) {
     console.error("Error fetching interior item by ID:", error);
     throw error;

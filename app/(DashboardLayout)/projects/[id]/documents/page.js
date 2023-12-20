@@ -5,63 +5,30 @@ import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
   tableCellClasses,
   TableHead,
-  TablePagination,
   TableRow,
-  TextField,
   Typography,
   Stack,
   CircularProgress,
 } from "@mui/material";
-import {
-  IconDownload,
-  IconPencil,
-  IconTrash,
-  IconSearch,
-} from "@tabler/icons-react";
-import Link from "next/link";
+import { IconDownload } from "@tabler/icons-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import DocumentModal from "../../../../../components/shared/Modals/ProjectDocuments/CreateModal";
-import DeleteModal from "./(DeleteDocumentModal)";
-
-import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
-import { getDocumentsByProjectId } from "api/projectDocumentServices";
+import { toast } from "react-toastify";
 import moment from "moment-timezone";
 
+import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
+
+import { getDocumentsByProjectId } from "/api/projectDocumentServices";
+
+import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterCategory from "/components/shared/FilterStatus";
-import { toast } from "react-toastify";
-
-// Sample projectDocuments data
-const projectDocuments = [
-  {
-    id: 1,
-    name: "Document 1",
-    category: 1,
-    createdDate: new Date("2023-01-20"),
-    projectDocumentTemplate: { id: 1, name: "Template A" },
-  },
-  {
-    id: 2,
-    name: "Document 2",
-    category: 2,
-    createdDate: new Date("2023-02-10"),
-    projectDocumentTemplate: { id: 2, name: "Template B" },
-  },
-  // Add more projectDocuments as needed
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -212,7 +179,6 @@ export default function ProjectDocuments() {
                   </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ display: "flex" }}>
-                  <DeleteModal>Xóa</DeleteModal>
                   <DocumentModal projectDocument={document}>Sửa</DocumentModal>
                   <Button
                     sx={{ width: 75 }}

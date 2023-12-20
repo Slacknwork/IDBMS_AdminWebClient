@@ -68,12 +68,16 @@ const updateBookingRequest = async (id, request) => {
   }
 };
 
-const updateBookingRequestStatus = async (id, status) => {
+const updateBookingRequestStatus = async (id, status, request) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/BookingRequests/${id}/status?status=${status}`,
+      `https://localhost:7062/api/BookingRequests/${id}/process?status=${status}`,
       {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: `"${request}"`,
       }
     );
 

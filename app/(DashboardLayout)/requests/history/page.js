@@ -116,7 +116,7 @@ export default function RequestList() {
       {/* MAIN SECTION */}
       <Box sx={{ zIndex: 1 }}>
         <Box sx={{ display: "flex" }}>
-          <Search query={searchQuery}></Search>
+          <Search placeholder="Nhập tên / email / điện thoại"></Search>
           <FilterStatus
             query={projectTypeQuery}
             options={projectTypeOptions}
@@ -132,7 +132,11 @@ export default function RequestList() {
           ></FilterStatus>
         </Box>
         <Box>
-          {values && values.length > 0 ? (
+          {loading ? (
+            <Stack sx={{ my: 5 }}>
+              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+            </Stack>
+          ) : values && values.length > 0 ? (
             <Table aria-label="simple table" sx={{ mt: 1 }}>
               <TableHead>
                 <TableRow>
@@ -209,10 +213,6 @@ export default function RequestList() {
                 ))}
               </TableBody>
             </Table>
-          ) : loading ? (
-            <Stack sx={{ my: 5 }}>
-              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-            </Stack>
           ) : (
             <Stack sx={{ my: 5 }}>
               <Typography variant="p" sx={{ textAlign: "center" }}>

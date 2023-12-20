@@ -3,13 +3,13 @@
 import { Box, Typography } from "@mui/material";
 import PageContainer from "/components/container/PageContainer";
 
-export default function ProjectCategoriesLayout({ children }) {
+export default function TaskDesignsLayout({ children }) {
   return (
     <PageContainer
-      title="Danh mục phân loại dự án"
-      description="Danh sách các phân loại dự án"
+      title="thiết kế công việc"
+      description="Danh sách các thiết kế công việc"
     >
-      <Typography variant="h2">Danh sách phân loại dự án</Typography>
+      <Typography variant="h2">Danh sách thiết kế công việc</Typography>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>

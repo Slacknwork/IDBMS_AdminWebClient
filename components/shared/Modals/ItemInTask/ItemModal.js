@@ -1,16 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
-import {
-  getAllInteriorItems,
-  createInteriorItem,
-} from "/api/interiorItemServices";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
@@ -22,87 +14,51 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 
-export default function CreateItemModal() {
-  // INIT
-  const router = useRouter();
+const initialState = {
+  code: "",
+  codeError: { hasError: false, label: "" },
+  name: "",
+  nameError: { hasError: false, label: "" },
+  description: "",
+  descriptionError: { hasError: false, label: "" },
+  englishName: "",
+  englishNameError: { hasError: false, label: "" },
+  image: null,
+  imageError: { hasError: false, label: "" },
+  length: 0,
+  lengthError: { hasError: false, label: "" },
+  width: 0,
+  widthError: { hasError: false, label: "" },
+  height: 0,
+  heightError: { hasError: false, label: "" },
+  calculationUnit: -1,
+  calculationUnitError: { hasError: false, label: "" },
+  material: "",
+  materialError: { hasError: false, label: "" },
+  origin: "",
+  originError: { hasError: false, label: "" },
+  estimatePrice: 0,
+  estimatePriceError: { hasError: false, label: "" },
+  interiorItemColorId: "",
+  interiorItemColorIdError: { hasError: false, label: "" },
+  interiorItemCategoryId: "",
+  interiorItemCategoryIdError: { hasError: false, label: "" },
+  status: -1,
+  statusError: { hasError: false, label: "" },
+  parentItemId: "",
+  parentItemIdError: { hasError: false, label: "" },
+};
 
-  const [formData, setFormData] = useState({
-    code: "",
-    codeError: { hasError: false, label: "" },
-    name: "",
-    nameError: { hasError: false, label: "" },
-    description: "",
-    descriptionError: { hasError: false, label: "" },
-    englishName: "",
-    englishNameError: { hasError: false, label: "" },
-    image: null,
-    imageError: { hasError: false, label: "" },
-    length: 0,
-    lengthError: { hasError: false, label: "" },
-    width: 0,
-    widthError: { hasError: false, label: "" },
-    height: 0,
-    heightError: { hasError: false, label: "" },
-    calculationUnit: -1,
-    calculationUnitError: { hasError: false, label: "" },
-    material: "",
-    materialError: { hasError: false, label: "" },
-    origin: "",
-    originError: { hasError: false, label: "" },
-    estimatePrice: 0,
-    estimatePriceError: { hasError: false, label: "" },
-    interiorItemColorId: "",
-    interiorItemColorIdError: { hasError: false, label: "" },
-    interiorItemCategoryId: "",
-    interiorItemCategoryIdError: { hasError: false, label: "" },
-    status: -1,
-    statusError: { hasError: false, label: "" },
-    parentItemId: "",
-    parentItemIdError: { hasError: false, label: "" },
-  });
-
-  const [interiorItemColors, setInteriorItemColors] = useState([]);
-  const [interiorItemCategories, setInteriorItemCategories] = useState([]);
-  const [parentItems, setParentItems] = useState([]);
-
-  const fetchDataFromApi = async () => {
-    const fetchInteriorItemColors = async () => {
-      try {
-        const colors = await getAllInteriorItemColors({});
-        setInteriorItemColors(colors.list);
-      } catch (error) {
-        toast.error("Lỗi dữ liệu: Màu");
-        console.log(error);
-      }
-    };
-    const fetchInteriorItemCategories = async () => {
-      try {
-        const categories = await getAllInteriorItemCategories({});
-        setInteriorItemCategories(categories.list);
-      } catch (error) {
-        toast.error("Lỗi dữ liệu: Danh mục");
-        console.log(error);
-      }
-    };
-    const fetchParentItems = async () => {
-      try {
-        const items = await getAllInteriorItems({});
-        setParentItems(items.list);
-      } catch (error) {
-        toast.error("Lỗi dữ liệu: Sản phẩm");
-        console.log(error);
-      }
-    };
-    await Promise.all([
-      fetchInteriorItemColors(),
-      fetchInteriorItemCategories(),
-      fetchParentItems(),
-    ]);
-  };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+export default function ItemModal({
+  sx,
+  buttonLabel,
+  item = initialState,
+  interiorItemColors,
+  interiorItemCategories,
+  parentItems,
+  onCreateItemInTask,
+}) {
+  const [formData, setFormData] = useState({ ...initialState, ...item });
 
   const handleInputChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -122,11 +78,11 @@ export default function CreateItemModal() {
     }));
   };
 
-  const onCreateInteriorItem = async () => {
+  const onCreateInteriorItem = () => {
     try {
-      const response = await createInteriorItem(formData);
+      onCreateItemInTask(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
-      router.push(`/items/${response?.id}`);
+      setFormData(initialState);
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);
@@ -135,8 +91,9 @@ export default function CreateItemModal() {
 
   return (
     <FormModal
-      buttonLabel="Tạo đồ dùng"
-      title="Tạo đồ dùng"
+      sx={sx}
+      buttonLabel={buttonLabel ?? "Tạo mới"}
+      title="Thông tin đồ nội thất"
       submitLabel="Tạo"
       onSubmit={onCreateInteriorItem}
       size="big"

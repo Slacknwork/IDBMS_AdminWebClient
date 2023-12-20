@@ -57,7 +57,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
   const searchQuery = "search";
 
   const typeQuery = "type";
@@ -102,9 +101,7 @@ export default function ProjectList() {
         toast.error("Lỗi nạp dữ liệu 'Phân Loại Công Việc' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchProjectDesigns(),
-    ]);
+    await Promise.all([fetchProjectDesigns()]);
     setLoading(false);
   };
 
@@ -113,13 +110,10 @@ export default function ProjectList() {
   }, [searchParams]);
 
   return (
-    <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+    <Box sx={{ zIndex: 1 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo tên.."
-          ></Search>
+          <Search placeholder="Tìm theo tên.."></Search>
 
           <FilterComponent
             query={typeQuery}
@@ -129,57 +123,39 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterComponent>
         </Box>
-        <CreateTaskCategoryModal>
-          Tạo
-        </CreateTaskCategoryModal>
+        <CreateTaskCategoryModal>Tạo</CreateTaskCategoryModal>
       </Box>
 
       {(taskCategories && taskCategories.length) > 0 ? (
-        <Table
-          aria-label="simple table"
-          sx={{
-            whiteSpace: "nowrap",
-            mt: 2,
-          }}
-        >
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Id
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Icon
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Loại dự án
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Mô tả
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell width={"15%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {taskCategories.map((projectCategory) => (
               <StyledTableRow key={projectCategory.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {projectCategory.id}
-                  </Typography>
-                </TableCell>
                 <TableCell>
                   <Box
                     sx={{
@@ -196,27 +172,33 @@ export default function ProjectList() {
                         sx={{
                           fontSize: "13px",
                         }}
-                      >
-                      </Typography>
+                      ></Typography>
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <Image src={projectCategory.iconImageUrl}
+                  <Image
+                    src={projectCategory.iconImageUrl}
                     alt=""
                     width={0}
                     height={0}
-                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true} />
+                    style={{
+                      width: "7rem",
+                      height: "7rem",
+                      objectFit: "cover",
+                    }}
+                    unoptimized={true}
+                  />
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {projectType[projectCategory?.projectType] || "Không xác định"}
+                    {projectType[projectCategory?.projectType] ||
+                      "Không xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {projectCategory.description ?? 'Không có'}
+                    {projectCategory.description ?? "Không có"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
@@ -227,7 +209,7 @@ export default function ProjectList() {
                     color="primary"
                     href={`/system/task-categories/${projectCategory.id}`}
                   >
-                    Thông tin
+                    Chi tiết
                   </Button>
                 </TableCell>
               </StyledTableRow>
@@ -244,8 +226,7 @@ export default function ProjectList() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

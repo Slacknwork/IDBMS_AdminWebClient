@@ -64,7 +64,7 @@ export default function SiteDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    setLoading(true)
+    setLoading(true);
     const fetchSite = async () => {
       try {
         const data = await getSiteById(params.id);
@@ -94,7 +94,7 @@ export default function SiteDetails() {
       toast.success("Cập nhật thành công!");
       setPageName(formData?.name);
       setPageDescription(formData?.description);
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -115,6 +115,7 @@ export default function SiteDetails() {
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        loading={loading}
         title="Thông tin khu công trình"
         saveMessage="Lưu thông khu công trình?"
         deleteMessage="Xóa khu công trình?"
