@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -22,7 +22,6 @@ import { getBookingRequests } from "/api/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,
-  projectTypeOptionsEnglish,
 } from "/constants/enums/projectType";
 import { bookingRequestStatusIndex } from "/constants/enums/bookingRequestStatus";
 
@@ -70,6 +69,7 @@ export default function RequestList() {
   const projectTypeAllLabel = "Tất cả";
 
   // INIT
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   // GET BOOKING REQUESTS
@@ -109,7 +109,17 @@ export default function RequestList() {
   }, [searchParams]);
 
   // UPDATE BOOKING STATUS
-  const onUpdateSubmit = (request, status) => { };
+  const onUpdateSubmit = (request, status) => {
+    try {
+      console.log(request);
+      router.push(
+        `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
+      );
+    } catch (error) {
+      toast.error("Lỗi cập nhật yêu cầu!");
+      console.log(error);
+    }
+  };
 
   return (
     <Box>

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import {
   Autocomplete,
   Box,
+  Chip,
   Grid,
   Table,
   TableHead,
@@ -21,8 +22,10 @@ import { styled } from "@mui/material/styles";
 import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
 import { getAllInteriorItems } from "/api/interiorItemServices";
+import { createItemInTask } from "/api/itemInTaskServices";
 
 import FormModal from "/components/shared/Modals/Form";
+import MessageModal from "/components/shared/Modals/Message";
 import ItemModal from "./ItemModal";
 import { useParams } from "next/navigation";
 
@@ -44,7 +47,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CreateItemModal() {
+export default function CreateItemModal({ onCreate }) {
   // INIT
   const params = useParams();
   const [items, setItems] = useState([]);
@@ -104,7 +107,7 @@ export default function CreateItemModal() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const updatedData = {
-        quantity: 0,
+        quantity: 1,
         projectId: params.id,
         projectTaskId: params.taskId,
         interiorItemId: null,
@@ -120,6 +123,8 @@ export default function CreateItemModal() {
 
   const onCreateItemInTask = async () => {
     try {
+      await createItemInTask(params.taskId, items);
+      toast.success("Tạo sản phẩm thành công!");
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);
@@ -142,7 +147,7 @@ export default function CreateItemModal() {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell width={"40%"}>
+              <StyledTableCell width={"35%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
                 </Typography>
@@ -157,7 +162,8 @@ export default function CreateItemModal() {
                   Số lượng (Qty)
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"30%"} align="right">
+              <StyledTableCell width={"10%"}></StyledTableCell>
+              <StyledTableCell width={"25%"} align="right">
                 <Typography variant="subtitle2" fontWeight={600}>
                   Chi tiết
                 </Typography>
@@ -215,15 +221,31 @@ export default function CreateItemModal() {
                       }}
                     />
                   </TableCell>
+                  <TableCell>
+                    {item.interiorItemId ? (
+                      <Chip label="Hệ thống" color="primary"></Chip>
+                    ) : (
+                      <Chip label="Mới" color="error"></Chip>
+                    )}
+                  </TableCell>
                   <TableCell align="right">
-                    <ItemModal
-                      buttonLabel={"Sửa"}
-                      item={item?.interiorItem}
-                      interiorItemColors={interiorItemColors}
-                      interiorItemCategories={interiorItemCategories}
-                      parentItems={parentItems}
-                      onCreateItemInTask={addItem}
-                    ></ItemModal>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      {item.interiorItemId === null && (
+                        <ItemModal
+                          buttonLabel={"Sửa"}
+                          item={item?.interiorItem}
+                          interiorItemColors={interiorItemColors}
+                          interiorItemCategories={interiorItemCategories}
+                          parentItems={parentItems}
+                          onCreateItemInTask={addItem}
+                        ></ItemModal>
+                      )}
+                      <MessageModal
+                        sx={{ ml: 2 }}
+                        buttonLabel="Xóa"
+                        color="error"
+                      ></MessageModal>
+                    </Box>
                   </TableCell>
                 </StyledTableRow>
               ))}

@@ -32,6 +32,7 @@ export default function FormModal({
   submitVariant,
   submitLabel,
   hasOpenEvent,
+  isOpen = false,
   onOpen,
   onSubmit,
   bottomLeftContent,
@@ -58,7 +59,7 @@ export default function FormModal({
   };
 
   // MODAL TOGGLE
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(isOpen);
   const handleOpen = () => {
     hasOpenEvent && onOpen();
     setOpen(true);

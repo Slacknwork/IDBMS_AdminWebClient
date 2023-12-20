@@ -73,15 +73,34 @@ const getItemInTasksByTaskId = async ({
   }
 };
 
-const createItemInTask = async (request) => {
+const createItemInTask = async (taskId, request) => {
+  const formData = new FormData();
+
+  const appendFormData = (data, prefix = "") => {
+    for (const key in data) {
+      const value = data[key];
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+
+      if (typeof value === "object" && value !== null) {
+        appendFormData(value, fullKey);
+      } else {
+        formData.append(fullKey, value);
+      }
+    }
+  };
+
+  request.forEach((item) => {
+    appendFormData(item);
+  });
+
   try {
-    const response = await fetch("https://localhost:7062/api/ItemInTasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    });
+    const response = await fetch(
+      `https://localhost:7062/api/ItemInTasks/project-task/${taskId}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Create ItemInTask failed");
