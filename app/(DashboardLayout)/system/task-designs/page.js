@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import { IconSearch } from "@tabler/icons-react";
 import {
   Typography,
   Box,
@@ -13,42 +12,22 @@ import {
   tableCellClasses,
   TableHead,
   TableRow,
-  Chip,
-  FormControl,
-  InputLabel,
-  TextField,
-  InputAdornment,
-  Select,
-  MenuTask,
   Stack,
   CircularProgress,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllTaskDesigns } from "/api/taskDesignServices";
-import calculationUnit from "/constants/enums/calculationUnit";
-
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+
+import { getAllTaskCategories } from "/api/taskCategoryServices";
+import { getAllTaskDesigns } from "/api/taskDesignServices";
+
+import calculationUnit from "/constants/enums/calculationUnit";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
-import FilterComponent from "/components/shared/FilterStatus";
-import { getAllTaskCategories } from "/api/taskCategoryServices";
 import CreateTaskDesignModal from "/components/shared/Modals/TaskDesigns/CreateModal";
-
-const projects = [
-  {
-    id: "1",
-    name: "COOLNAME Building",
-    companyName: "COOLNAME Co.",
-    projectType: 0,
-    language: 0,
-    status: 0,
-    estimatePrice: 200,
-    finalPrice: 200,
-  },
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,7 +49,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
+  // CONSTANTS
   const searchQuery = "search";
 
   const categoryQuery = "type";
@@ -82,8 +61,7 @@ export default function ProjectList() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
-  const params = useParams();
-  const router = useRouter();
+  // INIT
   const searchParams = useSearchParams();
 
   // INIT CONST
@@ -115,16 +93,13 @@ export default function ProjectList() {
         toast.error("Lỗi nạp dữ liệu 'Thiết Kế Công Việc' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchProjectDesigns(),
-    ]);
+    await Promise.all([fetchProjectDesigns()]);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
   }, [searchParams]);
-
 
   // TASK CATEGORIES
   const [taskCategories, setTaskCategories] = useState([]);
@@ -142,9 +117,7 @@ export default function ProjectList() {
         toast.error("Lỗi nạp dữ liệu từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchCategories(),
-    ]);
+    await Promise.all([fetchCategories()]);
     setLoading(false);
   };
 
@@ -153,13 +126,10 @@ export default function ProjectList() {
   }, []);
 
   return (
-    <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
-
+    <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo mã / tên.."
-          ></Search>
+          <Search placeholder="Tìm theo mã / tên.."></Search>
 
           <FilterAutocomplete
             query={categoryQuery}
@@ -169,91 +139,61 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>
-        <CreateTaskDesignModal>
-          Tạo
-        </CreateTaskDesignModal>
+        <CreateTaskDesignModal>Tạo</CreateTaskDesignModal>
       </Box>
 
       {(taskDesigns && taskDesigns.length) > 0 ? (
-        <Table
-          aria-label="simple table"
-          sx={{
-            whiteSpace: "nowrap",
-            mt: 2,
-          }}
-        >
+        <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mã
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"10%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tính theo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Giá uóc tính/đơn vị (VND)
+                  Giá ước tính/đơn vị (VND)
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Loại đồ nội thất
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"10%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Loại công việc
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell width={"15%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {taskDesigns.map((taskDesign) => (
               <StyledTableRow key={taskDesign.id}>
                 <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
+                  <Typography variant="p" fontWeight={600}>
                     {taskDesign?.code}
                   </Typography>
-                </TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignTasks: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        {taskDesign?.name}
-                      </Typography>
-                      <Typography
-                        color="textSecondary"
-                        sx={{
-                          fontSize: "13px",
-                        }}
-                      >
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-                <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {calculationUnit[taskDesign?.calculationUnit] || "Không xác định"}
+                    {taskDesign?.name}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {taskDesign?.estimatePricePerUnit.toLocaleString('en-US')}
+                    {calculationUnit[taskDesign?.calculationUnit] ||
+                      "Không xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {taskDesign?.estimatePricePerUnit.toLocaleString("en-US")}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -291,8 +231,7 @@ export default function ProjectList() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

@@ -18,7 +18,10 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getBookingRequests } from "/api/bookingRequestServices";
+import {
+  getBookingRequests,
+  updateBookingRequestStatus,
+} from "/api/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,
@@ -77,49 +80,59 @@ export default function RequestList() {
   const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDataFromApi = async () => {
-      setLoading(true);
-      setValues([]);
-      try {
-        const search = searchParams.get(searchQuery) ?? "";
-        const type = searchParams.get(projectTypeQuery) ?? "";
-        const status = defaultStatus;
-        const pageNo = searchParams.get(pageQuery) ?? defaultPage;
-        const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    setValues([]);
+    try {
+      const search = searchParams.get(searchQuery) ?? "";
+      const type = searchParams.get(projectTypeQuery) ?? "";
+      const status = defaultStatus;
+      const pageNo = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-        const data = await getBookingRequests({
-          search,
-          type,
-          status,
-          pageNo,
-          pageSize,
-        });
-        setValues(data.list);
-        setCount(data.totalItem);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDataFromApi();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+      const data = await getBookingRequests({
+        search,
+        type,
+        status,
+        pageNo,
+        pageSize,
+      });
+      setValues(data.list);
+      setCount(data.totalItem);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // UPDATE BOOKING STATUS
-  const onUpdateSubmit = (request, status) => {
+  const [note, setNote] = useState("");
+  const onNoteChange = (e) => {
+    setNote(e.target.value);
+  };
+  const onUpdateSubmit = async (request, status) => {
     try {
-      console.log(request);
-      router.push(
-        `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
-      );
+      await updateBookingRequestStatus(request.id, status, note);
+      toast.success("Cập nhật thàng công!");
+      if (status === bookingRequestStatusIndex.Accepted) {
+        router.push(
+          `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
+        );
+      } else {
+        fetchDataFromApi();
+      }
     } catch (error) {
       toast.error("Lỗi cập nhật yêu cầu!");
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <Box>
@@ -136,7 +149,11 @@ export default function RequestList() {
           ></FilterStatus>
         </Box>
         <Box>
-          {values && values.length > 0 ? (
+          {loading ? (
+            <Stack sx={{ my: 5 }}>
+              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+            </Stack>
+          ) : values && values.length > 0 ? (
             <Table aria-label="simple table" sx={{ mt: 1 }}>
               <TableHead>
                 <TableRow>
@@ -222,7 +239,12 @@ export default function RequestList() {
                           <Typography sx={{ mt: 2 }} variant="subtitle2">
                             Nhập ghi chú (nếu có)
                           </Typography>
-                          <FormText multiline rows={4}></FormText>
+                          <FormText
+                            multiline
+                            rows={4}
+                            value={note}
+                            onChange={onNoteChange}
+                          ></FormText>
                         </MessageModal>
                         <MessageModal
                           color="error"
@@ -245,7 +267,12 @@ export default function RequestList() {
                           <Typography sx={{ mt: 2 }} variant="p">
                             Nhập lý do từ chối yêu cầu
                           </Typography>
-                          <FormText multiline rows={4}></FormText>
+                          <FormText
+                            multiline
+                            rows={4}
+                            value={note}
+                            onChange={onNoteChange}
+                          ></FormText>
                         </MessageModal>
                       </Box>
                     </TableCell>
@@ -253,10 +280,6 @@ export default function RequestList() {
                 ))}
               </TableBody>
             </Table>
-          ) : loading ? (
-            <Stack sx={{ my: 5 }}>
-              <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-            </Stack>
           ) : (
             <Stack sx={{ my: 5 }}>
               <Typography variant="p" sx={{ textAlign: "center" }}>
