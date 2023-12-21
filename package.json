@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.14.1",
     "@emotion/cache": "11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "11.11.0",
@@ -20,6 +21,7 @@
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@tabler/icons-react": "2.30.0",
+    "@tanstack/react-query": "^5.14.2",
     "@types/node": "20.4.5",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
@@ -45,6 +47,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.196"
+    "@types/lodash": "4.14.196",
+    "node-loader": "^2.0.0"
   }
 }

@@ -29,12 +29,15 @@ export default function FormModal({
   disabled,
   color,
   disableSubmit,
+  disableSubmitFunction,
   submitVariant,
   submitLabel,
   hasOpenEvent,
   isOpen = false,
   onOpen,
   onSubmit,
+  stickyBottom,
+  disableCloseOnSubmit,
   bottomLeftContent,
   size = "",
 }) {
@@ -68,8 +71,8 @@ export default function FormModal({
     setOpen(false);
   };
   const handleSubmit = () => {
-    onSubmit();
-    handleClose();
+    !disableSubmitFunction && onSubmit();
+    !disableCloseOnSubmit && handleClose();
   };
 
   return (
@@ -150,7 +153,7 @@ export default function FormModal({
             </IconButton>
           </Box>
           <Grid
-            sx={{ px: 3, my: 1, maxHeight: "30rem", overflowY: "auto" }}
+            sx={{ px: 3, mt: 1, pb: 1, maxHeight: "30rem", overflowY: "auto" }}
             component={"div"}
             container
             columnSpacing={8}
@@ -158,22 +161,57 @@ export default function FormModal({
           >
             {children}
             {/* SUBMIT */}
+            {!stickyBottom && (
+              <Grid item xs={12} lg={12}>
+                <Box
+                  sx={{
+                    mb: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                  spacing={2}
+                >
+                  <Box>{bottomLeftContent}</Box>
+                  <Button
+                    variant={submitVariant ?? "contained"}
+                    disableElevation
+                    disabled={disableSubmit}
+                    onClick={handleSubmit}
+                  >
+                    {submitLabel || ""}
+                  </Button>
+                </Box>
+              </Grid>
+            )}
+          </Grid>
+          {stickyBottom && (
             <Grid item xs={12} lg={12}>
               <Box
-                sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}
+                sx={{
+                  pt: 2,
+                  mb: 2,
+                  mx: 3,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  position: "sticky",
+                  bottom: 0,
+                  backgroundColor: "white",
+                  zIndex: 1,
+                }}
                 spacing={2}
               >
                 <Box>{bottomLeftContent}</Box>
                 <Button
                   variant={submitVariant ?? "contained"}
                   disableElevation
-                  onClick={disableSubmit ? handleClose : handleSubmit}
+                  disabled={disableSubmit}
+                  onClick={handleSubmit}
                 >
                   {submitLabel || ""}
                 </Button>
               </Box>
             </Grid>
-          </Grid>
+          )}
         </Box>
       </Modal>
     </Box>
