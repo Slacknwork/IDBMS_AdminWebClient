@@ -102,7 +102,7 @@ export default function ProjectDetailsLayout({ children }) {
               tooltipTitle="Cập nhật trạng thái"
               tooltipPlacement="top"
               size="small"
-              disableSubmit
+              disableSubmitFunction
               submitLabel="Đóng"
               submitVariant="outlined"
               title="Trạng thái dự án"

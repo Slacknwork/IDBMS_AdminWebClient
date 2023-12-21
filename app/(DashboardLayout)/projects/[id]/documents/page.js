@@ -25,6 +25,7 @@ import projectDocumentCategories from "/constants/enums/projectDocumentCategory"
 
 import { getDocumentsByProjectId } from "/api/projectDocumentServices";
 
+import GenerateContractModal from "/components/shared/Modals/Contract/GenerateModal";
 import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -120,9 +121,12 @@ export default function ProjectDocuments() {
             allLabel="Tất cả"
           ></FilterCategory>
         </Box>
-        <DocumentModal>
-          <span>Tạo</span>
-        </DocumentModal>
+        <Box sx={{ display: "flex" }}>
+          <GenerateContractModal sx={{ mr: 1 }}></GenerateContractModal>
+          <DocumentModal>
+            <span>Tạo</span>
+          </DocumentModal>
+        </Box>
       </Box>
       {/* Table */}
       {(documents && documents.length) > 0 ? (

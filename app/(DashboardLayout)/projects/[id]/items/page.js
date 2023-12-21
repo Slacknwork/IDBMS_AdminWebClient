@@ -166,11 +166,6 @@ export default function InteriorItems() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Mã sản phẩm
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
                 </Typography>
               </StyledTableCell>
@@ -201,11 +196,9 @@ export default function InteriorItems() {
               items.map((item) => (
                 <StyledTableRow key={item?.id}>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
+                    <Typography variant="p" fontWeight={600}>
                       {item?.interiorItem?.code ?? ""}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
                       {item?.interiorItem?.name ?? ""}
                     </Typography>
@@ -217,9 +210,13 @@ export default function InteriorItems() {
                         "/images/results/no-image.png"
                       }
                       alt={item?.interiorItem?.name ?? ""}
-                      width={50}
-                      height={50}
-                      objectFit="cover"
+                      width={500}
+                      height={500}
+                      style={{
+                        objectFit: "cover",
+                        width: "7rem",
+                        height: "7rem",
+                      }}
                     />
                   </TableCell>
                   <TableCell>
