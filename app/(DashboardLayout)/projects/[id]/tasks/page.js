@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
   Checkbox,
@@ -22,6 +24,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import { deepOrange } from "@mui/material/colors";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -44,6 +47,7 @@ import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
 import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import AssignModal from "./AssignModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -114,9 +118,6 @@ export default function ProjectTasksPage() {
     url.search = searchParams.toString();
     router.push(url.toString(), undefined, { scroll: false });
   };
-
-  // FETCH DATA FROM API
-  const [categories, setCategories] = useState([]);
 
   // STAGES
   const [stages, setStages] = useState([]);
@@ -264,13 +265,21 @@ export default function ProjectTasksPage() {
     );
   };
 
+  // CATEGORIES
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = async () => {
+    try {
+      const data = await await getAllTaskCategories({});
+      setCategories(data.list);
+    } catch (error) {
+      toast.error("Lỗi dữ liệu: Phân loại công việc!");
+    }
+  };
+
   const fetchOptionsFromApi = async () => {
     setLoading(true);
     try {
-      const categories = await getAllTaskCategories({});
-      setCategories(categories.list);
-      await fetchStages();
-      await fetchFloors();
+      await Promise.all([fetchCategories(), fetchStages(), fetchFloors()]);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -440,6 +449,7 @@ export default function ProjectTasksPage() {
                     Đã chọn {selectedTasks.length} công việc
                   </Typography>
                   <Box sx={{ display: "flex" }}>
+                    <AssignModal></AssignModal>
                     <FormModal
                       size="small"
                       sx={{ my: "auto", mr: 1 }}
@@ -482,25 +492,30 @@ export default function ProjectTasksPage() {
                 <Table aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell width={"2%"}></StyledTableCell>
-                      <StyledTableCell width={"30%"}>
+                      <StyledTableCell width={"1%"}></StyledTableCell>
+                      <StyledTableCell width={"24%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Công việc
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"15%"}>
+                      <StyledTableCell width={"12.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
-                          Tổng giá ước tính
+                          Giá ước tính
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"15%"}>
+                      <StyledTableCell width={"12.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Ngày bắt đầu
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"23%"}>
+                      <StyledTableCell width={"17.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Tiến độ
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell width={"12.5%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Phân công
                         </Typography>
                       </StyledTableCell>
                       <StyledTableCell align="right"></StyledTableCell>
@@ -535,8 +550,8 @@ export default function ProjectTasksPage() {
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startDate
                               ? new Date(task.startDate).toLocaleDateString(
-                                "vi-VN"
-                              )
+                                  "vi-VN"
+                                )
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>
@@ -548,6 +563,32 @@ export default function ProjectTasksPage() {
                           <Typography variant="body2" fontWeight={400}>
                             {`${task.percentage}%`}
                           </Typography>
+                        </TableCell>
+                        <TableCell>
+                          {task.taskAssignments &&
+                          task.taskAssignments.length > 0 ? (
+                            <AvatarGroup
+                              max={5}
+                              sx={{
+                                "& .MuiAvatar-root": {
+                                  width: 36,
+                                  height: 36,
+                                },
+                              }}
+                            >
+                              <Avatar
+                                sx={{
+                                  bgcolor: deepOrange[500],
+                                  width: 36,
+                                  height: 36,
+                                }}
+                              >
+                                A
+                              </Avatar>
+                            </AvatarGroup>
+                          ) : (
+                            <Typography variant="p">Chưa phân công</Typography>
+                          )}
                         </TableCell>
                         <TableCell align="right">
                           <Button
