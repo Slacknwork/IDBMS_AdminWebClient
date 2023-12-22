@@ -45,7 +45,7 @@ export default function CreateItemModal() {
   const fetchDataFromApi = async () => {
 
     await Promise.all([
- 
+
     ]);
   };
 
@@ -75,7 +75,7 @@ export default function CreateItemModal() {
     try {
       const response = await createInteriorItemColor(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
-      router.push(`/items/colors/${response?.id}`);
+      router.push(`/colors/${response?.id}`);
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);
@@ -118,7 +118,7 @@ export default function CreateItemModal() {
           errorLabel={formData.englishNameError.label}
           onChange={(e) => handleInputChange("englishName", e.target.value)}
         ></TextForm>
-      </Grid>      
+      </Grid>
 
       {/* PRIMARY COLOR */}
       <Grid item xs={12} lg={6}>
@@ -134,7 +134,7 @@ export default function CreateItemModal() {
           onChange={(e) => handleInputChange("primaryColor", e.target.value)}
         ></TextForm>
       </Grid>
-      
+
       {/* SECONDARY COLOR */}
       <Grid item xs={12} lg={6}>
         <TextForm

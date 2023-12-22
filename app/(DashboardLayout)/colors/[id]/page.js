@@ -14,17 +14,17 @@ import SelectForm from "/components/shared/Forms/Select";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
-import projectTypeOptions from "../../../../../constants/enums/projectType";
+import projectTypeOptions from "/constants/enums/projectType";
 
 import {
     getColorById,
     updateInteriorItemColor,
     deleteInteriorItemColor,
-} from "../../../../../api/interiorItemColorServices";
+} from "/api/interiorItemColorServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import colorTypeOptions from "../../../../../constants/enums/colorType";
+import colorTypeOptions from "/constants/enums/colorType";
 
 export default function TaskCategoryDetails() {
     const [formData, setFormData] = useState({
@@ -106,7 +106,7 @@ export default function TaskCategoryDetails() {
             );
             console.log(response);
             toast.success("Xoá thành công!");
-            router.push("/items/colors");
+            router.push("/colors");
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");
@@ -136,81 +136,81 @@ export default function TaskCategoryDetails() {
                 onDelete={handleDelete}
                 loading={loading}
             >
-      {/* NAME */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Tên"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Nhập tên màu"
-          value={formData.name}
-          error={formData.nameError.hasError}
-          errorLabel={formData.nameError.label}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-        ></TextForm>
-      </Grid>
+                {/* NAME */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Tên"
+                        titleSpan={3}
+                        fieldSpan={9}
+                        required
+                        subtitle="Nhập tên màu"
+                        value={formData.name}
+                        error={formData.nameError.hasError}
+                        errorLabel={formData.nameError.label}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-      {/*ENGLISH NAME */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Tên tiếng anh"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Nhập tên tiếng anh cho màu"
-          value={formData.englishName}
-          error={formData.englishNameError.hasError}
-          errorLabel={formData.englishNameError.label}
-          onChange={(e) => handleInputChange("englishName", e.target.value)}
-        ></TextForm>
-      </Grid>      
+                {/*ENGLISH NAME */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Tên tiếng anh"
+                        titleSpan={3}
+                        fieldSpan={9}
+                        subtitle="Nhập tên tiếng anh cho màu"
+                        value={formData.englishName}
+                        error={formData.englishNameError.hasError}
+                        errorLabel={formData.englishNameError.label}
+                        onChange={(e) => handleInputChange("englishName", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-      {/* PRIMARY COLOR */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu chính"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Nhập tên màu chính"
-          value={formData.primaryColor}
-          error={formData.primaryColorError.hasError}
-          errorLabel={formData.primaryColorError.label}
-          onChange={(e) => handleInputChange("primaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
-      
-      {/* SECONDARY COLOR */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu phụ"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Nhập tên màu phụ"
-          value={formData.secondaryColor}
-          error={formData.secondaryColorError.hasError}
-          errorLabel={formData.secondaryColorError.label}
-          onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
+                {/* PRIMARY COLOR */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Màu chính"
+                        titleSpan={3}
+                        fieldSpan={9}
+                        required
+                        subtitle="Nhập tên màu chính"
+                        value={formData.primaryColor}
+                        error={formData.primaryColorError.hasError}
+                        errorLabel={formData.primaryColorError.label}
+                        onChange={(e) => handleInputChange("primaryColor", e.target.value)}
+                    ></TextForm>
+                </Grid>
 
-      {/* COLOR TYPE */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Loại màu"
-          required
-          titleSpan={6}
-          fieldSpan={6}
-          subtitle="Chọn loại màu"
-          value={formData.type}
-          options={colorTypeOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn một..."
-          error={formData.typeError.hasError}
-          errorLabel={formData.typeError.label}
-          onChange={(value) => handleInputChange("type", value)}
-        ></SelectForm>
-      </Grid>
+                {/* SECONDARY COLOR */}
+                <Grid item xs={12} lg={6}>
+                    <TextForm
+                        title="Màu phụ"
+                        titleSpan={3}
+                        fieldSpan={9}
+                        subtitle="Nhập tên màu phụ"
+                        value={formData.secondaryColor}
+                        error={formData.secondaryColorError.hasError}
+                        errorLabel={formData.secondaryColorError.label}
+                        onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
+                    ></TextForm>
+                </Grid>
+
+                {/* COLOR TYPE */}
+                <Grid item xs={12} lg={6}>
+                    <SelectForm
+                        title="Loại màu"
+                        required
+                        titleSpan={6}
+                        fieldSpan={6}
+                        subtitle="Chọn loại màu"
+                        value={formData.type}
+                        options={colorTypeOptions}
+                        defaultValue={-1}
+                        defaultLabel="Chọn một..."
+                        error={formData.typeError.hasError}
+                        errorLabel={formData.typeError.label}
+                        onChange={(value) => handleInputChange("type", value)}
+                    ></SelectForm>
+                </Grid>
             </DetailsPage>
         </PageContainer>
     );

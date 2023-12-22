@@ -25,9 +25,8 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllInteriorItemCategories, getInteriorItemCategoryById } from "../../../../api/interiorItemCategoryServices";
-import { getAllInteriorItems } from "../../../../api/interiorItemServices";
-import interiorItemType from "../../../../constants/enums/interiorItemType";
+import { getAllInteriorItemCategories, getInteriorItemCategoryById } from "/api/interiorItemCategoryServices";
+import interiorItemType from "/constants/enums/interiorItemType";
 import { useSearchParams } from "next/navigation";
 import FilterComponent from "/components/shared/FilterStatus";
 
@@ -37,6 +36,8 @@ import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import Pagination from "/components/shared/Pagination";
 import Image from "next/image";
+
+import isValidUrl from "components/validations/url"
 
 const projects = [
   {
@@ -71,7 +72,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ItemCategoriesList() {
- // CONSTANTS
+  // CONSTANTS
   const typeQuery = "type";
   const nameQuery = "name";
   const searchQuery = "search";
@@ -84,10 +85,10 @@ export default function ItemCategoriesList() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
- // INIT
+  // INIT
   const searchParams = useSearchParams();
 
- // FETCH DATA FROM API
+  // FETCH DATA FROM API
   const [interiorItemCount, setInteriorItemCount] = useState(0);
   const [interiorItemCategories, setInteriorItemCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -108,6 +109,7 @@ export default function ItemCategoriesList() {
           pageNo,
           pageSize,
         });
+        console.log(data)
         setInteriorItemCategories(data.list);
         setInteriorItemCount(data.totalItem);
       } catch (error) {
@@ -151,45 +153,45 @@ export default function ItemCategoriesList() {
             mt: 1,
           }}
         >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên loại sản phẩm
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Ảnh banner
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Icon
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại nội thất
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại sản phẩm liên quan
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {interiorItemCategories.map((itemCategory) => (
-            <StyledTableRow key={itemCategory.id}>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory.name}
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên loại sản phẩm
                 </Typography>
-              </TableCell>
-              {/* <TableCell>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ảnh banner
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Icon
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Loại nội thất
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Loại sản phẩm liên quan
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {interiorItemCategories.map((itemCategory) => (
+              <StyledTableRow key={itemCategory.id}>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {itemCategory.name}
+                  </Typography>
+                </TableCell>
+                {/* <TableCell>
                   <Image
                     src={itemCategory.bannerImageUrl ?? "/images/results/no-image.png"}
                     alt={itemCategory.name ?? ""}
@@ -202,9 +204,9 @@ export default function ItemCategoriesList() {
                     }}
                   />
               </TableCell> */}
-              <TableCell>
+                <TableCell>
                   <Image
-                    src={itemCategory.bannerImageUrl ?? "/images/results/no-image.png"}
+                    src={isValidUrl(itemCategory.bannerImageUrl)}
                     alt={itemCategory.name ?? ""}
                     width={200}
                     height={200}
@@ -217,10 +219,10 @@ export default function ItemCategoriesList() {
                       height: "7rem",
                     }}
                   />
-              </TableCell>
-              <TableCell>
+                </TableCell>
+                <TableCell>
                   <Image
-                    src={itemCategory.iconImageUrl ?? "/images/results/no-image.png"}
+                    src={isValidUrl(itemCategory.iconImageUrl)}
                     alt={itemCategory.name ?? ""}
                     width={200}
                     height={200}
@@ -233,32 +235,32 @@ export default function ItemCategoriesList() {
                       height: "7rem",
                     }}
                   />
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {interiorItemType[itemCategory?.interiorItemType] || "Không xác định"}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemCategory?.parentCategory?.name ?? 'Không có'}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/items/categories/${itemCategory.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {interiorItemType[itemCategory?.interiorItemType] || "Không xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {itemCategory?.parentCategory?.name ?? 'Không có'}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/item-categories/${itemCategory.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
@@ -266,7 +268,7 @@ export default function ItemCategoriesList() {
           </Typography>
         </Stack>
       )}
-    <Pagination
+      <Pagination
         query={pageQuery}
         sizeQuery={pageSizeQuery}
         count={interiorItemCount}
