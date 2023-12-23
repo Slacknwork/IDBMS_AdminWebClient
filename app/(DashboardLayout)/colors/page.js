@@ -25,9 +25,9 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllInteriorItemColors } from "../../../../api/interiorItemColorServices";
-import { getAllInteriorItems } from "../../../../api/interiorItemServices";
-import colorType from "../../../../constants/enums/colorType";
+import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
+import { getAllInteriorItems } from "/api/interiorItemServices";
+import colorType from "/constants/enums/colorType";
 import { useSearchParams } from "next/navigation";
 import FilterComponent from "/components/shared/FilterStatus";
 
@@ -132,7 +132,7 @@ export default function ItemColorList() {
             query={nameQuery}
             placeholder="Tìm loại / tên màu"
           ></Search>
-         <FilterComponent
+          <FilterComponent
             query={typeQuery}
             options={colorType}
             label="Loại dự án"
@@ -154,85 +154,85 @@ export default function ItemColorList() {
             mt: 1,
           }}
         >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Tên màu
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Loại màu
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Màu chính
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Màu phụ
-              </Typography>
-            </StyledTableCell>
-            <StyledTableCell align="right"></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {interiorItemColors.map((itemColor) => (
-            <StyledTableRow key={itemColor.id}>
-              <TableCell>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {itemColor.name}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      sx={{
-                        fontSize: "13px",
-                      }}
-                    >
-                    </Typography>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Tên màu
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Loại màu
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Màu chính
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Màu phụ
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {interiorItemColors.map((itemColor) => (
+              <StyledTableRow key={itemColor.id}>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {itemColor.name}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          fontSize: "13px",
+                        }}
+                      >
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {colorType[itemColor?.type] || "Không xác định"}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemColor.primaryColor}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight={400}>
-                  {itemColor.secondaryColor ?? ''}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  component={Link}
-                  variant="contained"
-                  disableElevation
-                  color="primary"
-                  href={`/items/colors/${itemColor.id}`}
-                >
-                  Thông tin
-                </Button>
-              </TableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {colorType[itemColor?.type] || "Không xác định"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {itemColor.primaryColor}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {itemColor.secondaryColor ?? ''}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    component={Link}
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    href={`/colors/${itemColor.id}`}
+                  >
+                    Thông tin
+                  </Button>
+                </TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>
@@ -240,7 +240,7 @@ export default function ItemColorList() {
           </Typography>
         </Stack>
       )}
-    <Pagination
+      <Pagination
         query={pageQuery}
         sizeQuery={pageSizeQuery}
         count={interiorItemCount}

@@ -1,16 +1,15 @@
 "use client";
 
-import { Box } from "@mui/material";
-
-import DashboardCard from "/components/shared/DashboardCard";
-import Tabs from "/components/shared/Tabs";
-import TabItems from "./tabItems";
+import { Box, Typography } from "@mui/material";
+import PageContainer from "/components/container/PageContainer";
 
 export default function UserDetailsLayout({ children }) {
   return (
-    <Box>
-      <Tabs uriPos={3} tabs={TabItems}></Tabs>
-      {children}
-    </Box>
+    <PageContainer title="Người dùng" description="Danh sách người dùng">
+      <Typography variant="h2">Loại phòng</Typography>
+      <Box sx={{ mt: 3, minHeight: "30rem" }}>
+        <Box sx={{ mt: 3 }}>{children}</Box>
+      </Box>
+    </PageContainer>
   );
 }

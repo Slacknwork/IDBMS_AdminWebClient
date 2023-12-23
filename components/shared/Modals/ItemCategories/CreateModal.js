@@ -91,7 +91,7 @@ export default function CreateItemModal() {
       const response = await createInteriorItemCategory(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
       console.log(response);
-      router.push(`/items/categories/${response?.id}`);
+      router.push(`/item-categories/${response?.id}`);
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);
@@ -134,7 +134,7 @@ export default function CreateItemModal() {
           errorLabel={formData.englishNameError.label}
           onChange={(e) => handleInputChange("englishName", e.target.value)}
         ></TextForm>
-      </Grid>   
+      </Grid>
 
       {/* DESCRIPTION */}
       <Grid item xs={12} lg={12}>
@@ -195,7 +195,7 @@ export default function CreateItemModal() {
           onChange={(file) => handleInputChange("iconImage", file)}
         ></FileForm>
       </Grid>
-      
+
       {/* ITEM TYPE */}
       <Grid item xs={12} lg={6}>
         <SelectForm

@@ -58,14 +58,14 @@ const Menuitems = [
     id: uniqueId(),
     title: "Màu",
     icon: IconPalette,
-    href: "/items/colors",
+    href: "/colors",
   },
 
   {
     id: uniqueId(),
     title: "Loại đồ dùng",
     icon: IconCategory,
-    href: "/items/categories",
+    href: "/item-categories",
   },
   {
     navlabel: true,

@@ -249,7 +249,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/ProjectCategories/${projectCategory.id}`}
+                    href={`/system/project-designs/${projectCategory.id}`}
                   >
                     Thông tin
                   </Button>
