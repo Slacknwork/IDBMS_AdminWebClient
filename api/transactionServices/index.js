@@ -152,6 +152,27 @@ const updateTransactionStatus = async (id, status) => {
     }
 };
 
+const deleteTransaction = async (id) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/Transactions/${id}`,
+            {
+                method: 'DELETE',
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Delete transaction failed');
+        }
+
+        // Assuming successful deletion doesn't return data, you can adjust as needed.
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting transaction:', error);
+        throw error;
+    }
+};
+
 export {
     getAllTransactions,
     getTransactionsByProjectId,
@@ -160,4 +181,5 @@ export {
     createTransaction,
     updateTransaction,
     updateTransactionStatus,
+    deleteTransaction,
 };

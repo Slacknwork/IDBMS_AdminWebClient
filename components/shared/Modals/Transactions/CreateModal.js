@@ -19,6 +19,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import {createTransaction} from "../../../../api/transactionServices";
 import {getAllUsers} from "../../../../api/userServices";
+import {getAllWarrantyClaims} from "../../../../api/warrantyClaimServices";
 
 import transactionTypeOptions from "../../../../constants/enums/transactionType";
 import transactionStatusOptions from "../../../../constants/enums/transactionStatus";
@@ -80,6 +81,8 @@ export default function CreateTransactionModal({ children }) {
     payerNameError: { hasError: false, label: "" },
     userId: "",
     userIdError: { hasError: false, label: "" },
+    warrantyClaimId: "",
+    warrantyClaimIdError: { hasError: false, label: "" },
     ProjectId: params.id,
     status: "",
     statusError: { hasError: false, label: "" },
@@ -144,10 +147,11 @@ export default function CreateTransactionModal({ children }) {
 
 const [loading, setLoading] = useState(true);
 const [users, setUsers] = useState([]);
+const [warrantyClaims, setWarrantyClaims] = useState([]);
 
 // FETCH OPTIONS
 const fetchOptionsFromApi = async () => {
-    const fetchProjectDocumentTemplates = async () => {
+    const fetchUsers = async () => {
         try {
             const response = await getAllUsers();
             console.log(response);
@@ -157,8 +161,19 @@ const fetchOptionsFromApi = async () => {
             toast.error("Lỗi nạp dữ liệu từ hệ thống");
         }
     };
+    const fetchWarrantyClaims = async () => {
+        try {
+            const response = await getAllWarrantyClaims();
+            console.log(response);
+            setWarrantyClaims(response.list || []);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        }
+    };
     await Promise.all([
-        fetchProjectDocumentTemplates(),
+      fetchUsers(),
+      fetchWarrantyClaims(),
     ]);
     setLoading(false);
 };
@@ -215,6 +230,8 @@ useEffect(() => {
                 ></AutocompleteForm>
             </Grid>
 
+            
+
             {/* PAYER NAME */}
             <Grid item xs={12} lg={6}>
                   <TextForm
@@ -228,6 +245,32 @@ useEffect(() => {
                 ></TextForm>
             </Grid>
 
+            {/* WARRANTY CLAIM */}
+            <Grid item xs={12} lg={6}>
+                  <AutocompleteForm
+                    title="Bảo hiểm"
+                    subtitle="Chọn bảo hiểm"
+                    value={formData.warrantyClaimId}
+                    options={warrantyClaims}
+                    error={formData.warrantyClaimIdError.hasError}
+                    errorLabel={formData.warrantyClaimIdError.label}
+                    onChange={(value) => handleAutocompleteChange("warrantyClaimId", value)}
+                ></AutocompleteForm>
+            </Grid>
+
+            {/* STATUS */}
+            <Grid item xs={12} lg={6}>
+                <SelectForm
+                    title="Trạng thái"
+                    subtitle="Chọn trạng thái"
+                    value={formData.status}
+                    options={transactionStatusOptions}
+                    error={formData.statusError.hasError}
+                    errorLabel={formData.statusError.label}
+                    onChange={(value) => handleInputChange("status", value)}
+                ></SelectForm>
+            </Grid>
+            
             {/* NOTE */}
             <Grid item xs={12} lg={12}>
                   <TextForm 
@@ -240,19 +283,6 @@ useEffect(() => {
                     errorLabel={formData.note.label}
                     onChange={(e) => handleInputChange("note", e.target.value)}
                 ></TextForm>
-            </Grid>
-
-            {/* STATUS */}
-            <Grid item xs={12} lg={12}>
-                <SelectForm
-                    title="Trạng thái"
-                    subtitle="Chọn trạng thái"
-                    value={formData.status}
-                    options={transactionStatusOptions}
-                    error={formData.statusError.hasError}
-                    errorLabel={formData.statusError.label}
-                    onChange={(value) => handleInputChange("status", value)}
-                ></SelectForm>
             </Grid>
 
             {/* TRANSACTION RECEIPT IMAGE */}
