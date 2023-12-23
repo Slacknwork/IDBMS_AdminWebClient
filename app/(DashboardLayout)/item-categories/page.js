@@ -37,7 +37,7 @@ import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import Pagination from "/components/shared/Pagination";
 import Image from "next/image";
 
-import isValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url"
 
 const projects = [
   {
@@ -206,7 +206,7 @@ export default function ItemCategoriesList() {
               </TableCell> */}
                 <TableCell>
                   <Image
-                    src={isValidUrl(itemCategory.bannerImageUrl)}
+                    src={checkValidUrl(itemCategory.bannerImageUrl)}
                     alt={itemCategory.name ?? ""}
                     width={200}
                     height={200}
@@ -222,7 +222,7 @@ export default function ItemCategoriesList() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={isValidUrl(itemCategory.iconImageUrl)}
+                    src={checkValidUrl(itemCategory.iconImageUrl)}
                     alt={itemCategory.name ?? ""}
                     width={200}
                     height={200}
