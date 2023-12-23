@@ -203,7 +203,7 @@ export default function WarrantyClaims() {
                         variant="contained"
                         disableElevation
                         color="primary"
-                        href={`/projects/${params.id}/payment/warranty/${claim.id}`}
+                        href={`/projects/${params.id}/warranty/${claim.id}`}
                       >
                         Chi Tiết
                       </Button>

@@ -127,7 +127,7 @@ export default function CreateTransactionModal({ children }) {
   return (
     <FormModal
       buttonLabel="Tạo"
-      title="Tạo tài liệu"
+      title="Tạo phiếu bảo hiểm"
       submitLabel="Tạo"
       onSubmit={handleCreate}
       size="big"
@@ -195,7 +195,7 @@ export default function CreateTransactionModal({ children }) {
       </Grid>
 
       {/* END DATE */}
-      <Grid item xs={12} lg={12}>
+      <Grid item xs={12} lg={6}>
         <DateForm
           datetime
           title="Ngày kết thúc"
