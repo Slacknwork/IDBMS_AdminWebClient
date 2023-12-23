@@ -2,7 +2,7 @@ const getAllProjectParticipations = async ({
     role = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
@@ -27,7 +27,7 @@ const getParticipationsByUserId = async ({
     role = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const response = await fetch(
@@ -69,6 +69,27 @@ const getParticipationsByProjectId = async ({
         return responseJson.data;
     } catch (error) {
         console.error('Error fetching participations by project ID:', error);
+        throw error;
+    }
+};
+
+const getUsersByParticipationInProject = async ({
+    projectId,
+} = {}) => {
+    try {
+        const response = await fetch(
+            `https://localhost:7062/api/ProjectParticipations/project/${projectId}/users`,
+            { cache: 'no-store' }
+        );
+
+        if (!response.ok) {
+            throw new Error('Get users by participate in project ID failed');
+        }
+
+        const responseJson = await response.json();
+        return responseJson.data;
+    } catch (error) {
+        console.error('Error fetching users by participate in project ID:', error);
         throw error;
     }
 };
@@ -170,6 +191,7 @@ export {
     getAllProjectParticipations,
     getParticipationsByUserId,
     getParticipationsByProjectId,
+    getUsersByParticipationInProject,
     createProjectParticipation,
     createEmployees,
     updateProjectParticipation,
