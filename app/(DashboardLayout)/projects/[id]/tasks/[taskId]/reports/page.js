@@ -20,10 +20,10 @@ import {
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
 import PageContainer from "/components/container/PageContainer";
-import TaskModal from "./(CreateReportModal)";
 import { getTaskReportsByProjectTaskId } from "/api/taskReportServices";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import TaskModal from "/components/shared/Modals/TaskReports/CreateModal";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";

@@ -23,6 +23,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
 import { getItemInTasksByProjectId } from "api/itemInTaskServices";
 import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
+import checkValidUrl from "components/validations/url"
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -206,8 +207,7 @@ export default function InteriorItems() {
                   <TableCell>
                     <Image
                       src={
-                        item?.interiorItem?.imageUrl ??
-                        "/images/results/no-image.png"
+                        checkValidUrl(item?.interiorItem?.imageUrl)
                       }
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}

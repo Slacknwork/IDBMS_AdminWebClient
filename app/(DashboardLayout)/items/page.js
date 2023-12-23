@@ -26,6 +26,7 @@ import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices"
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
+import checkValidUrl from "components/validations/url"
 
 import PageContainer from "/components/container/PageContainer";
 import CreateItemModal from "/components/shared/Modals/Items/CreateModal";
@@ -185,7 +186,7 @@ export default function ItemListPage() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={item.imageUrl ?? "/images/results/no-image.png"}
+                    src={checkValidUrl(item.imageUrl)}
                     alt={item.name ?? ""}
                     width={200}
                     height={200}

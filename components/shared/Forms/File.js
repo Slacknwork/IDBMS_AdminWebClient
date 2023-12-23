@@ -5,6 +5,7 @@ import { useCallback, useState } from "react"; // Import useState
 import { Box, FormControl, Grid, Paper, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "@mui/system";
+import checkValidUrl from "components/validations/url"
 
 export default function FormFile({
   sx,
@@ -71,7 +72,7 @@ export default function FormFile({
             }}
           >
             <Image
-              src={previewImage || imgDisplay || "/images/results/no-image.png"}
+              src={checkValidUrl(previewImage)}
               alt={imgAlt || ""}
               width={500}
               height={500}

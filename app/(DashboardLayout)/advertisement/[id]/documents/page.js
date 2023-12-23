@@ -19,6 +19,7 @@ import {
 import { IconDownload } from "@tabler/icons-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import checkValidUrl from "components/validations/url"
 
 import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
 
@@ -166,7 +167,7 @@ export default function ProjectDocuments() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={document?.url}
+                    src={checkValidUrl(document?.url)}
                     alt={document.name ?? ""}
                     width={500}
                     height={500}
