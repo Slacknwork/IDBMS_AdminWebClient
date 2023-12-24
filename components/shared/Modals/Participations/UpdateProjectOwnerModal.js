@@ -104,7 +104,6 @@ export default function UpdateProjectOwnerParticipationModal({ onCreate, partici
             title="Cập nhật chủ dự án"
             submitLabel="Cập nhật"
             onSubmit={handleUpdate}
-            size="big"
         >
 
             {/* PARTICIPATION ROLE */}

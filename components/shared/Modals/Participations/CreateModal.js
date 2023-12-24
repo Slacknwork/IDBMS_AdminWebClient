@@ -13,14 +13,14 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
-import { createEmployees } from "../../../../api/projectParticipationServices";
+import { createEmployees, getUsersByParticipationInProject } from "../../../../api/projectParticipationServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
 import { getAllUsers } from "../../../../api/userServices";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
 import companyRoleOptions from "../../../../constants/enums/companyRole";
 
-export default function CreateParticipationModal({ onCreate }) {
+export default function CreateParticipationModal() {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -107,10 +107,22 @@ export default function CreateParticipationModal({ onCreate }) {
 
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [participationUsers, setParticipationUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
 
     // FETCH OPTIONS
     const fetchOptionsFromApi = async () => {
+        const fetchParticipationUsers = async () => {
+            try {
+                const response = await getUsersByParticipationInProject({ projectId: params.id });
+                console.log(response);
+                setParticipationUsers(response || []);
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                toast.error("Lỗi nạp dữ liệu 'Thành viên dự án' từ hệ thống");
+            }
+        };
         const fetchUsers = async () => {
             try {
                 const response = await getAllUsers();
@@ -119,10 +131,11 @@ export default function CreateParticipationModal({ onCreate }) {
                 setFilteredUsers((response.list || []).sort((a, b) => a.role - b.role));
             } catch (error) {
                 console.error("Error fetching data:", error);
-                toast.error("Lỗi nạp dữ liệu từ hệ thống");
+                toast.error("Lỗi nạp dữ liệu 'Người dùng' từ hệ thống");
             }
         };
         await Promise.all([
+            fetchParticipationUsers(),
             fetchUsers(),
         ]);
         setLoading(false);
@@ -138,12 +151,11 @@ export default function CreateParticipationModal({ onCreate }) {
             title="Tạo thành viên tham gia dự án"
             submitLabel="Tạo"
             onSubmit={handleCreate}
-            size="big"
         >
 
             {/* PARTICIPATION ROLE */}
             <Grid item xs={12} lg={12}>
-                <Grid container spacing={2} sx={12}>
+                <Grid container >
                     <Grid item xs={4} lg={4}>
                         <Typography variant="h5">
                             Vai trò
@@ -190,6 +202,11 @@ export default function CreateParticipationModal({ onCreate }) {
                                 multiple
                                 options={filteredUsers} // filterList
                                 getOptionLabel={(option) => `${option.name} - ${companyRoleOptions[option.role]}`}
+                                getOptionDisabled={(option) => {
+                                    // Check if the option's ID is already Participated
+                                    return participationUsers.some((selectedUser) => selectedUser?.userId === option?.id);
+
+                                }}
                                 noOptionsText="Không tìm thấy"
                                 value={formData.listUserId}
                                 onChange={(event, values) => handleInputChange("listUserId", values)}
