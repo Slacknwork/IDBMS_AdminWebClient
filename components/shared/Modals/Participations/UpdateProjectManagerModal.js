@@ -35,7 +35,6 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
         switch (field) {
             case "userId":
                 handleUserChange(value)
-                console.log(value)
                 handleInputError(field, false, "");
                 break;
             default:
