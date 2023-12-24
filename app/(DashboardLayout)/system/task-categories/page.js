@@ -30,6 +30,7 @@ import { getAllTaskCategories } from "/api/taskCategoryServices";
 import projectType from "/constants/enums/projectType";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import checkValidUrl from "components/validations/url"
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -178,7 +179,7 @@ export default function ProjectList() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={projectCategory.iconImageUrl}
+                    src={checkValidUrl(projectCategory.iconImageUrl)}
                     alt=""
                     width={0}
                     height={0}

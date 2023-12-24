@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Box } from "@mui/material";
 
-import { generateIndividualContract } from "/api/contractServices";
+import { generateCompanyContract } from "/api/contractServices";
+import { Box } from "@mui/material";
 
 export default function PreviewCompanyContract({ formData }) {
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ export default function PreviewCompanyContract({ formData }) {
   const generateContract = async () => {
     setLoading(true);
     try {
-      const response = await generateIndividualContract(formData);
+      const response = await generateCompanyContract(formData);
       setDocument(response);
     } catch (error) {
       toast.error("Lỗi dữ liệu: Tải file hợp đồng!");

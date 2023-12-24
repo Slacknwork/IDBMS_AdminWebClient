@@ -13,7 +13,9 @@ import {
 
 import FormModal from "../Form";
 import IndividualContractForm from "./IndividualContractForm";
+import CompanyContractForm from "./CompanyContractForm";
 import PreviewIndividualContract from "./PreviewIndividualContract";
+import PreviewCompanyContract from "./PreviewCompanyContract";
 
 function SelectContractTypeScreen({
   selectedContractType,
@@ -84,6 +86,52 @@ function SelectContractTypeScreen({
 }
 
 export default function GenerateContractModal({ sx }) {
+  // COMPANY DATA
+  const [companyFormData, setCompanyFormData] = useState({
+    aCompanyName: "",
+    aCompanyAddress: "",
+    aOwnerName: "",
+    aPhone: "",
+    aCompanyCode: "",
+    aPosition: "",
+    aEmail: "",
+    bCompanyName: "",
+    bCompanyAddress: "",
+    bSwiftCode: "",
+    bRepresentedBy: "",
+    bCompanyPhone: "",
+    bPosition: "",
+    bEmail: "",
+    numOfCopie: 0,
+    numOfA: 0,
+    numOfB: 0,
+    estimateDays: 0,
+    projectName: "",
+    paymentMethod: "",
+    value: 0,
+    aCompanyNameError: { hasError: false, label: "" },
+    aCompanyAddressError: { hasError: false, label: "" },
+    aOwnerNameError: { hasError: false, label: "" },
+    aPhoneError: { hasError: false, label: "" },
+    aCompanyCodeError: { hasError: false, label: "" },
+    aPositionError: { hasError: false, label: "" },
+    aEmailError: { hasError: false, label: "" },
+    bCompanyNameError: { hasError: false, label: "" },
+    bCompanyAddressError: { hasError: false, label: "" },
+    bSwiftCodeError: { hasError: false, label: "" },
+    bRepresentedByError: { hasError: false, label: "" },
+    bCompanyPhoneError: { hasError: false, label: "" },
+    bPositionError: { hasError: false, label: "" },
+    bEmailError: { hasError: false, label: "" },
+    numOfCopieError: { hasError: false, label: "" },
+    numOfAError: { hasError: false, label: "" },
+    numOfBError: { hasError: false, label: "" },
+    estimateDaysError: { hasError: false, label: "" },
+    projectNameError: { hasError: false, label: "" },
+    paymentMethodError: { hasError: false, label: "" },
+    valueError: { hasError: false, label: "" },
+  });
+
   // INDIVIDUAL DATA
   const [individualFormData, setIndividualFormData] = useState({
     customerName: "",
@@ -169,17 +217,32 @@ export default function GenerateContractModal({ sx }) {
             setSelectedContractType={onSelectedContractTypeChange}
           ></SelectContractTypeScreen>
         )}
-        {screen === 1 && (
-          <IndividualContractForm
-            formData={individualFormData}
-            setFormData={setIndividualFormData}
-          ></IndividualContractForm>
-        )}
-        {screen === 2 && (
-          <PreviewIndividualContract
-            formData={individualFormData}
-          ></PreviewIndividualContract>
-        )}
+        {screen === 1 &&
+          (selectedContractType === 1 ? (
+            <CompanyContractForm
+              formData={companyFormData}
+              setFormData={setCompanyFormData}
+            ></CompanyContractForm>
+          ) : (
+            selectedContractType === 2 && (
+              <IndividualContractForm
+                formData={individualFormData}
+                setFormData={setIndividualFormData}
+              ></IndividualContractForm>
+            )
+          ))}
+        {screen === 2 &&
+          (selectedContractType === 1 ? (
+            <PreviewCompanyContract
+              formData={companyFormData}
+            ></PreviewCompanyContract>
+          ) : (
+            selectedContractType === 2 && (
+              <PreviewIndividualContract
+                formData={individualFormData}
+              ></PreviewIndividualContract>
+            )
+          ))}
       </Grid>
     </FormModal>
   );

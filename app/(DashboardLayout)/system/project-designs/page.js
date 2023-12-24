@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getProjectCategories } from "/api/projectCategoryServices";
+import { getAllProjectDesigns } from "/api/projectDesignServices";
 import Image from "next/image";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -36,7 +36,8 @@ import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
 
 import isHiddenOptions from "/constants/enums/isHidden";
-import CreateProjectCategoryModal from "../../../../components/shared/Modals/ProjectCategories/CreateModal";
+import projectTypeOptions from "/constants/enums/projectType";
+import CreateprojectDesignModal from "../../../../components/shared/Modals/ProjectDesigns/CreateModal";
 
 const projects = [
   {
@@ -73,6 +74,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectList() {
 
   const searchQuery = "search";
+  const typeQuery = "type";
 
   const isHiddenQuery = "isHidden";
   const isHiddenAllValue = -1;
@@ -88,13 +90,14 @@ export default function ProjectList() {
   const searchParams = useSearchParams();
 
   // INIT CONST
-  const [projectCategories, setProjectCategories] = useState([]);
+  const [projectDesigns, setProjectDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    const fetchProjectCategories = async () => {
+    const fetchProjectDesigns = async () => {
+      const type = searchParams.get(typeQuery) || "";
       const name = searchParams.get(searchQuery) || "";
       const isHidden =
         searchParams.get(isHiddenQuery) === '1' ?
@@ -105,14 +108,15 @@ export default function ProjectList() {
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
-        const response = await getProjectCategories({
-          isHidden,
+        const response = await getAllProjectDesigns({
+          type,
           name,
+          isHidden,
           pageSize,
           pageNo,
         });
         console.log(response);
-        setProjectCategories(response?.list ?? []);
+        setProjectDesigns(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -120,7 +124,7 @@ export default function ProjectList() {
       }
     };
     await Promise.all([
-      fetchProjectCategories(),
+      fetchProjectDesigns(),
     ]);
     setLoading(false);
   };
@@ -136,7 +140,6 @@ export default function ProjectList() {
           <Search
             placeholder="Tìm theo tên.."
           ></Search>
-
           <FilterStatus
             query={isHiddenQuery}
             options={isHiddenOptions}
@@ -144,12 +147,19 @@ export default function ProjectList() {
             allValue={isHiddenAllValue}
             allLabel="Tất cả"
           ></FilterStatus>
+          <FilterStatus
+            query={typeQuery}
+            options={projectTypeOptions}
+            label="Loại dự án"
+            allValue={isHiddenAllValue}
+            allLabel="Tất cả"
+          ></FilterStatus>
         </Box>
-        <CreateProjectCategoryModal>
+        <CreateprojectDesignModal>
           Tạo
-        </CreateProjectCategoryModal>
+        </CreateprojectDesignModal>
       </Box>
-      {(projectCategories && projectCategories.length) > 0 ? (
+      {(projectDesigns && projectDesigns.length) > 0 ? (
         <Table
           aria-label="simple table"
           sx={{
@@ -161,17 +171,27 @@ export default function ProjectList() {
             <TableRow>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Id
+                  Tên
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Tên loại dự án
+                  Ngân sách tối thiểu
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Icon
+                  Ngân sách tối đa
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ngày hoàn thành dự kiến
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Loại dự án
                 </Typography>
               </StyledTableCell>
               <StyledTableCell>
@@ -183,13 +203,9 @@ export default function ProjectList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {projectCategories.map((projectCategory) => (
-              <StyledTableRow key={projectCategory.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {projectCategory.id}
-                  </Typography>
-                </TableCell>
+            {projectDesigns.map((projectDesign) => (
+              <StyledTableRow key={projectDesign.id}>
+               
                 <TableCell>
                   <Box
                     sx={{
@@ -199,7 +215,7 @@ export default function ProjectList() {
                   >
                     <Box>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {projectCategory.name}
+                        {projectDesign.name}
                       </Typography>
                       <Typography
                         color="textSecondary"
@@ -212,15 +228,25 @@ export default function ProjectList() {
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <Image src={projectCategory?.iconImageUrl ?? "/images/results/no-image.png"}
-                    alt=""
-                    width={0}
-                    height={0}
-                    style={{ width: "10rem", height: "10rem", objectFit: "cover" }}
-                    unoptimized={true}
-                    onError={(e) => {
-                      e.target.src = "/images/results/no-image.png";
-                    }} />
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectDesign?.minBudget.toLocaleString("en-US")}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectDesign?.maxBudget.toLocaleString("en-US")}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectDesign?.estimateBusinessDay}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
+                    {projectTypeOptions[projectDesign?.projectType] ||
+                      "Không xác định"}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Box
@@ -231,7 +257,7 @@ export default function ProjectList() {
                   >
                     <Box>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {projectCategory?.isHidden ? isHiddenOptions[1] : isHiddenOptions[0]}
+                        {projectDesign?.isHidden ? isHiddenOptions[1] : isHiddenOptions[0]}
                       </Typography>
                       <Typography
                         color="textSecondary"
@@ -249,7 +275,7 @@ export default function ProjectList() {
                     variant="contained"
                     disableElevation
                     color="primary"
-                    href={`/system/project-designs/${projectCategory.id}`}
+                    href={`/system/project-designs/${projectDesign.id}`}
                   >
                     Thông tin
                   </Button>

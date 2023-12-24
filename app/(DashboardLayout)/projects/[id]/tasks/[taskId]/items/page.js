@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import checkValidUrl from "components/validations/url"
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
@@ -198,8 +199,7 @@ export default function InteriorItems() {
                   <TableCell>
                     <Image
                       src={
-                        item?.interiorItem?.imageUrl ??
-                        "/images/results/no-image.png"
+                        checkValidUrl(item?.interiorItem?.imageUrl)
                       }
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}

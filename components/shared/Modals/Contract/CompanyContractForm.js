@@ -8,13 +8,12 @@ import { toast } from "react-toastify";
 
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-import { getIndividualContractInfoById } from "/api/contractServices";
+import { getCompanyContractInfoById } from "/api/contractServices";
 
 import TextForm from "../../Forms/Text";
-import DateForm from "../../Forms/Date";
 import NumberForm from "../../Forms/Number";
 
-export default function CreateProjectModal({ formData, setFormData }) {
+export default function CompanyContractForm({ formData, setFormData }) {
   const params = useParams();
 
   const validateInput = (field, value) => {
@@ -50,7 +49,7 @@ export default function CreateProjectModal({ formData, setFormData }) {
   const fetchContractData = async () => {
     setLoading(true);
     try {
-      const data = await getIndividualContractInfoById({
+      const data = await getCompanyContractInfoById({
         projectId: params.id,
       });
       setFormData((prevData) => ({ ...prevData, ...data }));
@@ -68,133 +67,94 @@ export default function CreateProjectModal({ formData, setFormData }) {
 
   return (
     <Grid container rowSpacing={2} columnSpacing={4}>
-      {/* CUSTOMER NAME */}
+      {/* A COMPANY NAME */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Tên Khách hàng"
+          title="Tên công ty A"
           required
-          subtitle="Nhập tên khách hàng"
-          value={formData.customerName}
-          error={formData.customerNameError.hasError}
-          errorLabel={formData.customerNameError.label}
-          onChange={(e) => handleInputChange("customerName", e.target.value)}
+          subtitle="Nhập tên công ty A"
+          value={formData.aCompanyName}
+          error={formData.aCompanyNameError.hasError}
+          errorLabel={formData.aCompanyNameError.label}
+          onChange={(e) => handleInputChange("aCompanyName", e.target.value)}
         />
       </Grid>
 
-      {/* DATE OF BIRTH */}
-      <Grid item xs={12} lg={6}>
-        <DateForm
-          datetime
-          title="Ngày Sinh"
-          required
-          titleSpan={6}
-          fieldSpan={6}
-          spacing={5}
-          subtitle="Ngày sinh của khách hàng"
-          value={formData.dateOfBirth}
-          error={formData.dateOfBirthError.hasError}
-          errorLabel={formData.dateOfBirthError.label}
-          onChange={(value) => handleInputChange("dateOfBirth", value)}
-        />
-      </Grid>
-
-      {/* ADDRESS */}
+      {/* A COMPANY ADDRESS */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Địa chỉ"
+          title="Địa chỉ công ty A"
           required
-          subtitle="Nhập địa chỉ"
-          value={formData.address}
-          error={formData.addressError.hasError}
-          errorLabel={formData.addressError.label}
-          onChange={(e) => handleInputChange("address", e.target.value)}
+          subtitle="Nhập địa chỉ công ty A"
+          value={formData.aCompanyAddress}
+          error={formData.aCompanyAddressError.hasError}
+          errorLabel={formData.aCompanyAddressError.label}
+          onChange={(e) => handleInputChange("aCompanyAddress", e.target.value)}
         />
       </Grid>
 
-      {/* PHONE */}
+      {/* A OWNER NAME */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Điện thoại"
+          title="Chủ sở hữu công ty A"
           required
-          subtitle="Nhập số điện thoại"
-          value={formData.phone}
-          error={formData.phoneError.hasError}
-          errorLabel={formData.phoneError.label}
-          onChange={(e) => handleInputChange("phone", e.target.value)}
+          subtitle="Nhập tên chủ sở hữu công ty A"
+          value={formData.aOwnerName}
+          error={formData.aOwnerNameError.hasError}
+          errorLabel={formData.aOwnerNameError.label}
+          onChange={(e) => handleInputChange("aOwnerName", e.target.value)}
         />
       </Grid>
 
-      {/* EMAIL */}
+      {/* A PHONE */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Email"
+          title="Điện thoại công ty A"
           required
-          subtitle="Nhập địa chỉ email"
-          value={formData.email}
-          error={formData.emailError.hasError}
-          errorLabel={formData.emailError.label}
-          onChange={(e) => handleInputChange("email", e.target.value)}
+          subtitle="Nhập số điện thoại công ty A"
+          value={formData.aPhone}
+          error={formData.aPhoneError.hasError}
+          errorLabel={formData.aPhoneError.label}
+          onChange={(e) => handleInputChange("aPhone", e.target.value)}
         />
       </Grid>
 
-      {/* IDENTITY CODE */}
+      {/* A COMPANY CODE */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Mã số cá nhân"
+          title="Mã công ty A"
           required
-          subtitle="Nhập mã số cá nhân"
-          value={formData.identityCode}
-          error={formData.identityCodeError.hasError}
-          errorLabel={formData.identityCodeError.label}
-          onChange={(e) => handleInputChange("identityCode", e.target.value)}
+          subtitle="Nhập mã công ty A"
+          value={formData.aCompanyCode}
+          error={formData.aCompanyCodeError.hasError}
+          errorLabel={formData.aCompanyCodeError.label}
+          onChange={(e) => handleInputChange("aCompanyCode", e.target.value)}
         />
       </Grid>
 
-      {/* CODE CREATED DATE */}
-      <Grid item xs={12} lg={6}>
-        <DateForm
-          datetime
-          title="Ngày cấp"
-          required
-          titleSpan={6}
-          fieldSpan={6}
-          spacing={5}
-          subtitle="Ngày cấp mã số cá nhân"
-          value={formData.codeCreatedDate}
-          error={formData.codeCreatedDateError.hasError}
-          errorLabel={formData.codeCreatedDateError.label}
-          onChange={(value) => handleInputChange("codeCreatedDate", value)}
-        />
-      </Grid>
-
-      {/* ISSUED BY */}
+      {/* A POSITION */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Cơ quan cấp"
+          title="Chức vụ công ty A"
           required
-          subtitle="Nhập cơ quan cấp mã số cá nhân"
-          value={formData.issuedBy}
-          error={formData.issuedByError.hasError}
-          errorLabel={formData.issuedByError.label}
-          onChange={(e) => handleInputChange("issuedBy", e.target.value)}
+          subtitle="Nhập chức vụ trong công ty A"
+          value={formData.aPosition}
+          error={formData.aPositionError.hasError}
+          errorLabel={formData.aPositionError.label}
+          onChange={(e) => handleInputChange("aPosition", e.target.value)}
         />
       </Grid>
 
-      {/* REGISTERED PLACE OF PERMANENT RESIDENCE */}
+      {/* A EMAIL */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Nơi đăng ký thường trú"
+          title="Email công ty A"
           required
-          subtitle="Nhập nơi đăng ký thường trú"
-          value={formData.registeredPlaceOfPermanentResidence}
-          error={formData.registeredPlaceOfPermanentResidenceError.hasError}
-          errorLabel={formData.registeredPlaceOfPermanentResidenceError.label}
-          onChange={(e) =>
-            handleInputChange(
-              "registeredPlaceOfPermanentResidence",
-              e.target.value
-            )
-          }
+          subtitle="Nhập địa chỉ email công ty A"
+          value={formData.aEmail}
+          error={formData.aEmailError.hasError}
+          errorLabel={formData.aEmailError.label}
+          onChange={(e) => handleInputChange("aEmail", e.target.value)}
         />
       </Grid>
 

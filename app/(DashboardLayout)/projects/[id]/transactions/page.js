@@ -238,7 +238,7 @@ export default function Transactions() {
                         variant="contained"
                         disableElevation
                         color="primary"
-                        href={`/projects/${params.id}/payment/transactions/${transaction.id}`}
+                        href={`/projects/${params.id}/transactions/${transaction.id}`}
                       >
                         Chi tiết
                       </Button>
