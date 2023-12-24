@@ -29,6 +29,7 @@ import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
 import { getWarrantyClaimsByProjectId } from "/api/warrantyClaimServices";
+import { set } from "lodash";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -132,7 +133,8 @@ export default function WarrantyClaims() {
           ></FilterComponent>
 
         </Box>
-        <WarrantyModal>Thêm</WarrantyModal>
+        <WarrantyModal
+        >Thêm</WarrantyModal>
       </Box>
       {/* Table */}
       {(warrantyClaims && warrantyClaims.length) > 0 ? (
@@ -203,7 +205,7 @@ export default function WarrantyClaims() {
                         variant="contained"
                         disableElevation
                         color="primary"
-                        href={`/projects/${params.id}/warranty/${claim.id}`}
+                        href={`/projects/${params.id}/warranty-claims/${claim.id}`}
                       >
                         Chi Tiết
                       </Button>
