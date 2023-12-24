@@ -80,7 +80,7 @@ export default function CreateSiteModal({ onCreate }) {
 
   return (
     <FormModal
-      isOpen={searchParams.get(modalOpenQuery)}
+      isOpen={searchParams.get(modalOpenQuery) ?? false}
       buttonLabel="Tạo"
       title="Tạo khu công trình"
       submitLabel="Tạo"

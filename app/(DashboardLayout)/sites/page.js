@@ -158,6 +158,7 @@ export default function SitesPage() {
                     Chi tiết
                   </Button>
                   <Button
+                    sx={{ mr: 2 }}
                     component={Link}
                     variant="contained"
                     disableElevation
