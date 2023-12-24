@@ -14,6 +14,7 @@ import {
   Typography,
   Stack,
   CircularProgress,
+  Link,
 } from "@mui/material";
 import { IconDownload } from "@tabler/icons-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -183,7 +184,6 @@ export default function ProjectDocuments() {
                   </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ display: "flex" }}>
-                  <DocumentModal projectDocument={document}>Sửa</DocumentModal>
                   <Button
                     sx={{ width: 75 }}
                     size="small"
@@ -195,6 +195,19 @@ export default function ProjectDocuments() {
                     Tải
                   </Button>
                 </TableCell>
+                <TableCell>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <Button
+                        component={Link}
+                        variant="contained"
+                        disableElevation
+                        color="primary"
+                        href={`/projects/${params.id}/documents/${document.id}`}
+                      >
+                        Chi tiết
+                      </Button>
+                    </Box>
+                  </TableCell>
               </StyledTableRow>
             ))}
           </TableBody>

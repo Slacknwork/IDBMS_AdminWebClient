@@ -23,6 +23,7 @@ import Image from "next/image";
 import { getAllRoomTypes } from "/api/roomTypeServices";
 
 import isHiddenOptions from "/constants/enums/isHidden";
+import checkValidUrl from "components/validations/url"
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -176,7 +177,7 @@ export default function RoomTypeList() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={roomType?.imageUrl ?? "/images/results/no-image.png"}
+                    src={checkValidUrl(roomType?.imageUrl)}
                     alt=""
                     width={0}
                     height={0}
@@ -193,7 +194,7 @@ export default function RoomTypeList() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={roomType?.iconImageUrl ?? "/images/results/no-image.png"}
+                    src={checkValidUrl(roomType.iconImageUrl)}
                     alt=""
                     width={0}
                     height={0}

@@ -23,6 +23,7 @@ import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
 import { getAllInteriorItems } from "/api/interiorItemServices";
 import { createItemInTask } from "/api/itemInTaskServices";
+import checkValidUrl from "components/validations/url"
 
 import FormModal from "/components/shared/Modals/Form";
 import MessageModal from "/components/shared/Modals/Message";
@@ -185,8 +186,7 @@ export default function CreateItemModal({ onCreate }) {
                   <TableCell>
                     <Image
                       src={
-                        item?.interiorItem?.imageUrl ??
-                        "/images/results/no-image.png"
+                        checkValidUrl(item?.interiorItem?.imageUrl) 
                       }
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}

@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cyntler/react-doc-viewer": "^1.14.1",
     "@emotion/cache": "11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "11.11.0",
@@ -30,6 +29,7 @@
     "eslint": "^8.54.0",
     "eslint-config-next": "13.4.12",
     "lodash": "4.17.21",
+    "mammoth": "^1.6.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "next": "^14.0.3",
