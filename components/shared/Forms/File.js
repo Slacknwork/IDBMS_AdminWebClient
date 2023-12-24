@@ -24,6 +24,8 @@ export default function FormFile({
   error,
   errorLabel,
   onChange,
+  hasFile,
+  fileType = "/images/results/no-file.png"
 }) {
   const theme = useTheme();
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
@@ -71,16 +73,26 @@ export default function FormFile({
               width: "10rem",
             }}
           >
-            <Image
-              src={checkValidUrl(previewImage)}
-              alt={imgAlt || ""}
-              width={500}
-              height={500}
-              style={{ objectFit: "contain", width: "100%", height: "100%" }}
-              onError={(e) => {
-                setPreviewImage("/images/results/no-image.png");
-              }}
-            />
+            {hasFile ? (
+              <Image
+                src={fileType || "/images/results/no-file.png"}
+                alt={imgAlt || ""}
+                width={500}
+                height={500}
+                style={{ objectFit: "contain", width: "100%", height: "100%" }}
+              />
+            ) : (
+              <Image
+                src={previewImage || imgDisplay || "/images/results/no-image.png"}
+                alt={imgAlt || ""}
+                width={500}
+                height={500}
+                style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                onError={(e) => {
+                  setPreviewImage("/images/results/no-image.png");
+                }}
+              />
+            )}
           </Box>
           <FormControl fullWidth>
             <Paper
@@ -114,14 +126,14 @@ export default function FormFile({
                   variant="body1"
                   sx={{ color: theme.palette.primary.main }}
                 >
-                  Thả ảnh ...
+                  Thả tệp ...
                 </Typography>
               ) : (
                 <Typography
                   variant="body1"
                   sx={{ color: theme.palette.text.secondary }}
                 >
-                  Kéo thả ảnh vào đây, hoặc bấm để chọn ảnh
+                  Kéo thả tệp vào đây, hoặc bấm để chọn tệp
                 </Typography>
               )}
             </Paper>

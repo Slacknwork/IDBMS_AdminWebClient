@@ -62,18 +62,18 @@ export default function CreateParticipationModal({ onCreate }) {
         }));
 
         switch (participationRole) {
-            case 0:
-            case 1:
+            case 0: // pj owner
+            case 1: // viewer
                 setFilteredUsers(users.filter(user => user.role === 0)) // customer
                 break;
-            case 2:
-            case 3:
+            case 2: // lead architect
+            case 3: // architect
                 setFilteredUsers(users.filter(user => user.role === 1)) // architect
                 break;
-            case 4:
+            case 4: // construction manager
                 setFilteredUsers(users.filter(user => user.role === 2)) // construction manager
                 break;
-            case 5:
+            case 5: // pj manager
                 setFilteredUsers(users.filter(user => user.role === 1 || user.role === 2)) // arc / cons
                 break;
             default:

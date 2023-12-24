@@ -30,6 +30,7 @@ import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import CreateUserModal from "/components/shared/Modals/Users/CreateModal";
+import CreateNotificationModalForAllCustomers from "/components/shared/Modals/Notifications/CreateModalForAllCustomers"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -127,6 +128,9 @@ export default function UserList() {
               allLabel={statusAllLabel}
             ></FilterStatus>
           </Box>
+          <CreateNotificationModalForAllCustomers>
+            Gửi thông báo
+          </CreateNotificationModalForAllCustomers>
           <CreateUserModal>
             Tạo
           </CreateUserModal>

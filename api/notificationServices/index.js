@@ -64,7 +64,7 @@ const getNotificationById = async (id) => {
     }
 };
 
-const createNotification = async (request) => {
+const createNotificationForAllCustomers = async (request) => {
     try {
         const response = await fetch('https://localhost:7062/api/Notifications', {
             method: 'POST',
@@ -86,35 +86,10 @@ const createNotification = async (request) => {
     }
 };
 
-const createNotificationByUserId = async (userId, request) => {
+const createNotificationForProject = async (projectId, request) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/Notifications/user/${userId}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error('Create notification by user ID failed');
-        }
-
-        const createdNotification = await response.json();
-        return createdNotification;
-    } catch (error) {
-        console.error('Error creating notification by user ID:', error);
-        throw error;
-    }
-};
-
-const createNotificationForAllUsers = async (request) => {
-    try {
-        const response = await fetch(
-            'https://localhost:7062/api/Notifications/users',
+            `https://localhost:7062/api/Notifications/projects/${projectId}`,
             {
                 method: 'POST',
                 headers: {
@@ -190,9 +165,8 @@ export {
     getAllNotifications,
     getNotificationsByUserId,
     getNotificationById,
-    createNotification,
-    createNotificationByUserId,
-    createNotificationForAllUsers,
+    createNotificationForAllCustomers,
+    createNotificationForProject,
     updateNotificationSeenStatus,
     updateNotificationSeenStatusByUserId,
 };
