@@ -22,7 +22,6 @@ import {
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { IconTrash } from "@tabler/icons-react";
-import LoopIcon from "@mui/icons-material/Loop";
 
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -172,7 +171,6 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <LoopIcon />
                 <UpdateProjectOwnerParticipationModal
                   participationId={projectOwner?.id}
                 />
@@ -205,7 +203,6 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <LoopIcon />
                 <UpdateProjectManagerParticipationModal
                   participationId={projectManager?.id}
                 />
