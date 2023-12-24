@@ -125,13 +125,17 @@ export default function ProjectList() {
     fetchOptionsFromApi();
   }, []);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
         <Box sx={{ display: "flex" }}>
           <Search placeholder="Tìm theo tên.."></Search>
         </Box>
-        <CreatePaymentStageDesignModal>Tạo</CreatePaymentStageDesignModal>
+        <CreatePaymentStageDesignModal success={handleModalResult}>Tạo</CreatePaymentStageDesignModal>
       </Box>
 
       {(paymentStageDesigns && paymentStageDesigns.length) > 0 ? (

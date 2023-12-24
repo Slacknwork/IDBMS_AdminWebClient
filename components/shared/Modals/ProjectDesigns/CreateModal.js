@@ -15,7 +15,7 @@ import FileForm from "/components/shared/Forms/File";
 import { createProjectDesign } from "../../../../api/ProjectDesignServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
-export default function CreateProjectDesignModal({ onCreate }) {
+export default function CreateProjectDesignModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -52,7 +52,7 @@ export default function CreateProjectDesignModal({ onCreate }) {
             const response = await createProjectDesign(formData);
             toast.success("Thêm thành công!");
             console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            success(true)
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

@@ -125,6 +125,10 @@ export default function ProjectList() {
     fetchOptionsFromApi();
   }, []);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
@@ -139,7 +143,7 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>
-        <CreateTaskDesignModal>Tạo</CreateTaskDesignModal>
+        <CreateTaskDesignModal success={handleModalResult}>Tạo</CreateTaskDesignModal>
       </Box>
 
       {(taskDesigns && taskDesigns.length) > 0 ? (

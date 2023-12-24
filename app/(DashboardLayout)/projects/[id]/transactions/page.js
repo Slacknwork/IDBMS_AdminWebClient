@@ -137,6 +137,10 @@ export default function Transactions() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -163,7 +167,7 @@ export default function Transactions() {
           ></FilterComponent>
 
         </Box>
-        <TransactionModal>
+        <TransactionModal success={handleModalResult}>
           <span>Tạo</span>
         </TransactionModal>
       </Box>

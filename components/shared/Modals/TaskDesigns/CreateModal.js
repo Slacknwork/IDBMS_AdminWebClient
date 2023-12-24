@@ -20,7 +20,7 @@ import calculationUnitOptions from "/constants/enums/calculationUnit"
 import { getAllTaskCategories } from "../../../../api/taskCategoryServices";
 import { getAllInteriorItemCategories } from "../../../../api/interiorItemCategoryServices";
 
-export default function CreateTaskDesignModal({ onCreate }) {
+export default function CreateTaskDesignModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -60,8 +60,8 @@ export default function CreateTaskDesignModal({ onCreate }) {
         try {
             const response = await createTaskDesign(formData);
             toast.success("Thêm thành công!");
-            console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            console.log(response);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

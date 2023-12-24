@@ -110,6 +110,10 @@ export default function ProjectList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -124,7 +128,7 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterComponent>
         </Box>
-        <CreateTaskCategoryModal>Tạo</CreateTaskCategoryModal>
+        <CreateTaskCategoryModal success={handleModalResult}>Tạo</CreateTaskCategoryModal>
       </Box>
 
       {(taskCategories && taskCategories.length) > 0 ? (

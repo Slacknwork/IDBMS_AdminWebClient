@@ -111,6 +111,10 @@ export default function UserList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+  
   return (
     <PageContainer
       title={"Danh sách người dùng"}
@@ -128,10 +132,10 @@ export default function UserList() {
               allLabel={statusAllLabel}
             ></FilterStatus>
           </Box>
-          <CreateNotificationModalForAllCustomers>
+          <CreateNotificationModalForAllCustomers success={handleModalResult}>
             Gửi thông báo
           </CreateNotificationModalForAllCustomers>
-          <CreateUserModal>
+          <CreateUserModal success={handleModalResult}>
             Tạo
           </CreateUserModal>
         </Box>
