@@ -14,7 +14,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import FileForm from "/components/shared/Forms/File";
 import { createRoomType } from "/api/roomTypeServices";
 
-export default function CreateRoomTypeModal({ onCreate }) {
+export default function CreateRoomTypeModal({ success }) {
   const params = useParams();
 
   const [formData, setFormData] = useState({
@@ -55,6 +55,7 @@ export default function CreateRoomTypeModal({ onCreate }) {
       const response = await createRoomType(formData);
       toast.success("Thêm thành công!");
       console.log(response);
+      success(true)
       // router.push(`/roomTypes/${response?.id}`);
     } catch (error) {
       console.error("Error :", error);
