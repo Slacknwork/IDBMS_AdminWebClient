@@ -75,11 +75,14 @@ export default function FormFile({
           >
             {hasFile ? (
               <Image
-                src={fileType || "/images/results/no-file.png"}
+                src={previewImage || fileType || "/images/results/no-file.png"}
                 alt={imgAlt || ""}
                 width={500}
                 height={500}
                 style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                onError={(e) => {
+                  setPreviewImage("/images/results/no-file.png");
+                }}
               />
             ) : (
               <Image

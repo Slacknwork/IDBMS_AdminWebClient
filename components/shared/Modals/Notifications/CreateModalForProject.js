@@ -22,6 +22,7 @@ export default function CreateNotificationModalForProject() {
         contentError: { hasError: false, label: "" },
         listUserId: [],
         listUserIdError: { hasError: false, label: "" },
+        selectedNotificationOption: 0,
     });
 
     const handleInputChange = (field, value) => {
@@ -36,14 +37,25 @@ export default function CreateNotificationModalForProject() {
     };
 
     const handleCreate = async () => {
+        let userIds = []
+        if (formData.selectedNotificationOption === 0) {
+            userIds = users.map((participation) => participation?.user?.id);
+        }
 
-        const userIds = formData.listUserId.map((participation) => participation?.user?.id);
+        if (formData.selectedNotificationOption === 1) {
+            userIds = users
+                .filter((participation) => participation?.role !== 1)
+                .map((participation) => participation?.user?.id);
+        }
+
+        if (formData.selectedNotificationOption === 2) {
+            userIds = formData.listUserId.map((participation) => participation?.user?.id);
+        }
 
         try {
             const response = await createNotificationForProject(params.id, { ...formData, listUserId: userIds });
             toast.success("Gửi thành công!");
             console.log(response);
-            handleClose();
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");
@@ -75,6 +87,13 @@ export default function CreateNotificationModalForProject() {
     useEffect(() => {
         fetchOptionsFromApi();
     }, []);
+
+    const notificationOptions = [
+        "Tất cả thành viên",
+        "Tất cả trừ người xem",
+        "Chọn tùy chọn",
+    ];
+
 
     return (
         <FormModal
@@ -110,37 +129,53 @@ export default function CreateNotificationModalForProject() {
                 ></TextForm>
             </Grid>
 
-            {/* USER */}
+            {/* SELECT NOTIFICATION OPTION FOR PROJECT */}
             <Grid item xs={12} lg={12}>
-                <Grid container>
-                    <Grid item xs={4} lg={4}>
-                        <Typography variant="h5">
-                            Thành viên
-                            <span style={{ color: "red" }}>*</span>
-                        </Typography>
-                        <Typography variant="p">Chọn người tham gia dự án</Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                        <FormControl fullWidth>
-                            <Autocomplete
-                                multiple
-                                options={users}
-                                getOptionLabel={(option) => `${option?.user?.name} - ${participationRoleOptions[option?.role]}`}
-                                noOptionsText="Không tìm thấy"
-                                value={formData.listUserId}
-                                onChange={(event, values) => handleInputChange("listUserId", values)}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        variant="outlined"
-                                        label="Danh sách thành viên trong dự án.."
-                                    />
-                                )}
-                            />
-                        </FormControl>
-                    </Grid>
-                </Grid>
+                <SelectForm
+                    title="Tùy chọn thông báo"
+                    required
+                    subtitle="Chọn tùy chọn loại thông báo"
+                    value={formData.selectedNotificationOption}
+                    options={notificationOptions}
+                    defaultLabel="Chọn một..."
+                    onChange={(value) => handleInputChange("selectedNotificationOption", value)}
+                ></SelectForm>
             </Grid>
+
+            {/* USER */}
+            {formData.selectedNotificationOption === 2 ?
+                (<Grid item xs={12} lg={12}>
+                    <Grid container>
+                        <Grid item xs={4} lg={4}>
+                            <Typography variant="h5">
+                                Thành viên
+                                <span style={{ color: "red" }}>*</span>
+                            </Typography>
+                            <Typography variant="p">Chọn người tham gia dự án</Typography>
+                        </Grid>
+                        <Grid item xs={8} lg={8}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    multiple
+                                    options={users}
+                                    getOptionLabel={(option) => `${option?.user?.name} - ${participationRoleOptions[option?.role]}`}
+                                    noOptionsText="Không tìm thấy"
+                                    value={formData.listUserId}
+                                    onChange={(event, values) => handleInputChange("listUserId", values)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Danh sách thành viên trong dự án.."
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </Grid>) : null
+            }
+
 
         </FormModal>
     );

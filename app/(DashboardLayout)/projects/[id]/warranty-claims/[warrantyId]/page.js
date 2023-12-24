@@ -102,12 +102,10 @@ export default function WarrantyClaimDetails() {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteWarrantyClaimById(
-        params.id,
-        formData?.isHidden ? false : true
-      );
+      const response = await deleteWarrantyClaimById(params.warrantyId, params.id);
       console.log(response);
-      toast.success("Cập nhật thành công!");
+      toast.success("Xóa thành công!");
+      router.push(`/projects/${params.id}/warranty-claims`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -246,7 +244,8 @@ export default function WarrantyClaimDetails() {
                 error={formData.confirmationDocumentError.hasError}
                 errorLabel={formData.confirmationDocumentError.label}
                 onChange={(file) => handleFileInputChange("confirmationDocument", file)}
-                hasfile
+                hasFile
+                fileType={formData.confirmationDocument == null ?? "/images/results/has-file.png"}
               ></FileForm>
             </Grid>
 

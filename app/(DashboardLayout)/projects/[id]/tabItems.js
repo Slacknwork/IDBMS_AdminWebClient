@@ -37,7 +37,7 @@ const items = [
     label: "Thanh toán",
   },
   {
-    path: "warranty",
+    path: "warranty-claims",
     label: "Bảo hiểm",
   },
 ];

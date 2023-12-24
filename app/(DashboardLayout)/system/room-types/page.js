@@ -78,8 +78,8 @@ export default function RoomTypeList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-          ? ""
-          : false;
+            ? ""
+            : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -107,6 +107,10 @@ export default function RoomTypeList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
@@ -121,7 +125,9 @@ export default function RoomTypeList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateRoomTypeModal>Tạo</CreateRoomTypeModal>
+        <CreateRoomTypeModal
+          success={handleModalResult}
+        >Tạo</CreateRoomTypeModal>
       </Box>
       {(roomTypes && roomTypes.length) > 0 ? (
         <Table

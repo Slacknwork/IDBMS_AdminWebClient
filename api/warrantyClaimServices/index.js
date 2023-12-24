@@ -135,10 +135,10 @@ const updateWarrantyClaim = async (id, request) => {
     }
 };
 
-const deleteWarrantyClaimById = async (id) => {
+const deleteWarrantyClaimById = async (id, projectId) => {
     try {
         const response = await fetch(
-            `https://localhost:7062/api/WarrantyClaims/${id}`,
+            `https://localhost:7062/api/WarrantyClaims/${id}?projectId=${projectId}`,
             {
                 method: 'DELETE',
             }
@@ -148,7 +148,7 @@ const deleteWarrantyClaimById = async (id) => {
             throw new Error('Delete failed');
         }
 
-        return true;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching delete warranty claim:', error);
         throw error;
