@@ -39,7 +39,7 @@ const style = {
   boxShadow: 24,
 };
 
-export default function CreateTransactionModal({ children }) {
+export default function CreateWarrantyClaimModal({ children }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);

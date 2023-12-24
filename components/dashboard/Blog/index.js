@@ -15,6 +15,7 @@ import { Stack } from "@mui/system";
 import { IconBasket } from "@tabler/icons-react";
 import BlankCard from "/components/shared/BlankCard";
 import Image from "next/image";
+import checkValidUrl from "components/validations/url"
 
 const ecoCard = [
   {
@@ -59,7 +60,7 @@ export default function Blog() {
           <BlankCard>
             <Typography component={Link} href="/">
               <Image
-                src={product.photo}
+                src={checkValidUrl(product.photo)}
                 alt="img"
                 style={{ width: "100%", height: "250px" }}
               />

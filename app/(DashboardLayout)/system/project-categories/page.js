@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { getProjectCategories } from "/api/projectCategoryServices";
 import Image from "next/image";
+import checkValidUrl from "components/validations/url"
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
@@ -175,8 +176,7 @@ export default function ProjectList() {
                 <TableCell>
                   <Image
                     src={
-                      projectCategory?.iconImageUrl ??
-                      "/images/results/no-image.png"
+                      checkValidUrl(projectCategory?.iconImageUrl)
                     }
                     alt=""
                     width={120}
