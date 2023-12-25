@@ -23,7 +23,6 @@ import {
 import { deepOrange } from "@mui/material/colors";
 import { IconTrash } from "@tabler/icons-react";
 
-
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -40,8 +39,8 @@ import CreateParticipationModal from "/components/shared/Modals/Participations/C
 import DeleteModal from "/components/shared/Modals/Participations/DeleteModal";
 import UpdateProjectOwnerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectOwnerModal";
 import UpdateProjectManagerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectManagerModal";
-import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject"
-import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal"
+import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject";
+import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal";
 
 const participants = [
   {
@@ -78,7 +77,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // Component for displaying comments
 export default function Comments() {
-
   const searchQuery = "search";
 
   const roleQuery = "role";
@@ -102,15 +100,15 @@ export default function Comments() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  // FETCH DATA 
+  // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchParticipations = async () => {
-
       const projectId = params.id;
       const search = searchParams.get(searchQuery) || "";
       const role = searchParams.get(roleQuery) || "";
       const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
         const response = await getParticipationsByProjectId({
@@ -122,7 +120,6 @@ export default function Comments() {
         });
         console.log(response);
 
-
         setParticipations(response?.paginatedList?.list ?? []);
         setCount(response?.paginatedList?.totalItem ?? 0);
 
@@ -133,9 +130,7 @@ export default function Comments() {
         toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchParticipations(),
-    ]);
+    await Promise.all([fetchParticipations()]);
     setLoading(false);
   };
 
@@ -145,7 +140,7 @@ export default function Comments() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ overflow: "auto" }}>
@@ -215,15 +210,15 @@ export default function Comments() {
           </Card>
         </Grid>
       </Grid>
-      <Typography variant="h5" sx={{ mt: 3 }}>Người tham gia dự án</Typography>
+      <Typography variant="h5" sx={{ mt: 3 }}>
+        Người tham gia dự án
+      </Typography>
       {/* Table */}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", mt: 4, mb: 1 }}
       >
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo tên.."
-          ></Search>
+          <Search placeholder="Tìm theo tên.."></Search>
 
           <FilterComponent
             query={roleQuery}
@@ -232,10 +227,15 @@ export default function Comments() {
             allValue={roleAllValue}
             allLabel="Tất cả"
           ></FilterComponent>
-
         </Box>
-        <CreateNotificationModalForProject success={handleModalResult}>Gửi thông báo</CreateNotificationModalForProject>
-        <CreateParticipationModal success={handleModalResult}>Tạo</CreateParticipationModal>
+        <Box sx={{ display: "flex" }}>
+          <CreateNotificationModalForProject success={handleModalResult}>
+            Gửi thông báo
+          </CreateNotificationModalForProject>
+          <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult}>
+            Tạo
+          </CreateParticipationModal>
+        </Box>
       </Box>
       {(participations && participations.length) > 0 ? (
         <Table aria-label="simple table">
@@ -272,9 +272,7 @@ export default function Comments() {
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <UpdateParticipationRoleModal
-                        participant={participant}
-                      >
+                      <UpdateParticipationRoleModal participant={participant}>
                         <IconTrash></IconTrash>
                       </UpdateParticipationRoleModal>
                       <DeleteModal id={participant.id}>
@@ -296,10 +294,8 @@ export default function Comments() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );
 }
-
