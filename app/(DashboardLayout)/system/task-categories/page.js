@@ -193,6 +193,9 @@ export default function ProjectList() {
                       objectFit: "cover",
                     }}
                     unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-file.png";
+                    }}
                   />
                 </TableCell>
                 <TableCell>

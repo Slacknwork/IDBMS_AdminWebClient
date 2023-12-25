@@ -213,6 +213,10 @@ export default function InteriorItems() {
                         width: "6rem",
                         height: "6rem",
                       }}
+                      unoptimized={true}
+                      onError={(e) => {
+                        e.target.src = "/images/results/no-file.png";
+                      }}
                     />
                   </TableCell>
                   <TableCell>

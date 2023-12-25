@@ -204,6 +204,9 @@ export default function RoomTypeList() {
                       objectFit: "cover",
                     }}
                     unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-file.png";
+                    }}
                   />
                 </TableCell>
                 <TableCell>
