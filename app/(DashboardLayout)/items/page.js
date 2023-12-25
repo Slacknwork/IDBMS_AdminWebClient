@@ -190,10 +190,14 @@ export default function ItemListPage() {
                     alt={item.name ?? ""}
                     width={200}
                     height={200}
+                    unoptimized={true}
                     style={{
                       objectFit: "cover",
                       width: "7rem",
                       height: "7rem",
+                    }}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
                     }}
                   />
                 </TableCell>

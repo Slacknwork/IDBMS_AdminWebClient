@@ -213,6 +213,7 @@ export default function ItemCategoriesList() {
                     onError={(e) => {
                       e.target.src = "/images/results/no-image.png";
                     }}
+                    unoptimized={true}
                     style={{
                       objectFit: "cover",
                       width: "7rem",
@@ -229,6 +230,7 @@ export default function ItemCategoriesList() {
                     onError={(e) => {
                       e.target.src = "/images/results/no-image.png";
                     }}
+                    unoptimized={true}
                     style={{
                       objectFit: "cover",
                       width: "7rem",

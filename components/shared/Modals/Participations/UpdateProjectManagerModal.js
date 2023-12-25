@@ -126,8 +126,8 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
             {/* USER */}
             <Grid item xs={12} lg={12}>
                 <AutocompleteForm
-                    title="Danh sách khách hàng trong hệ thống"
-                    subtitle="Chọn khách hàng"
+                    title="Danh sách nhân viên trong hệ thống"
+                    subtitle="Chọn nhân viên"
                     value={formData.userId}
                     options={users}
                     error={formData.userIdError.hasError}
