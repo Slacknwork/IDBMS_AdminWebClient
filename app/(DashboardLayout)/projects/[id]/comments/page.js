@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -10,16 +11,50 @@ import {
   ListItemAvatar,
   Typography,
 } from "@mui/material";
+import { useParams, useSearchParams } from "next/navigation";
+
+import { getCommentsByProjectId } from "/api/commentServices";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
+import { toast } from "react-toastify";
 
 // Component for displaying comments
 export default function ProjectCommentsPage() {
+  // CONSTANTS
+
+  // INIT
+  const params = useParams();
+  const searchParams = useSearchParams();
+
+  // FETCH DATA FROM API
+  const [loading, setLoading] = useState(true);
+  const [comments, setComments] = useState([]);
+  const [count, setCount] = useState(0);
+
+  const fetchComments = async () => {
+    setLoading(true);
+    try {
+      const projectId = params.id;
+      const response = await getCommentsByProjectId({ projectId });
+      setComments(response.list);
+      setCount(response.totalItem);
+    } catch (error) {
+      toast.error("Lỗi dữ liệu: Bình luận!");
+    } finally {
+      setLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  useEffect;
   return (
     <Box sx={{ zIndex: 1 }}>
       <Search></Search>
-      <List sx={{ mt: 1 }}>
+      <List>
         <ListItem alignItems="flex-start" sx={{ py: 2 }}>
           <ListItemAvatar sx={{ my: "auto" }}>
             <Avatar alt="Remy Sharp">N</Avatar>
@@ -86,7 +121,7 @@ export default function ProjectCommentsPage() {
         </ListItem>
         <Divider variant="inset" component="li" />
       </List>
-      <Pagination count={0}></Pagination>
+      <Pagination count={count}></Pagination>
     </Box>
   );
 }
