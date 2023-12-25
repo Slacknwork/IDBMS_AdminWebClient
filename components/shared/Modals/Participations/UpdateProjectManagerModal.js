@@ -19,6 +19,7 @@ import projectTypeOptions from "../../../../constants/enums/projectType";
 import { getAllUsers } from "../../../../api/userServices";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
 import companyRoleOptions from "../../../../constants/enums/companyRole";
+import LoopIcon from "@mui/icons-material/Loop";
 
 export default function UpdateProjectManagerParticipationModal({ onCreate, participationId }) {
     const params = useParams();
@@ -103,7 +104,7 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
             title="Cập nhật quản lý dự án"
             submitLabel="Cập nhật"
             onSubmit={handleUpdate}
-            size="big"
+            buttonEndIcon={<LoopIcon />}
         >
 
             {/* PARTICIPATION ROLE */}

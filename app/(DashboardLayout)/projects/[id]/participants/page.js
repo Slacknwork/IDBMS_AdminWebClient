@@ -22,7 +22,6 @@ import {
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { IconTrash } from "@tabler/icons-react";
-import LoopIcon from "@mui/icons-material/Loop";
 
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -42,6 +41,7 @@ import DeleteModal from "/components/shared/Modals/Participations/DeleteModal";
 import UpdateProjectOwnerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectOwnerModal";
 import UpdateProjectManagerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectManagerModal";
 import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject"
+import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal"
 
 const participants = [
   {
@@ -175,7 +175,6 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <LoopIcon />
                 <UpdateProjectOwnerParticipationModal
                   participationId={projectOwner?.id}
                 />
@@ -208,7 +207,6 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <LoopIcon />
                 <UpdateProjectManagerParticipationModal
                   participationId={projectManager?.id}
                 />
@@ -274,6 +272,11 @@ export default function Comments() {
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <UpdateParticipationRoleModal
+                        participant={participant}
+                      >
+                        <IconTrash></IconTrash>
+                      </UpdateParticipationRoleModal>
                       <DeleteModal id={participant.id}>
                         <IconTrash></IconTrash>
                       </DeleteModal>
