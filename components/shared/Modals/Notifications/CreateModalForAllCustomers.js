@@ -7,7 +7,7 @@ import { createNotificationForAllCustomers } from "/api/notificationServices";
 import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
 
-export default function CreateNotificationModalForCustomers() {
+export default function CreateNotificationModalForCustomers( success ) {
 
     const [formData, setFormData] = useState({
         category: "",
@@ -33,6 +33,7 @@ export default function CreateNotificationModalForCustomers() {
             toast.success("Gửi thành công!");
             console.log(response);
             handleClose();
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

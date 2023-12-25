@@ -133,6 +133,10 @@ export default function ProjectList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
@@ -155,7 +159,7 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateprojectDesignModal>
+        <CreateprojectDesignModal success={handleModalResult}>
           Tạo
         </CreateprojectDesignModal>
       </Box>

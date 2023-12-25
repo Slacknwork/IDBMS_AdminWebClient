@@ -48,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CreateItemModal({ onCreate }) {
+export default function CreateItemModal({ success }) {
   // INIT
   const params = useParams();
   const [items, setItems] = useState([]);
@@ -126,6 +126,7 @@ export default function CreateItemModal({ onCreate }) {
     try {
       await createItemInTask(params.taskId, items);
       toast.success("Tạo sản phẩm thành công!");
+      success(true);
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);

@@ -143,6 +143,10 @@ export default function Comments() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ overflow: "auto" }}>
       <Grid container spacing={4}>
@@ -230,8 +234,8 @@ export default function Comments() {
           ></FilterComponent>
 
         </Box>
-        <CreateNotificationModalForProject>Gửi thông báo</CreateNotificationModalForProject>
-        <CreateParticipationModal>Tạo</CreateParticipationModal>
+        <CreateNotificationModalForProject success={handleModalResult}>Gửi thông báo</CreateNotificationModalForProject>
+        <CreateParticipationModal success={handleModalResult}>Tạo</CreateParticipationModal>
       </Box>
       {(participations && participations.length) > 0 ? (
         <Table aria-label="simple table">

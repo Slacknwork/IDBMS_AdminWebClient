@@ -11,7 +11,7 @@ import { getUsersByParticipationInProject } from "/api/projectParticipationServi
 import { useParams } from "next/navigation";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
 
-export default function CreateNotificationModalForProject() {
+export default function CreateNotificationModalForProject( success ) {
 
     const params = useParams();
 
@@ -56,6 +56,7 @@ export default function CreateNotificationModalForProject() {
             const response = await createNotificationForProject(params.id, { ...formData, listUserId: userIds });
             toast.success("Gửi thành công!");
             console.log(response);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");
