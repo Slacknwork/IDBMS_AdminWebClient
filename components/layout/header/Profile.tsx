@@ -12,14 +12,27 @@ import {
 } from "@mui/material";
 
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { GoogleLogout } from "react-google-login";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { gapi } from "gapi-script";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const router = useRouter();
+  let isGoogleLoggedIn = false;
+
   const handleClick2 = (event: any) => {
+    var token = gapi.auth.getToken().access_token;
+    if (token != null || token === "") isGoogleLoggedIn = true;
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
+  };
+  const responseGoogle = () => {
+    toast.success("Đăng xuất thành công!");
+    router.push(`/authentication/engineer-login`);
   };
 
   return (
@@ -81,6 +94,8 @@ const Profile = () => {
           </ListItemIcon>
           <ListItemText>My Tasks</ListItemText>
         </MenuItem>
+
+        {isGoogleLoggedIn ? (
         <Box mt={1} py={1} px={2}>
           <Button
             href="/authentication/login"
@@ -92,6 +107,15 @@ const Profile = () => {
             Logout
           </Button>
         </Box>
+      ) : (
+        <Box>
+          <GoogleLogout
+            clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
+            buttonText="Logout"
+            onLogoutSuccess={responseGoogle}
+          />
+        </Box>
+      )}
       </Menu>
     </Box>
   );
