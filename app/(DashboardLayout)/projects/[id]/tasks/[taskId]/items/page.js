@@ -128,6 +128,10 @@ export default function InteriorItems() {
     fetchOptionsFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -150,7 +154,7 @@ export default function InteriorItems() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <ItemInTaskModal></ItemInTaskModal>
+        <ItemInTaskModal success={handleModalResult}></ItemInTaskModal>
       </Box>
 
       {(items && items.length) > 0 ? (

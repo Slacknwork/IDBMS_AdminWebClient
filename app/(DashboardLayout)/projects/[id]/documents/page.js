@@ -107,6 +107,10 @@ export default function ProjectDocuments() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Filter and Search */}
@@ -124,7 +128,7 @@ export default function ProjectDocuments() {
         </Box>
         <Box sx={{ display: "flex" }}>
           <GenerateContractModal sx={{ mr: 1 }}></GenerateContractModal>
-          <DocumentModal>
+          <DocumentModal success={handleModalResult}>
             <span>Tạo</span>
           </DocumentModal>
         </Box>

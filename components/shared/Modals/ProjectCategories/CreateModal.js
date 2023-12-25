@@ -11,7 +11,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import FileForm from "/components/shared/Forms/File";
 import { createProjectCategory } from "/api/projectCategoryServices";
 
-export default function CreateProjectCategoryModal({ onCreate }) {
+export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
 
   const [formData, setFormData] = useState({
@@ -43,7 +43,7 @@ export default function CreateProjectCategoryModal({ onCreate }) {
       const response = await createProjectCategory(formData);
       toast.success("Thêm thành công!");
       console.log(response);
-      // router.push(`/roomTypes/${response?.id}`);
+      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

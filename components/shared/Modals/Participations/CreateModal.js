@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Autocomplete, FormControl, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Autocomplete, FormControl, FormHelperText, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
@@ -20,7 +20,7 @@ import { getAllUsers } from "../../../../api/userServices";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
 import companyRoleOptions from "../../../../constants/enums/companyRole";
 
-export default function CreateParticipationModal({ onCreate }) {
+export default function CreateParticipationModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -97,8 +97,8 @@ export default function CreateParticipationModal({ onCreate }) {
         try {
             const response = await createEmployees({ ...formData, listUserId: userIds });
             toast.success("Thêm thành công!");
-            console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            console.log(response);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

@@ -11,7 +11,7 @@ import { createAdmin } from "../../../../api/AdminServices";
 
 import adminStatusOptions from "/constants/enums/adminStatus";
 
-export default function CreateAdminModal({ onCreate }) {
+export default function CreateAdminModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -43,7 +43,7 @@ export default function CreateAdminModal({ onCreate }) {
             const response = await createAdmin(formData);
             toast.success("Thêm thành công!");
             console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

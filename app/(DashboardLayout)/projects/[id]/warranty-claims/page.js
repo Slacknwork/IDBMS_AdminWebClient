@@ -115,6 +115,10 @@ export default function WarrantyClaims() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -133,7 +137,7 @@ export default function WarrantyClaims() {
           ></FilterComponent>
 
         </Box>
-        <WarrantyModal
+        <WarrantyModal success={handleModalResult}
         >Thêm</WarrantyModal>
       </Box>
       {/* Table */}

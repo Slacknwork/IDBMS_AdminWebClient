@@ -15,7 +15,7 @@ import FileForm from "/components/shared/Forms/File";
 import { createTaskCategory } from "../../../../api/taskCategoryServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
-export default function CreateTaskCategoryModal({ onCreate }) {
+export default function CreateTaskCategoryModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -49,8 +49,8 @@ export default function CreateTaskCategoryModal({ onCreate }) {
         try {
             const response = await createTaskCategory(formData);
             toast.success("Thêm thành công!");
-            console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            console.log(response);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

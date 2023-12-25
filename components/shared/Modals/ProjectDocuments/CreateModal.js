@@ -40,7 +40,7 @@ const style = {
   boxShadow: 24,
 };
 
-export default function DocumentModal({ children, projectDocument }) {
+export default function DocumentModal({ success, projectDocument }) {
   // MODAL TOGGLE
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -106,7 +106,8 @@ export default function DocumentModal({ children, projectDocument }) {
     try {
         const response = await createProjectDocument(formData);
         toast.success("Thêm thành công!");
-        console.log(response)
+        console.log(response);
+        success(true);
     } catch (error) {
         console.error("Error :", error);
         toast.error("Lỗi!");

@@ -16,7 +16,7 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import { createPaymentStageDesign } from "/api/paymentStageDesignServices";
 import { getAllProjectDesigns } from "/api/projectDesignServices";
 
-export default function CreateProjectCategoryModal({ onCreate }) {
+export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
 
   const [formData, setFormData] = useState({
@@ -74,7 +74,7 @@ export default function CreateProjectCategoryModal({ onCreate }) {
       const response = await createPaymentStageDesign(formData);
       toast.success("Thêm thành công!");
       console.log(response);
-      // router.push(`/roomTypes/${response?.id}`);
+      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

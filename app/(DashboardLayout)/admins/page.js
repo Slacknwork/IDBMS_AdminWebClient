@@ -103,6 +103,10 @@ export default function ProjectList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <PageContainer title={"PageContainer"} description={"PageContainer"}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -118,7 +122,7 @@ export default function ProjectList() {
           ></FilterStatus>
 
         </Box>
-        <CreateAdminModal>
+        <CreateAdminModal success={handleModalResult}>
           Tạo
         </CreateAdminModal>
       </Box>

@@ -43,7 +43,7 @@ const style = {
   boxShadow: 24,
 };
 
-export default function CreateTransactionModal({ children }) {
+export default function CreateTransactionModal({ success }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -138,7 +138,8 @@ export default function CreateTransactionModal({ children }) {
     try {
         const response = await createTransaction(formData);
         toast.success("Thêm thành công!");
-        console.log(response)
+        console.log(response);
+        success(true);
     } catch (error) {
         console.error("Error :", error);
         toast.error("Lỗi!");

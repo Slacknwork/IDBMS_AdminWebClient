@@ -110,6 +110,10 @@ export default function ProjectDocuments() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Filter and Search */}
@@ -125,7 +129,7 @@ export default function ProjectDocuments() {
             allLabel="Tất cả"
           ></FilterCategory>
         </Box>
-        <DocumentModal>
+        <DocumentModal success={handleModalResult}>
           <span>Tạo</span>
         </DocumentModal>
       </Box>

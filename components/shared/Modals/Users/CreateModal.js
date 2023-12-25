@@ -23,7 +23,7 @@ import { getAllInteriorItemCategories } from "../../../../api/interiorItemCatego
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "../../../../constants/enums/companyRole";
 
-export default function CreateUserModal({ onCreate }) {
+export default function CreateUserModal({ success }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
@@ -67,8 +67,8 @@ export default function CreateUserModal({ onCreate }) {
         try {
             const response = await createUser(formData);
             toast.success("Thêm thành công!");
-            console.log(response)
-            // router.push(`/roomTypes/${response?.id}`);
+            console.log(response);
+            success(true);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

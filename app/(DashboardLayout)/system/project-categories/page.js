@@ -107,6 +107,10 @@ export default function ProjectList() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  }
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -121,7 +125,7 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateProjectCategoryModal>Tạo</CreateProjectCategoryModal>
+        <CreateProjectCategoryModal success={handleModalResult}>Tạo</CreateProjectCategoryModal>
       </Box>
       {(projectCategories && projectCategories.length) > 0 ? (
         <Table
