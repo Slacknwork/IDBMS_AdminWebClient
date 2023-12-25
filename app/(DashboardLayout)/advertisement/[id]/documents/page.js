@@ -180,6 +180,10 @@ export default function ProjectDocuments() {
                       height: "7rem",
                       objectFit: "cover",
                     }}
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-file.png";
+                    }}
                   ></Image>
                 </TableCell>
                 <TableCell>
