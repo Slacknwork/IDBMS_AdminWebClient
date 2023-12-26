@@ -98,7 +98,16 @@ export default function ProjectCommentsPage() {
                     px: 2,
                   }}
                 >
-                  <Image src="/" alt="" width={75} height={75}></Image>
+                  <Image 
+                    src="/" 
+                    alt="" 
+                    width={75} 
+                    height={75}
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-file.png";
+                    }}
+                    ></Image>
                   <Box sx={{ my: "auto", mx: 2 }}>
                     <Typography
                       variant="subtitle2"
@@ -119,7 +128,15 @@ export default function ProjectCommentsPage() {
                     px: 2,
                   }}
                 >
-                  <Image src="/" alt="" width={75} height={75}></Image>
+                  <Image 
+                    src="/"  
+                    alt="" 
+                    width={75} 
+                    height={75} 
+                    unoptimized={true}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-file.png";
+                    }}></Image>
                   <Box sx={{ my: "auto", mx: 2 }}>
                     <Typography
                       variant="subtitle2"
