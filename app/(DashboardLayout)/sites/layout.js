@@ -23,7 +23,7 @@ export default function SitesLayout({ children }) {
       title="Khu công trình"
       description="Danh sách các khu công trình"
     >
-      <Typography variant="h2">{site.name ?? "Khu công trình"}</Typography>
+      <Typography variant="h2">{site?.name ?? "Khu công trình"}</Typography>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>

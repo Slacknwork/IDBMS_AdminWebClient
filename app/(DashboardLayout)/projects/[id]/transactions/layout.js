@@ -7,7 +7,7 @@ import PageContainer from "/components/container/PageContainer";
 export default function TransactionsLayout({ children }) {
   return (
     <PageContainer>
-      <Typography variant="h2">Danh sách thanh toán</Typography>
+      <Typography variant="h2">Thanh toán</Typography>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>

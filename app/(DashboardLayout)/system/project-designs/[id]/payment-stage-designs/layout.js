@@ -9,7 +9,7 @@ export default function PaymentStageDesignsLayout({ children }) {
       title="Danh mục thiết kế giai đoạn thanh toán"
       description="Danh sách các thiết kế giai đoạn thanh toán"
     >
-      <Typography variant="h2">Danh sách thiết kế giai đoạn thanh toán</Typography>
+      <Typography variant="h2">Thiết kế giai đoạn thanh toán</Typography>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>
