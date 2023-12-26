@@ -137,7 +137,7 @@ export default function FloorsPage() {
               <StyledTableRow key={floor.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {floor.floorNo === 0 ? Trệt : floor.floorNo}
+                    {floor.floorNo === 0 ? "Trệt" : floor.floorNo}
                   </Typography>
                 </TableCell>
                 <TableCell>
