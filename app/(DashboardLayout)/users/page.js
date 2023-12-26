@@ -114,7 +114,7 @@ export default function UserList() {
   const handleModalResult = () => {
     fetchDataFromApi();
   }
-  
+
   return (
     <PageContainer
       title={"Danh sách người dùng"}
@@ -123,7 +123,7 @@ export default function UserList() {
       <Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
-            <Search placeholder="Nhập tên người dùng"></Search>
+            <Search placeholder="Nhập tên / email / số điện thoại.."></Search>
             <FilterStatus
               query={statusQuery}
               options={userStatusOptions}
