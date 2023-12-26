@@ -76,21 +76,27 @@ const getItemInTasksByTaskId = async ({
 const createItemInTask = async (taskId, request) => {
   const formData = new FormData();
 
-  const appendFormData = (data, prefix = "") => {
+  const appendFormData = (data, index = 0, prefix = "") => {
     for (const key in data) {
       const value = data[key];
       const fullKey = prefix ? `${prefix}.${key}` : key;
 
-      if (typeof value === "object" && value !== null) {
-        appendFormData(value, fullKey);
+      if (
+        typeof value === "object" &&
+        !(value instanceof File) &&
+        value !== null
+      ) {
+        appendFormData(value, index, fullKey);
       } else {
-        formData.append(fullKey, value);
+        const prefixedKey = `[${index}].${fullKey}`;
+        formData.append(prefixedKey, value ?? "");
       }
     }
   };
 
-  request.forEach((item) => {
-    appendFormData(item);
+  // Assuming request is an array of objects
+  request.forEach((item, index) => {
+    appendFormData(item, index);
   });
 
   try {

@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
@@ -130,7 +130,7 @@ export default function InteriorItems() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -181,11 +181,6 @@ export default function InteriorItems() {
                   Trạng thái công việc
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="right">
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Chi tiết
-                </Typography>
-              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -202,9 +197,7 @@ export default function InteriorItems() {
                   </TableCell>
                   <TableCell>
                     <Image
-                      src={
-                        checkValidUrl(item?.interiorItem?.imageUrl)
-                      }
+                      src={checkValidUrl(item?.interiorItem?.imageUrl)}
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}
                       height={500}
@@ -234,17 +227,6 @@ export default function InteriorItems() {
                         item?.projectTask?.status === 0 ? "default" : "primary"
                       }
                     />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      component={Link}
-                      variant="contained"
-                      disableElevation
-                      color="primary"
-                      href={`/projects/${params.id}/items/${item.id}`}
-                    >
-                      Chi tiết
-                    </Button>
                   </TableCell>
                 </StyledTableRow>
               ))}
