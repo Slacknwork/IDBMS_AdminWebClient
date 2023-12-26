@@ -192,6 +192,7 @@ export default function ProjectDetails() {
                 onChange={(value) =>
                   handleInputChange("advertisementStatus", value)
                 }
+                disableOptions={[2]}
               ></SelectForm>
             </Grid>
 
@@ -289,6 +290,32 @@ export default function ProjectDetails() {
               <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
+                    Tổng diện tích:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.area ?? 0} m²
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Ngày làm việc:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData.estimateBusinessDay ?? 0} ngày
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
                     Đã bảo hiểm:
                   </Typography>
                 </Grid>
@@ -303,27 +330,17 @@ export default function ProjectDetails() {
               <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
-                    Tổng diện tích:
+                    Tổng tiền phạt:
                   </Typography>
                 </Grid>
                 <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                   <Typography variant="p" sx={{ my: "auto" }}>
-                    {formData?.area ?? 0} m²
+                    {formData?.totalPenaltyFee?.toLocaleString("en-US") ?? 0}{" "}
+                    VND
                   </Typography>
                 </Grid>
               </Grid>
-              <Grid container sx={{ mt: 1, pt: 2 }}>
-                <Grid item xs={6} lg={5}>
-                  <Typography variant="h6" sx={{ my: "auto" }}>
-                    Ngày làm việc:
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
-                  <Typography variant="p" sx={{ my: "auto" }}>
-                    {formData.estimateBusinessDay ?? 0} ngày
-                  </Typography>
-                </Grid>
-              </Grid>
+
             </Card>
           </Grid>
         </Grid>
