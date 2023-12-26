@@ -213,7 +213,7 @@ export default function ProjectList() {
                       variant="contained"
                       disableElevation
                       color="primary"
-                      href={`/Admins/${admin.id}`}
+                      href={`/admins/${admin.id}`}
                     >
                       Thông tin
                     </Button>
