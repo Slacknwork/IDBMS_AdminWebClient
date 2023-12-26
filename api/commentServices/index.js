@@ -1,185 +1,189 @@
 const getAllComments = async () => {
-    try {
-        const response = await fetch(
-            'https://localhost:7062/api/Comments',
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch("https://localhost:7062/api/Comments", {
+      cache: "no-store",
+    });
 
-        if (!response.ok) {
-            throw new Error('Get all comments failed');
-        }
-
-        const comments = await response.json();
-        return comments;
-    } catch (error) {
-        console.error('Error fetching all comments:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get all comments failed");
     }
+
+    const comments = await response.json();
+    return comments;
+  } catch (error) {
+    console.error("Error fetching all comments:", error);
+    throw error;
+  }
 };
 
 const getCommentsByProjectTaskId = async (projectTaskId) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/project-task/${projectTaskId}`,
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/Comments/project-task/${projectTaskId}`,
+      { cache: "no-store" }
+    );
 
-        if (!response.ok) {
-            throw new Error('Get comments by project task ID failed');
-        }
-
-        const comments = await response.json();
-        return comments;
-    } catch (error) {
-        console.error('Error fetching comments by project task ID:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get comments by project task ID failed");
     }
+
+    const comments = await response.json();
+    return comments;
+  } catch (error) {
+    console.error("Error fetching comments by project task ID:", error);
+    throw error;
+  }
 };
 
-const getCommentsByProjectId = async (projectId) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/project/${projectId}`,
-            { cache: 'no-store' }
-        );
+const getCommentsByProjectId = async ({
+  projectId = "",
+  status = "",
+  type = "",
+  search = "",
+  page = "",
+  pageSize = "",
+} = {}) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/Comments/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
+      { cache: "no-store" }
+    );
 
-        if (!response.ok) {
-            throw new Error('Get comments by project ID failed');
-        }
-
-        const comments = await response.json();
-        return comments;
-    } catch (error) {
-        console.error('Error fetching comments by project ID:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get comments by project ID failed");
     }
+
+    const comments = await response.json();
+    return comments.data;
+  } catch (error) {
+    console.error("Error fetching comments by project ID:", error);
+    throw error;
+  }
 };
 
 const getCommentsById = async (id) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/${id}`,
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch(`https://localhost:7062/api/Comments/${id}`, {
+      cache: "no-store",
+    });
 
-        if (!response.ok) {
-            throw new Error('Get comments by ID failed');
-        }
-
-        const comments = await response.json();
-        return comments;
-    } catch (error) {
-        console.error('Error fetching comments by ID:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get comments by ID failed");
     }
+
+    const comments = await response.json();
+    return comments;
+  } catch (error) {
+    console.error("Error fetching comments by ID:", error);
+    throw error;
+  }
 };
 
 const createComment = async (request) => {
-    try {
+  try {
+    const formData = new FormData();
 
-        const formData = new FormData();
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
 
-        Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
-        });
+    const response = await fetch("https://localhost:7062/api/Comments", {
+      method: "POST",
+      body: formData,
+    });
 
-        const response = await fetch('https://localhost:7062/api/Comments', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Create comment failed');
-        }
-
-        const createdComment = await response.json();
-        return createdComment;
-    } catch (error) {
-        console.error('Error creating comment:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Create comment failed");
     }
+
+    const createdComment = await response.json();
+    return createdComment;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
 };
 
 const updateComment = async (commentId, request) => {
-    try {
-        const formData = new FormData();
+  try {
+    const formData = new FormData();
 
-        Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
-        });
+    Object.keys(request).forEach((key) => {
+      if (!key.endsWith("Error")) {
+        formData.append(key, request[key]);
+      }
+    });
 
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/${commentId}`,
-            {
-                method: 'PUT',
-                body: formData,
-            }
-        );
+    const response = await fetch(
+      `https://localhost:7062/api/Comments/${commentId}`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
 
-        if (!response.ok) {
-            throw new Error('Update comment failed');
-        }
-
-        const updatedComment = await response.json();
-        return updatedComment;
-    } catch (error) {
-        console.error('Error updating comment:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Update comment failed");
     }
+
+    const updatedComment = await response.json();
+    return updatedComment;
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    throw error;
+  }
 };
 
 const deleteComment = async (commentId) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/${commentId}`,
-            {
-                method: 'DELETE',
-            }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/Comments/${commentId}`,
+      {
+        method: "DELETE",
+      }
+    );
 
-        if (!response.ok) {
-            throw new Error('Delete comment failed');
-        }
-
-        return { success: true };
-    } catch (error) {
-        console.error('Error deleting comment:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Delete comment failed");
     }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
+  }
 };
 
 const updateCommentStatus = async (commentId, newStatus) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/Comments/${commentId}/status?status=${newStatus}`,
-            {
-                method: 'PUT',
-            }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/Comments/${commentId}/status?status=${newStatus}`,
+      {
+        method: "PUT",
+      }
+    );
 
-        if (!response.ok) {
-            throw new Error('Update comment status failed');
-        }
-
-        const updatedComment = await response.json();
-        return updatedComment;
-    } catch (error) {
-        console.error('Error updating comment status:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Update comment status failed");
     }
+
+    const updatedComment = await response.json();
+    return updatedComment;
+  } catch (error) {
+    console.error("Error updating comment status:", error);
+    throw error;
+  }
 };
 
 export {
-    getAllComments,
-    getCommentsByProjectTaskId,
-    getCommentsByProjectId,
-    getCommentsById,
-    createComment,
-    updateComment,
-    deleteComment,
-    updateCommentStatus,
+  getAllComments,
+  getCommentsByProjectTaskId,
+  getCommentsByProjectId,
+  getCommentsById,
+  createComment,
+  updateComment,
+  deleteComment,
+  updateCommentStatus,
 };

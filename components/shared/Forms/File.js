@@ -83,6 +83,7 @@ export default function FormFile({
                 onError={(e) => {
                   setPreviewImage("/images/results/no-file.png");
                 }}
+                unoptimized={true}
               />
             ) : (
               <Image
@@ -94,6 +95,7 @@ export default function FormFile({
                 onError={(e) => {
                   setPreviewImage("/images/results/no-image.png");
                 }}
+                unoptimized={true}
               />
             )}
           </Box>
