@@ -21,6 +21,26 @@ const getPaymentStagesByProjectId = async ({
   }
 };
 
+const getPaymentStagesByProjectIdWithAllowedAction = async ({
+  projectId = "",
+  status = "",
+  search = "",
+  pageSize = "",
+  pageNo = "",
+} = {}) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      { cache: "no-store" }
+    );
+    const paymentStages = await response.json();
+    return paymentStages.data;
+  } catch (error) {
+    console.error("Error fetching payment stages by project ID:", error);
+    throw error;
+  }
+};
+
 const getPaymentStagesById = async (id) => {
   try {
     const response = await fetch(
@@ -245,6 +265,7 @@ const suspendPaymentStage = async (id) => {
 
 export {
   getPaymentStagesByProjectId,
+  getPaymentStagesByProjectIdWithAllowedAction,
   getPaymentStagesById,
   createPaymentStage,
   updatePaymentStage,

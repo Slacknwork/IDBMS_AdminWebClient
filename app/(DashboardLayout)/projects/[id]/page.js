@@ -316,20 +316,6 @@ export default function ProjectDetails() {
               <Grid container sx={{ mt: 1, pt: 2 }}>
                 <Grid item xs={6} lg={5}>
                   <Typography variant="h6" sx={{ my: "auto" }}>
-                    Đã bảo hiểm:
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
-                  <Typography variant="p" sx={{ my: "auto" }}>
-                    {formData?.totalWarrantyPaid?.toLocaleString("en-US") ?? 0}{" "}
-                    VND
-                  </Typography>
-                </Grid>
-              </Grid>
-
-              <Grid container sx={{ mt: 1, pt: 2 }}>
-                <Grid item xs={6} lg={5}>
-                  <Typography variant="h6" sx={{ my: "auto" }}>
                     Tổng tiền phạt:
                   </Typography>
                 </Grid>

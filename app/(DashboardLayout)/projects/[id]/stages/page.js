@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import stageStatusOptions from "/constants/enums/stageStatus";
 
 import {
-  getPaymentStagesByProjectId,
+  getPaymentStagesByProjectIdWithAllowedAction,
   startPaymentStage,
   endPaymentStage,
   suspendPaymentStage,
@@ -93,7 +93,7 @@ export default function PaymentStages() {
 
       try {
         setLoading(true);
-        const data = await getPaymentStagesByProjectId({
+        const data = await getPaymentStagesByProjectIdWithAllowedAction({
           projectId,
           search,
           status,
