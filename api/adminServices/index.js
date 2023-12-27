@@ -28,7 +28,7 @@ const getAdminById = async (adminId) => {
             throw new Error('Get failed');
         }
         const admin = await response.json();
-        return admin;
+        return admin.data;
     } catch (error) {
         console.error("Error fetching admin by ID:", error);
         throw error;
