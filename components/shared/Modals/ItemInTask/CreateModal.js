@@ -153,35 +153,35 @@ export default function CreateItemModal({ success }) {
       size="big"
     >
       <Grid item xs={12} lg={12}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={"35%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Tên sản phẩm
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Hình ảnh
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Số lượng (Qty)
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"10%"}></StyledTableCell>
-              <StyledTableCell width={"25%"} align="right">
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Chi tiết
-                </Typography>
-              </StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items &&
-              items.map((item, index) => (
+        {items && items.length > 0 && (
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell width={"35%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Tên sản phẩm
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"15%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Hình ảnh
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"15%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Số lượng (Qty)
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"10%"}></StyledTableCell>
+                <StyledTableCell width={"25%"} align="right">
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Chi tiết
+                  </Typography>
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {items.map((item, index) => (
                 <StyledTableRow key={item?.id}>
                   <TableCell>
                     <Typography variant="p" fontWeight={600}>
@@ -260,8 +260,10 @@ export default function CreateItemModal({ success }) {
                   </TableCell>
                 </StyledTableRow>
               ))}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        )}
+
         <Box sx={{ mt: 2, display: "flex" }}>
           <ItemModal
             sx={{ my: "auto" }}

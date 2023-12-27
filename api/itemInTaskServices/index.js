@@ -26,7 +26,7 @@ const getItemInTasksByProjectId = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const paramString = `name=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
+    const paramString = `itemCodeOrName=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetch(
       `https://localhost:7062/api/ItemInTasks/project/${projectId}?${paramString}`,
       { cache: "no-store" }
@@ -57,7 +57,7 @@ const getItemInTasksByTaskId = async ({
 } = {}) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/project-task/${taskId}?name=${search}&itemCategoryId=${category}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
+      `https://localhost:7062/api/ItemInTasks/project-task/${taskId}?itemCodeOrName=${search}&itemCategoryId=${category}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
       { cache: "no-store" }
     );
 

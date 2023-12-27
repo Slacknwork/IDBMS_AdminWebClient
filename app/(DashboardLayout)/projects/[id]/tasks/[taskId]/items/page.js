@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
-  Chip,
+  CircularProgress,
+  Grid,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,25 +16,28 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Stack,
-  CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import checkValidUrl from "components/validations/url";
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
-import ItemInTaskModal from "/components/shared/Modals/ItemInTask/CreateModal";
-import { getItemInTasksByTaskId } from "api/itemInTaskServices";
+import {
+  getItemInTasksByTaskId,
+  deleteItemInTask,
+} from "api/itemInTaskServices";
 import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
 
+import ItemInTaskModal from "/components/shared/Modals/ItemInTask/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
+import FormModal from "/components/shared/Modals/Form";
+import MessageModal from "/components/shared/Modals/Message";
+import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -76,6 +82,7 @@ export default function InteriorItems() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
+    setLoading(true);
     const taskId = params.taskId;
     const search = searchParams.get(searchQuery) ?? "";
     const categoryId = searchParams.get(categoryQuery) ?? "";
@@ -109,17 +116,17 @@ export default function InteriorItems() {
   const [itemCategories, setItemCategories] = useState([]);
 
   // FETCH OPTIONS
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllInteriorItemCategories();
+      setItemCategories(response.list);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
+  };
   const fetchOptionsFromApi = async () => {
     setLoading(true);
-    const fetchCategories = async () => {
-      try {
-        const response = await getAllInteriorItemCategories();
-        setItemCategories(response.list);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      }
-    };
     await Promise.all([fetchCategories()]);
     setLoading(false);
   };
@@ -130,6 +137,17 @@ export default function InteriorItems() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
+  };
+
+  const onDeleteItemInTask = async (id) => {
+    try {
+      await deleteItemInTask(id);
+      toast.success("Xóa thành công!");
+      await fetchDataFromApi();
+    } catch (error) {
+      toast.error("Lỗi xóa sản phẩm!");
+    } finally {
+    }
   };
 
   return (
@@ -161,25 +179,28 @@ export default function InteriorItems() {
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
+              <StyledTableCell width={"25%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên sản phẩm
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"15%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Hình ảnh
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"20%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Danh mục
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width={"10%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Trạng thái công việc
+                  Số lượng
                 </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"30%"}>
+                <Typography variant="subtitle2" fontWeight={600}></Typography>
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -218,15 +239,48 @@ export default function InteriorItems() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      label={
-                        projectTaskStatus[item?.projectTask?.status] ??
-                        "Không xác định"
-                      }
-                      color={
-                        item?.projectTask?.status === 0 ? "default" : "primary"
-                      }
-                    />
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {item.quantity}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        my: "auto",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <Button
+                        component={Link}
+                        disableElevation
+                        variant="contained"
+                        href={`/items/${item.interiorItem?.id}`}
+                      >
+                        Thông tin
+                      </Button>
+                      <FormModal
+                        sx={{ ml: 1 }}
+                        size="small"
+                        title="Cập nhật số lượng"
+                        buttonLabel="Cập nhật SL"
+                        submitLabel="Cập nhật"
+                        onSubmit={() => onDeleteItemInTask(item.id)}
+                        bottomLeftContent={
+                          <MessageModal color="error" buttonLabel="Xóa">
+                            Xóa sản phẩm này?
+                          </MessageModal>
+                        }
+                      >
+                        <Grid item xs={12} lg={12}>
+                          <NumberSimpleForm
+                            title="Số lượng"
+                            required
+                            subtitle="Số lượng sản phẩm"
+                          ></NumberSimpleForm>
+                        </Grid>
+                      </FormModal>
+                    </Box>
                   </TableCell>
                 </StyledTableRow>
               ))}
