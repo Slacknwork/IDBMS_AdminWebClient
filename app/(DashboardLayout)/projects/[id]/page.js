@@ -341,6 +341,19 @@ export default function ProjectDetails() {
                 </Grid>
               </Grid>
 
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Tổng đã trả:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.amountPaid?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
             </Card>
           </Grid>
         </Grid>
