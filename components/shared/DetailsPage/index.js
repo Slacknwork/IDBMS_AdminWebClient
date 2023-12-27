@@ -43,15 +43,7 @@ export default function DetailsPage({
             {title}
           </Typography>
           <Box sx={{ display: "flex" }}>
-            <MessageModal
-              disabled={loading}
-              buttonLabel={saveLabel}
-              onSubmit={onSave}
-              title={saveLabel}
-              submitLabel={saveLabel}
-            >
-              <Typography variant="p">{saveMessage}</Typography>
-            </MessageModal>
+
             {hasHide ? (
               isHidden ? (
                 <MessageModal
@@ -61,6 +53,7 @@ export default function DetailsPage({
                   onSubmit={onHiddenStatusChange}
                   title={showLabel}
                   submitLabel={showLabel}
+                  color="success"
                 >
                   <Typography variant="p">{showMessage}</Typography>
                 </MessageModal>
@@ -72,11 +65,24 @@ export default function DetailsPage({
                   onSubmit={onHiddenStatusChange}
                   title={hideLabel}
                   submitLabel={hideLabel}
+                  color="warning"
                 >
                   <Typography variant="p">{hideMessage}</Typography>
                 </MessageModal>
               )
             ) : null}
+
+            <MessageModal
+              disabled={loading}
+              sx={{ ml: 2 }}
+              buttonLabel={saveLabel}
+              onSubmit={onSave}
+              title={saveLabel}
+              submitLabel={saveLabel}
+            >
+              <Typography variant="p">{saveMessage}</Typography>
+            </MessageModal>
+
             {hasDelete ? (
               <MessageModal
                 disabled={loading}

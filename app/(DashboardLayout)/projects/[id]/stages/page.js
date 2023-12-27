@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import stageStatusOptions from "/constants/enums/stageStatus";
 
 import {
-  getPaymentStagesByProjectId,
+  getPaymentStagesByProjectIdWithAllowedAction,
   startPaymentStage,
   endPaymentStage,
   suspendPaymentStage,
@@ -37,6 +37,7 @@ import Pagination from "/components/shared/Pagination";
 import { stageStatusBackgroundChipColors } from "../../../../../constants/enums/stageStatus";
 import ReopenStageModal from "/components/shared/Modals/Stages/ReopenStageModal"
 import MessageModal from "/components/shared/Modals/Message";
+import moment from "moment-timezone";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,6 +74,7 @@ export default function PaymentStages() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
   // FETCH DATA FROM API
   const [stages, setStages] = useState([]);
@@ -91,7 +93,7 @@ export default function PaymentStages() {
 
       try {
         setLoading(true);
-        const data = await getPaymentStagesByProjectId({
+        const data = await getPaymentStagesByProjectIdWithAllowedAction({
           projectId,
           search,
           status,
@@ -204,7 +206,7 @@ export default function PaymentStages() {
               </StyledTableCell>
               <StyledTableCell width={"10%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Hạn chót
+                  Hạn chót thanh toán
                 </Typography>
               </StyledTableCell>
               <StyledTableCell align="center" width={"7%"}>
@@ -228,11 +230,15 @@ export default function PaymentStages() {
                   <Typography variant="subtitle2" fontWeight={400}>
                     {response.stage.name}
                   </Typography>
+                  <Typography variant="subtitle2" fontWeight={800}>
+                    {response.stage?.isWarrantyStage ? "(Giai đoạn bảo hành)" : null}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {response.stage?.totalContractPaid?.toLocaleString("en-US") ?? 0}
                   </Typography>
+                  ~ {response.stage?.pricePercentage ?? 0} %
                   <Typography variant="subtitle2" fontWeight={800}>
                     {response.stage?.isContractAmountPaid ? "(Đã trả)" : "(Chưa trả)"}
                   </Typography>
@@ -243,7 +249,8 @@ export default function PaymentStages() {
                   </Typography>
                   {response.stage?.penaltyFee > 0 ? "+ " + (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0) : null}
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {response.stage?.isIncurredAmountPaid ? "(Đã trả)" : "(Chưa trả)"}
+                    {response.stage?.isIncurredAmountPaid ? "(Đã trả)"
+                      : response.stage?.isContractAmountPaid ? "(Chưa trả)" : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -262,14 +269,12 @@ export default function PaymentStages() {
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {response.stage.endTimePayment
-                      ? new Date(response.stage.endTimePayment).toLocaleDateString(
-                        "vi-VN"
-                      )
+                      ? moment(response.stage.endTimePayment).format("L")
                       : "Chưa xác định"}
                   </Typography>
-                  <Typography variant="subtitle2" fontWeight={800}>
+                  {/* <Typography variant="subtitle2" fontWeight={800}>
                     {response.stage?.isPrepaid ? "(Trả trước)" : null}
-                  </Typography>
+                  </Typography> */}
                 </TableCell>
                 <TableCell align="center">
                   <Chip
