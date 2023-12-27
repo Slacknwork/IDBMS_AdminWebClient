@@ -26,7 +26,6 @@ import { getProjectTaskById } from "/api/projectTaskServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import SliderForm from "/components/shared/Forms/Slider";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 
 export default function CreateReportModal({ children }) {
@@ -37,7 +36,6 @@ export default function CreateReportModal({ children }) {
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    percentage: 0,
     calculationUnit: "",
     calculationUnitError: { hasError: false, label: "" },
     unitUsed: 0,
@@ -157,16 +155,6 @@ export default function CreateReportModal({ children }) {
                 <>{calculationUnitOptions[project.calculationUnit]}</>
               }
             ></NumberSimpleForm>
-          </Grid>
-
-          <Grid item xs={12} lg={12}>
-            <SliderForm
-              title="Phần trăm công việc"
-              required
-              subtitle="Khối lượng đã sử dụng"
-              value={formData.percentage}
-              onChange={(value) => handleInputChange("percentage", value)}
-            ></SliderForm>
           </Grid>
 
           {/* DESCRIPTION */}
