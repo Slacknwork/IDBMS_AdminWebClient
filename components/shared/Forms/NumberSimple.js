@@ -23,6 +23,7 @@ export default function FormNumberSimple({
   error,
   errorLabel,
   onChange,
+  startAdornment,
   endAdornment,
 }) {
   return (
@@ -48,6 +49,11 @@ export default function FormNumberSimple({
             helperText={errorLabel}
             onChange={(e) => onChange(Number(e.target.value))}
             InputProps={{
+              startAdornment: startAdornment && (
+                <InputAdornment position="start">
+                  {startAdornment}
+                </InputAdornment>
+              ),
               endAdornment: endAdornment && (
                 <InputAdornment position="end">{endAdornment}</InputAdornment>
               ),

@@ -1,142 +1,163 @@
 const getAllTaskReports = async ({
-    name = "",
-    pageSize = "",
-    pageNo= "",
+  name = "",
+  pageSize = "",
+  pageNo = "",
 } = {}) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/TaskReports?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      { cache: "no-store" }
+    );
 
-        if (!response.ok) {
-            throw new Error('Get all task reports failed');
-        }
-
-        const reports = await response.json();
-        return reports.data;
-    } catch (error) {
-        console.error('Error fetching all task reports:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get all task reports failed");
     }
+
+    const reports = await response.json();
+    return reports.data;
+  } catch (error) {
+    console.error("Error fetching all task reports:", error);
+    throw error;
+  }
 };
 
 const getTaskReportsByProjectTaskId = async ({
-    projectTaskId = "",
-    name = "",
-    pageSize = "",
-    pageNo= "",
+  projectTaskId = "",
+  name = "",
+  pageSize = "",
+  pageNo = "",
 } = {}) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/TaskReports/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      { cache: "no-store" }
+    );
 
-        if (!response.ok) {
-            throw new Error('Get task reports by project task ID failed');
-        }
-
-        const reports = await response.json();
-        return reports.data;
-    } catch (error) {
-        console.error('Error fetching task reports by project task ID:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get task reports by project task ID failed");
     }
+
+    const reports = await response.json();
+    return reports.data;
+  } catch (error) {
+    console.error("Error fetching task reports by project task ID:", error);
+    throw error;
+  }
 };
 
-const createTaskReport = async (request) => {
-    try {
-        const response = await fetch('https://localhost:7062/api/TaskReports', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(request),
+const createTaskReport = async (projectId, request) => {
+  const formData = new FormData();
+
+  const appendFormData = (data, prefix = "", suffix = "") => {
+    for (const key in data) {
+      const value = data[key];
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+
+      if (Array.isArray(value)) {
+        value.forEach((element, index) => {
+          for (const key in element) {
+            const value = element[key];
+            formData.append(`${fullKey}[${index}].${key}`, value);
+          }
         });
-
-        if (!response.ok) {
-            throw new Error('Create task report failed');
-        }
-
-        const createdReport = await response.json();
-        return createdReport;
-    } catch (error) {
-        console.error('Error creating task report:', error);
-        throw error;
+      } else {
+        formData.append(fullKey, value ?? "");
+      }
     }
+  };
+
+  appendFormData(request);
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports?projectId=${projectId}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Create task report failed");
+    }
+
+    const createdReport = await response.json();
+    return createdReport;
+  } catch (error) {
+    console.error("Error creating task report:", error);
+    throw error;
+  }
 };
 
 const updateTaskReport = async (reportId, request) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/TaskReports/${reportId}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
-            }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports/${reportId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
-        if (!response.ok) {
-            throw new Error('Update task report failed');
-        }
-
-        const updatedReport = await response.json();
-        return updatedReport;
-    } catch (error) {
-        console.error('Error updating task report:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Update task report failed");
     }
+
+    const updatedReport = await response.json();
+    return updatedReport;
+  } catch (error) {
+    console.error("Error updating task report:", error);
+    throw error;
+  }
 };
 
 const deleteTaskReport = async (reportId) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/TaskReports/${reportId}`,
-            {
-                method: 'DELETE',
-            }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports/${reportId}`,
+      {
+        method: "DELETE",
+      }
+    );
 
-        if (!response.ok) {
-            throw new Error('Delete task report failed');
-        }
-
-        // Assuming successful deletion doesn't return data, you can adjust as needed.
-        return { success: true };
-    } catch (error) {
-        console.error('Error deleting task report:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Delete task report failed");
     }
+
+    // Assuming successful deletion doesn't return data, you can adjust as needed.
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting task report:", error);
+    throw error;
+  }
 };
 
 const getTaskReportById = async (reportId) => {
-    try {
-        const response = await fetch(
-            `https://localhost:7062/api/TaskReports/${reportId}`,
-            { cache: 'no-store' }
-        );
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/TaskReports/${reportId}`,
+      { cache: "no-store" }
+    );
 
-        if (!response.ok) {
-            throw new Error('Get task report by ID failed');
-        }
-
-        const report = await response.json();
-        return report.data;
-    } catch (error) {
-        console.error('Error fetching task report by ID:', error);
-        throw error;
+    if (!response.ok) {
+      throw new Error("Get task report by ID failed");
     }
+
+    const report = await response.json();
+    return report.data;
+  } catch (error) {
+    console.error("Error fetching task report by ID:", error);
+    throw error;
+  }
 };
 
 export {
-    getAllTaskReports,
-    getTaskReportsByProjectTaskId,
-    getTaskReportById,
-    createTaskReport,
-    updateTaskReport,
-    deleteTaskReport,
+  getAllTaskReports,
+  getTaskReportsByProjectTaskId,
+  getTaskReportById,
+  createTaskReport,
+  updateTaskReport,
+  deleteTaskReport,
 };

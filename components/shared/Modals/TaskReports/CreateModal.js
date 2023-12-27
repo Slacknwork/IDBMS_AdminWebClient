@@ -32,27 +32,25 @@ export default function CreateReportModal({ children }) {
   const params = useParams();
   const router = useRouter();
 
-  const [project, setProject] = useState({});
+  const [task, setTask] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    calculationUnit: "",
-    calculationUnitError: { hasError: false, label: "" },
     unitUsed: 0,
     unitUsedError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
-    files: [],
-    filesError: { hasError: false, label: "" },
+    documentList: [],
+    projectTaskId: params.taskId,
   });
 
   const handleInputChange = (field, value) => {
     switch (field) {
       case "percentage":
-        if (value < project.percentage) value = project.percentage;
+        if (value < task.percentage) value = task.percentage;
         setFormData((prevData) => ({
           ...prevData,
-          unitUsed: (project.unitInContract * (value / 100)).toFixed(2),
+          unitUsed: (task.unitInContract * (value / 100)).toFixed(2),
         }));
         break;
       default:
@@ -61,18 +59,21 @@ export default function CreateReportModal({ children }) {
   };
 
   const handleFileInputChange = (files) => {
-    const filesArray = Array.from(files);
+    const filesArray = Array.from(files).map((file) => ({
+      name: file.name,
+      document: file,
+    }));
     setFormData((prevData) => ({
       ...prevData,
-      files: [...prevData.files, ...filesArray],
+      documentList: [...prevData.documentList, ...filesArray],
     }));
   };
   const handleRemoveFile = (index) => {
-    const newFiles = [...formData.files];
+    const newFiles = [...formData.documentList];
     newFiles.splice(index, 1);
     setFormData((prevData) => ({
       ...prevData,
-      files: newFiles,
+      documentList: newFiles,
     }));
   };
 
@@ -90,21 +91,18 @@ export default function CreateReportModal({ children }) {
 
   const handleCreate = async () => {
     try {
-      const response = await createTaskReport(formData);
+      const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
-      router.push(
-        `/projects/${params.id}/tasks/${params.taskId}/reports/${response.data.id}`
-      );
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
     }
   };
 
-  const fetchProject = async () => {
+  const fetchTask = async () => {
     try {
-      const project = await getProjectTaskById(params.taskId);
-      setProject(project);
+      const task = await getProjectTaskById(params.taskId);
+      setTask(task);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống!");
@@ -112,7 +110,7 @@ export default function CreateReportModal({ children }) {
   };
 
   useEffect(() => {
-    fetchProject();
+    fetchTask();
   }, []);
 
   return (
@@ -151,8 +149,28 @@ export default function CreateReportModal({ children }) {
               error={formData.unitUsedError.hasError}
               errorLabel={formData.unitUsedError.label}
               onChange={(value) => handleInputChange("unitUsed", value)}
+              startAdornment={
+                <>
+                  {task?.unitUsed}
+                  <Typography variant="p" sx={{ mx: 1 }}>
+                    +
+                  </Typography>
+                </>
+              }
               endAdornment={
-                <>{calculationUnitOptions[project.calculationUnit]}</>
+                <>
+                  <Typography variant="p" sx={{ mx: 1 }}>
+                    =
+                  </Typography>
+                  {task.unitUsed + formData.unitUsed}
+                  <Typography variant="p" sx={{ mx: 1 }}>
+                    /
+                  </Typography>
+                  {task.unitInContract}
+                  <Typography variant="p" sx={{ mx: 1 }}>
+                    ({calculationUnitOptions[task?.calculationUnit]})
+                  </Typography>
+                </>
               }
             ></NumberSimpleForm>
           </Grid>
@@ -195,9 +213,9 @@ export default function CreateReportModal({ children }) {
           />
         </Box>
         <Box sx={{ mt: 1, width: 1 }}>
-          {formData.files && formData.files.length > 0 ? (
+          {formData.documentList && formData.documentList.length > 0 ? (
             <List>
-              {formData.files?.map((file, index) => (
+              {formData.documentList?.map((file, index) => (
                 <ListItem
                   key={file.name}
                   secondaryAction={
