@@ -25,6 +25,7 @@ export default function CreateStageModal({ success }) {
     description: "",
     descriptionError: { hasError: false, label: "" },
     isPrepaid: false,
+    isWarrantyStage: false,
     pricePercentage: 0,
     pricePercentageError: { hasError: false, label: "" },
     endTimePayment: null,
@@ -94,6 +95,17 @@ export default function CreateStageModal({ success }) {
           endAdornment={<>%</>}
         ></NumberForm>
       </Grid>
+
+      {/* IS WARRANTY PAID */}
+      <Grid item xs={12} lg={6}>
+        <CheckboxForm
+          title="Giai đoạn bảo hành"
+          subtitle="Check vào ô nếu là giai đoạn bảo hành"
+          value={formData.isPrepaid}
+          onChange={(e) => handleInputChange("isWarrantyStage", e.target.checked)}
+        ></CheckboxForm>
+      </Grid>
+
 
       {/* IS PREPAID */}
       <Grid item xs={12} lg={6}>
