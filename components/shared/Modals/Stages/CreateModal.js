@@ -87,7 +87,7 @@ export default function CreateStageModal({ success }) {
         <NumberForm
           title="Khoảng phần trăm"
           required
-          subtitle="Nhập số phần trăm trên số tiền tổng dự án cho giai đoạn này"
+          subtitle="% trên tổng số tiền"
           value={formData.pricePercentage}
           error={formData.pricePercentageError.hasError}
           errorLabel={formData.pricePercentageError.label}
@@ -111,7 +111,7 @@ export default function CreateStageModal({ success }) {
       <Grid item xs={12} lg={6}>
         <CheckboxForm
           title="Phải trả trước"
-          subtitle="Check vào ô nếu giai đoạn này phải được thanh toán trước khi bắt đầu"
+          subtitle="Check nếu phải thanh toán trước khi bắt đầu"
           value={formData.isPrepaid}
           onChange={(e) => handleInputChange("isPrepaid", e.target.checked)}
         ></CheckboxForm>
