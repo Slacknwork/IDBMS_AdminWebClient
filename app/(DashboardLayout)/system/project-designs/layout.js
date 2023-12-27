@@ -9,7 +9,7 @@ export default function ProjectDesignsLayout({ children }) {
       title="Thiết kế dự án"
       description="Danh sách các thiết kế dự án"
     >
-      <Typography variant="h2">Danh sách thiết kế dự án</Typography>
+      <Typography variant="h2">Thiết kế dự án</Typography>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>

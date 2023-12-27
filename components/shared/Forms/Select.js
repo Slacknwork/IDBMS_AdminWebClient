@@ -26,6 +26,7 @@ export default function FormText({
   error,
   errorLabel,
   onChange,
+  disableOptions = [],
 }) {
   return (
     <Grid container spacing={spacing} sx={sx}>
@@ -51,7 +52,7 @@ export default function FormText({
               {defaultLabel}
             </MenuItem>
             {options.map((option, index) => (
-              <MenuItem key={option} value={index}>
+              <MenuItem key={option} value={index} disabled={disableOptions.includes(index)}>
                 {option}
               </MenuItem>
             ))}

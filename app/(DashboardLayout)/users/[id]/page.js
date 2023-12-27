@@ -67,73 +67,73 @@ export default function ItemDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-      setLoading(true)
-      const fetchUser = async () => {
-          try {
-              const response = await getUserById(params.id);
-              console.log(response);
-              setFormData((prevData) => ({ ...prevData, ...response }));
-          } catch (error) {
-              console.error("Error fetching data:", error);
-              toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
-          }
-      };
-        await Promise.all([
-          fetchUser(),
-        ]);
-      setLoading(false);
+    setLoading(true)
+    const fetchUser = async () => {
+      try {
+        const response = await getUserById(params.id);
+        console.log(response);
+        setFormData((prevData) => ({ ...prevData, ...response }));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchUser(),
+    ]);
+    setLoading(false);
   };
 
   useEffect(() => {
-      fetchDataFromApi();
+    fetchDataFromApi();
   }, []);
 
 
   const onSaveUser = async () => {
     const transformedValue = transformData(formData);
-        console.log(transformedValue);
-        try {
-            const response = await updateUser(params.id, transformedValue);
-            console.log(response);
-            toast.success("Cập nhật thành công!");
-            await fetchDataFromApi()
-        } catch (error) {
-            console.error("Error :", error);
-            toast.error("Lỗi!");
-        }
-  };
-  const onSuspendUser = async () => { 
+    console.log(transformedValue);
     try {
-      if (formData?.status === 2){
+      const response = await updateUser(params.id, transformedValue);
+      console.log(response);
+      toast.success("Cập nhật thành công!");
+      await fetchDataFromApi()
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+  const onSuspendUser = async () => {
+    try {
+      if (formData?.status === 2) {
         const response = await updateUserStatus(
           params.id,
           0,
-      );
-      toast.success("Phục hồi thành công!");
-      }else if (formData?.status === 0){
+        );
+        toast.success("Phục hồi thành công!");
+      } else if (formData?.status === 0) {
         const response = await updateUserStatus(
           params.id,
           2,
-      );
-      toast.success("Đình chỉ thành công!");
+        );
+        toast.success("Đình chỉ thành công!");
       }
       await fetchDataFromApi();
-  } catch (error) {
+    } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
-  }
+    }
   };
 
   const transformData = (obj) => {
     const result = { ...obj };
     for (const key in result) {
-        if (result[key] === null) {
-            result[key] = "";
-        }
+      if (result[key] === null) {
+        result[key] = "";
+      }
     }
 
     return result;
-};
+  };
   return (
     <PageContainer title={formData.name} description="Chi tiết người dùng">
       <DashboardCard>
@@ -142,8 +142,8 @@ export default function ItemDetails() {
           saveMessage="Lưu thông tin người dùng?"
           deleteMessage={
             (formData?.status === 2)
-                ? "Phục hồi người dùng này?"
-                : "Đình chỉ người dùng này?"
+              ? "Phục hồi người dùng này?"
+              : "Đình chỉ người dùng này?"
           }
           onSave={onSaveUser}
           deleteLabel={(formData?.status === 2) ? "Phục hồi" : "Đình chỉ"}

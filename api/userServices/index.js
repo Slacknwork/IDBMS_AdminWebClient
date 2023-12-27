@@ -10,10 +10,10 @@ const getAllUsers = async ({
   nameOrEmail = "",
   status = "",
   pageSize = "",
-  pageNo= "",
+  pageNo = "",
 } = {}) => {
   try {
-    const paramString = `nameOrEmail=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const paramString = `searchParam=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetch(`${API_BASE_URL}?${paramString}`);
     const users = await response.json();
     return users.data;

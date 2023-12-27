@@ -263,6 +263,7 @@ export default function CreateProjectModal({ children }) {
           onChange={(value) =>
             handleInputChange("advertisementStatus", value)
           }
+          disableOptions={[2]}
         ></SelectForm>
       </Grid>
 
