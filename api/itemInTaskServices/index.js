@@ -119,16 +119,15 @@ const createItemInTask = async (taskId, request) => {
   }
 };
 
-const updateItemInTask = async (itemId, request) => {
+const updateItemInTaskQuantity = async (itemId, quantity) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/${itemId}`,
+      `https://localhost:7062/api/ItemInTasks/${itemId}/quantity?quantity=${quantity}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(request),
       }
     );
 
@@ -168,6 +167,6 @@ export {
   getItemInTasksByProjectId,
   getItemInTasksByTaskId,
   createItemInTask,
-  updateItemInTask,
+  updateItemInTaskQuantity,
   deleteItemInTask,
 };

@@ -26,6 +26,7 @@ import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
 import {
   getItemInTasksByTaskId,
+  updateItemInTaskQuantity,
   deleteItemInTask,
 } from "api/itemInTaskServices";
 import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
@@ -146,7 +147,21 @@ export default function InteriorItems() {
       await fetchDataFromApi();
     } catch (error) {
       toast.error("Lỗi xóa sản phẩm!");
-    } finally {
+    }
+  };
+
+  const [selectedItemQuantity, setSelectedItemQuantity] = useState(1);
+  const onOpenEditQuantityModal = (item) => {
+    setSelectedItemQuantity(item.quantity);
+  };
+
+  const onUpdateItemQuantity = async (item) => {
+    try {
+      await updateItemInTaskQuantity(item.id, selectedItemQuantity);
+      toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
+    } catch (error) {
+      toast.error("Lỗi cập nhật!");
     }
   };
 
@@ -265,17 +280,25 @@ export default function InteriorItems() {
                         title="Cập nhật số lượng"
                         buttonLabel="Cập nhật SL"
                         submitLabel="Cập nhật"
-                        onSubmit={() => onDeleteItemInTask(item.id)}
+                        hasOpenEvent
+                        onOpen={() => onOpenEditQuantityModal(item)}
                         bottomLeftContent={
-                          <MessageModal color="error" buttonLabel="Xóa">
+                          <MessageModal
+                            color="error"
+                            buttonLabel="Xóa"
+                            onSubmit={() => onDeleteItemInTask(item.id)}
+                          >
                             Xóa sản phẩm này?
                           </MessageModal>
                         }
+                        onSubmit={() => onUpdateItemQuantity(item)}
                       >
                         <Grid item xs={12} lg={12}>
                           <NumberSimpleForm
                             title="Số lượng"
                             required
+                            value={selectedItemQuantity}
+                            onChange={(value) => setSelectedItemQuantity(value)}
                             subtitle="Số lượng sản phẩm"
                           ></NumberSimpleForm>
                         </Grid>

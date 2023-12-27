@@ -182,7 +182,7 @@ export default function CreateItemModal({ success }) {
             </TableHead>
             <TableBody>
               {items.map((item, index) => (
-                <StyledTableRow key={item?.id}>
+                <StyledTableRow key={item?.interiorItem?.code}>
                   <TableCell>
                     <Typography variant="p" fontWeight={600}>
                       {item?.interiorItem?.code ?? ""}
