@@ -150,6 +150,99 @@ const getPaymentStagesFilter = async (
   }
 };
 
+const startPaymentStage = async (id) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/${id}/start`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Start failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching start payment stage:", error);
+    throw error;
+  }
+};
+
+const endPaymentStage = async (id) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/${id}/end`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("End failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching end payment stage:", error);
+    throw error;
+  }
+};
+
+const reopenPaymentStage = async (id, request) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/${id}/reopen`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Reopen failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching reopen payment stage:", error);
+    throw error;
+  }
+};
+
+const suspendPaymentStage = async (id) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/${id}/suspend`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Suspend failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching suspend payment stage:", error);
+    throw error;
+  }
+};
+
 export {
   getPaymentStagesByProjectId,
   getPaymentStagesById,
@@ -158,4 +251,8 @@ export {
   updatePaymentStageIsHidden,
   getPaymentStagesFilter,
   countPaymentStagesFilter,
+  startPaymentStage,
+  endPaymentStage,
+  reopenPaymentStage,
+  suspendPaymentStage,
 };
