@@ -89,6 +89,7 @@ export default function AdvertisementDetailsPage() {
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

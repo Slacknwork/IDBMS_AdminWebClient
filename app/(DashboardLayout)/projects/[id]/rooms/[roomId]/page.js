@@ -108,6 +108,7 @@ export default function RoomDetailsPage() {
     try {
       const response = await updateRoom(params.roomId ?? "", formData);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

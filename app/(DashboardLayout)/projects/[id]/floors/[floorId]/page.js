@@ -125,6 +125,7 @@ export default function FloorDetailsPage() {
     try {
       const response = await updateFloor(params.floorId ?? "", formData);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

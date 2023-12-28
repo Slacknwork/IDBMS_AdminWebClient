@@ -95,6 +95,7 @@ export default function StageOverview() {
       toast.success("Lưu thành công!");
       setPageName(formData.name);
       setPageDescription(formData.description);
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi!");
