@@ -128,6 +128,7 @@ export default function TaskDesignDetails() {
             const response = await updateTaskDesign(params.id, transformedValue);
             console.log(response);
             toast.success("Cập nhật thành công!");
+            await fetchDataFromApi();
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

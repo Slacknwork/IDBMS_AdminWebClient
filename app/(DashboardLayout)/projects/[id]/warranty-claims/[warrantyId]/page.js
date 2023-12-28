@@ -95,6 +95,7 @@ export default function WarrantyClaimDetails() {
       const response = await updateWarrantyClaim(params.warrantyId, transformedValue);
       console.log(response);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
