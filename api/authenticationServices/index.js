@@ -22,4 +22,25 @@ const loginAdmin = async (request) => {
     }
 };
 
-export { loginAdmin };
+const loginByGoogle = async (request) => {
+    try {
+        const response = await fetch(`https://localhost:7062/api/Authentications/loginByGoogle`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+
+        const admin = await response.json();
+        return admin;
+    } catch (error) {
+        console.error('Error logging in admin:', error);
+        throw error;
+    }
+};
+export { loginAdmin, loginByGoogle };
