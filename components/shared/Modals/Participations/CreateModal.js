@@ -183,7 +183,7 @@ export default function CreateParticipationModal({ sx, success }) {
                   <MenuItem
                     key={index}
                     value={index}
-                    disabled={index === 0 || index === 5}
+                    disabled={index === 0 || index === 1}
                   >
                     {option}
                   </MenuItem>

@@ -6,6 +6,7 @@ const projectStatusOptions = [
   "Đang hoạt động",
   "Tạm hoãn",
   "Hủy",
+  "Bảo hành",
   "Hoàn thành",
 ];
 
@@ -17,6 +18,7 @@ const projectStatusOptionsEnglish = [
   "Ongoing",
   "Suspended",
   "Canceled",
+  "Bảo hành",
   "Done",
 ];
 
@@ -28,7 +30,8 @@ const projectStatusIndex = {
   Ongoing: 4,
   Suspended: 5,
   Canceled: 6,
-  Done: 7,
+  WarrantyPending: 7,
+  Done: 8,
 };
 
 export { projectStatusIndex, projectStatusOptionsEnglish };

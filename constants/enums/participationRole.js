@@ -1,10 +1,9 @@
 const participationRoleOptions = [
   "Chủ dự án",
-  "Người xem",
-  "Kĩ sư thiết kế trưởng",
+  "Quản lý dự án",
   "Kĩ sư thiết kế",
   "Kĩ sư công trình",
-  "Quản lý dự án",
+  "Người xem",
 ];
 
 export default participationRoleOptions;
