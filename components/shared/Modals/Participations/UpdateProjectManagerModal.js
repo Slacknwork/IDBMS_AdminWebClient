@@ -13,7 +13,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
-import { createEmployees, updateProjectParticipation } from "../../../../api/projectParticipationServices";
+import { createProjectParticipation, updateProjectParticipation } from "../../../../api/projectParticipationServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
 import { getAllUsers } from "../../../../api/userServices";
@@ -21,14 +21,14 @@ import participationRoleOptions from "../../../../constants/enums/participationR
 import companyRoleOptions from "../../../../constants/enums/companyRole";
 import LoopIcon from "@mui/icons-material/Loop";
 
-export default function UpdateProjectManagerParticipationModal({ onCreate, participationId }) {
+export default function UpdateProjectManagerParticipationModal({ success, participationId, currentUserId }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
-        role: 5,
+        role: 1,
         roleError: { hasError: false, label: "" },
         projectId: params.id,
-        userId: [],
+        userId: "",
         userIdError: { hasError: false, label: "" },
     });
 
@@ -62,9 +62,16 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
         console.log(formData)
 
         try {
-            const response = await updateProjectParticipation(participationId, formData);
+            let response
+            if (participationId) {
+                response = await updateProjectParticipation(participationId, formData);
+            } else {
+                response = await createProjectParticipation(formData);
+            }
+
             toast.success("Cập nhật thành công!");
             console.log(response)
+            success(true);
             // router.push(`/roomTypes/${response?.id}`);
         } catch (error) {
             console.error("Error :", error);
@@ -98,6 +105,10 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
         fetchOptionsFromApi();
     }, []);
 
+    useEffect(() => {
+        handleInputChange("userId", currentUserId)
+    }, [currentUserId]);
+
     return (
         <FormModal
             buttonLabel="Cập nhật"
@@ -114,7 +125,7 @@ export default function UpdateProjectManagerParticipationModal({ onCreate, parti
                     required
                     subtitle="Chọn vai trò"
                     value={formData.role}
-                    defaultValue={5}
+                    defaultValue={1}
                     options={participationRoleOptions}
                     error={formData.roleError.hasError}
                     errorLabel={formData.roleError.label}
