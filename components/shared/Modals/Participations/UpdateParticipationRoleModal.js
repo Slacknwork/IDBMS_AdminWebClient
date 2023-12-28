@@ -72,18 +72,18 @@ export default function UpdateParticipationRoleModal({ participant }) {
     const isOptionDisabled = (index) => {
 
         // cannot update to pj owner / manager
-        if (index === 0 || index === 5)
+        if (index === 0 || index === 1)
             return true;
 
         // all role can be Viewer
-        if (index === 1)
+        if (index === 4)
             return false;
 
         switch (participant?.user?.role) {
             case 1: // architect
-                return index < 2 || index > 3; // Allow participation role 2 + 3 - Lead Architect + Architect
+                return index !== 2; // Allow participation role 2 - Architect
             case 2: // construction
-                return index !== 4; // Allow participation role 4 - Construction Manager
+                return index !== 3; // Allow participation role 4 - Construction Manager
             default:
                 return true;
         }
