@@ -21,6 +21,26 @@ const getPaymentStagesByProjectId = async ({
   }
 };
 
+const getPaymentStagesByProjectIdWithAllowedAction = async ({
+  projectId = "",
+  status = "",
+  search = "",
+  pageSize = "",
+  pageNo = "",
+} = {}) => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/PaymentStages/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
+      { cache: "no-store" }
+    );
+    const paymentStages = await response.json();
+    return paymentStages.data;
+  } catch (error) {
+    console.error("Error fetching payment stages by project ID:", error);
+    throw error;
+  }
+};
+
 const getPaymentStagesById = async (id) => {
   try {
     const response = await fetch(
@@ -80,22 +100,22 @@ const updatePaymentStage = async (id, request) => {
   }
 };
 
-const updatePaymentStageIsHidden = async (id, isHidden) => {
+const deletePaymentStage = async (id) => {
   try {
     const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}/isHidden?isHidden=${isHidden}`,
+      `https://localhost:7062/api/PaymentStages/${id}`,
       {
-        method: "PUT",
+        method: "DELETE",
       }
     );
 
     if (!response.ok) {
-      throw new Error("Update isHidden failed");
+      throw new Error("Delete failed");
     }
 
     return true;
   } catch (error) {
-    console.error("Error fetching update payment stage isHidden:", error);
+    console.error("Error fetching delete payment stage:", error);
     throw error;
   }
 };
@@ -245,10 +265,11 @@ const suspendPaymentStage = async (id) => {
 
 export {
   getPaymentStagesByProjectId,
+  getPaymentStagesByProjectIdWithAllowedAction,
   getPaymentStagesById,
   createPaymentStage,
   updatePaymentStage,
-  updatePaymentStageIsHidden,
+  deletePaymentStage,
   getPaymentStagesFilter,
   countPaymentStagesFilter,
   startPaymentStage,
