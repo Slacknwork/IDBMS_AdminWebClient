@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 
@@ -50,7 +50,6 @@ const initialState = {
 };
 
 export default function ItemModal({
-  success,
   sx,
   buttonLabel,
   item = initialState,
@@ -84,7 +83,6 @@ export default function ItemModal({
       onCreateItemInTask(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
       setFormData(initialState);
-      success(true);
     } catch (error) {
       console.log(`Error creating item: ${error}`);
       toast.error(`Lỗi tạo sản phẩm!`);

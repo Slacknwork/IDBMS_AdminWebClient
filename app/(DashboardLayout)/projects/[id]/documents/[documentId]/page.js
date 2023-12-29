@@ -111,6 +111,7 @@ export default function ProjectDocumentDetails(projectDocument) {
             const response = await updateProjectDocument(params.documentId, transformedValue);
             console.log(response);
             toast.success("Cập nhật thành công!");
+            await fetchDataFromApi();
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

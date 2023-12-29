@@ -113,6 +113,7 @@ export default function PaymentStageDesignDetails() {
             const response = await updatePaymentStageDesign(params.paymentStageDesignId, transformedValue);
             console.log(response);
             toast.success("Cập nhật thành công!");
+            await fetchDataFromApi();
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

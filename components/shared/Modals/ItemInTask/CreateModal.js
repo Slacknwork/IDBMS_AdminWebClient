@@ -23,7 +23,7 @@ import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
 import { getAllInteriorItems } from "/api/interiorItemServices";
 import { createItemInTask } from "/api/itemInTaskServices";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import FormModal from "/components/shared/Modals/Form";
 import MessageModal from "/components/shared/Modals/Message";
@@ -111,7 +111,6 @@ export default function CreateItemModal({ success }) {
         quantity: 1,
         projectId: params.id,
         projectTaskId: params.taskId,
-        interiorItemId: null,
         interiorItem: {
           ...data,
           imageUrl: e.target.result,
@@ -120,6 +119,14 @@ export default function CreateItemModal({ success }) {
       setItems((prevData) => [...prevData, updatedData]);
     };
     reader.readAsDataURL(data.image);
+  };
+
+  const removeItem = (index) => {
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      updatedItems.splice(index, 1);
+      return updatedItems;
+    });
   };
 
   const onCreateItemInTask = async () => {
@@ -146,36 +153,36 @@ export default function CreateItemModal({ success }) {
       size="big"
     >
       <Grid item xs={12} lg={12}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={"35%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Tên sản phẩm
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Hình ảnh
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Số lượng (Qty)
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"10%"}></StyledTableCell>
-              <StyledTableCell width={"25%"} align="right">
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Chi tiết
-                </Typography>
-              </StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items &&
-              items.map((item, index) => (
-                <StyledTableRow key={item?.id}>
+        {items && items.length > 0 && (
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell width={"35%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Tên sản phẩm
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"15%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Hình ảnh
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"15%"}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Số lượng (Qty)
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell width={"10%"}></StyledTableCell>
+                <StyledTableCell width={"25%"} align="right">
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Chi tiết
+                  </Typography>
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {items.map((item, index) => (
+                <StyledTableRow key={item?.interiorItem?.code}>
                   <TableCell>
                     <Typography variant="p" fontWeight={600}>
                       {item?.interiorItem?.code ?? ""}
@@ -186,9 +193,7 @@ export default function CreateItemModal({ success }) {
                   </TableCell>
                   <TableCell>
                     <Image
-                      src={
-                        checkValidUrl(item?.interiorItem?.imageUrl) 
-                      }
+                      src={checkValidUrl(item?.interiorItem?.imageUrl)}
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}
                       height={500}
@@ -245,13 +250,20 @@ export default function CreateItemModal({ success }) {
                         sx={{ ml: 2 }}
                         buttonLabel="Xóa"
                         color="error"
-                      ></MessageModal>
+                        onSubmit={() => removeItem(index)}
+                      >
+                        <Typography variant="subtitle2">
+                          Xóa {item.interiorItem?.name}?
+                        </Typography>
+                      </MessageModal>
                     </Box>
                   </TableCell>
                 </StyledTableRow>
               ))}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        )}
+
         <Box sx={{ mt: 2, display: "flex" }}>
           <ItemModal
             sx={{ my: "auto" }}

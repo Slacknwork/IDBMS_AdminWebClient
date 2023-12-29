@@ -12,7 +12,9 @@ import React, { useState } from "react";
 import Header from "/components/layout/header/Header";
 import Sidebar from "/components/layout/sidebar";
 
-import 'react-toastify/dist/ReactToastify.css';
+import { getUserStoreData } from "/api/testSerivces";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -32,6 +34,9 @@ const PageWrapper = styled("div")(() => ({
 export default function RootLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  getUserStoreData();
+
   return (
     <MainWrapper className="mainwrapper">
       <Sidebar

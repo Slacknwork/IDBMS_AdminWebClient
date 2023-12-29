@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { loginAdmin } from "/api/authenticationServices";
+import { loginByGoogle } from "/api/authenticationServices";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";
@@ -37,15 +37,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   };
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
 
     const request = {
-      email: email ?? "",
-      password: password ?? "",
+      email: event.profileObj.email ?? "",
+      googleToken: gapi.auth.getToken().access_token ?? "",
     };
-
     try {
-      const response = await loginAdmin(request);
+      const response = await loginByGoogle(request);
       console.log(response);
       toast.success("Đăng nhập thành công!");
       dispatch(login(response.data));
@@ -53,14 +51,14 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       router.push(`/sites`);
     } catch (error) {
       console.error("Error :", error);
-      toast.error("Lỗi!");
+      toast.error("Email không hợp lệ!");
     }
   };
 
   const responseGoogle = (response) => {
     var token = gapi.auth.getToken().access_token;
     console.log(token);
-    console.log(response);
+    console.log(response.profileObj.email);
     toast.success("Đăng nhập thành công!");
     router.push(`http://localhost:3000`);
   };
@@ -152,7 +150,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           <GoogleLogin
           clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
           buttonText="Login with Google"
-          onSuccess={responseGoogle}
+          onSuccess={handleFormSubmit}
           onFailure={errorResponseGoogle}
           cookiePolicy={'single_host_origin'}
           isSignedIn={true}
