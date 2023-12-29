@@ -50,34 +50,33 @@ export default function CreateSiteModal({ onCreate }) {
       case "contactPhone":
       case "contactEmail":
         if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
         }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
         break;
-
-      //DEFAULT
       default:
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
     }
-  };
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-    console.log("error" + field + hasError)
   };
 
   const handleCreate = async () => {
-
-    // Run handleInputChange for all fields in formData
     for (const field in formData) {
       handleInputChange(field, formData[field]);
     }
-    console.log(formData)
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
 
     if (hasErrors) {
@@ -109,7 +108,10 @@ export default function CreateSiteModal({ onCreate }) {
     };
 
     handleQueryParam(contactNameQuery, searchParams.get(contactNameQuery));
-    handleQueryParam(contactLocationQuery, searchParams.get(contactLocationQuery));
+    handleQueryParam(
+      contactLocationQuery,
+      searchParams.get(contactLocationQuery)
+    );
     handleQueryParam(contactPhoneQuery, searchParams.get(contactPhoneQuery));
     handleQueryParam(contactEmailQuery, searchParams.get(contactEmailQuery));
   }, []);
