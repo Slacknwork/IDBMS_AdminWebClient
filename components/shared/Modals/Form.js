@@ -40,7 +40,7 @@ export default function FormModal({
   disableCloseOnSubmit,
   bottomLeftContent,
   size = "",
-  disabledClose
+  disableClose
 }) {
   // STYLE
   const theme = useTheme();
@@ -69,7 +69,7 @@ export default function FormModal({
     setOpen(true);
   };
   const handleClose = () => {
-    if (disabledClose == false)
+    if (disableClose == false)
       setOpen(false);
   };
   const handleSubmit = () => {
