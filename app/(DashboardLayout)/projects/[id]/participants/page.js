@@ -172,6 +172,8 @@ export default function Comments() {
               <Box display="flex" alignItems="center">
                 <UpdateProjectOwnerParticipationModal
                   participationId={projectOwner?.id}
+                  currentUserId={projectOwner?.user?.id}
+                  success={handleModalResult}
                 />
               </Box>
             </Box>
@@ -204,6 +206,8 @@ export default function Comments() {
               <Box display="flex" alignItems="center">
                 <UpdateProjectManagerParticipationModal
                   participationId={projectManager?.id}
+                  currentUserId={projectManager?.user?.id}
+                  success={handleModalResult}
                 />
               </Box>
             </Box>

@@ -13,7 +13,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
-import { createEmployees, updateProjectParticipation } from "../../../../api/projectParticipationServices";
+import { createProjectParticipation, updateProjectParticipation } from "../../../../api/projectParticipationServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 
 import { getAllUsers } from "../../../../api/userServices";
@@ -21,14 +21,14 @@ import participationRoleOptions from "../../../../constants/enums/participationR
 import companyRoleOptions from "../../../../constants/enums/companyRole";
 import LoopIcon from "@mui/icons-material/Loop";
 
-export default function UpdateProjectOwnerParticipationModal({ onCreate, participationId }) {
+export default function UpdateProjectOwnerParticipationModal({ success, participationId, currentUserId }) {
     const params = useParams();
 
     const [formData, setFormData] = useState({
         role: 0,
         roleError: { hasError: false, label: "" },
         projectId: params.id,
-        userId: [],
+        userId: "",
         userIdError: { hasError: false, label: "" },
     });
 
@@ -36,7 +36,6 @@ export default function UpdateProjectOwnerParticipationModal({ onCreate, partici
         switch (field) {
             case "userId":
                 handleUserChange(value)
-                console.log(value)
                 handleInputError(field, false, "");
                 break;
             default:
@@ -63,9 +62,16 @@ export default function UpdateProjectOwnerParticipationModal({ onCreate, partici
         console.log(formData)
 
         try {
-            const response = await updateProjectParticipation(participationId, formData);
+            let response
+            if (participationId) {
+                response = await updateProjectParticipation(participationId, formData);
+            } else {
+                response = await createProjectParticipation(formData);
+            }
+
             toast.success("Cập nhật thành công!");
             console.log(response)
+            success(true);
             // router.push(`/roomTypes/${response?.id}`);
         } catch (error) {
             console.error("Error :", error);
@@ -98,6 +104,10 @@ export default function UpdateProjectOwnerParticipationModal({ onCreate, partici
     useEffect(() => {
         fetchOptionsFromApi();
     }, []);
+
+    useEffect(() => {
+        handleInputChange("userId", currentUserId)
+    }, [currentUserId]);
 
     return (
         <FormModal

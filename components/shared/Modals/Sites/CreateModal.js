@@ -42,8 +42,78 @@ export default function CreateSiteModal({ onCreate }) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+
+      // NAME
+      case "name":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      // ADDRESS
+      case "address":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      //CONTACT NAME
+      case "contactName":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      //CONTACT LOCATION
+      case "contactLocation":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      //CONTACT PHONE
+      case "contactPhone":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      //CONTACT EMAIL
+      case "contactEmail":
+        if (value !== null && value.trim() === "") {
+          handleInputError(field, true, "Không được để trống!");
+        }
+        else {
+          handleInputError(field, false);
+        }
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+        break;
+
+      //DEFAULT
+      default:
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
