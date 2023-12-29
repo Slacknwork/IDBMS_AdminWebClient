@@ -43,63 +43,11 @@ export default function CreateSiteModal({ onCreate }) {
 
   const handleInputChange = (field, value) => {
     switch (field) {
-
-      // NAME
       case "name":
-        if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
-        }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
-        break;
-
-      // ADDRESS
       case "address":
-        if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
-        }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
-        break;
-
-      //CONTACT NAME
       case "contactName":
-        if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
-        }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
-        break;
-
-      //CONTACT LOCATION
       case "contactLocation":
-        if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
-        }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
-        break;
-
-      //CONTACT PHONE
       case "contactPhone":
-        if (value !== null && value.trim() === "") {
-          handleInputError(field, true, "Không được để trống!");
-        }
-        else {
-          handleInputError(field, false);
-        }
-        setFormData((prevData) => ({ ...prevData, [field]: value }));
-        break;
-
-      //CONTACT EMAIL
       case "contactEmail":
         if (value !== null && value.trim() === "") {
           handleInputError(field, true, "Không được để trống!");
@@ -120,9 +68,24 @@ export default function CreateSiteModal({ onCreate }) {
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+    console.log("error" + field + hasError)
   };
 
   const handleCreate = async () => {
+
+    // Run handleInputChange for all fields in formData
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    console.log(formData)
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+
+    if (hasErrors) {
+      console.error("Form has errors!");
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      return;
+    }
+
     try {
       const response = await createSite(formData);
       console.log(response);
@@ -139,13 +102,16 @@ export default function CreateSiteModal({ onCreate }) {
   };
 
   useEffect(() => {
-    handleInputChange(contactNameQuery, searchParams.get(contactNameQuery));
-    handleInputChange(
-      contactLocationQuery,
-      searchParams.get(contactLocationQuery)
-    );
-    handleInputChange(contactPhoneQuery, searchParams.get(contactPhoneQuery));
-    handleInputChange(contactEmailQuery, searchParams.get(contactEmailQuery));
+    const handleQueryParam = (param, queryParam) => {
+      if (queryParam !== null) {
+        handleInputChange(param, queryParam);
+      }
+    };
+
+    handleQueryParam(contactNameQuery, searchParams.get(contactNameQuery));
+    handleQueryParam(contactLocationQuery, searchParams.get(contactLocationQuery));
+    handleQueryParam(contactPhoneQuery, searchParams.get(contactPhoneQuery));
+    handleQueryParam(contactEmailQuery, searchParams.get(contactEmailQuery));
   }, []);
 
   return (
