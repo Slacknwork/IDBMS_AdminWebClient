@@ -12,6 +12,9 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import moment from "moment-timezone";
+
+moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -44,6 +47,13 @@ export default function ProjectDetailsLayout({ children }) {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
   const project = data.project;
+
+  const isInWarranty = () => {
+    if (project.warrantyPeriodEndTime) {
+      return moment() > project.warrantyPeriodEndTime;
+    }
+    return true;
+  };
 
   const onUpdateStatus = async (status) => {
     try {
@@ -166,7 +176,7 @@ export default function ProjectDetailsLayout({ children }) {
                                 sx={{ my: "auto", mr: 2 }}
                                 color="error"
                               ></PauseCircleIcon>
-                            ) : project.status === 7 ||
+                            ) : project.status === 8 ||
                               index < project.status ? (
                               <CheckCircleIcon
                                 sx={{ my: "auto", mr: 2 }}
@@ -220,9 +230,17 @@ export default function ProjectDetailsLayout({ children }) {
                           ) : project.status === 4 && index === 7 ? (
                             <MessageModal
                               buttonSize="small"
-                              buttonLabel="Hoàn thành"
+                              buttonLabel="Bảo hành"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(7)}
+                            ></MessageModal>
+                          ) : project.status === 7 && index === 8 ? (
+                            <MessageModal
+                              disabled={isInWarranty()}
+                              buttonSize="small"
+                              buttonLabel="Hoàn thành"
+                              buttonVariant="contained"
+                              onSubmit={() => onUpdateStatus(8)}
                             ></MessageModal>
                           ) : (
                             project.status < 4 &&
