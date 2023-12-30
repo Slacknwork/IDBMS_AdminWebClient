@@ -1,6 +1,7 @@
 import { mapFromOdata } from "/utils/odata";
 import { projectStatusIndex } from "/constants/enums/projectStatus";
 import { projectTypeIndex } from "/constants/enums/projectType";
+import { store } from "/store";
 
 const getProjects = async ({
   search = "",
