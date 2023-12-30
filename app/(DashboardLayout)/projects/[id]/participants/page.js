@@ -162,9 +162,9 @@ export default function Comments() {
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
                 <UserCard
-                  name={projectOwner?.user?.name ?? "Không tìm thấy"}
-                  email={projectOwner?.user?.email ?? "..."}
-                  phone={projectOwner?.user?.phone ?? "..."}
+                  name={projectOwner?.user?.name || "Không tìm thấy"}
+                  email={projectOwner?.user?.email || "..."}
+                  phone={projectOwner?.user?.phone || "..."}
                 ></UserCard>
               </Box>
             </Box>
@@ -196,9 +196,9 @@ export default function Comments() {
               </Typography>
               <Box sx={{ display: "flex", mt: 2 }}>
                 <UserCard
-                  name={projectManager?.user?.name ?? "Không tìm thấy"}
-                  email={projectManager?.user?.email ?? "..."}
-                  phone={projectManager?.user?.phone ?? "..."}
+                  name={projectManager?.user?.name || "Không tìm thấy"}
+                  email={projectManager?.user?.email || "..."}
+                  phone={projectManager?.user?.phone || "..."}
                 ></UserCard>
               </Box>
             </Box>

@@ -148,9 +148,9 @@ export default function AdvertisementDetailsPage() {
             </Typography>
             <UserCard
               sx={{ mt: 2 }}
-              name={projectOwner?.name ?? "Không tìm thấy"}
-              email={projectOwner?.email ?? "..."}
-              phone={projectOwner?.phone ?? "..."}
+              name={projectOwner?.name || "Không tìm thấy"}
+              email={projectOwner?.email || "..."}
+              phone={projectOwner?.phone || "..."}
             ></UserCard>
           </Card>
 

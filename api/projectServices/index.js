@@ -127,13 +127,25 @@ const getProjectsBySiteId = async ({
   page = "",
   pageSize = "",
 } = {}) => {
+  const token = store.getState().user?.token ?? ""
+
   try {
     const response = await fetch(
       `https://localhost:7062/api/Projects/site/${siteId}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
-      { cache: "no-store" }
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
-    const projects = await response.json();
-    return projects.data;
+    const responseJson = await response.json()
+
+    if (!response.ok) {
+      throw responseJson.message;
+    }
+
+    return responseJson.data;
   } catch (error) {
     console.error("Error fetching projects by site ID:", error);
     throw error;

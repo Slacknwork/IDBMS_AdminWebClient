@@ -1,10 +1,10 @@
-import { mapFromOdata } from "/utils/odata";
+import { store } from "/store";
 
 const getSitesByProjectId = async ({
   projectId = "",
   nameOrAddress = "",
   pageSize = "",
-  pageNo= "",
+  pageNo = "",
 } = {}) => {
   try {
     const response = await fetch(
@@ -23,7 +23,7 @@ const getSitesByUserId = async ({
   userId = "",
   nameOrAddress = "",
   pageSize = "",
-  pageNo= "",
+  pageNo = "",
 } = {}) => {
   try {
     const response = await fetch(
@@ -39,24 +39,41 @@ const getSitesByUserId = async ({
 };
 
 const getSiteById = async (id) => {
+  const token = store.getState().user?.token ?? ""
+
   try {
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    const sites = await response.json();
-    return sites.data;
+
+    const responseJson = await response.json()
+
+    if (!response.ok) {
+      throw responseJson.message;
+    }
+
+    return responseJson.data;
   } catch (error) {
     console.error("Error fetching site by ID:", error);
     throw error;
   }
 };
 
-const getSites = async ({search = "", page = "", pageSize = ""} = {}) => {
+const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
+  const token = store.getState().user?.token ?? ""
+  console.log(token)
+
   try {
     const response = await fetch(
       `https://localhost:7062/api/Sites?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`,
       {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const sites = await response.json();

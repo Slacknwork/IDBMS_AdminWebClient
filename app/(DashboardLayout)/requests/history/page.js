@@ -177,9 +177,9 @@ export default function RequestList() {
                   <StyledTableRow key={request.id}>
                     <TableCell>
                       <UserCard
-                        name={request.contactName}
-                        email={request.contactEmail}
-                        phone={request.contactPhone}
+                        name={request?.contactName || "Không tìm thấy"}
+                        email={request?.contactEmail || "..."}
+                        phone={request?.contactPhone || "..."}
                       ></UserCard>
                     </TableCell>
                     <TableCell>

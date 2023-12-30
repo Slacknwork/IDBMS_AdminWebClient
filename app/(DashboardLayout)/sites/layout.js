@@ -12,7 +12,7 @@ export default function SitesLayout({ children }) {
   const dispatch = useDispatch();
   const params = useParams();
   const data = useSelector((state) => state.data);
-  const site = data.site;
+  const site = data?.site;
 
   useEffect(() => {
     params.id ? dispatch(fetchSiteData(params.id)) : dispatch(clearSite());

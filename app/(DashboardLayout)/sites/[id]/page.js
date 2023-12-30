@@ -252,9 +252,9 @@ export default function SiteDetails() {
             </Typography>
             <UserCard
               sx={{ mt: 2 }}
-              name={formData.contactName}
-              email={formData.contactEmail}
-              phone={formData.contactPhone}
+              name={formData?.contactName || "Không tìm thấy"}
+              email={formData?.contactEmail || "..."}
+              phone={formData?.contactPhone || "..."}
             ></UserCard>
             <Box sx={{ display: "flex", mt: 2 }}>
               <Box sx={{ my: "auto", mx: 2 }}>
