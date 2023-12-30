@@ -81,12 +81,8 @@ export default function CreateSiteModal({ onCreate }) {
     if (!switchSubmit) return;
     try {
       const response = await createSite(formData);
-      if (response.data != null) {
-        toast.success("Thêm thành công!");
-        router.push(`/sites/${response.data.id}`);
-      } else {
-        throw new Error("Create failed!");
-      }
+      toast.success("Thêm thành công!");
+      router.push(`/sites/${response.id}`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
