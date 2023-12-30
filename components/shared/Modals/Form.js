@@ -40,7 +40,7 @@ export default function FormModal({
   disableCloseOnSubmit,
   bottomLeftContent,
   size = "",
-  disableClose
+  disableClose,
 }) {
   // STYLE
   const theme = useTheme();
@@ -55,8 +55,8 @@ export default function FormModal({
       size === "big" && isBigScreen
         ? "60rem"
         : size === "small"
-          ? "25rem"
-          : "40rem",
+        ? "25rem"
+        : "40rem",
     bgcolor: "background.paper",
     overflowY: "auto",
     boxShadow: 24,
@@ -69,8 +69,7 @@ export default function FormModal({
     setOpen(true);
   };
   const handleClose = () => {
-    if (disableClose == false)
-      setOpen(false);
+    setOpen(false);
   };
   const handleSubmit = () => {
     !disableSubmitFunction && onSubmit();

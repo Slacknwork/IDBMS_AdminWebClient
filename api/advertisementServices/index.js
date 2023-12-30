@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAdvertisementProjects = async ({
   search = "",
   status = "",
@@ -14,6 +16,22 @@ const getAdvertisementProjects = async ({
     );
     const projects = await response.json();
     return projects.data;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+};
+
+const getAdvertisementProjectById = async (projectId = "") => {
+  try {
+    const response = await fetch(
+      `https://localhost:7062/api/AdvertisementProjects/${projectId}`,
+      {
+        cache: "no-store",
+      }
+    );
+    const project = await response.json();
+    return project.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -44,6 +62,7 @@ const getAdvertisementProjectDocuments = async ({
 };
 
 const updateAdvertisementProjectDescription = async (id, request) => {
+  const token = store.getState().user?.token ?? "";
   try {
     const formData = new FormData();
 
@@ -57,6 +76,9 @@ const updateAdvertisementProjectDescription = async (id, request) => {
       `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementDescription`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       }
     );
@@ -73,11 +95,16 @@ const updateAdvertisementProjectDescription = async (id, request) => {
 };
 
 const updateAdvertisementProjectStatus = async (id, status = "") => {
+  const token = store.getState().user?.token ?? "";
+
   try {
     const response = await fetch(
       `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementStatus?status=${status}`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         headers: {
           "Content-Type": "application/json",
         },
@@ -97,6 +124,7 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
 
 export {
   getAdvertisementProjects,
+  getAdvertisementProjectById,
   getAdvertisementProjectDocuments,
   updateAdvertisementProjectDescription,
   updateAdvertisementProjectStatus,

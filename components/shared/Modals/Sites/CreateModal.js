@@ -58,7 +58,6 @@ export default function CreateSiteModal({ onCreate }) {
               label: "Không được để trống!",
             },
           }));
-          console.log(field + value)
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -74,29 +73,16 @@ export default function CreateSiteModal({ onCreate }) {
     }
   };
 
-  const [disableClose, setDisableClose] = useState(false);
+  // SUBMIT FORM
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleCreate = async () => {
-    for (const field in formData) {
-      handleInputChange(field, formData[field]);
-    }
-
-    console.log(formData)
-    const hasErrors = Object.values(formData).some((field) => field?.hasError);
-
-    if (hasErrors) {
-      console.error("Form has errors!");
-      toast.error("Dữ liệu nhập không đúng yêu cầu!");
-      setDisableClose(true)
-      return;
-    }
-
+    if (!switchSubmit) return;
     try {
       const response = await createSite(formData);
-      console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");
-        setDisableClose(false)
         router.push(`/sites/${response.data.id}`);
       } else {
         throw new Error("Create failed!");
@@ -107,6 +93,28 @@ export default function CreateSiteModal({ onCreate }) {
     }
   };
 
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
+  useEffect(() => {
+    if (!switchSubmit) return;
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+    handleCreate();
+    setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [switchSubmit]);
+
+  // ON MOUNTED
   useEffect(() => {
     const handleQueryParam = (param, queryParam) => {
       if (queryParam !== null) {
@@ -129,9 +137,9 @@ export default function CreateSiteModal({ onCreate }) {
       buttonLabel="Tạo"
       title="Tạo khu công trình"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
-      disableClose={disableClose}
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
