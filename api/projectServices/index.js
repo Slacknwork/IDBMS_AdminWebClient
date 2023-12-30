@@ -11,13 +11,21 @@ const getProjects = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Projects?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
       {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const projects = await response.json();
+    if (!response.ok) {
+      throw projects.message;
+    }
     return projects.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -27,10 +35,18 @@ const getProjects = async ({
 
 const getProjectById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Projects/${id}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const project = await response.json();
+    if (!response.ok) {
+      throw project.message;
+    }
     return project;
   } catch (error) {
     console.error("Error fetching project by ID:", error);
@@ -40,19 +56,24 @@ const getProjectById = async (id) => {
 
 const createProject = async (request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Projects`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error creating project:", error);
     throw error;
@@ -61,19 +82,24 @@ const createProject = async (request) => {
 
 const updateProject = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Projects/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;
@@ -82,18 +108,25 @@ const updateProject = async (id, request) => {
 
 const updateProjectStatus = async (id, status) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Projects/${id}/status?status=${status}`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Update status failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error updating project status:", error);
     throw error;
@@ -102,18 +135,25 @@ const updateProjectStatus = async (id, status) => {
 
 const updateProjectAdvertisementStatus = async (id, status) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Projects/${id}/isAdvertisement/${status}`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Update advertisement status failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error updating project advertisement status:", error);
     throw error;

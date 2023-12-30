@@ -1,6 +1,7 @@
 import { mapFromOdata } from "/utils/odata";
 import { languageIndex } from "/constants/enums/language";
 import { userStatusIndex } from "/constants/enums/userStatus";
+import { store } from "/store";
 
 const API_BASE_URL = "https://localhost:7062/api/users";
 const API_ODATA_URL = "https://localhost:7062/odata/Users";
@@ -13,9 +14,17 @@ const getAllUsers = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const paramString = `searchParam=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
-    const response = await fetch(`${API_BASE_URL}?${paramString}`);
+    const response = await fetch(`${API_BASE_URL}?${paramString}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const users = await response.json();
+    if (!response.ok) {
+      throw users.message;
+    }
     return users.data;
   } catch (error) {
     console.error("Error fetching all users:", error);
@@ -65,6 +74,9 @@ const getUserById = async (userId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${userId}`);
     const user = await response.json();
+    if (!response.ok) {
+      throw user.message;
+    }
     return user.data;
   } catch (error) {
     console.error("Error fetching user by ID:", error);
@@ -75,19 +87,23 @@ const getUserById = async (userId) => {
 // Create a new user
 const createUser = async (userData) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const response = await fetch(`${API_BASE_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(userData),
     });
 
-    if (!response.ok) {
-      throw new Error("Create user failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;

@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllProjectDesigns = async ({
     type = "",
     name = "",
@@ -6,16 +8,21 @@ const getAllProjectDesigns = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns?type=${type}&name=${name}&isHidden=${isHidden}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-            throw new Error('Get all project designs failed');
-        }
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
 
         const designs = await response.json();
+        if (!response.ok) {
+            throw designs.message;
+        }
         return designs.data;
     } catch (error) {
         console.error('Error fetching all project designs:', error);
@@ -25,16 +32,22 @@ const getAllProjectDesigns = async ({
 
 const getProjectDesignById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns/${id}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+        const designs = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get project design by ID failed');
+            throw designs.message;
         }
 
-        const designs = await response.json();
         return designs.data;
     } catch (error) {
         console.error('Error fetching project design by ID:', error);
@@ -44,19 +57,22 @@ const getProjectDesignById = async (id) => {
 
 const createProjectDesign = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch('https://localhost:7062/api/ProjectDesigns', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(request),
         });
+        const createdDesign = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create project design failed');
+            throw createdDesign.message;
         }
 
-        const createdDesign = await response.json();
         return createdDesign;
     } catch (error) {
         console.error('Error creating project design:', error);
@@ -66,22 +82,25 @@ const createProjectDesign = async (request) => {
 
 const updateProjectDesign = async (designId, request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns/${designId}`,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(request),
             }
         );
+        const updatedDesign = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update project design failed');
+            throw updatedDesign.message;
         }
 
-        const updatedDesign = await response.json();
         return updatedDesign;
     } catch (error) {
         console.error('Error updating project design:', error);
@@ -91,18 +110,23 @@ const updateProjectDesign = async (designId, request) => {
 
 const updateProjectDesignHiddenStatus = async (designId, newHiddenStatus) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDesigns/${designId}/isHidden?isHidden=${newHiddenStatus}`,
             {
                 method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
+        const updatedDesign = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update project design hidden status failed');
+            throw updatedDesign.message;
         }
 
-        const updatedDesign = await response.json();
         return updatedDesign;
     } catch (error) {
         console.error('Error updating project design hidden status:', error);

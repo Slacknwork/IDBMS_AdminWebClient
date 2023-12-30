@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllInteriorItemColors = async ({
     type = "",
     name = "",
@@ -68,19 +70,22 @@ const getColorById = async (id) => {
 
 const createInteriorItemColor = async (request) => {
     try {
+        const token = store.getState().user?.token ?? ""
+
         const response = await fetch('https://localhost:7062/api/InteriorItemColors', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(request),
         });
+        const createdColor = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create interior item color failed');
+            throw createdColor.message;
         }
 
-        const createdColor = await response.json();
         return createdColor;
     } catch (error) {
         console.error('Error creating interior item color:', error);
@@ -90,22 +95,25 @@ const createInteriorItemColor = async (request) => {
 
 const updateInteriorItemColor = async (colorId, request) => {
     try {
+        const token = store.getState().user?.token ?? ""
+
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemColors/${colorId}`,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(request),
             }
         );
+        const updatedColor = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update interior item color failed');
+            throw updatedColor.message;
         }
 
-        const updatedColor = await response.json();
         return updatedColor;
     } catch (error) {
         console.error('Error updating interior item color:', error);
@@ -115,15 +123,22 @@ const updateInteriorItemColor = async (colorId, request) => {
 
 const deleteInteriorItemColor = async (colorId) => {
     try {
+        const token = store.getState().user?.token ?? ""
+
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemColors/${colorId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete interior item color failed');
+            throw responseJson.message;
         }
 
         // Assuming successful deletion doesn't return data, you can adjust as needed.

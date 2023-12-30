@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllNotifications = async ({
     category = "",
     pageSize = "",
@@ -66,19 +68,22 @@ const getNotificationById = async (id) => {
 
 const createNotificationForAllCustomers = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch('https://localhost:7062/api/Notifications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(request),
         });
+        const createdNotification = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create notification failed');
+            throw createdNotification.message;
         }
 
-        const createdNotification = await response.json();
         return createdNotification;
     } catch (error) {
         console.error('Error creating notification:', error);
@@ -88,22 +93,26 @@ const createNotificationForAllCustomers = async (request) => {
 
 const createNotificationForProject = async (projectId, request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Notifications/projects/${projectId}`,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(request),
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Create notification for all users failed');
-        }
-
         const createdNotification = await response.json();
+
+        if (!response.ok) {
+            throw createdNotification.message;
+        }
+        
         return createdNotification;
     } catch (error) {
         console.error('Error creating notification for all users:', error);

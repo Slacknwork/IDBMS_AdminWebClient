@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllProjectDocuments = async ({
     category = "",
     name = "",
@@ -5,16 +7,22 @@ const getAllProjectDocuments = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const documents = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get all project documents failed');
+            throw documents.message;
         }
 
-        const documents = await response.json();
         return documents.data;
     } catch (error) {
         console.error('Error fetching all project documents:', error);
@@ -30,16 +38,22 @@ const getDocumentsByDocumentTemplateId = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/document-template/${documentTemplateId}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const documents = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get documents by document template ID failed');
+            throw documents.message;
         }
 
-        const documents = await response.json();
         return documents.data;
     } catch (error) {
         console.error('Error fetching documents by document template ID:', error);
@@ -55,17 +69,23 @@ const getDocumentsByProjectId = async ({
     pageSize = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const paramString = `name=${search}&category=${categoryEnum}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/project/${projectId}?${paramString}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const responseJson = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get documents by project ID failed');
+            throw responseJson.message;
         }
 
-        const responseJson = await response.json();
         return responseJson.data;
     } catch (error) {
         console.error('Error fetching documents by project ID:', error);
@@ -75,16 +95,22 @@ const getDocumentsByProjectId = async ({
 
 const getDocumentById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/${id}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const responseJson = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get document by ID failed');
+            throw responseJson.message;
         }
 
-        const responseJson = await response.json();
         return responseJson.data;
     } catch (error) {
         console.error('Error fetching document by ID:', error);
@@ -94,6 +120,7 @@ const getDocumentById = async (id) => {
 
 const createProjectDocument = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
@@ -105,13 +132,16 @@ const createProjectDocument = async (request) => {
         const response = await fetch('https://localhost:7062/api/ProjectDocuments', {
             method: 'POST',
             body: formData,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
+        const createdDocument = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create project document failed');
+            throw createdDocument.message;
         }
 
-        const createdDocument = await response.json();
         return createdDocument;
     } catch (error) {
         console.error('Error creating project document:', error);
@@ -121,6 +151,7 @@ const createProjectDocument = async (request) => {
 
 const updateProjectDocument = async (documentId, request) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
@@ -134,14 +165,17 @@ const updateProjectDocument = async (documentId, request) => {
             {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
+        const updatedDocument = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update project document failed');
+            throw updatedDocument.message;
         }
 
-        const updatedDocument = await response.json();
         return updatedDocument;
     } catch (error) {
         console.error('Error updating project document:', error);
@@ -151,15 +185,22 @@ const updateProjectDocument = async (documentId, request) => {
 
 const deleteProjectDocument = async (documentId) => {
     try {
+        const token = store.getState().user?.token ?? "";
+    
         const response = await fetch(
             `https://localhost:7062/api/ProjectDocuments/${documentId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete project document failed');
+            throw responseJson.message;
         }
 
         // Assuming successful deletion doesn't return data, you can adjust as needed.

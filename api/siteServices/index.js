@@ -7,11 +7,20 @@ const getSitesByProjectId = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Sites/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     const sites = await response.json();
+    if (!response.ok) {
+      throw sites.message;
+    }
     return sites.data;
   } catch (error) {
     console.error("Error fetching sites by project ID:", error);
@@ -26,11 +35,20 @@ const getSitesByUserId = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Sites/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     const sites = await response.json();
+    if (!response.ok) {
+      throw sites.message;
+    }
     return sites.data;
   } catch (error) {
     console.error("Error fetching sites by user ID:", error);
@@ -77,6 +95,9 @@ const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
       }
     );
     const sites = await response.json();
+    if (!response.ok) {
+      throw sites.message;
+    }
     return sites.data;
   } catch (error) {
     console.error("Error fetching sites:", error);
@@ -86,19 +107,24 @@ const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
 
 const createSite = async (request) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(`https://localhost:7062/api/Sites`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching create site:", error);
     throw error;
@@ -107,19 +133,24 @@ const createSite = async (request) => {
 
 const updateSite = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching update site:", error);
     throw error;
@@ -128,15 +159,22 @@ const updateSite = async (id, request) => {
 
 const deleteSiteById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (!response.ok) {
-      throw new Error("Delete failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching delete site:", error);
     throw error;

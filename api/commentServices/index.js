@@ -1,15 +1,22 @@
+import { store } from "/store";
+
 const getAllComments = async () => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch("https://localhost:7062/api/Comments", {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    const comments = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get all comments failed");
+      throw comments.message;
     }
 
-    const comments = await response.json();
-    return comments;
+    return comments.data;
   } catch (error) {
     console.error("Error fetching all comments:", error);
     throw error;
@@ -18,17 +25,23 @@ const getAllComments = async () => {
 
 const getCommentsByProjectTaskId = async (projectTaskId) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Comments/project-task/${projectTaskId}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const comments = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get comments by project task ID failed");
+      throw comments.message;
     }
 
-    const comments = await response.json();
-    return comments;
+    return comments.data;
   } catch (error) {
     console.error("Error fetching comments by project task ID:", error);
     throw error;
@@ -44,16 +57,22 @@ const getCommentsByProjectId = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Comments/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const comments = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get comments by project ID failed");
+      throw comments.message;
     }
 
-    const comments = await response.json();
     return comments.data;
   } catch (error) {
     console.error("Error fetching comments by project ID:", error);
@@ -63,16 +82,21 @@ const getCommentsByProjectId = async ({
 
 const getCommentsById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(`https://localhost:7062/api/Comments/${id}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    const comments = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get comments by ID failed");
+      throw comments.message;
     }
 
-    const comments = await response.json();
-    return comments;
+    return comments.data;
   } catch (error) {
     console.error("Error fetching comments by ID:", error);
     throw error;
@@ -81,6 +105,7 @@ const getCommentsById = async (id) => {
 
 const createComment = async (request) => {
   try {
+    const token = store.getState().user?.token ?? ""
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -92,13 +117,16 @@ const createComment = async (request) => {
     const response = await fetch("https://localhost:7062/api/Comments", {
       method: "POST",
       body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    const createdComment = await response.json();
 
     if (!response.ok) {
-      throw new Error("Create comment failed");
+      throw createdComment.message;
     }
 
-    const createdComment = await response.json();
     return createdComment;
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -108,6 +136,7 @@ const createComment = async (request) => {
 
 const updateComment = async (commentId, request) => {
   try {
+    const token = store.getState().user?.token ?? ""
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -121,14 +150,17 @@ const updateComment = async (commentId, request) => {
       {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
+    const updatedComment = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update comment failed");
+      throw updatedComment.message;
     }
 
-    const updatedComment = await response.json();
     return updatedComment;
   } catch (error) {
     console.error("Error updating comment:", error);
@@ -138,15 +170,22 @@ const updateComment = async (commentId, request) => {
 
 const deleteComment = async (commentId) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Comments/${commentId}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
+    const responseJson = await response.json()
+
     if (!response.ok) {
-      throw new Error("Delete comment failed");
+        throw responseJson.message;
     }
 
     return { success: true };
@@ -158,18 +197,23 @@ const deleteComment = async (commentId) => {
 
 const updateCommentStatus = async (commentId, newStatus) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Comments/${commentId}/status?status=${newStatus}`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
+    const updatedComment = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update comment status failed");
+      throw updatedComment.message;
     }
 
-    const updatedComment = await response.json();
     return updatedComment;
   } catch (error) {
     console.error("Error updating comment status:", error);

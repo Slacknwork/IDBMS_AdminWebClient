@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAdvertisementProjects = async ({
   search = "",
   status = "",
@@ -45,6 +47,8 @@ const getAdvertisementProjectDocuments = async ({
 
 const updateAdvertisementProjectDescription = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -58,6 +62,9 @@ const updateAdvertisementProjectDescription = async (id, request) => {
       {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -74,12 +81,15 @@ const updateAdvertisementProjectDescription = async (id, request) => {
 
 const updateAdvertisementProjectStatus = async (id, status = "") => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementStatus?status=${status}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );

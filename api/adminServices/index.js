@@ -1,4 +1,5 @@
 
+import { store } from "/store";
 const apiUrl = "https://localhost:7062/api";
 
 const getAllAdmins = async ({
@@ -7,14 +8,23 @@ const getAllAdmins = async ({
     pageSize = "",
     pageNo = "",
 } = {}) => {
+    const token = store.getState().user?.token ?? ""
+
     try {
         const paramString = `searchValue=${search}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
-        const response = await fetch(`${apiUrl}/admins?${paramString}`);
-        if (!response.ok) {
-            throw new Error('Get failed');
-        }
-        const admins = await response.json();
-        return admins.data;
+        const response = await fetch(`${apiUrl}/admins?${paramString}`, {
+            cache: "no-store",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const responseJson = await response.json()
+
+          if (!response.ok) {
+            throw responseJson.message;
+          }
+      
+          return responseJson.data;
     } catch (error) {
         console.error("Error fetching admins:", error);
         throw error;
@@ -23,12 +33,21 @@ const getAllAdmins = async ({
 
 const getAdminById = async (adminId) => {
     try {
-        const response = await fetch(`${apiUrl}/admins/${adminId}`);
-        if (!response.ok) {
-            throw new Error('Get failed');
-        }
-        const admin = await response.json();
-        return admin.data;
+        const token = store.getState().user?.token ?? ""
+
+        const response = await fetch(`${apiUrl}/admins/${adminId}`, {
+            cache: "no-store",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const responseJson = await response.json()
+
+          if (!response.ok) {
+            throw responseJson.message;
+          }
+      
+          return responseJson.data;
     } catch (error) {
         console.error("Error fetching admin by ID:", error);
         throw error;
@@ -36,11 +55,14 @@ const getAdminById = async (adminId) => {
 };
 
 const updateAdmin = async (adminId, updatedAdmin) => {
+    const token = store.getState().user?.token ?? ""
+
     try {
         const response = await fetch(`${apiUrl}/admins/${adminId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(updatedAdmin),
         });
@@ -57,13 +79,18 @@ const updateAdmin = async (adminId, updatedAdmin) => {
 };
 
 const deleteAdmin = async (adminId) => {
+    const token = store.getState().user?.token ?? ""
+
     try {
         const response = await fetch(`${apiUrl}/admins/${adminId}`, {
             method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         if (!response.ok) {
-            throw new Error("Delete failed");
+            throw await response.json().message;
         }
 
         return true; // You can return true or handle the response as needed
@@ -74,17 +101,20 @@ const deleteAdmin = async (adminId) => {
 };
 
 const createAdmin = async (newAdmin) => {
+    const token = store.getState().user?.token ?? ""
+
     try {
         const response = await fetch(`${apiUrl}/admins`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(newAdmin),
         });
 
         if (!response.ok) {
-            throw new Error("Create admin failed");
+            throw await response.json().message;
         }
 
         return await response.json();
