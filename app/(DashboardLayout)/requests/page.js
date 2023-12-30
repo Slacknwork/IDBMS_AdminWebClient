@@ -188,9 +188,9 @@ export default function RequestList() {
                   <StyledTableRow key={request.id}>
                     <TableCell>
                       <UserCard
-                        name={request.contactName}
-                        email={request.contactEmail}
-                        phone={request.contactPhone}
+                        name={request?.contactName || "Không tìm thấy"}
+                        email={request?.contactEmail || "..."}
+                        phone={request?.contactPhone || "..."}
                       ></UserCard>
                     </TableCell>
                     <TableCell>
@@ -231,10 +231,10 @@ export default function RequestList() {
                           }
                         >
                           <UserCard
-                            name={request.contactName}
-                            address={request.contactLocation}
-                            email={request.contactEmail}
-                            phone={request.contactPhone}
+                            name={request?.contactName || "Không tìm thấy"}
+                            email={request?.contactEmail || "..."}
+                            phone={request?.contactPhone || "..."}
+                            address={request.contactLocation || "..."}
                           ></UserCard>
                           <Typography sx={{ mt: 2 }} variant="subtitle2">
                             Nhập ghi chú (nếu có)
@@ -259,10 +259,10 @@ export default function RequestList() {
                           }
                         >
                           <UserCard
-                            name={request.contactName}
-                            address={request.contactLocation}
-                            email={request.contactEmail}
-                            phone={request.contactPhone}
+                            name={request?.contactName || "Không tìm thấy"}
+                            email={request?.contactEmail || "..."}
+                            phone={request?.contactPhone || "..."}
+                            address={request.contactLocation || "..."}
                           ></UserCard>
                           <Typography sx={{ mt: 2 }} variant="p">
                             Nhập lý do từ chối yêu cầu

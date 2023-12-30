@@ -23,7 +23,7 @@ const Profile = () => {
   let isGoogleLoggedIn = false;
 
   const handleClick2 = (event: any) => {
-    var token = gapi.auth.getToken().access_token;
+    var token = gapi?.auth?.getToken().access_token;
     if (token != null || token === "") isGoogleLoggedIn = true;
     setAnchorEl2(event.currentTarget);
   };
