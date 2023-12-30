@@ -39,7 +39,7 @@ const getSitesByUserId = async ({
 };
 
 const getSiteById = async (id) => {
-  const token = store.getState().user?.token ?? ""
+  const token = store.getState().user?.token ?? "";
 
   try {
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
@@ -49,7 +49,7 @@ const getSiteById = async (id) => {
       },
     });
 
-    const responseJson = await response.json()
+    const responseJson = await response.json();
 
     if (!response.ok) {
       throw responseJson.message;
@@ -63,8 +63,8 @@ const getSiteById = async (id) => {
 };
 
 const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
-  const token = store.getState().user?.token ?? ""
-  console.log(token)
+  const token = store.getState().user?.token ?? "";
+  console.log(token);
 
   try {
     const response = await fetch(
@@ -85,10 +85,13 @@ const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
 };
 
 const createSite = async (request) => {
+  const token = store.getState().user?.token ?? "";
+
   try {
     const response = await fetch(`https://localhost:7062/api/Sites`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(request),
@@ -106,10 +109,13 @@ const createSite = async (request) => {
 };
 
 const updateSite = async (id, request) => {
+  const token = store.getState().user?.token ?? "";
+
   try {
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(request),
@@ -127,8 +133,13 @@ const updateSite = async (id, request) => {
 };
 
 const deleteSiteById = async (id) => {
+  const token = store.getState().user?.token ?? "";
+
   try {
     const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       method: "DELETE",
     });
 
