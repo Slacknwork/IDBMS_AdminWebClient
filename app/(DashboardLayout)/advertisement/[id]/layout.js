@@ -7,7 +7,7 @@ import { Avatar, Box, Chip, Grid, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 
-import { fetchProjectData } from "/store/reducers/data";
+import { fetchAdvertisementProjectData } from "/store/reducers/data";
 
 import languageOptions, {
   languageTypeChipImages,
@@ -32,12 +32,12 @@ export default function ProjectDetailsLayout({ children }) {
   const params = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
-  const project = data.project;
+  const project = data?.project;
 
   const onUpdateAdvertisementStatus = async (status) => {
     try {
       await updateAdvertisementProjectStatus(params.id, status);
-      dispatch(fetchProjectData(params.id));
+      dispatch(fetchAdvertisementProjectData(params.id));
       toast.success("Cập nhật thành công!");
       if (status === 0) {
         router.push(`/advertisement`);
@@ -49,7 +49,7 @@ export default function ProjectDetailsLayout({ children }) {
   };
 
   useEffect(() => {
-    dispatch(fetchProjectData(params.id));
+    dispatch(fetchAdvertisementProjectData(params.id));
   }, [dispatch, params.id]);
 
   return (

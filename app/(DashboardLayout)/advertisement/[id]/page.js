@@ -5,8 +5,10 @@ import { Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getProjectById } from "/api/projectServices";
-import { updateAdvertisementProjectDescription } from "/api/advertisementServices";
+import {
+  getAdvertisementProjectById,
+  updateAdvertisementProjectDescription,
+} from "/api/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
@@ -57,26 +59,27 @@ export default function AdvertisementDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [projectOwner, setProjectOwner] = useState("");
 
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    try {
+      const projectResponse = await getAdvertisementProjectById(params.id);
+      const project = projectResponse;
+      setFormData((prevData) => ({ ...prevData, ...project }));
+      setPageName(project.name);
+      setPageDescription(project.description);
+      const participation = project?.projectParticipations.find(
+        (par) => par.role === 0
+      );
+      setProjectOwner(participation?.user ?? "");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDataFromApi = async () => {
-      setLoading(true);
-      try {
-        const projectResponse = await getProjectById(params.id);
-        const project = projectResponse.data;
-        setFormData((prevData) => ({ ...prevData, ...project }));
-        setPageName(project.name);
-        setPageDescription(project.description);
-        const participation = project?.projectParticipations.find(
-          (par) => par.role === 0
-        );
-        setProjectOwner(participation?.user ?? "");
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDataFromApi();
   }, []);
 

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { getAdvertisementProjectById } from "/api/advertisementServices";
 import { getProjectById } from "/api/projectServices";
 import { getSiteById } from "/api/siteServices";
 
@@ -26,6 +27,17 @@ export const dataSlice = createSlice({
     },
   },
 });
+
+export const fetchAdvertisementProjectData = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await getAdvertisementProjectById(id);
+      dispatch(setProject({ project: response }));
+    } catch (error) {
+      dispatch(clearProject());
+    }
+  };
+};
 
 export const fetchProjectData = (id) => {
   return async (dispatch) => {
