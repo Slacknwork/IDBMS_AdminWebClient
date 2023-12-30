@@ -40,7 +40,7 @@ export default function CreateFloorModal({ onCreate }) {
             const response = await createFloor(formData);
             console.log(response);
             toast.success("Thêm thành công!");
-            router.push(`/projects/${params.id}/floors/${response.data.id}`);
+            router.push(`/projects/${params.id}/floors/${response.id}`);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

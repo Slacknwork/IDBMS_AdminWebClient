@@ -52,7 +52,7 @@ export default function CreateRoomModal({ onCreate }) {
             const response = await createRoom(formData);
             console.log(response);
             toast.success("Thêm thành công!");
-            router.push(`/projects/${params.id}/rooms/${response.data.id}`);
+            router.push(`/projects/${params.id}/rooms/${response.id}`);
         } catch (error) {
             console.error("Error :", error);
             toast.error("Lỗi!");

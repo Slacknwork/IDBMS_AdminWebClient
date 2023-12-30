@@ -96,8 +96,7 @@ export default function ProjectDetails() {
     const fetchDataFromApi = async () => {
       setLoading(true);
       try {
-        const projectResponse = await getProjectById(params.id);
-        const project = projectResponse.data;
+        const project = await getProjectById(params.id);
         setFormData((prevData) => ({ ...prevData, ...project }));
         setPageName(project.name);
         setPageDescription(project.description);
