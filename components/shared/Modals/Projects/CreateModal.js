@@ -32,6 +32,7 @@ import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -47,6 +48,7 @@ const style = {
 export default function CreateProjectModal({ children }) {
   const params = useParams();
   const router = useRouter();
+  const admin = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -77,8 +79,8 @@ export default function CreateProjectModal({ children }) {
     areaError: { hasError: false, label: "" },
     estimateBusinessDay: 0,
     estimateBusinessDayError: { hasError: false, label: "" },
-    createdAdminUsername: "admin.username",
-    createdByAdminId: "7C2B4371-E768-4D01-9E15-648091A7D9B7",
+    createdAdminUsername: admin?.username || "",
+    createdByAdminId: admin?.id || "",
     siteId: params.id,
   });
 
@@ -153,12 +155,8 @@ export default function CreateProjectModal({ children }) {
     try {
       const response = await createProject(formData);
       console.log(response);
-      if (response.data != null) {
-        toast.success("Thêm thành công!");
-        router.push(`/projects/${response.data.id}`);
-      } else {
-        throw new Error("Create failed!");
-      }
+      toast.success("Thêm thành công!");
+      router.push(`/projects/${response.id}`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

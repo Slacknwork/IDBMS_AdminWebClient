@@ -46,7 +46,7 @@ export default function ProjectDetailsLayout({ children }) {
   const params = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
-  const project = data.project;
+  const project = data?.project;
 
   const isInWarranty = () => {
     if (project.warrantyPeriodEndTime) {

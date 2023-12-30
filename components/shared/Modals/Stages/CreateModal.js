@@ -49,12 +49,8 @@ export default function CreateStageModal({ success }) {
   const handleCreate = async () => {
     try {
       const response = await createPaymentStage(formData);
-      if (response.data != null) {
-        toast.success("Thêm thành công!");
-        success(true)
-      } else {
-        throw new Error("Create failed!");
-      }
+      toast.success("Thêm thành công!");
+      success(true)
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
