@@ -58,6 +58,7 @@ export default function CreateSiteModal({ onCreate }) {
               label: "Không được để trống!",
             },
           }));
+          console.log(field + value)
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -73,15 +74,20 @@ export default function CreateSiteModal({ onCreate }) {
     }
   };
 
+  const [disableClose, setDisableClose] = useState(false);
+
   const handleCreate = async () => {
     for (const field in formData) {
       handleInputChange(field, formData[field]);
     }
+
+    console.log(formData)
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
 
     if (hasErrors) {
       console.error("Form has errors!");
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setDisableClose(true)
       return;
     }
 
@@ -90,6 +96,7 @@ export default function CreateSiteModal({ onCreate }) {
       console.log(response);
       if (response.data != null) {
         toast.success("Thêm thành công!");
+        setDisableClose(false)
         router.push(`/sites/${response.data.id}`);
       } else {
         throw new Error("Create failed!");
@@ -124,6 +131,7 @@ export default function CreateSiteModal({ onCreate }) {
       submitLabel="Tạo"
       onSubmit={handleCreate}
       size="big"
+      disableClose={disableClose}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
