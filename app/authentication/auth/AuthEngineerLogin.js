@@ -37,10 +37,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   };
 
   const handleFormSubmit = async (event) => {
-
+    console.log(event.profileObj)
     const request = {
       email: event.profileObj.email ?? "",
-      googleToken: gapi.auth.getToken().access_token ?? "",
+      googleId: event.profileObj.googleId ?? "",
     };
     try {
       const response = await loginByGoogle(request);
@@ -67,11 +67,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     toast.error("Đăng nhập thất bại!");
   };
 
-  useEffect(() =>{
-    function start(){
+  useEffect(() => {
+    function start() {
       gapi.client.init({
         clientId: "982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com",
-        scope:""
+        scope: ""
       })
     };
     gapi.load("client:auth2", start);
@@ -89,7 +89,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
       <Stack component="form" onSubmit={handleFormSubmit}>
         <FormControl fullWidth variant="outlined" margin="normal">
-          <Typography htmlFor="email">Email</Typography>
+          <Typography>Email</Typography>
           <TextField
             id="email"
             name="email"
@@ -99,7 +99,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         </FormControl>
 
         <FormControl fullWidth variant="outlined" margin="normal">
-          <Typography htmlFor="password">Mật khẩu</Typography>
+          <Typography>Mật khẩu</Typography>
           <TextField
             id="password"
             name="password"
@@ -148,12 +148,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         <Box>
           <GoogleLogin
-          clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
-          buttonText="Login with Google"
-          onSuccess={handleFormSubmit}
-          onFailure={errorResponseGoogle}
-          cookiePolicy={'single_host_origin'}
-          isSignedIn={true}
+            clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
+            buttonText="Login with Google"
+            onSuccess={handleFormSubmit}
+            onFailure={errorResponseGoogle}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={true}
           />
         </Box>
       </Stack>
