@@ -1,6 +1,8 @@
 import { store } from "/store";
 import { fetchData } from "/utils/api";
 
+const endpoint = "/Projects";
+
 const getProjectsBySiteId = async ({
   siteId = "",
   search = "",
@@ -9,9 +11,9 @@ const getProjectsBySiteId = async ({
   page = "",
   pageSize = "",
 } = {}) => {
-  const token = store.getState().user?.token ?? "";
   try {
-    const url = `/Projects/site/${siteId}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`;
+    const token = store.getState().user?.token ?? "";
+    const url = `${endpoint}/site/${siteId}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
       url,
       method: "GET",
@@ -28,18 +30,14 @@ const getProjectsBySiteId = async ({
 const getProjectById = async (id) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(`https://localhost:7062/api/Projects/${id}`, {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
-    const project = await response.json();
-    if (!response.ok) {
-      throw project.message;
-    }
-    return project;
+    return response.data;
   } catch (error) {
     console.error("Error fetching project by ID:", error);
     throw error;
@@ -47,9 +45,9 @@ const getProjectById = async (id) => {
 };
 
 const createProject = async (request) => {
-  const token = store.getState().user?.token ?? "";
   try {
-    const url = `/Projects`;
+    const token = store.getState().user?.token ?? "";
+    const url = `${endpoint}`;
     const response = await fetchData({
       url,
       method: "POST",
@@ -67,7 +65,6 @@ const createProject = async (request) => {
 const updateProject = async (id, request) => {
   try {
     const token = store.getState().user?.token ?? "";
-
     const response = await fetch(`https://localhost:7062/api/Projects/${id}`, {
       method: "PUT",
       headers: {
@@ -93,7 +90,6 @@ const updateProject = async (id, request) => {
 const updateProjectStatus = async (id, status) => {
   try {
     const token = store.getState().user?.token ?? "";
-
     const response = await fetch(
       `https://localhost:7062/api/Projects/${id}/status?status=${status}`,
       {
