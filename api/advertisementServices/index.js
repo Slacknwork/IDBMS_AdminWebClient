@@ -101,7 +101,6 @@ const updateAdvertisementProjectDescription = async (id, request) => {
 
 const updateAdvertisementProjectStatus = async (id, status = "") => {
   const token = store.getState().user?.token ?? "";
-
   try {
     const token = store.getState().user?.token ?? ""
 
@@ -111,8 +110,6 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
-        },
-        headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
