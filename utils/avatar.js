@@ -16,7 +16,7 @@ import {
 } from "@mui/material/colors";
 
 function getAvatarContent(name) {
-    if (name === "Không tìm thấy" || name === null || name === undefined) return "?";
+    if (name === "Không tìm thấy" || name === null || name === undefined || typeof name !== "string") return "?";
 
     const words = name.split(" ");
     const lastWord =

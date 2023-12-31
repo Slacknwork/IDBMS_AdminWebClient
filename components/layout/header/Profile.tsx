@@ -16,8 +16,9 @@ import { GoogleLogout } from "react-google-login";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { gapi } from "gapi-script";
+import { getAvatarContent, getColorForAvatar } from "../../../utils/avatar";
 
-const Profile = () => {
+const Profile = ({ name }: { name: string }) => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const router = useRouter();
   let isGoogleLoggedIn = false;
@@ -34,6 +35,7 @@ const Profile = () => {
     toast.success("Đăng xuất thành công!");
     router.push(`/authentication/engineer-login`);
   };
+  console.log(name)
 
   return (
     <Box>
@@ -50,14 +52,9 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
-          src="/images/profile/user-1.jpg"
-          alt="image"
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <Avatar sx={{ bgcolor: getColorForAvatar(name), my: "auto" }}>
+          {getAvatarContent(name)}
+        </Avatar>
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}
