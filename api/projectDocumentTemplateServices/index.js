@@ -1,5 +1,7 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/DocumentTemplates";
 const getAllProjectDocumentTemplates = async ({
     type = "",
     name = "",
@@ -7,17 +9,14 @@ const getAllProjectDocumentTemplates = async ({
     pageNo= "",
 } = {}) => {
     try {
-        const response = await fetch(
-            `https://localhost:7062/api/DocumentTemplates?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-            throw new Error('Get all project documents failed');
-        }
-
-        const documents = await response.json();
-        return documents.data;
+        const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
+        const response = await fetchData({
+            url,
+            method: "GET",
+            token,
+            body: null,
+        });
+        return response.data;
     } catch (error) {
         console.error('Error fetching all project document templates:', error);
         throw error;
@@ -26,17 +25,14 @@ const getAllProjectDocumentTemplates = async ({
 
 const getProjectDocumentTemplateById = async (id) => {
     try {
-        const response = await fetch(
-            `https://localhost:7062/api/DocumentTemplates/${id}`,
-            { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-            throw new Error('Get project document by ID failed');
-        }
-
-        const documents = await response.json();
-        return documents.data;
+        const url = `${endpoint}/${id}`;
+        const response = await fetchData({
+            url,
+            method: "GET",
+            token,
+            body: null,
+        });
+        return response.data;
     } catch (error) {
         console.error('Error fetching project document template by ID:', error);
         throw error;
@@ -54,20 +50,14 @@ const createProjectDocumentTemplates = async (request) => {
           }
         });
         
-        const response = await fetch('https://localhost:7062/api/DocumentTemplates', {
-            method: 'POST',
+        const url = `${endpoint}`;
+        const response = await fetchData({
+            url,
+            method: "POST",
+            token,
             body: formData,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        const createdDocument = await response.json();
-
-        if (!response.ok) {
-            throw createdDocument.message;
-        }
-
-        return createdDocument;
+          });
+        return response.data;
     } catch (error) {
         console.error('Error creating project document template:', error);
         throw error;
@@ -85,23 +75,14 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
           }
         });
 
-        const response = await fetch(
-            `https://localhost:7062/api/DocumentTemplates/${documentId}`,
-            {
-                method: 'PUT',
-                body: formData,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-        const updatedDocument = await response.json();
-
-        if (!response.ok) {
-            throw updatedDocument.message;
-        }
-
-        return updatedDocument;
+        const url = `${endpoint}/${documentId}`;
+        const response = await fetchData({
+            url,
+            method: "PUT",
+            token,
+            body: formData,
+          });
+        return response.data;
     } catch (error) {
         console.error('Error updating project document template:', error);
         throw error;
@@ -111,25 +92,14 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
 const deleteProjectDocumentTemplates = async (documentId) => {
     try {
         const token = store.getState().user?.token ?? "";
-
-        const response = await fetch(
-            `https://localhost:7062/api/DocumentTemplates/${documentId}`,
-            {
-                method: 'DELETE',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        const responseJson = await response.json();
-
-        if (!response.ok) {
-            throw responseJson.message;
-        }
-
-        // Assuming successful deletion doesn't return data, you can adjust as needed.
-        return { success: true };
+        const url = `${endpoint}/${documentId}`;
+        const response = await fetchData({
+            url,
+            method: "DELETE",
+            token,
+            body: null,
+        });
+        return response.message;
     } catch (error) {
         console.error('Error deleting project document template:', error);
         throw error;
