@@ -8,8 +8,9 @@ export async function fetchData({
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(`${apiUrl}${url}`, {
     method,
+    cache: "no-store",
     headers: {
-      "Content-Type": contentType,
+      ...(contentType ? { "Content-Type": contentType } : {}),
       Authorization: `Bearer ${token}`,
     },
     body,
