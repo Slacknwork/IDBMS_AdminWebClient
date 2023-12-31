@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllProjectDocumentTemplates = async ({
     type = "",
     name = "",
@@ -44,6 +46,7 @@ const getProjectDocumentTemplateById = async (id) => {
 const createProjectDocumentTemplates = async (request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
           if (!key.endsWith("Error")) {
@@ -54,13 +57,16 @@ const createProjectDocumentTemplates = async (request) => {
         const response = await fetch('https://localhost:7062/api/DocumentTemplates', {
             method: 'POST',
             body: formData,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
+        const createdDocument = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create project document failed');
+            throw createdDocument.message;
         }
 
-        const createdDocument = await response.json();
         return createdDocument;
     } catch (error) {
         console.error('Error creating project document template:', error);
@@ -70,6 +76,7 @@ const createProjectDocumentTemplates = async (request) => {
 
 const updateProjectDocumentTemplates = async (documentId, request) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
@@ -83,14 +90,17 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
             {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
+        const updatedDocument = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update project document template failed');
+            throw updatedDocument.message;
         }
 
-        const updatedDocument = await response.json();
         return updatedDocument;
     } catch (error) {
         console.error('Error updating project document template:', error);
@@ -100,15 +110,22 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
 
 const deleteProjectDocumentTemplates = async (documentId) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/DocumentTemplates/${documentId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete project document template failed');
+            throw responseJson.message;
         }
 
         // Assuming successful deletion doesn't return data, you can adjust as needed.

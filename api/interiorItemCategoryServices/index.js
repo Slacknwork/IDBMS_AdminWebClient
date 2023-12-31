@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllInteriorItemCategories = async ({
     type = "",
     name = "",
@@ -44,6 +46,7 @@ const getInteriorItemCategoryById = async (id) => {
 const createInteriorItemCategory = async (request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? ""
 
         Object.keys(request).forEach((key) => {
             if (!key.endsWith("Error")) {
@@ -54,13 +57,16 @@ const createInteriorItemCategory = async (request) => {
         const response = await fetch('https://localhost:7062/api/InteriorItemCategories', {
             method: 'POST',
             body: formData,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
+        const createdCategory = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create interior item category failed');
+            throw createdCategory.message;
         }
 
-        const createdCategory = await response.json();
         return createdCategory.data;
     } catch (error) {
         console.error('Error creating interior item category:', error);
@@ -71,6 +77,7 @@ const createInteriorItemCategory = async (request) => {
 const updateInteriorItemCategory = async (categoryId, request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
             if (!key.endsWith("Error")) {
@@ -83,14 +90,17 @@ const updateInteriorItemCategory = async (categoryId, request) => {
             {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
+        const updatedCategory = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update interior item category failed');
+            throw updatedCategory.message;
         }
 
-        const updatedCategory = await response.json();
         return updatedCategory;
     } catch (error) {
         console.error('Error updating interior item category:', error);
@@ -100,15 +110,22 @@ const updateInteriorItemCategory = async (categoryId, request) => {
 
 const deleteInteriorItemCategory = async (categoryId) => {
     try {
+        const token = store.getState().user?.token ?? ""
+
         const response = await fetch(
             `https://localhost:7062/api/InteriorItemCategories/${categoryId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete interior item category failed');
+            throw responseJson.message;
         }
 
         return { success: true };

@@ -1,5 +1,6 @@
 import { mapFromOdata } from "/utils/odata";
 import { stageStatusIndex } from "/constants/enums/stageStatus";
+import { store } from "/store";
 
 const getPaymentStagesByProjectId = async ({
   projectId = "",
@@ -9,11 +10,20 @@ const getPaymentStagesByProjectId = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     const paymentStages = await response.json();
+    if (!response.ok) {
+      throw paymentStages.message;
+    }
     return paymentStages.data;
   } catch (error) {
     console.error("Error fetching payment stages by project ID:", error);
@@ -29,11 +39,20 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     const paymentStages = await response.json();
+    if (!response.ok) {
+      throw paymentStages.message;
+    }
     return paymentStages.data;
   } catch (error) {
     console.error("Error fetching payment stages by project ID:", error);
@@ -43,11 +62,20 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
 
 const getPaymentStagesById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     const paymentStages = await response.json();
+    if (!response.ok) {
+      throw paymentStages.message;
+    }
     return paymentStages.data;
   } catch (error) {
     console.error("Error fetching payment stage by ID:", error);
@@ -57,19 +85,24 @@ const getPaymentStagesById = async (id) => {
 
 const createPaymentStage = async (request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/PaymentStages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching create payment stage:", error);
     throw error;
@@ -78,22 +111,27 @@ const createPaymentStage = async (request) => {
 
 const updatePaymentStage = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching update payment stage:", error);
     throw error;
@@ -102,15 +140,22 @@ const updatePaymentStage = async (id, request) => {
 
 const deletePaymentStage = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
+    const responseJson = await response.json();
+
     if (!response.ok) {
-      throw new Error("Delete failed");
+        throw responseJson.message;
     }
 
     return true;
@@ -172,21 +217,26 @@ const getPaymentStagesFilter = async (
 
 const startPaymentStage = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}/start`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
+    const responseJson = await response.json();
+
     if (!response.ok) {
-      throw new Error("Start failed");
+        throw responseJson.message;
     }
 
-    return await response.json();
+    return responseJson;
   } catch (error) {
     console.error("Error fetching start payment stage:", error);
     throw error;
@@ -195,21 +245,26 @@ const startPaymentStage = async (id) => {
 
 const endPaymentStage = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}/end`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
+   const responseJson = await response.json();
+
     if (!response.ok) {
-      throw new Error("End failed");
+        throw responseJson.message;
     }
 
-    return await response.json();
+    return responseJson;
   } catch (error) {
     console.error("Error fetching end payment stage:", error);
     throw error;
@@ -218,12 +273,15 @@ const endPaymentStage = async (id) => {
 
 const reopenPaymentStage = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/PaymentStages/${id}/reopen`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       }
@@ -252,11 +310,13 @@ const suspendPaymentStage = async (id) => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Suspend failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching suspend payment stage:", error);
     throw error;

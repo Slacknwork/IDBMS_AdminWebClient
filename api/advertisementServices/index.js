@@ -64,6 +64,8 @@ const getAdvertisementProjectDocuments = async ({
 const updateAdvertisementProjectDescription = async (id, request) => {
   const token = store.getState().user?.token ?? "";
   try {
+    const token = store.getState().user?.token ?? ""
+
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -80,6 +82,9 @@ const updateAdvertisementProjectDescription = async (id, request) => {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -98,6 +103,8 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
   const token = store.getState().user?.token ?? "";
 
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementStatus?status=${status}`,
       {
@@ -107,6 +114,7 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
         },
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );

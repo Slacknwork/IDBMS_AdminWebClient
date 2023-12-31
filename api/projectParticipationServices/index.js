@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllProjectParticipations = async ({
     role = "",
     name = "",
@@ -5,16 +7,22 @@ const getAllProjectParticipations = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const participations = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get all project participations failed');
+            throw participations.message;
         }
 
-        const participations = await response.json();
         return participations.data;
     } catch (error) {
         console.error('Error fetching all project participations:', error);
@@ -30,16 +38,22 @@ const getParticipationsByUserId = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/user/${userId}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const participations = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get participations by user ID failed');
+            throw participations.message;
         }
 
-        const participations = await response.json();
         return participations.data;
     } catch (error) {
         console.error('Error fetching participations by user ID:', error);
@@ -55,17 +69,23 @@ const getParticipationsByProjectId = async ({
     pageSize = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/project/${projectId}?${paramString}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const responseJson = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get participations by project ID failed');
+            throw responseJson.message;
         }
 
-        const responseJson = await response.json();
         return responseJson.data;
     } catch (error) {
         console.error('Error fetching participations by project ID:', error);
@@ -77,16 +97,22 @@ const getUsersByParticipationInProject = async ({
     projectId,
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/project/${projectId}/users`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
+        const responseJson = await response.json();
 
         if (!response.ok) {
-            throw new Error('Get users by participate in project ID failed');
+            throw responseJson.message;
         }
 
-        const responseJson = await response.json();
         return responseJson.data;
     } catch (error) {
         console.error('Error fetching users by participate in project ID:', error);
@@ -96,19 +122,22 @@ const getUsersByParticipationInProject = async ({
 
 const createProjectParticipation = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch('https://localhost:7062/api/ProjectParticipations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(request),
         });
+        const createdParticipation = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create project participation failed');
+            throw createdParticipation.message;
         }
 
-        const createdParticipation = await response.json();
         return createdParticipation;
     } catch (error) {
         console.error('Error creating project participation:', error);
@@ -118,22 +147,25 @@ const createProjectParticipation = async (request) => {
 
 const createEmployees = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/employees`,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(request),
             }
         );
+        const createdParticipations = await response.json();
 
         if (!response.ok) {
-            throw new Error('Create employees project participations failed');
+            throw createdParticipations.message;
         }
 
-        const createdParticipations = await response.json();
         return createdParticipations;
     } catch (error) {
         console.error('Error creating employees project participations:', error);
@@ -143,22 +175,25 @@ const createEmployees = async (request) => {
 
 const updateProjectParticipation = async (participationId, request) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/${participationId}`,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(request),
             }
         );
+        const updatedParticipation = await response.json();
 
         if (!response.ok) {
-            throw new Error('Update project participation failed');
+            throw updatedParticipation.message;
         }
 
-        const updatedParticipation = await response.json();
         return updatedParticipation;
     } catch (error) {
         console.error('Error updating project participation:', error);
@@ -168,15 +203,22 @@ const updateProjectParticipation = async (participationId, request) => {
 
 const deleteProjectParticipation = async (participationId) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/ProjectParticipations/${participationId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete project participation failed');
+            throw responseJson.message;
         }
 
         // Assuming successful deletion doesn't return data, you can adjust as needed.

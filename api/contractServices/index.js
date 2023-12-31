@@ -1,14 +1,23 @@
 import mammoth from "mammoth";
+import { store } from "/store";
 
 const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Contract/${projectId}/individual`,
       {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const responseJson = await response.json();
+    if (!response.ok) {
+      throw responseJson.message;
+    }
     return responseJson.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -18,13 +27,21 @@ const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
 
 const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Contract/${projectId}/company`,
       {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const responseJson = await response.json();
+    if (!response.ok) {
+      throw responseJson.message;
+    }
     return responseJson.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -34,12 +51,15 @@ const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
 
 const generateIndividualContract = async (request) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Contract/individual`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       }
@@ -55,12 +75,15 @@ const generateIndividualContract = async (request) => {
 
 const generateCompanyContract = async (request) => {
   try {
+    const token = store.getState().user?.token ?? ""
+
     const response = await fetch(
       `https://localhost:7062/api/Contract/company`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       }

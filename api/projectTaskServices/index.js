@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getProjectTasksByProjectId = async ({
   projectId = "",
   search = "",
@@ -11,17 +13,23 @@ const getProjectTasksByProjectId = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/project/${projectId}?codeOrName=${search}&includeStageIdFilter=${includeStageIdFilter}&stageId=${stageId}&includeRoomIdFilter=${includeRoomIdFilter}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const projectTasks = await response.json();
 
-    if (!response.ok) {
-      throw new Error("Get failed");
-    }
+      if (!response.ok) {
+        throw projectTasks.message;
+      }
 
-    const projectTasks = await response.json();
-    return projectTasks.data;
+      return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by project ID:", error);
     throw error;
@@ -30,17 +38,23 @@ const getProjectTasksByProjectId = async ({
 
 const getProjectTasksByRoomId = async (roomId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/room/${roomId}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const projectTasks = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw projectTasks.message;
     }
 
-    const projectTasks = await response.json();
-    return projectTasks;
+    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by room ID:", error);
     throw error;
@@ -49,17 +63,23 @@ const getProjectTasksByRoomId = async (roomId) => {
 
 const getProjectTasksWithItemByProjectId = async (projectId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/project/${projectId}/interior-items`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const projectTasks = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw projectTasks.message;
     }
 
-    const projectTasks = await response.json();
-    return projectTasks;
+    return projectTasks.data;
   } catch (error) {
     console.error(
       "Error fetching project tasks with item by project ID:",
@@ -71,17 +91,23 @@ const getProjectTasksWithItemByProjectId = async (projectId) => {
 
 const getProjectTasksWithItemByRoomId = async (roomId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/room/${roomId}/interior-items`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const projectTasks = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw projectTasks.message;
     }
 
-    const projectTasks = await response.json();
-    return projectTasks;
+    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks with item by room ID:", error);
     throw error;
@@ -90,17 +116,23 @@ const getProjectTasksWithItemByRoomId = async (roomId) => {
 
 const getProjectTasksByPaymentStageId = async (paymentStageId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/payment-stage/${paymentStageId}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const projectTasks = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw projectTasks.message;
     }
 
-    const projectTasks = await response.json();
-    return projectTasks;
+    return projectTasks.data;
   } catch (error) {
     console.error("Error fetching project tasks by payment stage ID:", error);
     throw error;
@@ -109,19 +141,22 @@ const getProjectTasksByPaymentStageId = async (paymentStageId) => {
 
 const createProjectTask = async (request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch("https://localhost:7062/api/ProjectTasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
+    const createdProjectTask = await response.json();
 
     if (!response.ok) {
-      throw new Error("Create failed");
+      throw createdProjectTask.message;
     }
 
-    const createdProjectTask = await response.json();
     return createdProjectTask;
   } catch (error) {
     console.error("Error creating project task:", error);
@@ -131,16 +166,22 @@ const createProjectTask = async (request) => {
 
 const getProjectTaskById = async (taskId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/${taskId}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const projectTask = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw projectTask.message;
     }
 
-    const projectTask = await response.json();
     return projectTask.data;
   } catch (error) {
     console.error("Error fetching project task by ID:", error);
@@ -150,22 +191,25 @@ const getProjectTaskById = async (taskId) => {
 
 const updateProjectTask = async (taskId, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/${taskId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       }
     );
+    const updatedProjectTask = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update failed");
+      throw updatedProjectTask.message;
     }
 
-    const updatedProjectTask = await response.json();
     return updatedProjectTask;
   } catch (error) {
     console.error("Error updating project task:", error);
@@ -175,21 +219,24 @@ const updateProjectTask = async (taskId, request) => {
 
 const updateProjectTaskStatus = async (taskId, status) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/${taskId}/status?status=${status}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
+    const result = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update failed");
+      throw result.message;
     }
 
-    const result = await response.json();
     return result;
   } catch (error) {
     console.error("Error updating project task status:", error);
@@ -203,22 +250,25 @@ const updateProjectTaskStage = async ({
   tasks = [],
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectTasks/payment-stage/${stageId}?projectId=${projectId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(tasks),
       }
     );
+    const result = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update failed");
+      throw result.message;
     }
 
-    const result = await response.json();
     return result;
   } catch (error) {
     console.error("Error updating project task stage:", error);

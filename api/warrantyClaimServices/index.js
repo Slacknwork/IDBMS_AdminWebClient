@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllWarrantyClaims = async ({
     isCompanyCover = "",
     name = "",
@@ -5,11 +7,20 @@ const getAllWarrantyClaims = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const warrantyClaims = await response.json();
+        if (!response.ok) {
+            throw warrantyClaims.message;
+        }
         return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching all warranty claims:', error);
@@ -25,11 +36,20 @@ const getWarrantyClaimsByProjectId = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/project/${projectId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const warrantyClaims = await response.json();
+        if (!response.ok) {
+            throw warrantyClaims.message;
+        }
         return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching warranty claims by project ID:', error);
@@ -45,11 +65,20 @@ const getWarrantyClaimsByUserId = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/user/${userId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const warrantyClaims = await response.json();
+        if (!response.ok) {
+            throw warrantyClaims.message;
+        }
         return warrantyClaims.data;
     } catch (error) {
         console.error('Error fetching warranty claims by user ID:', error);
@@ -59,11 +88,20 @@ const getWarrantyClaimsByUserId = async ({
 
 const getWarrantyClaimById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/${id}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const warrantyClaim = await response.json();
+        if (!response.ok) {
+            throw warrantyClaim.message;
+        }
         return warrantyClaim.data;
     } catch (error) {
         console.error('Error fetching warranty claim by ID:', error);
@@ -74,6 +112,7 @@ const getWarrantyClaimById = async (id) => {
 const createWarrantyClaim = async (request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
             const value = request[key];
@@ -92,14 +131,19 @@ const createWarrantyClaim = async (request) => {
             {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Create failed');
-        }
+        const responseJson = await response.json();
 
-        return await response.json();
+        if (!response.ok) {
+            throw responseJson.message;
+        }
+      
+        return responseJson;
     } catch (error) {
         console.error('Error fetching create warranty claim:', error);
         throw error;
@@ -109,6 +153,7 @@ const createWarrantyClaim = async (request) => {
 const updateWarrantyClaim = async (id, request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
             if (!key.endsWith("Error")) {
@@ -121,14 +166,19 @@ const updateWarrantyClaim = async (id, request) => {
             {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Update failed');
-        }
+        const responseJson = await response.json();
 
-        return await response.json();
+        if (!response.ok) {
+            throw responseJson.message;
+        }
+      
+        return responseJson;
     } catch (error) {
         console.error('Error fetching update warranty claim:', error);
         throw error;
@@ -137,18 +187,25 @@ const updateWarrantyClaim = async (id, request) => {
 
 const deleteWarrantyClaimById = async (id, projectId) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/WarrantyClaims/${id}?projectId=${projectId}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Delete failed');
-        }
+        const responseJson = await response.json();
 
-        return await response.json();
+        if (!response.ok) {
+            throw responseJson.message;
+        }
+      
+        return responseJson;
     } catch (error) {
         console.error('Error fetching delete warranty claim:', error);
         throw error;
