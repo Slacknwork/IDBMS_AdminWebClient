@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllTransactions = async ({
     payerName = "",
     type = "",
@@ -6,11 +8,20 @@ const getAllTransactions = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const transactions = await response.json();
+        if (!response.ok) {
+            throw transactions.message;
+        }
         return transactions.data;
     } catch (error) {
         console.error('Error fetching all transactions:', error);
@@ -27,11 +38,20 @@ const getTransactionsByProjectId = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const transactions = await response.json();
+        if (!response.ok) {
+            throw transactions.message;
+        }
         return transactions.data;
     } catch (error) {
         console.error('Error fetching transactions by project ID:', error);
@@ -48,11 +68,20 @@ const getTransactionsByUserId = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const transactions = await response.json();
+        if (!response.ok) {
+            throw transactions.message;
+        }
         return transactions.data;
     } catch (error) {
         console.error('Error fetching transactions by user ID:', error);
@@ -62,11 +91,20 @@ const getTransactionsByUserId = async ({
 
 const getTransactionById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/${id}`,
-            { cache: 'no-store' }
-        );
+            {
+                cache: "no-store",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            });
         const transaction = await response.json();
+        if (!response.ok) {
+            throw transactions.message;
+        }
         return transaction.data;
     } catch (error) {
         console.error('Error fetching transaction by ID:', error);
@@ -77,6 +115,7 @@ const getTransactionById = async (id) => {
 const createTransaction = async (request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
           if (!key.endsWith("Error")) {
@@ -89,14 +128,19 @@ const createTransaction = async (request) => {
             {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Create failed');
-        }
+        const responseJson = await response.json();
 
-        return await response.json();
+        if (!response.ok) {
+            throw responseJson.message;
+        }
+      
+        return responseJson;
     } catch (error) {
         console.error('Error fetching create transaction:', error);
         throw error;
@@ -106,6 +150,7 @@ const createTransaction = async (request) => {
 const updateTransaction = async (id, request) => {
     try {
         const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
           if (!key.endsWith("Error")) {
@@ -118,14 +163,19 @@ const updateTransaction = async (id, request) => {
             {
                 method: 'PUT',
                 body: formData,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error('Update failed');
-        }
+        const responseJson = await response.json();
 
-        return await response.json();
+        if (!response.ok) {
+            throw responseJson.message;
+        }
+      
+        return responseJson;
     } catch (error) {
         console.error('Error fetching update transaction:', error);
         throw error;
@@ -134,15 +184,22 @@ const updateTransaction = async (id, request) => {
 
 const updateTransactionStatus = async (id, status) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/${id}/status?status=${status}`,
             {
                 method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Update status failed');
+            throw responseJson.message;
         }
 
         return true;
@@ -154,15 +211,22 @@ const updateTransactionStatus = async (id, status) => {
 
 const deleteTransaction = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
+
         const response = await fetch(
             `https://localhost:7062/api/Transactions/${id}`,
             {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
+        const responseJson = await response.json();
+
         if (!response.ok) {
-            throw new Error('Delete transaction failed');
+            throw responseJson.message;
         }
 
         // Assuming successful deletion doesn't return data, you can adjust as needed.

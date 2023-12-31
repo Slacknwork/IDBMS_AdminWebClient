@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getAllTaskCategories = async ({
   type = "",
   name = "",
@@ -42,6 +44,7 @@ const getTaskCategoryById = async (id) => {
 const createTaskCategory = async (request) => {
   try {
     const formData = new FormData();
+    const token = store.getState().user?.token ?? "";
 
     Object.keys(request).forEach((key) => {
       if (!key.endsWith("Error")) {
@@ -52,13 +55,16 @@ const createTaskCategory = async (request) => {
     const response = await fetch("https://localhost:7062/api/TaskCategories", {
       method: "POST",
       body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    const createdCategory = await response.json();
 
     if (!response.ok) {
-      throw new Error("Create task category failed");
-    }
+      throw createdCategory.message;
+  }
 
-    const createdCategory = await response.json();
     return createdCategory;
   } catch (error) {
     console.error("Error creating task category:", error);
@@ -69,6 +75,7 @@ const createTaskCategory = async (request) => {
 const updateTaskCategory = async (categoryId, request) => {
   try {
     const formData = new FormData();
+    const token = store.getState().user?.token ?? "";
 
     Object.keys(request).forEach((key) => {
       if (!key.endsWith("Error")) {
@@ -81,14 +88,17 @@ const updateTaskCategory = async (categoryId, request) => {
       {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
+    const updatedCategory = await response.json();
 
     if (!response.ok) {
-      throw new Error("Update task category failed");
-    }
+      throw updatedCategory.message;
+  }
 
-    const updatedCategory = await response.json();
     return updatedCategory;
   } catch (error) {
     console.error("Error updating task category:", error);
@@ -98,15 +108,22 @@ const updateTaskCategory = async (categoryId, request) => {
 
 const deleteTaskCategory = async (categoryId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/TaskCategories/${categoryId}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
+    const responseJson = await response.json();
+
     if (!response.ok) {
-      throw new Error("Delete task category failed");
+        throw responseJson.message;
     }
 
     // Assuming successful deletion doesn't return data, you can adjust as needed.

@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getRoomsByFloorId = async ({
   floorId = "",
   search = "",
@@ -6,16 +8,22 @@ const getRoomsByFloorId = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Rooms/floor/${floorId}?usePurpose=${search}&isHidden=${isHidden}&pageNo=${page}&pageSize=${pageSize}`,
-      { cache: "no-store" }
-    );
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    const rooms = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get failed");
+      throw rooms.message;
     }
 
-    const rooms = await response.json();
     return rooms.data;
   } catch (error) {
     console.error("Error fetching rooms by floor ID:", error);
@@ -25,15 +33,20 @@ const getRoomsByFloorId = async ({
 
 const getRoomById = async (roomId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Rooms/${roomId}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    const room = await response.json();
 
     if (!response.ok) {
-      throw new Error("Get room by ID failed");
+      throw room.message;
     }
 
-    const room = await response.json();
     return room.data;
   } catch (error) {
     console.error("Error fetching room by ID:", error);
@@ -43,19 +56,24 @@ const getRoomById = async (roomId) => {
 
 const createRoom = async (request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Rooms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching create room:", error);
     throw error;
@@ -64,19 +82,24 @@ const createRoom = async (request) => {
 
 const updateRoom = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(`https://localhost:7062/api/Rooms/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching update room:", error);
     throw error;
@@ -85,15 +108,20 @@ const updateRoom = async (id, request) => {
 
 const updateRoomIsHidden = async (id, isHidden, projectId) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/Rooms/${id}/isHidden?isHidden=${isHidden}&projectId=${projectId}`,
       {
         method: "PUT",
+        Authorization: `Bearer ${token}`,
       }
     );
 
+    const responseJson = await response.json();
+
     if (!response.ok) {
-      throw new Error("Update isHidden failed");
+        throw responseJson.message;
     }
 
     return true;

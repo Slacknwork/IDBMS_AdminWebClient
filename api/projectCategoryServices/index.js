@@ -1,3 +1,5 @@
+import { store } from "/store";
+
 const getProjectCategories = async ({
   isHidden = false,
   name = "",
@@ -33,7 +35,7 @@ const getProjectCategoryById = async (id) => {
 
 const createProjectCategory = async (request) => {
   try {
-
+    const token = store.getState().user?.token ?? "";
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -48,14 +50,19 @@ const createProjectCategory = async (request) => {
       {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching create project category:", error);
     throw error;
@@ -64,6 +71,7 @@ const createProjectCategory = async (request) => {
 
 const updateProjectCategory = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const formData = new FormData();
 
     Object.keys(request).forEach((key) => {
@@ -77,14 +85,19 @@ const updateProjectCategory = async (id, request) => {
       {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error("Error fetching update project category:", error);
     throw error;
@@ -93,18 +106,25 @@ const updateProjectCategory = async (id, request) => {
 
 const updateProjectCategoryHiddenStatus = async (id, newHiddenStatus) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const response = await fetch(
       `https://localhost:7062/api/ProjectCategories/${id}/isHidden?isHidden=${newHiddenStatus}`,
       {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Update hidden status failed");
-    }
+    const responseJson = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+        throw responseJson.message;
+    }
+      
+    return responseJson;
   } catch (error) {
     console.error(
       "Error fetching update project category hidden status:",
