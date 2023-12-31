@@ -55,7 +55,7 @@ const createProject = async (request) => {
       token,
       body: JSON.stringify(request),
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error creating project:", error);
     throw error;

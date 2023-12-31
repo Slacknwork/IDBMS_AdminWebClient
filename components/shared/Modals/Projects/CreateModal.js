@@ -53,22 +53,20 @@ export default function CreateProjectModal({ children }) {
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    type: -1,
+    type: 0,
     typeError: { hasError: false, label: "" },
     status: 0,
     statusError: { hasError: false, label: "" },
-    language: -1,
+    language: 0,
     languageError: { hasError: false, label: "" },
     projectCategoryId: null,
-    projectCategory: null,
-    projectCategoryError: { hasError: false, label: "" },
+    projectCategoryIdError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
     advertisementStatus: 0,
     advertisementStatusError: { hasError: false, label: "" },
     basedOnDecorProjectId: null,
-    basedOnDecorProject: null,
-    basedOnDecorProjectError: { hasError: false, label: "" },
+    basedOnDecorProjectIdError: { hasError: false, label: "" },
     estimatedPrice: 0,
     estimatedPriceError: { hasError: false, label: "" },
     finalPrice: 0,
@@ -85,33 +83,68 @@ export default function CreateProjectModal({ children }) {
   });
 
 
-  const validateInput = (field, value) => {
+  const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Không thể để trống" : "";
-      // Add validation for other fields as needed
+      case "projectCategoryId":
+      case "type":
+      case "status":
+      case "language":
+      case "advertisementStatus":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
       default:
-        return "";
     }
   };
 
-  const handleInputChange = (field, value) => {
-    switch (field) {
-      case "projectCategory":
-      case "basedOnDecorProject":
-        setFormData((prevData) => ({ ...prevData, [`${field}Id`]: value }));
-        console.log(value);
-        break;
-      default:
-        break;
+  // SUBMIT FORM
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
     }
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+    setSwitchSubmit(true);
   };
+
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   const [decorProjects, setDecorProjects] = useState([]);
 
@@ -168,8 +201,9 @@ export default function CreateProjectModal({ children }) {
       buttonLabel="Tạo"
       title="Tạo dự án"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
 
       {/* NAME */}
@@ -221,13 +255,14 @@ export default function CreateProjectModal({ children }) {
       {/* PROJECT CATEGORY */}
       <Grid item xs={12} lg={6}>
         <AutocompleteForm
+          required
           title="Phân loại"
           subtitle="Chọn phân loại dự án"
-          value={formData.projectCategory}
+          value={formData.projectCategoryId}
           options={projectCategories}
-          error={formData.projectCategoryError.hasError}
-          errorLabel={formData.projectCategoryError.label}
-          onChange={(value) => handleInputChange("projectCategory", value)}
+          error={formData.projectCategoryIdError.hasError}
+          errorLabel={formData.projectCategoryIdError.label}
+          onChange={(value) => handleInputChange("projectCategoryId", value)}
         ></AutocompleteForm>
       </Grid>
 
@@ -272,12 +307,12 @@ export default function CreateProjectModal({ children }) {
           <AutocompleteForm
             title="Thiết kế"
             subtitle="Chọn dự án thiết kế cho dự án thi công này"
-            value={formData.basedOnDecorProject}
+            value={formData.basedOnDecorProjectId}
             options={decorProjects}
-            error={formData.basedOnDecorProjectError.hasError}
-            errorLabel={formData.basedOnDecorProjectError.label}
+            error={formData.basedOnDecorProjectIdError.hasError}
+            errorLabel={formData.basedOnDecorProjectIdError.label}
             onChange={(value) =>
-              handleInputChange("basedOnDecorProject", value)
+              handleInputChange("basedOnDecorProjectId", value)
             }
           ></AutocompleteForm>
         </Grid>

@@ -1,4 +1,7 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
+
+const endpoint = "/Sites";
 
 const getSitesByProjectId = async ({
   projectId = "",
@@ -82,23 +85,16 @@ const getSiteById = async (id) => {
 
 const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
   const token = store.getState().user?.token ?? "";
-  console.log(token);
 
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/Sites?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const sites = await response.json();
-    if (!response.ok) {
-      throw sites.message;
-    }
-    return sites.data;
+    const url = `${endpoint}?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching sites:", error);
     throw error;
@@ -106,28 +102,19 @@ const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
 };
 
 const createSite = async (request) => {
-  const token = store.getState().user?.token ?? "";
+  const token = store.getState().user?.token ?? ""
 
   try {
-    const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(`https://localhost:7062/api/Sites`, {
+    const url = `${endpoint}`;
+    const response = await fetchData({
+      url,
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      contentType: "application/json",
+      token,
       body: JSON.stringify(request),
     });
 
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+    return response.data;
   } catch (error) {
     console.error("Error fetching create site:", error);
     throw error;
@@ -153,9 +140,9 @@ const updateSite = async (id, request) => {
     const responseJson = await response.json();
 
     if (!response.ok) {
-        throw responseJson.message;
+      throw responseJson.message;
     }
-      
+
     return responseJson;
   } catch (error) {
     console.error("Error fetching update site:", error);
@@ -182,9 +169,9 @@ const deleteSiteById = async (id) => {
     const responseJson = await response.json();
 
     if (!response.ok) {
-        throw responseJson.message;
+      throw responseJson.message;
     }
-      
+
     return responseJson;
   } catch (error) {
     console.error("Error fetching delete site:", error);

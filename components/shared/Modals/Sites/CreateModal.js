@@ -49,7 +49,11 @@ export default function CreateSiteModal({ onCreate }) {
       case "contactLocation":
       case "contactPhone":
       case "contactEmail":
-        if (value !== null && value.trim() === "") {
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -98,16 +102,18 @@ export default function CreateSiteModal({ onCreate }) {
 
   useEffect(() => {
     if (!switchSubmit) return;
+
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
+
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
       setSwitchSubmit(false);
       return;
     }
+
     handleCreate();
     setSwitchSubmit(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
 
   // ON MOUNTED

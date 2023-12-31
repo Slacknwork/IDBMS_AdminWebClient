@@ -1,4 +1,7 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
+
+const endpoint = "/RoomTypes";
 const apiUrl = "https://localhost:7062/api/RoomTypes";
 
 const getAllRoomTypes = async ({
@@ -44,6 +47,7 @@ const getRoomTypeById = async (id) => {
 };
 
 const createRoomType = async (request) => {
+  console.log(request)
   const token = store.getState().user?.token ?? "";
   const formData = new FormData();
 
@@ -52,24 +56,17 @@ const createRoomType = async (request) => {
       formData.append(key, request[key]);
     }
   });
-  console.log(formData)
 
   try {
-    const response = await fetch(apiUrl, {
+    const url = `${endpoint}`;
+    const response = await fetchData({
+      url,
       method: "POST",
+      token,
       body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
 
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+    return response.data;
   } catch (error) {
     console.error("Error creating room type:", error);
     throw error;
@@ -98,9 +95,9 @@ const updateRoomType = async (id, request) => {
     const responseJson = await response.json();
 
     if (!response.ok) {
-        throw responseJson.message;
+      throw responseJson.message;
     }
-      
+
     return responseJson;
   } catch (error) {
     console.error("Error updating room type:", error);
@@ -122,9 +119,9 @@ const updateRoomTypeHiddenStatus = async (id, newHiddenStatus) => {
     const responseJson = await response.json();
 
     if (!response.ok) {
-        throw responseJson.message;
+      throw responseJson.message;
     }
-      
+
     return responseJson;
   } catch (error) {
     console.error("Error fetching update room type hidden status:", error);
