@@ -96,7 +96,6 @@ const updateAdvertisementProjectDescription = async (id, request) => {
 
 const updateAdvertisementProjectStatus = async (id, status = "") => {
   const token = store.getState().user?.token ?? "";
-
   try {
     const response = await fetch(
       `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementStatus?status=${status}`,
@@ -104,8 +103,6 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
-        },
-        headers: {
           "Content-Type": "application/json",
         },
       }
