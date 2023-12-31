@@ -5,7 +5,6 @@ export async function fetchData({
   token,
   body,
 } = {}) {
-  console.log(contentType);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(`${apiUrl}${url}`, {
     method,
@@ -15,8 +14,9 @@ export async function fetchData({
     },
     body,
   });
+  const data = await response.json();
   if (!response.ok) {
-    throw new Error("fetchData Failed");
+    throw data.message;
   }
-  return await response.json();
+  return data;
 }
