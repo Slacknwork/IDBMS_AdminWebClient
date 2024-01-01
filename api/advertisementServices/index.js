@@ -1,4 +1,7 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
+
+const endpoint = "/AdvertisementProjects";
 
 const getAdvertisementProjects = async ({
   search = "",
@@ -8,14 +11,15 @@ const getAdvertisementProjects = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/AdvertisementProjects?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const projects = await response.json();
-    return projects.data;
+    const url = `${endpoint}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`;
+
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -24,14 +28,14 @@ const getAdvertisementProjects = async ({
 
 const getAdvertisementProjectById = async (projectId = "") => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/AdvertisementProjects/${projectId}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const project = await response.json();
-    return project.data;
+    const url = `${endpoint}/${projectId}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -47,14 +51,14 @@ const getAdvertisementProjectDocuments = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/AdvertisementProjects/${projectId}/documents?documentName=${search}&isPublicAdvertisement=${status}&category=${category}&pageNo=${page}&pageSize=${pageSize}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const projects = await response.json();
-    return projects.data;
+    const url = `${endpoint}/${projectId}/documents?documentName=${search}&isPublicAdvertisement=${status}&category=${category}&pageNo=${page}&pageSize=${pageSize}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -64,7 +68,6 @@ const getAdvertisementProjectDocuments = async ({
 const updateAdvertisementProjectDescription = async (id, request) => {
   const token = store.getState().user?.token ?? "";
   try {
-    const token = store.getState().user?.token ?? ""
 
     const formData = new FormData();
 
@@ -74,25 +77,14 @@ const updateAdvertisementProjectDescription = async (id, request) => {
       }
     });
 
-    const response = await fetch(
-      `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementDescription`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
-
-    return await response.json();
+    const url = `${endpoint}/${id}/advertisementDescription`;
+    const response = await fetchData({
+      url,
+      method: "PUT",
+      token,
+      body: JSON.stringify(request),
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;
@@ -102,25 +94,15 @@ const updateAdvertisementProjectDescription = async (id, request) => {
 const updateAdvertisementProjectStatus = async (id, status = "") => {
   const token = store.getState().user?.token ?? "";
   try {
-    const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/AdvertisementProjects/${id}/advertisementStatus?status=${status}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
-
-    return await response.json();
+    const url = `${endpoint}/${id}/advertisementStatus?status=${status}`;
+    const response = await fetchData({
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;

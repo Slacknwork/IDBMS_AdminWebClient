@@ -1,16 +1,16 @@
+import { fetchData } from "/utils/api";
+
+const endpoint = "/InteriorItemBookmarks";
 const getAllInteriorItemBookmarks = async () => {
     try {
-        const response = await fetch(
-            'https://localhost:7062/api/InteriorItemBookmarks',
-            { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-            throw new Error('Get failed');
-        }
-
-        const interiorItemBookmarks = await response.json();
-        return interiorItemBookmarks;
+        const url = `${endpoint}`;
+        const response = await fetchData({
+            url,
+            method: "GET",
+            token,
+            body: null,
+        });
+        return response.data;
     } catch (error) {
         console.error('Error fetching all interior item bookmarks:', error);
         throw error;
@@ -19,17 +19,14 @@ const getAllInteriorItemBookmarks = async () => {
 
 const getInteriorItemBookmarksByUserId = async (userId) => {
     try {
-        const response = await fetch(
-            `https://localhost:7062/api/InteriorItemBookmarks/user/${userId}`,
-            { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-            throw new Error('Get failed');
-        }
-
-        const interiorItemBookmarks = await response.json();
-        return interiorItemBookmarks;
+        const url = `${endpoint}/user/${userId}`;
+        const response = await fetchData({
+            url,
+            method: "GET",
+            token,
+            body: null,
+        });
+        return response.data;
     } catch (error) {
         console.error('Error fetching interior item bookmarks by user ID:', error);
         throw error;
@@ -38,20 +35,15 @@ const getInteriorItemBookmarksByUserId = async (userId) => {
 
 const createInteriorItemBookmark = async (request) => {
     try {
-        const response = await fetch('https://localhost:7062/api/InteriorItemBookmarks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const url = `${endpoint}`;
+        const response = await fetchData({
+            url,
+            method: "POST",
+            contentType: "application/json",
+            token,
             body: JSON.stringify(request),
         });
-
-        if (!response.ok) {
-            throw new Error('Create failed');
-        }
-
-        const createdInteriorItemBookmark = await response.json();
-        return createdInteriorItemBookmark;
+        return response.data;
     } catch (error) {
         console.error('Error creating interior item bookmark:', error);
         throw error;
@@ -60,18 +52,14 @@ const createInteriorItemBookmark = async (request) => {
 
 const deleteInteriorItemBookmark = async (bookmarkId) => {
     try {
-        const response = await fetch(
-            `https://localhost:7062/api/InteriorItemBookmarks/${bookmarkId}`,
-            {
-                method: 'DELETE',
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error('Delete failed');
-        }
-
-        return { success: true };
+        const url = `${endpoint}/${bookmarkId}`;
+        const response = await fetchData({
+            url,
+            method: "DELETE",
+            token,
+            body: null,
+        });
+        return response.message;
     } catch (error) {
         console.error('Error deleting interior item bookmark:', error);
         throw error;

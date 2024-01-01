@@ -1,22 +1,18 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/Comments";
 const getAllComments = async () => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch("https://localhost:7062/api/Comments", {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
-    const comments = await response.json();
-
-    if (!response.ok) {
-      throw comments.message;
-    }
-
-    return comments.data;
+    return response.data;
   } catch (error) {
     console.error("Error fetching all comments:", error);
     throw error;
@@ -25,23 +21,15 @@ const getAllComments = async () => {
 
 const getCommentsByProjectTaskId = async (projectTaskId) => {
   try {
-    const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Comments/project-task/${projectTaskId}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? ""
+      const url = `${endpoint}/project-task/${projectTaskId}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const comments = await response.json();
-
-    if (!response.ok) {
-      throw comments.message;
-    }
-
-    return comments.data;
+      return response.data;
   } catch (error) {
     console.error("Error fetching comments by project task ID:", error);
     throw error;
@@ -57,23 +45,15 @@ const getCommentsByProjectId = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Comments/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? ""
+      const url = `${endpoint}/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const comments = await response.json();
-
-    if (!response.ok) {
-      throw comments.message;
-    }
-
-    return comments.data;
+      return response.data;
   } catch (error) {
     console.error("Error fetching comments by project ID:", error);
     throw error;
@@ -83,20 +63,14 @@ const getCommentsByProjectId = async ({
 const getCommentsById = async (id) => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(`https://localhost:7062/api/Comments/${id}`, {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
-    const comments = await response.json();
-
-    if (!response.ok) {
-      throw comments.message;
-    }
-
-    return comments.data;
+    return response.data;
   } catch (error) {
     console.error("Error fetching comments by ID:", error);
     throw error;
@@ -113,21 +87,14 @@ const createComment = async (request) => {
         formData.append(key, request[key]);
       }
     });
-
-    const response = await fetch("https://localhost:7062/api/Comments", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const createdComment = await response.json();
-
-    if (!response.ok) {
-      throw createdComment.message;
-    }
-
-    return createdComment;
+    const url = `${endpoint}`;
+    const response = await fetchData({
+        url,
+        method: "POST",
+        token,
+        body: formData,
+      });
+    return response.data;
   } catch (error) {
     console.error("Error creating comment:", error);
     throw error;
@@ -145,23 +112,14 @@ const updateComment = async (commentId, request) => {
       }
     });
 
-    const response = await fetch(
-      `https://localhost:7062/api/Comments/${commentId}`,
-      {
+    const url = `${endpoint}/${commentId}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
+        token,
         body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const updatedComment = await response.json();
-
-    if (!response.ok) {
-      throw updatedComment.message;
-    }
-
-    return updatedComment;
+      });
+    return response.data;
   } catch (error) {
     console.error("Error updating comment:", error);
     throw error;
@@ -171,24 +129,14 @@ const updateComment = async (commentId, request) => {
 const deleteComment = async (commentId) => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Comments/${commentId}`,
-      {
+    const url = `${endpoint}/${commentId}`;
+    const response = await fetchData({
+        url,
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json()
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-
-    return { success: true };
+        token,
+        body: null,
+    });
+    return response.message;
   } catch (error) {
     console.error("Error deleting comment:", error);
     throw error;
@@ -198,23 +146,15 @@ const deleteComment = async (commentId) => {
 const updateCommentStatus = async (commentId, newStatus) => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Comments/${commentId}/status?status=${newStatus}`,
-      {
+    const url = `${endpoint}/${commentId}/status?status=${newStatus}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const updatedComment = await response.json();
-
-    if (!response.ok) {
-      throw updatedComment.message;
-    }
-
-    return updatedComment;
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating comment status:", error);
     throw error;

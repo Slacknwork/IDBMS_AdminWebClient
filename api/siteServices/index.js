@@ -11,20 +11,14 @@ const getSitesByProjectId = async ({
 } = {}) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/Sites/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    const sites = await response.json();
-    if (!response.ok) {
-      throw sites.message;
-    }
-    return sites.data;
+    const url = `${endpoint}/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching sites by project ID:", error);
     throw error;
@@ -39,20 +33,14 @@ const getSitesByUserId = async ({
 } = {}) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/Sites/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    const sites = await response.json();
-    if (!response.ok) {
-      throw sites.message;
-    }
-    return sites.data;
+    const url = `${endpoint}/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching sites by user ID:", error);
     throw error;
@@ -63,20 +51,14 @@ const getSiteById = async (id) => {
   const token = store.getState().user?.token ?? "";
 
   try {
-    const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
     });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-      throw responseJson.message;
-    }
-
-    return responseJson.data;
+    return response.data;
   } catch (error) {
     console.error("Error fetching site by ID:", error);
     throw error;
@@ -126,24 +108,15 @@ const updateSite = async (id, request) => {
 
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(request),
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
+        method: "PUT",
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(request),
     });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-      throw responseJson.message;
-    }
-
-    return responseJson;
+    return response.data;
   } catch (error) {
     console.error("Error fetching update site:", error);
     throw error;
@@ -155,24 +128,14 @@ const deleteSiteById = async (id) => {
 
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(`https://localhost:7062/api/Sites/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
+        method: "DELETE",
+        token,
+        body: null,
     });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-      throw responseJson.message;
-    }
-
-    return responseJson;
+    return response.message;
   } catch (error) {
     console.error("Error fetching delete site:", error);
     throw error;

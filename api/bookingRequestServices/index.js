@@ -1,3 +1,6 @@
+import { fetchData } from "/utils/api";
+
+const endpoint = "/BookingRequests";
 const getBookingRequests = async ({
   type = "",
   status = "",
@@ -6,17 +9,14 @@ const getBookingRequests = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/BookingRequests?type=${type}&status=${status}&contactName=${search}&pageNo=${page}&pageSize=${pageSize}`,
-      {
-        cache: "no-store",
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Get failed");
-    }
-    const bookingRequests = await response.json();
-    return bookingRequests.data;
+    const url = `${endpoint}?type=${type}&status=${status}&contactName=${search}&pageNo=${page}&pageSize=${pageSize}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching booking requests:", error);
     throw error;
@@ -25,19 +25,15 @@ const getBookingRequests = async ({
 
 const createBookingRequest = async (request) => {
   try {
-    const response = await fetch(`https://localhost:7062/api/BookingRequests`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
+    const url = `${endpoint}`;
+    const response = await fetchData({
+        url,
+        method: "POST",
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(request),
     });
-
-    if (!response.ok) {
-      throw new Error("Create failed");
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Error creating booking request:", error);
     throw error;
@@ -46,22 +42,15 @@ const createBookingRequest = async (request) => {
 
 const updateBookingRequest = async (id, request) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/BookingRequests/${id}`,
-      {
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        contentType: "application/json",
+        token,
         body: JSON.stringify(request),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Update failed");
-    }
-
-    return await response.json();
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating booking request:", error);
     throw error;
@@ -70,22 +59,15 @@ const updateBookingRequest = async (id, request) => {
 
 const updateBookingRequestStatus = async (id, status, request) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/BookingRequests/${id}/process?status=${status}`,
-      {
+    const url = `${endpoint}/${id}/process?status=${status}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: `"${request}"`,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Update status failed");
-    }
-
-    return response;
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(request),
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating booking request status:", error);
     throw error;

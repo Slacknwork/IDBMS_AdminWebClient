@@ -1,7 +1,9 @@
 import { mapFromOdata } from "/utils/odata";
 import { stageStatusIndex } from "/constants/enums/stageStatus";
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/PaymentStages";
 const getPaymentStagesByProjectId = async ({
   projectId = "",
   status = "",
@@ -10,21 +12,15 @@ const getPaymentStagesByProjectId = async ({
   pageNo = "",
 } = {}) => {
   try {
-    const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? "";
+      const url = `${endpoint}/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const paymentStages = await response.json();
-    if (!response.ok) {
-      throw paymentStages.message;
-    }
-    return paymentStages.data;
+      return response.data;
   } catch (error) {
     console.error("Error fetching payment stages by project ID:", error);
     throw error;
@@ -39,21 +35,15 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
   pageNo = "",
 } = {}) => {
   try {
-    const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? "";
+      const url = `${endpoint}/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const paymentStages = await response.json();
-    if (!response.ok) {
-      throw paymentStages.message;
-    }
-    return paymentStages.data;
+      return response.data;
   } catch (error) {
     console.error("Error fetching payment stages by project ID:", error);
     throw error;
@@ -62,21 +52,15 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
 
 const getPaymentStagesById = async (id) => {
   try {
-    const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? "";
+      const url = `${endpoint}/${id}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const paymentStages = await response.json();
-    if (!response.ok) {
-      throw paymentStages.message;
-    }
-    return paymentStages.data;
+      return response.data;
   } catch (error) {
     console.error("Error fetching payment stage by ID:", error);
     throw error;
@@ -86,23 +70,15 @@ const getPaymentStagesById = async (id) => {
 const createPaymentStage = async (request) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(`https://localhost:7062/api/PaymentStages`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(request),
+    const url = `${endpoint}`;
+    const response = await fetchData({
+        url,
+        method: "POST",
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(request),
     });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+    return response.data;
   } catch (error) {
     console.error("Error fetching create payment stage:", error);
     throw error;
@@ -112,26 +88,15 @@ const createPaymentStage = async (request) => {
 const updatePaymentStage = async (id, request) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}`,
-      {
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        contentType: "application/json",
+        token,
         body: JSON.stringify(request),
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching update payment stage:", error);
     throw error;
@@ -141,24 +106,14 @@ const updatePaymentStage = async (id, request) => {
 const deletePaymentStage = async (id) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}`,
-      {
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+        url,
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-
-    return true;
+        token,
+        body: null,
+    });
+    return response.message;
   } catch (error) {
     console.error("Error fetching delete payment stage:", error);
     throw error;
@@ -218,25 +173,15 @@ const getPaymentStagesFilter = async (
 const startPaymentStage = async (id) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}/start`,
-      {
+    const url = `${endpoint}/${id}/start`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-
-    return responseJson;
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching start payment stage:", error);
     throw error;
@@ -246,25 +191,15 @@ const startPaymentStage = async (id) => {
 const endPaymentStage = async (id) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}/end`,
-      {
+    const url = `${endpoint}/${id}/end`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-   const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-
-    return responseJson;
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching end payment stage:", error);
     throw error;
@@ -274,24 +209,15 @@ const endPaymentStage = async (id) => {
 const reopenPaymentStage = async (id, request) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}/reopen`,
-      {
+    const url = `${endpoint}/${id}/reopen`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        contentType: "application/json",
+        token,
         body: JSON.stringify(request),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Reopen failed");
-    }
-
-    return await response.json();
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching reopen payment stage:", error);
     throw error;
@@ -300,23 +226,15 @@ const reopenPaymentStage = async (id, request) => {
 
 const suspendPaymentStage = async (id) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/PaymentStages/${id}/suspend`,
-      {
+    const url = `${endpoint}/${id}/suspend`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching suspend payment stage:", error);
     throw error;
