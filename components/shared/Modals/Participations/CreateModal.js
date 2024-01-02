@@ -17,8 +17,8 @@ import { useParams } from "next/navigation";
 import {
   createEmployees,
   getUsersByParticipationInProject,
-} from "/api/projectParticipationServices";
-import { getAllUsers } from "/api/userServices";
+} from "/services/projectParticipationServices";
+import { getAllUsers } from "/services/userServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import participationRoleOptions from "/constants/enums/participationRole";

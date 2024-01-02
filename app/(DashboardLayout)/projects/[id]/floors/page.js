@@ -19,9 +19,9 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
-import { getFloorsByProjectId } from "/api/floorServices";
+import { getFloorsByProjectId } from "/services/floorServices";
 
-import CreateFloorModal from "/components/shared/Modals/floors/CreateModal";
+import CreateFloorModal from "/components/shared/Modals/Floors/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 

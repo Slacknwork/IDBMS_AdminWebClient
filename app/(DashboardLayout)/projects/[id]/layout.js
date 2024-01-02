@@ -31,7 +31,7 @@ import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
 
-import { updateProjectStatus } from "/api/projectServices";
+import { updateProjectStatus } from "/services/projectServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Tabs from "/components/shared/Tabs";

@@ -5,7 +5,7 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
-import { createPaymentStage } from "/api/paymentStageServices";
+import { createPaymentStage } from "/services/paymentStageServices";
 
 import stageStatusOptions from "/constants/enums/stageStatus";
 
@@ -50,7 +50,7 @@ export default function CreateStageModal({ success }) {
     try {
       const response = await createPaymentStage(formData);
       toast.success("Thêm thành công!");
-      success(true)
+      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -98,10 +98,11 @@ export default function CreateStageModal({ success }) {
           title="Giai đoạn bảo hành"
           subtitle="Check vào ô nếu là giai đoạn bảo hành"
           value={formData.isPrepaid}
-          onChange={(e) => handleInputChange("isWarrantyStage", e.target.checked)}
+          onChange={(e) =>
+            handleInputChange("isWarrantyStage", e.target.checked)
+          }
         ></CheckboxForm>
       </Grid>
-
 
       {/* IS PREPAID */}
       <Grid item xs={12} lg={6}>

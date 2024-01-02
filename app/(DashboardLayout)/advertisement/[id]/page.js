@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import {
   getAdvertisementProjectById,
   updateAdvertisementProjectDescription,
-} from "/api/advertisementServices";
+} from "/services/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";

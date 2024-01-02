@@ -15,7 +15,7 @@ import {
   getUserById,
   updateUser,
   updateUserStatus,
-} from "../../../../api/userServices";
+} from "../../../../services/userServices";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -67,7 +67,7 @@ export default function ItemDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    setLoading(true)
+    setLoading(true);
     const fetchUser = async () => {
       try {
         const response = await getUserById(params.id);
@@ -78,16 +78,13 @@ export default function ItemDetails() {
         toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchUser(),
-    ]);
+    await Promise.all([fetchUser()]);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
   }, []);
-
 
   const onSaveUser = async () => {
     const transformedValue = transformData(formData);
@@ -96,7 +93,7 @@ export default function ItemDetails() {
       const response = await updateUser(params.id, transformedValue);
       console.log(response);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -105,16 +102,10 @@ export default function ItemDetails() {
   const onSuspendUser = async () => {
     try {
       if (formData?.status === 2) {
-        const response = await updateUserStatus(
-          params.id,
-          0,
-        );
+        const response = await updateUserStatus(params.id, 0);
         toast.success("Phục hồi thành công!");
       } else if (formData?.status === 0) {
-        const response = await updateUserStatus(
-          params.id,
-          2,
-        );
+        const response = await updateUserStatus(params.id, 2);
         toast.success("Đình chỉ thành công!");
       }
       await fetchDataFromApi();
@@ -141,12 +132,12 @@ export default function ItemDetails() {
           title="Thông tin người dùng"
           saveMessage="Lưu thông tin người dùng?"
           deleteMessage={
-            (formData?.status === 2)
+            formData?.status === 2
               ? "Phục hồi người dùng này?"
               : "Đình chỉ người dùng này?"
           }
           onSave={onSaveUser}
-          deleteLabel={(formData?.status === 2) ? "Phục hồi" : "Đình chỉ"}
+          deleteLabel={formData?.status === 2 ? "Phục hồi" : "Đình chỉ"}
           hasDelete
           onDelete={onSuspendUser}
           loading={loading}

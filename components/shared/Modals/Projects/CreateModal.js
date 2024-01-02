@@ -1,38 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControl,
-  Grid,
-  IconButton,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { IconPencil } from "@tabler/icons-react";
-
-import AutocompleteForm from "../../Forms/Autocomplete";
-import SelectForm from "../../Forms/Select";
-import FileForm from "../../Forms/File";
-import CheckForm from "../../Forms/Checkbox";
-import TextForm from "../../Forms/Text";
-import FormModal from "../../Modals/Form";
+import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams, useRouter } from "next/navigation";
-import { createProject, getProjectsBySiteId } from "/api/projectServices";
-import { getProjectCategories } from "/api/projectCategoryServices";
+import { useSelector } from "react-redux";
+
+import { createProject, getProjectsBySiteId } from "/services/projectServices";
+import { getProjectCategories } from "/services/projectCategoryServices";
 
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
-import { useSelector } from "react-redux";
+
+import AutocompleteForm from "../../Forms/Autocomplete";
+import SelectForm from "../../Forms/Select";
+import TextForm from "../../Forms/Text";
+import FormModal from "../../Modals/Form";
 
 const style = {
   position: "absolute",
@@ -82,7 +67,6 @@ export default function CreateProjectModal({ children }) {
     siteId: params.id,
   });
 
-
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
@@ -92,9 +76,10 @@ export default function CreateProjectModal({ children }) {
       case "language":
       case "advertisementStatus":
         if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
+          value === null ||
+          value === undefined ||
+          (typeof value === "string" && value.trim() === "") ||
+          (typeof value === "number" && value < 0)
         ) {
           setFormData((prevData) => ({
             ...prevData,
@@ -155,7 +140,10 @@ export default function CreateProjectModal({ children }) {
   const fetchOptionsFromApi = async () => {
     const fetchDecorProjects = async () => {
       try {
-        const response = await getProjectsBySiteId({ siteId: params.id, type: 0 });
+        const response = await getProjectsBySiteId({
+          siteId: params.id,
+          type: 0,
+        });
         setDecorProjects(response?.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -171,17 +159,13 @@ export default function CreateProjectModal({ children }) {
         toast.error("Lỗi nạp dữ liệu 'Phân loại dự án' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchDecorProjects(),
-      fetchProjectCategories(),
-    ]);
+    await Promise.all([fetchDecorProjects(), fetchProjectCategories()]);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchOptionsFromApi();
   }, []);
-
 
   const handleCreate = async () => {
     console.log(formData);
@@ -205,7 +189,6 @@ export default function CreateProjectModal({ children }) {
       size="big"
       disableCloseOnSubmit={formHasError}
     >
-
       {/* NAME */}
       <Grid item xs={12} lg={6}>
         <TextForm
@@ -294,9 +277,7 @@ export default function CreateProjectModal({ children }) {
           defaultLabel="Chọn một..."
           error={formData.advertisementStatusError.hasError}
           errorLabel={formData.advertisementStatusError.label}
-          onChange={(value) =>
-            handleInputChange("advertisementStatus", value)
-          }
+          onChange={(value) => handleInputChange("advertisementStatus", value)}
           disableOptions={[2]}
         ></SelectForm>
       </Grid>
@@ -333,7 +314,6 @@ export default function CreateProjectModal({ children }) {
           onChange={(e) => handleInputChange("description", e.target.value)}
         ></TextForm>
       </Grid>
-
     </FormModal>
   );
 }

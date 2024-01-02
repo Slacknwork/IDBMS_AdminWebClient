@@ -21,8 +21,8 @@ import { toast } from "react-toastify";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
-import { createTaskReport } from "/api/taskReportServices";
-import { getProjectTaskById } from "/api/projectTaskServices";
+import { createTaskReport } from "/services/taskReportServices";
+import { getProjectTaskById } from "/services/projectTaskServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";

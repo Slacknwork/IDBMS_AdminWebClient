@@ -14,7 +14,7 @@ import {
   TableRow,
   Typography,
   Stack,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import transactionTypeOptions from "/constants/enums/transactionType";
@@ -31,7 +31,7 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
-import { getTransactionsByProjectId } from "/api/transactionServices";
+import { getTransactionsByProjectId } from "/services/transactionServices";
 
 // Sample transaction data
 const transactions = [
@@ -97,16 +97,16 @@ export default function Transactions() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  // FETCH DATA 
+  // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchTransactions = async () => {
-
       const projectId = params.id;
       const search = searchParams.get(searchQuery) || "";
       const type = searchParams.get(typeQuery) || "";
       const status = searchParams.get(statusQuery) || "";
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
         const response = await getTransactionsByProjectId({
@@ -121,15 +121,12 @@ export default function Transactions() {
 
         setTransactions(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
-
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Thanh Toán' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchTransactions(),
-    ]);
+    await Promise.all([fetchTransactions()]);
     setLoading(false);
   };
 
@@ -139,16 +136,13 @@ export default function Transactions() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-
-          <Search
-            placeholder="Tìm theo tên người trả.."
-          ></Search>
+          <Search placeholder="Tìm theo tên người trả.."></Search>
 
           <FilterComponent
             query={typeQuery}
@@ -165,7 +159,6 @@ export default function Transactions() {
             allValue={statusAllValue}
             allLabel="Tất cả"
           ></FilterComponent>
-
         </Box>
         <TransactionModal success={handleModalResult}>
           <span>Tạo</span>
@@ -173,7 +166,7 @@ export default function Transactions() {
       </Box>
       {/* Table */}
       {(transactions && transactions.length) > 0 ? (
-        <Table sx={{mt: 1}} aria-label="simple table">
+        <Table sx={{ mt: 1 }} aria-label="simple table">
           {/* Table Head */}
           <TableHead>
             <TableRow>
@@ -222,7 +215,9 @@ export default function Transactions() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {transaction?.createdDate ? moment(transaction?.createdDate).format('L') : "Chưa xác định"}
+                      {transaction?.createdDate
+                        ? moment(transaction?.createdDate).format("L")
+                        : "Chưa xác định"}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -262,8 +257,7 @@ export default function Transactions() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

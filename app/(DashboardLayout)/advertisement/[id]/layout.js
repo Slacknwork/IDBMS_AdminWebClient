@@ -18,7 +18,7 @@ import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
 
-import { updateAdvertisementProjectStatus } from "/api/advertisementServices";
+import { updateAdvertisementProjectStatus } from "/services/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Tabs from "/components/shared/Tabs";

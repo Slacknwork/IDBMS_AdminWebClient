@@ -22,18 +22,18 @@ import {
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { IconTrash } from "@tabler/icons-react";
-
+import { toast } from "react-toastify";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import moment from "moment-timezone";
 
 import participationRole from "/constants/enums/participationRole";
-import { getParticipationsByProjectId } from "api/projectParticipationServices";
-import moment from "moment-timezone";
+
+import { getParticipationsByProjectId } from "/services/projectParticipationServices";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
-import { toast } from "react-toastify";
 import UserCard from "/components/shared/UserCard";
 import CreateParticipationModal from "/components/shared/Modals/Participations/CreateModal";
 import DeleteModal from "/components/shared/Modals/Participations/DeleteModal";
@@ -41,21 +41,6 @@ import UpdateProjectOwnerParticipationModal from "/components/shared/Modals/Part
 import UpdateProjectManagerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectManagerModal";
 import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject";
 import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal";
-
-const participants = [
-  {
-    id: 1,
-    project: { id: 1, name: "Project A" },
-    user: { id: 1, name: "User A" },
-    role: 0,
-  },
-  {
-    id: 2,
-    project: { id: 2, name: "Project B" },
-    user: { id: 2, name: "User B" },
-    role: 1,
-  },
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

@@ -5,7 +5,11 @@ import { Box, Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getSiteById, updateSite, deleteSiteById } from "/api/siteServices";
+import {
+  getSiteById,
+  updateSite,
+  deleteSiteById,
+} from "/services/siteServices";
 
 import UserCard from "/components/shared/UserCard";
 import TextForm from "/components/shared/Forms/Text";

@@ -27,15 +27,14 @@ import {
   startPaymentStage,
   endPaymentStage,
   suspendPaymentStage,
-} from "/api/paymentStageServices";
-
+} from "/services/paymentStageServices";
 
 import CreateStageModal from "/components/shared/Modals/Stages/CreateModal";
 import Search from "/components/shared/Search";
 import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 import { stageStatusBackgroundChipColors } from "../../../../../constants/enums/stageStatus";
-import ReopenStageModal from "/components/shared/Modals/Stages/ReopenStageModal"
+import ReopenStageModal from "/components/shared/Modals/Stages/ReopenStageModal";
 import MessageModal from "/components/shared/Modals/Message";
 import moment from "moment-timezone";
 
@@ -81,10 +80,9 @@ export default function PaymentStages() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // FETCH DATA 
+  // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchPaymentStages = async () => {
-
       const projectId = params.id;
       const search = searchParams.get(searchQuery) ?? "";
       const status = searchParams.get(statusQuery) ?? "";
@@ -102,15 +100,13 @@ export default function PaymentStages() {
         });
         setCount(data.totalItem);
         setStages(data.list);
-        console.log(data)
+        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Giai đoạn' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchPaymentStages(),
-    ]);
+    await Promise.all([fetchPaymentStages()]);
     setLoading(false);
   };
 
@@ -120,14 +116,14 @@ export default function PaymentStages() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   //STAGE STATUS HANDLE
   const handleStartStage = async (stageId) => {
     try {
       const response = await startPaymentStage(stageId);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi()
+      fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -138,7 +134,7 @@ export default function PaymentStages() {
     try {
       const response = await endPaymentStage(stageId);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi()
+      fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -149,7 +145,7 @@ export default function PaymentStages() {
     try {
       const response = await suspendPaymentStage(stageId);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi()
+      fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -169,9 +165,7 @@ export default function PaymentStages() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateStageModal
-          success={handleModalResult}
-        >Thêm</CreateStageModal>
+        <CreateStageModal success={handleModalResult}>Thêm</CreateStageModal>
       </Box>
       {/* Table */}
       {stages && stages.length > 0 ? (
@@ -200,7 +194,11 @@ export default function PaymentStages() {
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"12%"}>
-                <Typography variant="subtitle2" sx={{ textAlign: "center" }} fontWeight={600}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ textAlign: "center" }}
+                  fontWeight={600}
+                >
                   Thời gian thực hiện
                 </Typography>
               </StyledTableCell>
@@ -213,7 +211,7 @@ export default function PaymentStages() {
                 <Typography variant="subtitle2" fontWeight={600}>
                   Trạng thái
                 </Typography>
-              </StyledTableCell >
+              </StyledTableCell>
               <StyledTableCell align="center"></StyledTableCell>
             </TableRow>
           </TableHead>
@@ -231,39 +229,71 @@ export default function PaymentStages() {
                     {response.stage.name}
                   </Typography>
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {response.stage?.isWarrantyStage ? "(Giai đoạn bảo hành)" : null}
+                    {response.stage?.isWarrantyStage
+                      ? "(Giai đoạn bảo hành)"
+                      : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {response.stage?.totalContractPaid?.toLocaleString("en-US") ?? 0}
+                    {response.stage?.totalContractPaid?.toLocaleString(
+                      "en-US"
+                    ) ?? 0}
                   </Typography>
                   ~ {response.stage?.pricePercentage ?? 0} %
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {response.stage?.isContractAmountPaid ? "(Đã trả)" : "(Chưa trả)"}
+                    {response.stage?.isContractAmountPaid
+                      ? "(Đã trả)"
+                      : "(Chưa trả)"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {response.stage?.totalIncurredPaid?.toLocaleString("en-US") ?? 0}
+                    {response.stage?.totalIncurredPaid?.toLocaleString(
+                      "en-US"
+                    ) ?? 0}
                   </Typography>
-                  {response.stage?.penaltyFee > 0 ? "+ " + (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0) : null}
+                  {response.stage?.penaltyFee > 0
+                    ? "+ " +
+                      (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
+                    : null}
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {response.stage?.isIncurredAmountPaid ? "(Đã trả)"
-                      : response.stage?.isContractAmountPaid ? "(Chưa trả)" : null}
+                    {response.stage?.isIncurredAmountPaid
+                      ? "(Đã trả)"
+                      : response.stage?.isContractAmountPaid
+                      ? "(Chưa trả)"
+                      : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2" sx={{ textAlign: "center" }} fontWeight={400}>
-                    {response.stage.startedDate ?
-                      `${new Date(response.stage.startedDate).toLocaleDateString("vi-VN")}` : "Chưa xác định"}
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ textAlign: "center" }}
+                    fontWeight={400}
+                  >
+                    {response.stage.startedDate
+                      ? `${new Date(
+                          response.stage.startedDate
+                        ).toLocaleDateString("vi-VN")}`
+                      : "Chưa xác định"}
                   </Typography>
-                  <Typography variant="subtitle2" sx={{ textAlign: "center" }} fontWeight={700}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ textAlign: "center" }}
+                    fontWeight={700}
+                  >
                     -
                   </Typography>
-                  <Typography variant="subtitle2" sx={{ textAlign: "center" }} fontWeight={400}>
-                    {response.stage.endDate ?
-                      `${new Date(response.stage.endDate).toLocaleDateString("vi-VN")}` : "Chưa xác định"}
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ textAlign: "center" }}
+                    fontWeight={400}
+                  >
+                    {response.stage.endDate
+                      ? `${new Date(response.stage.endDate).toLocaleDateString(
+                          "vi-VN"
+                        )}`
+                      : "Chưa xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -280,8 +310,10 @@ export default function PaymentStages() {
                   <Chip
                     sx={{
                       px: "4px",
-                      backgroundColor: stageStatusBackgroundChipColors[response.stage?.status] ||
-                        "error",
+                      backgroundColor:
+                        stageStatusBackgroundChipColors[
+                          response.stage?.status
+                        ] || "error",
                     }}
                     size="small"
                     label={
@@ -301,7 +333,9 @@ export default function PaymentStages() {
                         title={"Bắt đầu giai đoạn"}
                         submitLabel={"Xác nhận"}
                       >
-                        <Typography variant="p">{"Xác nhận bắt đầu giai đoạn"}</Typography>
+                        <Typography variant="p">
+                          {"Xác nhận bắt đầu giai đoạn"}
+                        </Typography>
                       </MessageModal>
                     )}
 
@@ -314,7 +348,9 @@ export default function PaymentStages() {
                         title={"Đóng giai đoạn"}
                         submitLabel={"Xác nhận"}
                       >
-                        <Typography variant="p">{"Xác nhận đã hoàn thành giai đoạn"}</Typography>
+                        <Typography variant="p">
+                          {"Xác nhận đã hoàn thành giai đoạn"}
+                        </Typography>
                       </MessageModal>
                     )}
 
@@ -322,7 +358,9 @@ export default function PaymentStages() {
                       <ReopenStageModal
                         stageId={response.stage.id}
                         success={handleModalResult}
-                      > </ReopenStageModal>
+                      >
+                        {" "}
+                      </ReopenStageModal>
                     )}
 
                     {response.suspendAllowed && (
@@ -334,7 +372,9 @@ export default function PaymentStages() {
                         title={"Hoãn giai đoạn"}
                         submitLabel={"Xác nhận"}
                       >
-                        <Typography variant="p">{"Xác nhận hoãn giai đoạn này"}</Typography>
+                        <Typography variant="p">
+                          {"Xác nhận hoãn giai đoạn này"}
+                        </Typography>
                       </MessageModal>
                     )}
 
@@ -364,9 +404,8 @@ export default function PaymentStages() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
-    </Box >
+    </Box>
   );
 }

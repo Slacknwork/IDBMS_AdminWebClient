@@ -19,12 +19,12 @@ import {
 import { IconDownload } from "@tabler/icons-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
-import { getAdvertisementProjectDocuments } from "api/advertisementServices";
+import { getAdvertisementProjectDocuments } from "/services/advertisementServices";
 import moment from "moment-timezone";
 
 import Pagination from "/components/shared/Pagination";
@@ -112,7 +112,7 @@ export default function ProjectDocuments() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>

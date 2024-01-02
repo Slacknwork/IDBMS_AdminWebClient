@@ -6,7 +6,7 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/Users";
 
-const API_BASE_URL = "https://localhost:7062/api/users";
+const API_BASE_URL = "https://localhost:7062/services/users";
 const API_ODATA_URL = "https://localhost:7062/odata/Users";
 
 // Fetch all users
@@ -21,10 +21,10 @@ const getAllUsers = async ({
     const paramString = `searchParam=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const url = `${endpoint}?${paramString}`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -75,10 +75,10 @@ const getUserById = async (userId) => {
   try {
     const url = `${endpoint}/${userId}`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -93,11 +93,11 @@ const createUser = async (userData) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-        url,
-        method: "POST",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(userData),
+      url,
+      method: "POST",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(userData),
     });
     return response.data;
   } catch (error) {
@@ -111,11 +111,11 @@ const updateUser = async (userId, updatedUserData) => {
   try {
     const url = `${endpoint}/${userId}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(updatedUserData),
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(updatedUserData),
     });
     return response.data;
   } catch (error) {
@@ -129,11 +129,11 @@ const updateUserStatus = async (userId, status) => {
   try {
     const url = `${endpoint}/${userId}/status?status=${status}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: null,
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {

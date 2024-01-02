@@ -24,7 +24,7 @@ import moment from "moment-timezone";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
 
-import { getDocumentsByProjectId } from "/api/projectDocumentServices";
+import { getDocumentsByProjectId } from "/services/projectDocumentServices";
 
 import GenerateContractModal from "/components/shared/Modals/Contract/GenerateModal";
 import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
@@ -109,7 +109,7 @@ export default function ProjectDocuments() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -200,18 +200,18 @@ export default function ProjectDocuments() {
                   </Button>
                 </TableCell>
                 <TableCell>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Button
-                        component={Link}
-                        variant="contained"
-                        disableElevation
-                        color="primary"
-                        href={`/projects/${params.id}/documents/${document.id}`}
-                      >
-                        Chi tiết
-                      </Button>
-                    </Box>
-                  </TableCell>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      component={Link}
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      href={`/projects/${params.id}/documents/${document.id}`}
+                    >
+                      Chi tiết
+                    </Button>
+                  </Box>
+                </TableCell>
               </StyledTableRow>
             ))}
           </TableBody>

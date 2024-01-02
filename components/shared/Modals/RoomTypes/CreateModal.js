@@ -12,7 +12,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import FileForm from "/components/shared/Forms/File";
-import { createRoomType } from "/api/roomTypeServices";
+import { createRoomType } from "/services/roomTypeServices";
 
 export default function CreateRoomTypeModal({ success }) {
   const params = useParams();
@@ -55,7 +55,7 @@ export default function CreateRoomTypeModal({ success }) {
       const response = await createRoomType(formData);
       toast.success("Thêm thành công!");
       console.log(response);
-      success(true)
+      success(true);
       // router.push(`/roomTypes/${response?.id}`);
     } catch (error) {
       console.error("Error :", error);

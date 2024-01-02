@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Box } from "@mui/material";
 
-import { generateIndividualContract } from "/api/contractServices";
+import { generateIndividualContract } from "/services/contractServices";
 
 export default function PreviewCompanyContract({ formData }) {
   const [loading, setLoading] = useState(true);

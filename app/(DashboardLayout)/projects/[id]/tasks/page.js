@@ -32,10 +32,10 @@ import { toast } from "react-toastify";
 import {
   getProjectTasksByProjectId,
   updateProjectTaskStage,
-} from "/api/projectTaskServices";
-import { getAllTaskCategories } from "/api/taskCategoryServices";
-import { getFloorsByProjectId } from "/api/floorServices";
-import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
+} from "/services/projectTaskServices";
+import { getAllTaskCategories } from "/services/taskCategoryServices";
+import { getFloorsByProjectId } from "/services/floorServices";
+import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 

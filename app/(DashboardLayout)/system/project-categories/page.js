@@ -17,9 +17,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getProjectCategories } from "/api/projectCategoryServices";
+import { getProjectCategories } from "/services/projectCategoryServices";
 import Image from "next/image";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
@@ -78,8 +78,8 @@ export default function ProjectList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-            ? ""
-            : false;
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -109,7 +109,7 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box>
@@ -125,7 +125,9 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateProjectCategoryModal success={handleModalResult}>Tạo</CreateProjectCategoryModal>
+        <CreateProjectCategoryModal success={handleModalResult}>
+          Tạo
+        </CreateProjectCategoryModal>
       </Box>
       {(projectCategories && projectCategories.length) > 0 ? (
         <Table
@@ -179,9 +181,7 @@ export default function ProjectList() {
                 </TableCell>
                 <TableCell>
                   <Image
-                    src={
-                      checkValidUrl(projectCategory?.iconImageUrl)
-                    }
+                    src={checkValidUrl(projectCategory?.iconImageUrl)}
                     alt=""
                     width={120}
                     height={120}

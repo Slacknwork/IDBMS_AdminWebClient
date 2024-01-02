@@ -15,8 +15,8 @@ import {
   getProjectById,
   getProjectsBySiteId,
   updateProject,
-} from "/api/projectServices";
-import { getProjectCategories } from "/api/projectCategoryServices";
+} from "/services/projectServices";
+import { getProjectCategories } from "/services/projectCategoryServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
@@ -338,7 +338,6 @@ export default function ProjectDetails() {
                   </Typography>
                 </Grid>
               </Grid>
-
             </Card>
           </Grid>
         </Grid>

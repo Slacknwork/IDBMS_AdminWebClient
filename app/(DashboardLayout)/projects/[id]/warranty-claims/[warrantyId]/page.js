@@ -16,13 +16,12 @@ import {
   getWarrantyClaimById,
   updateWarrantyClaim,
   deleteWarrantyClaimById,
-} from "/api/warrantyClaimServices";
+} from "/services/warrantyClaimServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
 export default function WarrantyClaimDetails() {
-
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -92,7 +91,10 @@ export default function WarrantyClaimDetails() {
     console.log(transformedValue);
 
     try {
-      const response = await updateWarrantyClaim(params.warrantyId, transformedValue);
+      const response = await updateWarrantyClaim(
+        params.warrantyId,
+        transformedValue
+      );
       console.log(response);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
@@ -103,7 +105,10 @@ export default function WarrantyClaimDetails() {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteWarrantyClaimById(params.warrantyId, params.id);
+      const response = await deleteWarrantyClaimById(
+        params.warrantyId,
+        params.id
+      );
       console.log(response);
       toast.success("Xóa thành công!");
       router.push(`/projects/${params.id}/warranty-claims`);
@@ -144,7 +149,6 @@ export default function WarrantyClaimDetails() {
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={3}>
-
             {/* NAME */}
             <Grid item xs={12} lg={6}>
               <TextForm
@@ -244,12 +248,16 @@ export default function WarrantyClaimDetails() {
                 value={formData.confirmationDocument}
                 error={formData.confirmationDocumentError.hasError}
                 errorLabel={formData.confirmationDocumentError.label}
-                onChange={(file) => handleFileInputChange("confirmationDocument", file)}
+                onChange={(file) =>
+                  handleFileInputChange("confirmationDocument", file)
+                }
                 hasFile
-                fileType={formData.confirmationDocument == null ?? "/images/results/has-file.png"}
+                fileType={
+                  formData.confirmationDocument == null ??
+                  "/images/results/has-file.png"
+                }
               ></FileForm>
             </Grid>
-
           </Grid>
         </Grid>
         <Grid item xs={12} lg={4}>

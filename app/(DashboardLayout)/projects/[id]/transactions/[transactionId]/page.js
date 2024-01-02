@@ -22,9 +22,9 @@ import {
   getTransactionById,
   updateTransaction,
   deleteTransaction,
-} from "/api/transactionServices";
-import {getAllUsers} from "/api/userServices";
-import {getAllWarrantyClaims} from "/api/warrantyClaimServices";
+} from "/services/transactionServices";
+import { getAllUsers } from "/services/userServices";
+import { getAllWarrantyClaims } from "/services/warrantyClaimServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -83,11 +83,11 @@ export default function TransactionDetails() {
   const handleAutocompleteChange = (field, selectedOption) => {
     handleInputChange(field, selectedOption);
     if (field === "user") {
-        users.forEach((user) => {
-        if (user.id === selectedOption) selectedOption = user.name
-        });
-        handleInputChange("payerName", selectedOption)
-    };
+      users.forEach((user) => {
+        if (user.id === selectedOption) selectedOption = user.name;
+      });
+      handleInputChange("payerName", selectedOption);
+    }
   };
 
   const router = useRouter();
@@ -101,7 +101,7 @@ export default function TransactionDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    setLoading(true)
+    setLoading(true);
     const fetchTransactions = async () => {
       try {
         const response = await getTransactionById(params.transactionId);
@@ -148,10 +148,13 @@ export default function TransactionDetails() {
     console.log(transformedValue);
 
     try {
-      const response = await updateTransaction(params.transactionId, transformedValue);
+      const response = await updateTransaction(
+        params.transactionId,
+        transformedValue
+      );
       console.log(response);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -159,9 +162,7 @@ export default function TransactionDetails() {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteTransaction(
-        params.transactionId
-      );
+      const response = await deleteTransaction(params.transactionId);
       console.log(response);
       toast.success("Xoá thành công!");
       router.push(`/projects/${params.id}/transactions`);
@@ -194,114 +195,118 @@ export default function TransactionDetails() {
         onDelete={handleDelete}
         loading={loading}
       >
-           {/* TYPE */}
-           <Grid item xs={12} lg={6}>
-                  <SelectForm
-                    title="Kiểu thanh toán"
-                    subtitle="Chọn kiểu thanh toán"
-                    value={formData.type}
-                    options={transactionTypeOptions}
-                    error={formData.typeError.hasError}
-                    errorLabel={formData.typeError.label}
-                    onChange={(value) => handleInputChange("type", value)}
-                    ></SelectForm>
-            </Grid>
+        {/* TYPE */}
+        <Grid item xs={12} lg={6}>
+          <SelectForm
+            title="Kiểu thanh toán"
+            subtitle="Chọn kiểu thanh toán"
+            value={formData.type}
+            options={transactionTypeOptions}
+            error={formData.typeError.hasError}
+            errorLabel={formData.typeError.label}
+            onChange={(value) => handleInputChange("type", value)}
+          ></SelectForm>
+        </Grid>
 
-            {/* AMOUNT */}
-            <Grid item xs={12} lg={6}>
-              <NumberForm
-              title="Ngân sách tối thiểu"
-              required
-              subtitle="Nhập số tiền tối thiểu"
-              value={formData.amount}
-              error={formData.amountError.hasError}
-              errorLabel={formData.amountError.label}
-              onChange={(value) => handleInputChange("amount", value)}
-              endAdornment={<>VND</>}
-              ></NumberForm>
-            </Grid>
+        {/* AMOUNT */}
+        <Grid item xs={12} lg={6}>
+          <NumberForm
+            title="Ngân sách tối thiểu"
+            required
+            subtitle="Nhập số tiền tối thiểu"
+            value={formData.amount}
+            error={formData.amountError.hasError}
+            errorLabel={formData.amountError.label}
+            onChange={(value) => handleInputChange("amount", value)}
+            endAdornment={<>VND</>}
+          ></NumberForm>
+        </Grid>
 
-            {/* USER */}
-            <Grid item xs={12} lg={6}>
-                  <AutocompleteForm
-                    title="Người dùng"
-                    subtitle="Chọn người dùng"
-                    value={formData.userId}
-                    options={users}
-                    error={formData.userIdError.hasError}
-                    errorLabel={formData.userIdError.label}
-                    onChange={(value) => handleAutocompleteChange("user", value)}
-                ></AutocompleteForm>
-            </Grid>
-            
-            {/* PAYER NAME */}
-            <Grid item xs={12} lg={6}>
-                  <TextForm
-                    title="Tên người trả tiền"
-                    required
-                    subtitle="Nhập tên người trả tiền"
-                    value={formData.payerName}
-                    error={formData.payerNameError.hasError}
-                    errorLabel={formData.payerNameError.label}
-                    onChange={(e) => handleInputChange("payerName", e.target.value)}
-                ></TextForm>
-            </Grid>
+        {/* USER */}
+        <Grid item xs={12} lg={6}>
+          <AutocompleteForm
+            title="Người dùng"
+            subtitle="Chọn người dùng"
+            value={formData.userId}
+            options={users}
+            error={formData.userIdError.hasError}
+            errorLabel={formData.userIdError.label}
+            onChange={(value) => handleAutocompleteChange("user", value)}
+          ></AutocompleteForm>
+        </Grid>
 
-            {/* WARRANTY CLAIM */}
-            <Grid item xs={12} lg={6}>
-                  <AutocompleteForm
-                    title="Bảo hiểm"
-                    subtitle="Chọn bảo hiểm"
-                    value={formData.warrantyClaimId}
-                    options={warrantyClaims}
-                    error={formData.warrantyClaimIdError.hasError}
-                    errorLabel={formData.warrantyClaimIdError.label}
-                    onChange={(value) => handleAutocompleteChange("warrantyClaimId", value)}
-                ></AutocompleteForm>
-            </Grid>
+        {/* PAYER NAME */}
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Tên người trả tiền"
+            required
+            subtitle="Nhập tên người trả tiền"
+            value={formData.payerName}
+            error={formData.payerNameError.hasError}
+            errorLabel={formData.payerNameError.label}
+            onChange={(e) => handleInputChange("payerName", e.target.value)}
+          ></TextForm>
+        </Grid>
 
-            {/* STATUS */}
-            <Grid item xs={12} lg={6}>
-                <SelectForm
-                    title="Trạng thái"
-                    subtitle="Chọn trạng thái"
-                    value={formData.status}
-                    options={transactionStatusOptions}
-                    error={formData.statusError.hasError}
-                    errorLabel={formData.statusError.label}
-                    onChange={(value) => handleInputChange("status", value)}
-                ></SelectForm>
-            </Grid>
-            
-            {/* NOTE */}
-            <Grid item xs={12} lg={12}>
-                  <TextForm 
-                    fullWidth
-                    multiline
-                    title="Ghi chú"
-                    subtitle="Nhập ghi chú cho thanh toán"
-                    value={formData.note}
-                    error={formData.note.hasError}
-                    errorLabel={formData.note.label}
-                    onChange={(e) => handleInputChange("note", e.target.value)}
-                ></TextForm>
-            </Grid>
+        {/* WARRANTY CLAIM */}
+        <Grid item xs={12} lg={6}>
+          <AutocompleteForm
+            title="Bảo hiểm"
+            subtitle="Chọn bảo hiểm"
+            value={formData.warrantyClaimId}
+            options={warrantyClaims}
+            error={formData.warrantyClaimIdError.hasError}
+            errorLabel={formData.warrantyClaimIdError.label}
+            onChange={(value) =>
+              handleAutocompleteChange("warrantyClaimId", value)
+            }
+          ></AutocompleteForm>
+        </Grid>
 
-            {/* TRANSACTION RECEIPT IMAGE */}
-            <Grid item xs={12} lg={12}>
-                  <FileForm 
-                  fullWidth
-                  title="Ảnh hoá đơn"
-                  required
-                  subtitle="Chọn tệp"
-                  titleSpan={3}
-                  fieldSpan={9}
-                  value={formData.transactionReceiptImage}
-                  error={formData.transactionReceiptImageError.hasError}
-                  errorLabel={formData.transactionReceiptImageError.label}
-                  onChange={(file) => handleInputChange("transactionReceiptImage", file)}
-                  ></FileForm>
-            </Grid>
+        {/* STATUS */}
+        <Grid item xs={12} lg={6}>
+          <SelectForm
+            title="Trạng thái"
+            subtitle="Chọn trạng thái"
+            value={formData.status}
+            options={transactionStatusOptions}
+            error={formData.statusError.hasError}
+            errorLabel={formData.statusError.label}
+            onChange={(value) => handleInputChange("status", value)}
+          ></SelectForm>
+        </Grid>
+
+        {/* NOTE */}
+        <Grid item xs={12} lg={12}>
+          <TextForm
+            fullWidth
+            multiline
+            title="Ghi chú"
+            subtitle="Nhập ghi chú cho thanh toán"
+            value={formData.note}
+            error={formData.note.hasError}
+            errorLabel={formData.note.label}
+            onChange={(e) => handleInputChange("note", e.target.value)}
+          ></TextForm>
+        </Grid>
+
+        {/* TRANSACTION RECEIPT IMAGE */}
+        <Grid item xs={12} lg={12}>
+          <FileForm
+            fullWidth
+            title="Ảnh hoá đơn"
+            required
+            subtitle="Chọn tệp"
+            titleSpan={3}
+            fieldSpan={9}
+            value={formData.transactionReceiptImage}
+            error={formData.transactionReceiptImageError.hasError}
+            errorLabel={formData.transactionReceiptImageError.label}
+            onChange={(file) =>
+              handleInputChange("transactionReceiptImage", file)
+            }
+          ></FileForm>
+        </Grid>
       </DetailsPage>
     </PageContainer>
   );

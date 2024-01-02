@@ -18,7 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getBookingRequests } from "/api/bookingRequestServices";
+import { getBookingRequests } from "/services/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,

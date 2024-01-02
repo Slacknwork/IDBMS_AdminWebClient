@@ -30,13 +30,13 @@ import languageTypeOptions, {
 } from "/constants/enums/language";
 import projectStatusOptions from "/constants/enums/projectStatus";
 
-import { getProjectsBySiteId } from "/api/projectServices";
+import { getProjectsBySiteId } from "/services/projectServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import Search from "/components/shared/Search";
-import CreateProjectModal from "/components/shared/Modals/projects/CreateModal"
+import CreateProjectModal from "/components/shared/Modals/Projects/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

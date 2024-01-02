@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import {
   getBookingRequests,
   updateBookingRequestStatus,
-} from "/api/bookingRequestServices";
+} from "/services/bookingRequestServices";
 
 import projectTypeOptions, {
   projectTypeChipColors,

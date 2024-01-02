@@ -13,8 +13,8 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
-import { createPaymentStageDesign } from "/api/paymentStageDesignServices";
-import { getAllProjectDesigns } from "/api/projectDesignServices";
+import { createPaymentStageDesign } from "/services/paymentStageDesignServices";
+import { getAllProjectDesigns } from "/services/projectDesignServices";
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
@@ -57,15 +57,13 @@ export default function CreateProjectCategoryModal({ success }) {
       try {
         const data = await getAllProjectDesigns({});
         setProjectDesigns(data.list);
-        console.log(data.list)
+        console.log(data.list);
       } catch (error) {
         toast.error("Lỗi dữ liệu: Thiết kế dự án");
         console.log(error);
       }
     };
-    await Promise.all([
-        fetchProjectDesigns(),
-    ]);
+    await Promise.all([fetchProjectDesigns()]);
   };
 
   const handleCreate = async () => {
@@ -145,12 +143,14 @@ export default function CreateProjectCategoryModal({ success }) {
           value={formData.englishDescription}
           error={formData.englishDescriptionError.hasError}
           errorLabel={formData.englishDescriptionError.label}
-          onChange={(e) => handleInputChange("englishDescription", e.target.value)}
+          onChange={(e) =>
+            handleInputChange("englishDescription", e.target.value)
+          }
         ></TextForm>
       </Grid>
 
-    {/* PRICE PERCENTAGE */}
-    <Grid item xs={12} lg={6}>
+      {/* PRICE PERCENTAGE */}
+      <Grid item xs={12} lg={6}>
         <NumberForm
           title="Phần trăm giá"
           required
@@ -164,10 +164,10 @@ export default function CreateProjectCategoryModal({ success }) {
           onChange={(value) => handleInputChange("pricePercentage", value)}
           endAdornment={<>%</>}
         ></NumberForm>
-      </Grid>   
+      </Grid>
 
-    {/* STAGE NO */}
-    <Grid item xs={12} lg={6}>
+      {/* STAGE NO */}
+      <Grid item xs={12} lg={6}>
         <NumberForm
           title="Số giai đoạn"
           titleSpan={6}
@@ -183,8 +183,8 @@ export default function CreateProjectCategoryModal({ success }) {
         ></NumberForm>
       </Grid>
 
-    {/* PROJECT DESIGN */}
-    <Grid item xs={12} lg={12}>
+      {/* PROJECT DESIGN */}
+      <Grid item xs={12} lg={12}>
         <AutocompleteForm
           titleSpan={6}
           fieldSpan={6}

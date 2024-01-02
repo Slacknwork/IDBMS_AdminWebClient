@@ -5,12 +5,12 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
 import {
   getAllInteriorItems,
   createInteriorItem,
-} from "/api/interiorItemServices";
+} from "/services/interiorItemServices";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";

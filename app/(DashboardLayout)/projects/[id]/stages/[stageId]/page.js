@@ -18,7 +18,7 @@ import {
   getPaymentStagesById,
   updatePaymentStage,
   deletePaymentStage,
-} from "/api/paymentStageServices";
+} from "/services/paymentStageServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
@@ -77,7 +77,7 @@ export default function StageOverview() {
       setPageName(stage.name);
       setPageDescription(stage.description);
       setLoading(false);
-      console.log(stage)
+      console.log(stage);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu từ hệ thống");
@@ -124,7 +124,6 @@ export default function StageOverview() {
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
-
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <TextForm
@@ -158,7 +157,9 @@ export default function StageOverview() {
                 title="Giai đoạn bảo hành"
                 subtitle="Check vào ô nếu là giai đoạn bảo hành"
                 checked={formData.isWarrantyStage}
-                onChange={(e) => handleInputChange("isWarrantyStage", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("isWarrantyStage", e.target.checked)
+                }
               ></CheckboxForm>
             </Grid>
 
@@ -168,7 +169,9 @@ export default function StageOverview() {
                 title="Phải trả trước"
                 subtitle="Check nếu phải thanh toán trước khi bắt đầu"
                 checked={formData.isPrepaid}
-                onChange={(e) => handleInputChange("isPrepaid", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("isPrepaid", e.target.checked)
+                }
               ></CheckboxForm>
             </Grid>
 
@@ -199,7 +202,9 @@ export default function StageOverview() {
                 value={formData.description}
                 error={formData.descriptionError.hasError}
                 errorLabel={formData.descriptionError.label}
-                onChange={(e) => handleInputChange("description", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
               ></TextForm>
             </Grid>
           </Grid>
@@ -242,7 +247,8 @@ export default function StageOverview() {
               </Grid>
               <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                 <Typography variant="p" sx={{ my: "auto" }}>
-                  {formData?.totalContractPaid?.toLocaleString("en-US") ?? 0} VND
+                  {formData?.totalContractPaid?.toLocaleString("en-US") ?? 0}{" "}
+                  VND
                 </Typography>
               </Grid>
             </Grid>
@@ -255,7 +261,8 @@ export default function StageOverview() {
               </Grid>
               <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                 <Typography variant="p" sx={{ my: "auto" }}>
-                  {formData?.totalIncurredPaid?.toLocaleString("en-US") ?? 0} VND
+                  {formData?.totalIncurredPaid?.toLocaleString("en-US") ?? 0}{" "}
+                  VND
                 </Typography>
               </Grid>
             </Grid>
@@ -268,7 +275,9 @@ export default function StageOverview() {
               </Grid>
               <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                 <Typography variant="p" sx={{ my: "auto" }}>
-                  {formData?.startedDate ? moment(formData?.startedDate).format("L") : "Chưa xác định"}
+                  {formData?.startedDate
+                    ? moment(formData?.startedDate).format("L")
+                    : "Chưa xác định"}
                 </Typography>
               </Grid>
             </Grid>
@@ -281,7 +290,9 @@ export default function StageOverview() {
               </Grid>
               <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                 <Typography variant="p" sx={{ my: "auto" }}>
-                  {formData?.endDate ? moment(formData?.endDate).format("L") : "Chưa xác định"}
+                  {formData?.endDate
+                    ? moment(formData?.endDate).format("L")
+                    : "Chưa xác định"}
                 </Typography>
               </Grid>
             </Grid>
@@ -294,7 +305,9 @@ export default function StageOverview() {
               </Grid>
               <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                 <Typography variant="p" sx={{ my: "auto" }}>
-                  {formData?.endTimePayment ? moment(formData?.endTimePayment).format("L") : "Chưa xác định"}
+                  {formData?.endTimePayment
+                    ? moment(formData?.endTimePayment).format("L")
+                    : "Chưa xác định"}
                 </Typography>
               </Grid>
             </Grid>
@@ -311,7 +324,6 @@ export default function StageOverview() {
                 </Typography>
               </Grid>
             </Grid>
-
           </Card>
         </Grid>
       </DetailsPage>

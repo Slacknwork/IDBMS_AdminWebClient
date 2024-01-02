@@ -22,7 +22,7 @@ import {
   getInteriorItemCategoryById,
   updateInteriorItemCategory,
   deleteInteriorItemCategory,
-} from "/api/interiorItemCategoryServices";
+} from "/services/interiorItemCategoryServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -79,7 +79,7 @@ export default function TaskCategoryDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    setLoading(true)
+    setLoading(true);
     const fetchTaskCategory = async () => {
       try {
         const response = await getInteriorItemCategoryById(params.id);
@@ -99,10 +99,7 @@ export default function TaskCategoryDetails() {
         console.log(error);
       }
     };
-    await Promise.all([
-      fetchTaskCategory(),
-      fetchParentCategories(),
-    ]);
+    await Promise.all([fetchTaskCategory(), fetchParentCategories()]);
     setLoading(false);
   };
 
@@ -116,10 +113,13 @@ export default function TaskCategoryDetails() {
     console.log(transformedValue);
 
     try {
-      const response = await updateInteriorItemCategory(params.id, transformedValue);
+      const response = await updateInteriorItemCategory(
+        params.id,
+        transformedValue
+      );
       console.log(response);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -127,9 +127,7 @@ export default function TaskCategoryDetails() {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteInteriorItemCategory(
-        params.id
-      );
+      const response = await deleteInteriorItemCategory(params.id);
       console.log(response);
       toast.success("Xoá thành công!");
       router.push("/item-categories");
@@ -219,7 +217,9 @@ export default function TaskCategoryDetails() {
             value={formData.englishDescription}
             error={formData.englishDescriptionError.hasError}
             errorLabel={formData.englishDescriptionError.label}
-            onChange={(e) => handleInputChange("englishDescription", e.target.value)}
+            onChange={(e) =>
+              handleInputChange("englishDescription", e.target.value)
+            }
           ></TextForm>
         </Grid>
 
@@ -283,9 +283,7 @@ export default function TaskCategoryDetails() {
             options={parentCategories}
             error={formData.parentCategoryIdError.hasError}
             errorLabel={formData.parentCategoryId?.label}
-            onChange={(value) =>
-              handleInputChange("parentCategoryId", value)
-            }
+            onChange={(value) => handleInputChange("parentCategoryId", value)}
           ></AutocompleteForm>
         </Grid>
       </DetailsPage>

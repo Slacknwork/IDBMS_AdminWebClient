@@ -28,8 +28,8 @@ import {
   getItemInTasksByTaskId,
   updateItemInTaskQuantity,
   deleteItemInTask,
-} from "api/itemInTaskServices";
-import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
+} from "/services/itemInTaskServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
 
 import ItemInTaskModal from "/components/shared/Modals/ItemInTask/CreateModal";
 import Pagination from "/components/shared/Pagination";

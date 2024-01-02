@@ -16,7 +16,7 @@ import {
   getFloorsById,
   updateFloor,
   deleteFloorById,
-} from "/api/floorServices";
+} from "/services/floorServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";

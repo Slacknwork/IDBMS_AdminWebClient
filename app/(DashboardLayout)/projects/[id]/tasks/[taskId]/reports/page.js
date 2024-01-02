@@ -20,7 +20,7 @@ import {
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
 import PageContainer from "/components/container/PageContainer";
-import { getTaskReportsByProjectTaskId } from "/api/taskReportServices";
+import { getTaskReportsByProjectTaskId } from "/services/taskReportServices";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import TaskModal from "/components/shared/Modals/TaskReports/CreateModal";

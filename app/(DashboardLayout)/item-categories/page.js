@@ -25,7 +25,10 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllInteriorItemCategories, getInteriorItemCategoryById } from "/api/interiorItemCategoryServices";
+import {
+  getAllInteriorItemCategories,
+  getInteriorItemCategoryById,
+} from "/services/interiorItemCategoryServices";
 import interiorItemType from "/constants/enums/interiorItemType";
 import { useSearchParams } from "next/navigation";
 import FilterComponent from "/components/shared/FilterStatus";
@@ -37,7 +40,7 @@ import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import Pagination from "/components/shared/Pagination";
 import Image from "next/image";
 
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 const projects = [
   {
@@ -109,7 +112,7 @@ export default function ItemCategoriesList() {
           pageNo,
           pageSize,
         });
-        console.log(data)
+        console.log(data);
         setInteriorItemCategories(data.list);
         setInteriorItemCount(data.totalItem);
       } catch (error) {
@@ -122,9 +125,11 @@ export default function ItemCategoriesList() {
     fetchDataFromApi();
   }, [searchParams]);
 
-
   return (
-    <PageContainer title="Danh sách phân loại" description="Danh sách phân loại">
+    <PageContainer
+      title="Danh sách phân loại"
+      description="Danh sách phân loại"
+    >
       <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Search
@@ -240,12 +245,13 @@ export default function ItemCategoriesList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {interiorItemType[itemCategory?.interiorItemType] || "Không xác định"}
+                    {interiorItemType[itemCategory?.interiorItemType] ||
+                      "Không xác định"}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {itemCategory?.parentCategory?.name ?? 'Không có'}
+                    {itemCategory?.parentCategory?.name ?? "Không có"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

@@ -25,8 +25,8 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItems } from "/api/interiorItemServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItems } from "/services/interiorItemServices";
 import colorType from "/constants/enums/colorType";
 import { useSearchParams } from "next/navigation";
 import FilterComponent from "/components/shared/FilterStatus";
@@ -123,15 +123,11 @@ export default function ItemColorList() {
     fetchDataFromApi();
   }, [searchParams]);
 
-
   return (
     <PageContainer title="Danh sách màu" description="Danh sách màu">
       <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
         <Box>
-          <Search
-            query={nameQuery}
-            placeholder="Tìm loại / tên màu"
-          ></Search>
+          <Search query={nameQuery} placeholder="Tìm loại / tên màu"></Search>
           <FilterComponent
             query={typeQuery}
             options={colorType}
@@ -198,8 +194,7 @@ export default function ItemColorList() {
                         sx={{
                           fontSize: "13px",
                         }}
-                      >
-                      </Typography>
+                      ></Typography>
                     </Box>
                   </Box>
                 </TableCell>
@@ -215,7 +210,7 @@ export default function ItemColorList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {itemColor.secondaryColor ?? ''}
+                    {itemColor.secondaryColor ?? ""}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

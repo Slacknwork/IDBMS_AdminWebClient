@@ -26,11 +26,11 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import { getAllTaskCategories } from "/api/taskCategoryServices";
+import { getAllTaskCategories } from "/services/taskCategoryServices";
 import projectType from "/constants/enums/projectType";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -112,7 +112,7 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -128,7 +128,9 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterComponent>
         </Box>
-        <CreateTaskCategoryModal success={handleModalResult}>Tạo</CreateTaskCategoryModal>
+        <CreateTaskCategoryModal success={handleModalResult}>
+          Tạo
+        </CreateTaskCategoryModal>
       </Box>
 
       {(taskCategories && taskCategories.length) > 0 ? (

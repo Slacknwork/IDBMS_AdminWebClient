@@ -19,7 +19,7 @@ import { styled } from "@mui/material/styles";
 
 import participationRoleOptions from "/constants/enums/participationRole";
 
-import { getParticipationsByProjectId } from "/api/projectParticipationServices";
+import { getParticipationsByProjectId } from "/services/projectParticipationServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import Search from "/components/shared/Search";
