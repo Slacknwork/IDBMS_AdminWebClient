@@ -14,7 +14,10 @@ const getAdvertisementProjects = async ({
   const token = store.getState().user?.token ?? "";
 
   try {
-    const url = `${endpoint}?name=${search}&status=${status}&type=${type}&categoryId=${categoryId}&pageNo=${page}&pageSize=${pageSize}`;
+    const token = store.getState().user?.token ?? "";
+
+    const url = `${endpoint}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`;
+
     const response = await fetchData({
       url,
       method: "GET",
@@ -32,6 +35,7 @@ const getAdvertisementProjectById = async (projectId = "") => {
   const token = store.getState().user?.token ?? "";
 
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}`;
     const response = await fetchData({
       url,

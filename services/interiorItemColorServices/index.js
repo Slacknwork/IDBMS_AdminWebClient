@@ -9,6 +9,7 @@ const getAllInteriorItemColors = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
           url,
@@ -31,6 +32,7 @@ const getColorByInteriorItemCategoryId = async ({
     pageNo= "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/interior-item-category/${categoryId}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
           url,
@@ -47,6 +49,7 @@ const getColorByInteriorItemCategoryId = async ({
 
 const getColorById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
           url,
