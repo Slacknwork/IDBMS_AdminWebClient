@@ -21,12 +21,12 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getAllInteriorItems } from "/api/interiorItemServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
+import { getAllInteriorItems } from "/services/interiorItemServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import PageContainer from "/components/container/PageContainer";
 import CreateItemModal from "/components/shared/Modals/Items/CreateModal";

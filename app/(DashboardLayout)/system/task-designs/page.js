@@ -19,8 +19,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import { getAllTaskCategories } from "/api/taskCategoryServices";
-import { getAllTaskDesigns } from "/api/taskDesignServices";
+import { getAllTaskCategories } from "/services/taskCategoryServices";
+import { getAllTaskDesigns } from "/services/taskDesignServices";
 
 import calculationUnit from "/constants/enums/calculationUnit";
 
@@ -127,7 +127,7 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -143,7 +143,9 @@ export default function ProjectList() {
             allLabel="Tất cả"
           ></FilterAutocomplete>
         </Box>
-        <CreateTaskDesignModal success={handleModalResult}>Tạo</CreateTaskDesignModal>
+        <CreateTaskDesignModal success={handleModalResult}>
+          Tạo
+        </CreateTaskDesignModal>
       </Box>
 
       {(taskDesigns && taskDesigns.length) > 0 ? (

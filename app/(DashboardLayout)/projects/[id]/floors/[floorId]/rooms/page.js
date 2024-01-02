@@ -19,7 +19,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getRoomsByFloorId } from "/api/roomServices";
+import { getRoomsByFloorId } from "/services/roomServices";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";

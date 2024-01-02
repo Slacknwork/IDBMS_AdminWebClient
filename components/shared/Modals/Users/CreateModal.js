@@ -9,7 +9,7 @@ import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
 import SelectForm from "/components/shared/Forms/Select";
-import { createUser } from "/api/userServices";
+import { createUser } from "/services/userServices";
 
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "/constants/enums/companyRole";

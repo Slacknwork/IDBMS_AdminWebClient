@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 
-import { getAllUsers } from "/api/userServices";
+import { getAllUsers } from "/services/userServices";
 
 import userStatusOptions from "/constants/enums/userStatus";
 import companyRoleOptions from "/constants/enums/companyRole";
@@ -30,7 +30,7 @@ import FilterStatus from "/components/shared/FilterStatus";
 import PageContainer from "/components/container/PageContainer";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import CreateUserModal from "/components/shared/Modals/Users/CreateModal";
-import CreateNotificationModalForAllCustomers from "/components/shared/Modals/Notifications/CreateModalForAllCustomers"
+import CreateNotificationModalForAllCustomers from "/components/shared/Modals/Notifications/CreateModalForAllCustomers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,7 +52,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function UserList() {
-
   const searchQuery = "search";
 
   const pageQuery = "page";
@@ -101,9 +100,7 @@ export default function UserList() {
         toast.error("Lỗi nạp dữ liệu 'Người Dùng' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchUsers(),
-    ]);
+    await Promise.all([fetchUsers()]);
     setLoading(false);
   };
 
@@ -113,7 +110,7 @@ export default function UserList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <PageContainer
@@ -135,9 +132,7 @@ export default function UserList() {
           <CreateNotificationModalForAllCustomers success={handleModalResult}>
             Gửi thông báo
           </CreateNotificationModalForAllCustomers>
-          <CreateUserModal success={handleModalResult}>
-            Tạo
-          </CreateUserModal>
+          <CreateUserModal success={handleModalResult}>Tạo</CreateUserModal>
         </Box>
         {users && users.length > 0 ? (
           <Table

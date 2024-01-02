@@ -14,7 +14,7 @@ import {
   TableRow,
   Typography,
   Stack,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import WarrantyModal from "/components/shared/Modals/WarrantyClaims/CreateModal";
@@ -28,9 +28,8 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
-import { getWarrantyClaimsByProjectId } from "/api/warrantyClaimServices";
+import { getWarrantyClaimsByProjectId } from "/services/warrantyClaimServices";
 import { set } from "lodash";
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -74,18 +73,20 @@ export default function WarrantyClaims() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  // FETCH DATA 
+  // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchWarrantyClaims = async () => {
-
       const projectId = params.id;
       const name = searchParams.get(searchQuery) || "";
       const isCompanyCover =
-        searchParams.get(isCompanyCoverQuery) === '1' ?
-          true : searchParams.get(isCompanyCoverQuery) === null ?
-            "" : false;
+        searchParams.get(isCompanyCoverQuery) === "1"
+          ? true
+          : searchParams.get(isCompanyCoverQuery) === null
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize = parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const pageSize =
+        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
 
       try {
         const response = await getWarrantyClaimsByProjectId({
@@ -99,15 +100,12 @@ export default function WarrantyClaims() {
 
         setWarrantyClaims(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
-
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Thanh Toán' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchWarrantyClaims(),
-    ]);
+    await Promise.all([fetchWarrantyClaims()]);
     setLoading(false);
   };
 
@@ -117,16 +115,13 @@ export default function WarrantyClaims() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-
-          <Search
-            placeholder="Tìm theo tên.."
-          ></Search>
+          <Search placeholder="Tìm theo tên.."></Search>
 
           <FilterComponent
             query={isCompanyCoverQuery}
@@ -135,10 +130,8 @@ export default function WarrantyClaims() {
             allValue={isCompanyCoverAllValue}
             allLabel="Tất cả"
           ></FilterComponent>
-
         </Box>
-        <WarrantyModal success={handleModalResult}
-        >Thêm</WarrantyModal>
+        <WarrantyModal success={handleModalResult}>Thêm</WarrantyModal>
       </Box>
       {/* Table */}
       {(warrantyClaims && warrantyClaims.length) > 0 ? (
@@ -189,17 +182,23 @@ export default function WarrantyClaims() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {claim?.isCompanyCover ? isCompanyCoverOptions[1] : isCompanyCoverOptions[0]}
+                      {claim?.isCompanyCover
+                        ? isCompanyCoverOptions[1]
+                        : isCompanyCoverOptions[0]}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {claim?.createdDate ? moment(claim?.createdDate).format('L') : "Chưa xác định"}
+                      {claim?.createdDate
+                        ? moment(claim?.createdDate).format("L")
+                        : "Chưa xác định"}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {claim?.endDate ? moment(claim?.endDate).format('L') : "Chưa xác định"}
+                      {claim?.endDate
+                        ? moment(claim?.endDate).format("L")
+                        : "Chưa xác định"}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -229,8 +228,7 @@ export default function WarrantyClaims() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

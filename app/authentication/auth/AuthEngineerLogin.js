@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { loginByGoogle } from "/api/authenticationServices";
+import { loginByGoogle } from "/services/authenticationServices";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";
@@ -37,7 +37,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   };
 
   const handleFormSubmit = async (event) => {
-    console.log(event.profileObj)
+    console.log(event.profileObj);
     const request = {
       email: event.profileObj.email ?? "",
       googleId: event.profileObj.googleId ?? "",
@@ -123,7 +123,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             Đăng nhập
           </Button>
         </Box>
-
       </Stack>
       {subtitle}
     </>

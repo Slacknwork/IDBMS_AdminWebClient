@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllProjectDesigns } from "/api/projectDesignServices";
+import { getAllProjectDesigns } from "/services/projectDesignServices";
 import Image from "next/image";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -72,7 +72,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
   const searchQuery = "search";
   const typeQuery = "type";
 
@@ -100,9 +99,11 @@ export default function ProjectList() {
       const type = searchParams.get(typeQuery) || "";
       const name = searchParams.get(searchQuery) || "";
       const isHidden =
-        searchParams.get(isHiddenQuery) === '1' ?
-          true : searchParams.get(isHiddenQuery) === null ?
-            "" : false;
+        searchParams.get(isHiddenQuery) === "1"
+          ? true
+          : searchParams.get(isHiddenQuery) === null
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -123,9 +124,7 @@ export default function ProjectList() {
         toast.error("Lỗi nạp dữ liệu 'Phân Loại Dự Án' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchProjectDesigns(),
-    ]);
+    await Promise.all([fetchProjectDesigns()]);
     setLoading(false);
   };
 
@@ -135,15 +134,13 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
         <Box sx={{ display: "flex" }}>
-          <Search
-            placeholder="Tìm theo tên.."
-          ></Search>
+          <Search placeholder="Tìm theo tên.."></Search>
           <FilterStatus
             query={isHiddenQuery}
             options={isHiddenOptions}
@@ -209,7 +206,6 @@ export default function ProjectList() {
           <TableBody>
             {projectDesigns.map((projectDesign) => (
               <StyledTableRow key={projectDesign.id}>
-               
                 <TableCell>
                   <Box
                     sx={{
@@ -226,8 +222,7 @@ export default function ProjectList() {
                         sx={{
                           fontSize: "13px",
                         }}
-                      >
-                      </Typography>
+                      ></Typography>
                     </Box>
                   </Box>
                 </TableCell>
@@ -261,15 +256,16 @@ export default function ProjectList() {
                   >
                     <Box>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {projectDesign?.isHidden ? isHiddenOptions[1] : isHiddenOptions[0]}
+                        {projectDesign?.isHidden
+                          ? isHiddenOptions[1]
+                          : isHiddenOptions[0]}
                       </Typography>
                       <Typography
                         color="textSecondary"
                         sx={{
                           fontSize: "13px",
                         }}
-                      >
-                      </Typography>
+                      ></Typography>
                     </Box>
                   </Box>
                 </TableCell>
@@ -298,8 +294,7 @@ export default function ProjectList() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
     </Box>
   );

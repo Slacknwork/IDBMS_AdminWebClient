@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import Header from "/components/layout/header/Header";
 import Sidebar from "/components/layout/sidebar";
 
-import { getUserStoreData } from "/api/testSerivces";
+import { getUserStoreData } from "/services/testSerivces";
 
 import "react-toastify/dist/ReactToastify.css";
 

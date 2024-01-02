@@ -31,7 +31,7 @@ import languageTypeOptions, {
 import projectStatusOptions from "/constants/enums/projectStatus";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
 
-import { getAdvertisementProjects } from "/api/advertisementServices";
+import { getAdvertisementProjects } from "/services/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";

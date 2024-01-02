@@ -2,7 +2,7 @@ import { store } from "/store";
 import { fetchData } from "/utils/api";
 
 const endpoint = "/RoomTypes";
-const apiUrl = "https://localhost:7062/api/RoomTypes";
+const apiUrl = "https://localhost:7062/services/RoomTypes";
 
 const getAllRoomTypes = async ({
   isHidden = false,
@@ -14,10 +14,10 @@ const getAllRoomTypes = async ({
     const paramString = `isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const url = `${endpoint}?${paramString}`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -30,10 +30,10 @@ const getRoomTypeById = async (id) => {
   try {
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -43,7 +43,7 @@ const getRoomTypeById = async (id) => {
 };
 
 const createRoomType = async (request) => {
-  console.log(request)
+  console.log(request);
   const token = store.getState().user?.token ?? "";
   const formData = new FormData();
 
@@ -79,14 +79,14 @@ const updateRoomType = async (id, request) => {
         formData.append(key, request[key]);
       }
     });
-    
+
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        token,
-        body: formData,
-      });
+      url,
+      method: "PUT",
+      token,
+      body: formData,
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating room type:", error);
@@ -99,10 +99,10 @@ const updateRoomTypeHiddenStatus = async (id, newHiddenStatus) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/isHidden?isHidden=${newHiddenStatus}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        token,
-        body: null,
+      url,
+      method: "PUT",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {

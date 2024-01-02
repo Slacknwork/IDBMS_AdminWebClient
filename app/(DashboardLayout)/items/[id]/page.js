@@ -10,14 +10,14 @@ import PageContainer from "/components/container/PageContainer";
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
 import {
   getAllInteriorItems,
   getInteriorItemById,
   updateInteriorItem,
   deleteInteriorItem,
-} from "../../../../api/interiorItemServices";
+} from "../../../../services/interiorItemServices";
 
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
@@ -150,7 +150,7 @@ export default function ItemDetails() {
     try {
       updateInteriorItem(params.id, formData);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       toast.error("Lỗi cập nhật!");
       console.log(error);
@@ -183,18 +183,18 @@ export default function ItemDetails() {
             {/* CODE */}
             <Grid item xs={12} lg={12}>
               <TextForm
-              title="Mã"
-              titleSpan={3}
-              fieldSpan={9}
-              required
-              subtitle="Mã sản phẩm"
-              value={formData.code}
-              error={formData.codeError.hasError}
-              errorLabel={formData.codeError.label}
-              onChange={(e) => handleInputChange("code", e.target.value)}
-            ></TextForm>
-          </Grid>
-            
+                title="Mã"
+                titleSpan={3}
+                fieldSpan={9}
+                required
+                subtitle="Mã sản phẩm"
+                value={formData.code}
+                error={formData.codeError.hasError}
+                errorLabel={formData.codeError.label}
+                onChange={(e) => handleInputChange("code", e.target.value)}
+              ></TextForm>
+            </Grid>
+
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <TextForm

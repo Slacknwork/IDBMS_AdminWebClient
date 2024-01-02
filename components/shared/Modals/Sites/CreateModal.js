@@ -7,7 +7,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import { createSite } from "/api/siteServices";
+import { createSite } from "/services/siteServices";
 
 export default function CreateSiteModal({ onCreate }) {
   // CONSTANTS
@@ -50,9 +50,10 @@ export default function CreateSiteModal({ onCreate }) {
       case "contactPhone":
       case "contactEmail":
         if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
+          value === null ||
+          value === undefined ||
+          (typeof value === "string" && value.trim() === "") ||
+          (typeof value === "number" && value < 0)
         ) {
           setFormData((prevData) => ({
             ...prevData,

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useParams, useSearchParams } from "next/navigation";
 
-import { getCommentsByProjectId } from "/api/commentServices";
+import { getCommentsByProjectId } from "/services/commentServices";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
@@ -98,16 +98,16 @@ export default function ProjectCommentsPage() {
                     px: 2,
                   }}
                 >
-                  <Image 
-                    src="/" 
-                    alt="" 
-                    width={75} 
+                  <Image
+                    src="/"
+                    alt=""
+                    width={75}
                     height={75}
                     unoptimized={true}
                     onError={(e) => {
                       e.target.src = "/images/results/no-file.png";
                     }}
-                    ></Image>
+                  ></Image>
                   <Box sx={{ my: "auto", mx: 2 }}>
                     <Typography
                       variant="subtitle2"
@@ -128,15 +128,16 @@ export default function ProjectCommentsPage() {
                     px: 2,
                   }}
                 >
-                  <Image 
-                    src="/"  
-                    alt="" 
-                    width={75} 
-                    height={75} 
+                  <Image
+                    src="/"
+                    alt=""
+                    width={75}
+                    height={75}
                     unoptimized={true}
                     onError={(e) => {
                       e.target.src = "/images/results/no-file.png";
-                    }}></Image>
+                    }}
+                  ></Image>
                   <Box sx={{ my: "auto", mx: 2 }}>
                     <Typography
                       variant="subtitle2"

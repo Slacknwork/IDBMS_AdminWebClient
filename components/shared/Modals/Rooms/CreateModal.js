@@ -5,8 +5,8 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams, useRouter } from "next/navigation";
 
-import { getAllRoomTypes } from "/api/roomTypeServices";
-import { createRoom } from "/api/roomServices";
+import { getAllRoomTypes } from "/services/roomTypeServices";
+import { createRoom } from "/services/roomServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";

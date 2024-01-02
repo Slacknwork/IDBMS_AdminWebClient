@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getSites } from "/api/siteServices";
+import { getSites } from "/services/siteServices";
 
 import CreateSiteModal from "/components/shared/Modals/Sites/CreateModal";
 import Pagination from "/components/shared/Pagination";

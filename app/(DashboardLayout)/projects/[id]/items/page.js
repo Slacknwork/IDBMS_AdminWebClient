@@ -19,17 +19,17 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+
+import { getItemInTasksByProjectId } from "/services/itemInTaskServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
 
 import projectTaskStatus from "/constants/enums/projectTaskStatus";
-import { getItemInTasksByProjectId } from "api/itemInTaskServices";
-import { getAllInteriorItemCategories } from "api/interiorItemCategoryServices";
-import checkValidUrl from "components/validations/url"
-
+import checkValidUrl from "components/validations/url";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
-import { toast } from "react-toastify";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -206,9 +206,7 @@ export default function InteriorItems() {
                   </TableCell>
                   <TableCell>
                     <Image
-                      src={
-                        checkValidUrl(item?.interiorItem?.imageUrl)
-                      }
+                      src={checkValidUrl(item?.interiorItem?.imageUrl)}
                       alt={item?.interiorItem?.name ?? ""}
                       width={500}
                       height={500}

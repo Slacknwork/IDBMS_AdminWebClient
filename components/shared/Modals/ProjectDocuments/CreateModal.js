@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
 
-import { createProjectDocument } from "/api/projectDocumentServices";
+import { createProjectDocument } from "/services/projectDocumentServices";
 
 import SelectForm from "../../Forms/Select";
 import FileForm from "../../Forms/File";

@@ -19,10 +19,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
-import { getAllInteriorItems } from "/api/interiorItemServices";
-import { createItemInTask } from "/api/itemInTaskServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
+import { getAllInteriorItems } from "/services/interiorItemServices";
+import { createItemInTask } from "/services/itemInTaskServices";
 import checkValidUrl from "components/validations/url";
 
 import FormModal from "/components/shared/Modals/Form";

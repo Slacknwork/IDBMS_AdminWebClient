@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { generateCompanyContract } from "/api/contractServices";
+import { generateCompanyContract } from "/services/contractServices";
 import { Box } from "@mui/material";
 
 export default function PreviewCompanyContract({ formData }) {

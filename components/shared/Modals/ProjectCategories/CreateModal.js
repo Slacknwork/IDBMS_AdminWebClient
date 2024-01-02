@@ -9,7 +9,7 @@ import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import FileForm from "/components/shared/Forms/File";
-import { createProjectCategory } from "/api/projectCategoryServices";
+import { createProjectCategory } from "/services/projectCategoryServices";
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();

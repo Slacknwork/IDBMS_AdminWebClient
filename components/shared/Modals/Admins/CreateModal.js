@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import { createAdmin } from "/api/adminServices";
+import { createAdmin } from "/services/adminServices";
 
 export default function CreateAdminModal({ success }) {
   const params = useParams();

@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { loginAdmin } from "/api/authenticationServices";
+import { loginAdmin } from "/services/authenticationServices";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";

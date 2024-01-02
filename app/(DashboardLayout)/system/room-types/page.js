@@ -20,10 +20,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 
-import { getAllRoomTypes } from "/api/roomTypeServices";
+import { getAllRoomTypes } from "/services/roomTypeServices";
 
 import isHiddenOptions from "/constants/enums/isHidden";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -78,8 +78,8 @@ export default function RoomTypeList() {
         searchParams.get(isHiddenQuery) === "1"
           ? true
           : searchParams.get(isHiddenQuery) === null
-            ? ""
-            : false;
+          ? ""
+          : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -109,7 +109,7 @@ export default function RoomTypeList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box>
@@ -125,9 +125,9 @@ export default function RoomTypeList() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateRoomTypeModal
-          success={handleModalResult}
-        >Tạo</CreateRoomTypeModal>
+        <CreateRoomTypeModal success={handleModalResult}>
+          Tạo
+        </CreateRoomTypeModal>
       </Box>
       {(roomTypes && roomTypes.length) > 0 ? (
         <Table

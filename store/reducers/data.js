@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { getAdvertisementProjectById } from "/api/advertisementServices";
-import { getProjectById } from "/api/projectServices";
-import { getSiteById } from "/api/siteServices";
+import { getAdvertisementProjectById } from "/services/advertisementServices";
+import { getProjectById } from "/services/projectServices";
+import { getSiteById } from "/services/siteServices";
 
 const initialState = {
   project: { name: "Dự án", type: 0, status: 0, language: 0 },

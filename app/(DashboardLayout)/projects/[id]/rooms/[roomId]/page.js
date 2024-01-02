@@ -15,8 +15,8 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getRoomById, updateRoom } from "/api/roomServices";
-import { getAllRoomTypes } from "/api/roomTypeServices";
+import { getRoomById, updateRoom } from "/services/roomServices";
+import { getAllRoomTypes } from "/services/roomTypeServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";

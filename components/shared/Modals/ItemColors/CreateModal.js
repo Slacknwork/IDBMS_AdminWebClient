@@ -5,11 +5,9 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
-import {
-  createInteriorItemColor,
-} from "../../../../api/interiorItemColorServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
+import { createInteriorItemColor } from "../../../../services/interiorItemColorServices";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import colorTypeOptions from "/constants/enums/colorType";
@@ -43,10 +41,7 @@ export default function CreateItemModal() {
   const [parentItems, setParentItems] = useState([]);
 
   const fetchDataFromApi = async () => {
-
-    await Promise.all([
-
-    ]);
+    await Promise.all([]);
   };
 
   useEffect(() => {
@@ -90,7 +85,6 @@ export default function CreateItemModal() {
       onSubmit={handleCreate}
       size="big"
     >
-
       {/* NAME */}
       <Grid item xs={12} lg={6}>
         <TextForm
@@ -166,7 +160,6 @@ export default function CreateItemModal() {
           onChange={(value) => handleInputChange("type", value)}
         ></SelectForm>
       </Grid>
-
     </FormModal>
   );
 }

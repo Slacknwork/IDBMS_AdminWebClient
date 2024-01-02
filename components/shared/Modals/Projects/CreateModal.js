@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-import { createProject, getProjectsBySiteId } from "/api/projectServices";
-import { getProjectCategories } from "/api/projectCategoryServices";
+import { createProject, getProjectsBySiteId } from "/services/projectServices";
+import { getProjectCategories } from "/services/projectCategoryServices";
 
 import projectTypeOptions from "/constants/enums/projectType";
 import projectStatusOptions from "/constants/enums/projectStatus";

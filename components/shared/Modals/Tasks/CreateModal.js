@@ -11,14 +11,14 @@ moment.tz.setDefault("Asia/Ho_Chi_Minh");
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 
-import { getAllTaskDesigns } from "/api/taskDesignServices";
-import { getFloorsByProjectId } from "/api/floorServices";
+import { getAllTaskDesigns } from "/services/taskDesignServices";
+import { getFloorsByProjectId } from "/services/floorServices";
 import {
   createProjectTask,
   getProjectTasksByProjectId,
-} from "/api/projectTaskServices";
-import { getAllTaskCategories } from "/api/taskCategoryServices";
-import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
+} from "/services/projectTaskServices";
+import { getAllTaskCategories } from "/services/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";

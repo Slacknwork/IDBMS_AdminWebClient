@@ -15,7 +15,7 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
-import { getAllAdmins } from "/api/adminServices";
+import { getAllAdmins } from "/services/adminServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import PageContainer from "/components/container/PageContainer";
@@ -48,7 +48,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectList() {
-
   const searchQuery = "search";
 
   const statusQuery = "status";
@@ -93,9 +92,7 @@ export default function ProjectList() {
         toast.error("Lỗi nạp dữ liệu 'Quản Lý' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchAdmins(),
-    ]);
+    await Promise.all([fetchAdmins()]);
     setLoading(false);
   };
 
@@ -105,7 +102,7 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <PageContainer title={"PageContainer"} description={"PageContainer"}>
@@ -120,11 +117,8 @@ export default function ProjectList() {
             allValue={statusAllValue}
             allLabel="Tất cả"
           ></FilterStatus>
-
         </Box>
-        <CreateAdminModal success={handleModalResult}>
-          Tạo
-        </CreateAdminModal>
+        <CreateAdminModal success={handleModalResult}>Tạo</CreateAdminModal>
       </Box>
       <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
         {admins && admins.length > 0 ? (
@@ -232,8 +226,7 @@ export default function ProjectList() {
               Không có dữ liệu.
             </Typography>
           </Stack>
-        )
-        }
+        )}
         <Pagination count={count}></Pagination>
       </Box>
     </PageContainer>

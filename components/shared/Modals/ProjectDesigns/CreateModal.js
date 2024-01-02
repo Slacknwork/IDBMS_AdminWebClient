@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 
 import projectTypeOptions from "/constants/enums/projectType";
 
-import { createProjectDesign } from "/api/projectDesignServices";
+import { createProjectDesign } from "/services/projectDesignServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";

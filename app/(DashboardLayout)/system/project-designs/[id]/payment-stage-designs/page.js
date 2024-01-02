@@ -20,8 +20,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import { getAllProjectDesigns } from "/api/projectDesignServices";
-import { getAllPaymentStageDesignsByProjectDesignId } from "/api/paymentStageDesignServices";
+import { getAllProjectDesigns } from "/services/projectDesignServices";
+import { getAllPaymentStageDesignsByProjectDesignId } from "/services/paymentStageDesignServices";
 
 import calculationUnit from "/constants/enums/calculationUnit";
 
@@ -65,7 +65,7 @@ export default function ProjectList() {
   // INIT
   const searchParams = useSearchParams();
   const params = useParams();
- 
+
   // INIT CONST
   const [paymentStageDesigns, setPaymentStageDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,8 +78,8 @@ export default function ProjectList() {
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
-        console.log(params.id);
-        try {
+      console.log(params.id);
+      try {
         const response = await getAllPaymentStageDesignsByProjectDesignId({
           projectDesignId: params.id,
           name,
@@ -127,7 +127,7 @@ export default function ProjectList() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-  }
+  };
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -135,7 +135,9 @@ export default function ProjectList() {
         <Box sx={{ display: "flex" }}>
           <Search placeholder="Tìm theo tên.."></Search>
         </Box>
-        <CreatePaymentStageDesignModal success={handleModalResult}>Tạo</CreatePaymentStageDesignModal>
+        <CreatePaymentStageDesignModal success={handleModalResult}>
+          Tạo
+        </CreatePaymentStageDesignModal>
       </Box>
 
       {(paymentStageDesigns && paymentStageDesigns.length) > 0 ? (
@@ -179,17 +181,17 @@ export default function ProjectList() {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                    <LinearProgress
-                        variant="determinate"
-                        value={paymentStageDesign?.pricePercentage}
-                    />
-                    <Typography variant="body2" fontWeight={400}>
-                        {`${paymentStageDesign?.pricePercentage}%`}
-                        </Typography>
-                    </TableCell>
+                  <LinearProgress
+                    variant="determinate"
+                    value={paymentStageDesign?.pricePercentage}
+                  />
+                  <Typography variant="body2" fontWeight={400}>
+                    {`${paymentStageDesign?.pricePercentage}%`}
+                  </Typography>
+                </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                  {paymentStageDesign?.isPrepaid ? "Đã trả" : "Chưa trả"}
+                    {paymentStageDesign?.isPrepaid ? "Đã trả" : "Chưa trả"}
                   </Typography>
                 </TableCell>
                 <TableCell>

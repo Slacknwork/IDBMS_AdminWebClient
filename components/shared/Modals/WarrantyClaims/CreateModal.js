@@ -14,8 +14,8 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { createWarrantyClaim } from "../../../../api/warrantyClaimServices";
-import { getAllUsers } from "../../../../api/userServices";
+import { createWarrantyClaim } from "../../../../services/warrantyClaimServices";
+import { getAllUsers } from "../../../../services/userServices";
 
 import AutocompleteForm from "../../Forms/Autocomplete";
 import DateForm from "../../Forms/Date";
@@ -95,10 +95,10 @@ export default function CreateWarrantyClaimModal({ success }) {
     handleInputChange(field, selectedOption);
     if (field === "userId") {
       users.forEach((user) => {
-        if (user.id === selectedOption) selectedOption = user.name
+        if (user.id === selectedOption) selectedOption = user.name;
       });
-      handleInputChange("payerName", selectedOption)
-    };
+      handleInputChange("payerName", selectedOption);
+    }
   };
 
   const handleCheckboxChange = (field, checked) => {
@@ -113,7 +113,7 @@ export default function CreateWarrantyClaimModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData)
+    console.log(formData);
     try {
       const response = await createWarrantyClaim(formData);
       toast.success("Thêm thành công!");
@@ -235,10 +235,11 @@ export default function CreateWarrantyClaimModal({ success }) {
           value={formData.confirmationDocument}
           error={formData.confirmationDocumentError.hasError}
           errorLabel={formData.confirmationDocumentError.label}
-          onChange={(file) => handleFileInputChange("confirmationDocument", file)}
+          onChange={(file) =>
+            handleFileInputChange("confirmationDocument", file)
+          }
         ></FileForm>
       </Grid>
-
     </FormModal>
   );
 }

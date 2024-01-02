@@ -5,11 +5,9 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-import { getAllInteriorItemColors } from "/api/interiorItemColorServices";
-import { getAllInteriorItemCategories } from "/api/interiorItemCategoryServices";
-import {
-  createInteriorItemCategory,
-} from "../../../../api/interiorItemCategoryServices";
+import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
+import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
+import { createInteriorItemCategory } from "../../../../services/interiorItemCategoryServices";
 
 import interiorItemStatusOptions from "/constants/enums/interiorItemStatus";
 import interiorItemTypeOptions from "/constants/enums/interiorItemType";
@@ -58,9 +56,7 @@ export default function CreateItemModal() {
         console.log(error);
       }
     };
-    await Promise.all([
-      fetchParentCategories(),
-    ]);
+    await Promise.all([fetchParentCategories()]);
   };
 
   useEffect(() => {
@@ -87,7 +83,7 @@ export default function CreateItemModal() {
 
   const handleCreate = async () => {
     try {
-      console.log(formData)
+      console.log(formData);
       const response = await createInteriorItemCategory(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
       console.log(response);
@@ -106,7 +102,6 @@ export default function CreateItemModal() {
       onSubmit={handleCreate}
       size="big"
     >
-
       {/* NAME */}
       <Grid item xs={12} lg={6}>
         <TextForm
@@ -164,7 +159,9 @@ export default function CreateItemModal() {
           value={formData.englishDescription}
           error={formData.englishDescriptionError.hasError}
           errorLabel={formData.englishDescriptionError.label}
-          onChange={(e) => handleInputChange("englishDescription", e.target.value)}
+          onChange={(e) =>
+            handleInputChange("englishDescription", e.target.value)
+          }
         ></TextForm>
       </Grid>
 
@@ -226,12 +223,9 @@ export default function CreateItemModal() {
           options={parentCategories}
           error={formData.parentCategoryIdError.hasError}
           errorLabel={formData.parentCategoryId.label}
-          onChange={(value) =>
-            handleInputChange("parentCategoryId", value)
-          }
+          onChange={(value) => handleInputChange("parentCategoryId", value)}
         ></AutocompleteForm>
       </Grid>
-
     </FormModal>
   );
 }

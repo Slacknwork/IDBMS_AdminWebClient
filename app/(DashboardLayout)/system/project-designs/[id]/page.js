@@ -15,7 +15,7 @@ import {
   getProjectDesignById,
   updateProjectDesign,
   updateProjectDesignHiddenStatus,
-} from "/api/projectDesignServices";
+} from "/services/projectDesignServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";

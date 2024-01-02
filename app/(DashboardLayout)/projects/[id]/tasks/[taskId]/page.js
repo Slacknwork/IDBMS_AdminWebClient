@@ -8,14 +8,14 @@ import { useParams } from "next/navigation";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 
-import { getAllTaskCategories } from "/api/taskCategoryServices";
-import { getPaymentStagesByProjectId } from "/api/paymentStageServices";
+import { getAllTaskCategories } from "/services/taskCategoryServices";
+import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 import {
   getProjectTaskById,
   updateProjectTask,
   getProjectTasksByProjectId,
-} from "/api/projectTaskServices";
-import { getFloorsByProjectId } from "/api/floorServices";
+} from "/services/projectTaskServices";
+import { getFloorsByProjectId } from "/services/floorServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";

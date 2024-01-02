@@ -20,8 +20,8 @@ import interiorItemTypeOptions from "/constants/enums/interiorItemType";
 import {
   getAdminById,
   updateAdmin,
-  deleteAdmin
-} from "/api/adminServices";
+  deleteAdmin,
+} from "/services/adminServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -69,7 +69,7 @@ export default function TaskCategoryDetails() {
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
-    setLoading(true)
+    setLoading(true);
     const fetchAdmin = async () => {
       try {
         const response = await getAdminById(params.id);
@@ -80,9 +80,7 @@ export default function TaskCategoryDetails() {
         toast.error("Lỗi nạp dữ liệu 'quản lý' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchAdmin(),
-    ]);
+    await Promise.all([fetchAdmin()]);
     setLoading(false);
   };
 
@@ -99,7 +97,7 @@ export default function TaskCategoryDetails() {
       const response = await updateAdmin(params.id, transformedValue);
       console.log(response);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi()
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -107,9 +105,7 @@ export default function TaskCategoryDetails() {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteAdmin(
-        params.id
-      );
+      const response = await deleteAdmin(params.id);
       console.log(response);
       toast.success("Xoá thành công!");
       router.push("/admins");
@@ -144,69 +140,69 @@ export default function TaskCategoryDetails() {
       >
         {/* TÊN */}
         <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Họ và Tên"
-                    required
-                    subtitle="Nhập họ và tên quản lý"
-                    value={formData.name}
-                    error={formData.nameError.hasError}
-                    errorLabel={formData.nameError.label}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                ></TextForm>
-            </Grid>
+          <TextForm
+            title="Họ và Tên"
+            required
+            subtitle="Nhập họ và tên quản lý"
+            value={formData.name}
+            error={formData.nameError.hasError}
+            errorLabel={formData.nameError.label}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          ></TextForm>
+        </Grid>
 
-            {/* TÊN ĐĂNG NHẬP */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Tên đăng nhập"
-                    required
-                    subtitle="Nhập username quản lý"
-                    value={formData.username}
-                    error={formData.usernameError.hasError}
-                    errorLabel={formData.usernameError.label}
-                    onChange={(e) => handleInputChange("username", e.target.value)}
-                ></TextForm>
-            </Grid>
+        {/* TÊN ĐĂNG NHẬP */}
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Tên đăng nhập"
+            required
+            subtitle="Nhập username quản lý"
+            value={formData.username}
+            error={formData.usernameError.hasError}
+            errorLabel={formData.usernameError.label}
+            onChange={(e) => handleInputChange("username", e.target.value)}
+          ></TextForm>
+        </Grid>
 
-            {/* EMAIL */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Email"
-                    required
-                    subtitle="Nhập email"
-                    value={formData.email}
-                    error={formData.emailError.hasError}
-                    errorLabel={formData.emailError.label}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                ></TextForm>
-            </Grid>
+        {/* EMAIL */}
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Email"
+            required
+            subtitle="Nhập email"
+            value={formData.email}
+            error={formData.emailError.hasError}
+            errorLabel={formData.emailError.label}
+            onChange={(e) => handleInputChange("email", e.target.value)}
+          ></TextForm>
+        </Grid>
 
-            {/* MẬT KHẨU */}
-            <Grid item xs={12} lg={6}>
-                <TextForm
-                    title="Mật khẩu"
-                    required
-                    subtitle="Nhập mật khẩu"
-                    value={formData.password}
-                    error={formData.passwordError.hasError}
-                    errorLabel={formData.passwordError.label}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
-                ></TextForm>
-            </Grid>
+        {/* MẬT KHẨU */}
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Mật khẩu"
+            required
+            subtitle="Nhập mật khẩu"
+            value={formData.password}
+            error={formData.passwordError.hasError}
+            errorLabel={formData.passwordError.label}
+            onChange={(e) => handleInputChange("password", e.target.value)}
+          ></TextForm>
+        </Grid>
 
-            {/* STATUS */}
-            <Grid item xs={12} lg={6}>
-                  <SelectForm
-                    title="Trạng thái"
-                    required
-                    subtitle="Chọn trạng thái"
-                    value={formData.status}
-                    options={adminStatusOptions}
-                    error={formData.statusError?.hasError}
-                    errorLabel={formData.statusError.label}
-                    onChange={(value) => handleInputChange("status", value)}
-                ></SelectForm>
-            </Grid>
+        {/* STATUS */}
+        <Grid item xs={12} lg={6}>
+          <SelectForm
+            title="Trạng thái"
+            required
+            subtitle="Chọn trạng thái"
+            value={formData.status}
+            options={adminStatusOptions}
+            error={formData.statusError?.hasError}
+            errorLabel={formData.statusError.label}
+            onChange={(value) => handleInputChange("status", value)}
+          ></SelectForm>
+        </Grid>
       </DetailsPage>
     </PageContainer>
   );

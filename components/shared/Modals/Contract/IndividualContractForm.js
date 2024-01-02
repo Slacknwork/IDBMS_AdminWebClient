@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
-import { getIndividualContractInfoById } from "/api/contractServices";
+import { getIndividualContractInfoById } from "/services/contractServices";
 
 import TextForm from "../../Forms/Text";
 import DateForm from "../../Forms/Date";

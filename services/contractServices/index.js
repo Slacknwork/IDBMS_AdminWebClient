@@ -5,13 +5,13 @@ import { fetchData } from "/utils/api";
 const endpoint = "/Contract";
 const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
   try {
-    const token = store.getState().user?.token ?? ""
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}/individual`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -22,7 +22,7 @@ const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
 
 const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
   try {
-    const token = store.getState().user?.token ?? ""
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}/company`;
     const response = await fetchData({
       url,
@@ -39,10 +39,10 @@ const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
 
 const generateIndividualContract = async (request) => {
   try {
-    const token = store.getState().user?.token ?? ""
+    const token = store.getState().user?.token ?? "";
 
     const response = await fetch(
-      `https://localhost:7062/api/Contract/individual`,
+      `https://localhost:7062/services/Contract/individual`,
       {
         method: "POST",
         headers: {
@@ -63,10 +63,10 @@ const generateIndividualContract = async (request) => {
 
 const generateCompanyContract = async (request) => {
   try {
-    const token = store.getState().user?.token ?? ""
+    const token = store.getState().user?.token ?? "";
 
     const response = await fetch(
-      `https://localhost:7062/api/Contract/company`,
+      `https://localhost:7062/services/Contract/company`,
       {
         method: "POST",
         headers: {
