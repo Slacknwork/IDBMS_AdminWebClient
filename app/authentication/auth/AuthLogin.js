@@ -48,7 +48,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       const response = await loginAdmin(request);
       console.log(response);
       toast.success("Đăng nhập thành công!");
-      dispatch(login(response.data));
+      dispatch(login(response));
 
       router.push(`/sites`);
     } catch (error) {

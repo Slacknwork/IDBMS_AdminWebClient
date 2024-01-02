@@ -28,7 +28,6 @@ const Profile = ({ name }) => {
     toast.success("Đăng xuất thành công!");
     router.push(`/authentication/engineer-login`);
   };
-  console.log(name)
 
   return (
     <Box>
@@ -43,7 +42,6 @@ const Profile = ({ name }) => {
             color: "primary.main",
           }),
         }}
-        onClick={handleClick2}
       >
         <Avatar sx={{ bgcolor: getColorForAvatar(name), my: "auto" }}>
           {getAvatarContent(name)}
