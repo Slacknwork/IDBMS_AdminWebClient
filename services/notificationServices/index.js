@@ -8,6 +8,7 @@ const getAllNotifications = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
           url,
@@ -29,6 +30,7 @@ const getNotificationsByUserId = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
           url,
@@ -45,6 +47,7 @@ const getNotificationsByUserId = async ({
 
 const getNotificationById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
           url,
@@ -97,6 +100,7 @@ const createNotificationForProject = async (projectId, request) => {
 
 const updateNotificationSeenStatus = async (notificationId) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${notificationId}/is-seen`;
         const response = await fetchData({
             url,
@@ -114,6 +118,7 @@ const updateNotificationSeenStatus = async (notificationId) => {
 
 const updateNotificationSeenStatusByUserId = async (userId) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/is-seen/user/${userId}`;
         const response = await fetchData({
             url,

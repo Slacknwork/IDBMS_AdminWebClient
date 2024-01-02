@@ -9,6 +9,7 @@ const getAllInteriorItemCategories = async ({
     pageNo = "",
 } = {}) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
           url,
@@ -25,6 +26,7 @@ const getAllInteriorItemCategories = async ({
 
 const getInteriorItemCategoryById = async (id) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
           url,
@@ -92,7 +94,6 @@ const updateInteriorItemCategory = async (categoryId, request) => {
 const deleteInteriorItemCategory = async (categoryId) => {
     try {
         const token = store.getState().user?.token ?? ""
-
         const url = `${endpoint}/${categoryId}`;
         const response = await fetchData({
             url,

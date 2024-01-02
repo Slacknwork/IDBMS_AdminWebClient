@@ -73,6 +73,7 @@ const getUsersFilter = async (search, status, page, pageSize) => {
 // Fetch user by ID
 const getUserById = async (userId) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${userId}`;
     const response = await fetchData({
       url,
