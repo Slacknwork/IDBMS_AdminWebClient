@@ -1,21 +1,18 @@
 const API_BASE_URL = 'https://localhost:7062/api/Authentications';
+import { fetchData } from "/utils/api";
 
+const endpoint = "/Authentications";
 const loginAdmin = async (request) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const url = `${endpoint}/admin/login`;
+        const response = await fetchData({
+            url,
+            method: "POST",
+            contentType: "application/json",
+            token,
             body: JSON.stringify(request),
         });
-
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
-
-        const admin = await response.json();
-        return admin;
+        return response.data;
     } catch (error) {
         console.error('Error logging in admin:', error);
         throw error;
@@ -24,20 +21,15 @@ const loginAdmin = async (request) => {
 
 const loginByGoogle = async (request) => {
     try {
-        const response = await fetch(`https://localhost:7062/api/Authentications/loginByGoogle`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const url = `${endpoint}/loginByGoogle`;
+        const response = await fetchData({
+            url,
+            method: "POST",
+            contentType: "application/json",
+            token,
             body: JSON.stringify(request),
         });
-
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
-
-        const admin = await response.json();
-        return admin;
+        return response.data;
     } catch (error) {
         console.error('Error logging in admin:', error);
         throw error;

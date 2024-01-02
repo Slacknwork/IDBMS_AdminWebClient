@@ -1,24 +1,18 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/ItemInTasks";
 const getItemInTaskById = async (itemId) => {
   try {
-    const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/${itemId}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? "";
+      const url = `${endpoint}/${itemId}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const items = await response.json();
-
-    if (!response.ok) {
-      throw items.message;
-    }
-
-    return items.data;
+      return response.data;
   } catch (error) {
     console.error(`Error fetching ItemInTask by ID ${itemId}:`, error);
     throw error;
@@ -36,22 +30,15 @@ const getItemInTasksByProjectId = async ({
   try {
     const token = store.getState().user?.token ?? "";
 
-    const paramString = `itemCodeOrName=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/project/${projectId}?${paramString}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const paramString = `itemCodeOrName=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
+      const url = `${endpoint}/project/${projectId}?${paramString}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const items = await response.json();
-
-    if (!response.ok) {
-      throw items.message;
-    }
-
-    return items.data;
+      return response.data;
   } catch (error) {
     console.error(
       `Error fetching ItemInTasks by Project ID ${projectId}:`,
@@ -70,23 +57,15 @@ const getItemInTasksByTaskId = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/project-task/${taskId}?itemCodeOrName=${search}&itemCategoryId=${category}&status=${status}&pageNo=${page}&pageSize=${pageSize}`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = store.getState().user?.token ?? "";
+      const url = `${endpoint}/project-task/${taskId}?itemCodeOrName=${search}&itemCategoryId=${category}&status=${status}&pageNo=${page}&pageSize=${pageSize}`;
+      const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
       });
-    const items = await response.json();
-
-    if (!response.ok) {
-      throw items.message;
-    }
-
-    return items.data;
+      return response.data;
   } catch (error) {
     console.error(`Error fetching ItemInTasks by Task ID ${taskId}:`, error);
     throw error;
@@ -121,24 +100,15 @@ const createItemInTask = async (taskId, request) => {
   });
 
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/project-task/${taskId}`,
-      {
+    const url = `${endpoint}/project-task/${taskId}`;
+    const response = await fetchData({
+        url,
         method: "POST",
+        token,
         body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+      });
+    return response.data;
 
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
   } catch (error) {
     console.error("Error creating ItemInTask:", error);
     throw error;
@@ -148,25 +118,15 @@ const createItemInTask = async (taskId, request) => {
 const updateItemInTaskQuantity = async (itemId, quantity) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/${itemId}/quantity?quantity=${quantity}`,
-      {
+    const url = `${endpoint}/${itemId}/quantity?quantity=${quantity}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating ItemInTask:", error);
     throw error;
@@ -176,24 +136,14 @@ const updateItemInTaskQuantity = async (itemId, quantity) => {
 const deleteItemInTask = async (itemId) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/ItemInTasks/${itemId}`,
-      {
+    const url = `${endpoint}/${itemId}`;
+    const response = await fetchData({
+        url,
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+        token,
+        body: null,
+    });
+    return response.message;
   } catch (error) {
     console.error(`Error deleting ItemInTask with ID ${itemId}:`, error);
     throw error;

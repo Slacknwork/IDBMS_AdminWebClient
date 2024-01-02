@@ -1,24 +1,19 @@
 import mammoth from "mammoth";
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/Contract";
 const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Contract/${projectId}/individual`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw responseJson.message;
-    }
-    return responseJson.data;
+    const url = `${endpoint}/${projectId}/individual`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;
@@ -28,21 +23,14 @@ const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
 const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
   try {
     const token = store.getState().user?.token ?? ""
-
-    const response = await fetch(
-      `https://localhost:7062/api/Contract/${projectId}/company`,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw responseJson.message;
-    }
-    return responseJson.data;
+    const url = `${endpoint}/${projectId}/company`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     throw error;

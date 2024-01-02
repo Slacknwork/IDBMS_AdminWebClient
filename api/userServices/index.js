@@ -2,6 +2,9 @@ import { mapFromOdata } from "/utils/odata";
 import { languageIndex } from "/constants/enums/language";
 import { userStatusIndex } from "/constants/enums/userStatus";
 import { store } from "/store";
+import { fetchData } from "/utils/api";
+
+const endpoint = "/Users";
 
 const API_BASE_URL = "https://localhost:7062/api/users";
 const API_ODATA_URL = "https://localhost:7062/odata/Users";
@@ -16,16 +19,14 @@ const getAllUsers = async ({
   try {
     const token = store.getState().user?.token ?? "";
     const paramString = `searchParam=${nameOrEmail}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
-    const response = await fetch(`${API_BASE_URL}?${paramString}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const url = `${endpoint}?${paramString}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
     });
-    const users = await response.json();
-    if (!response.ok) {
-      throw users.message;
-    }
-    return users.data;
+    return response.data;
   } catch (error) {
     console.error("Error fetching all users:", error);
     throw error;
@@ -72,12 +73,14 @@ const getUsersFilter = async (search, status, page, pageSize) => {
 // Fetch user by ID
 const getUserById = async (userId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${userId}`);
-    const user = await response.json();
-    if (!response.ok) {
-      throw user.message;
-    }
-    return user.data;
+    const url = `${endpoint}/${userId}`;
+    const response = await fetchData({
+        url,
+        method: "GET",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching user by ID:", error);
     throw error;
@@ -88,22 +91,15 @@ const getUserById = async (userId) => {
 const createUser = async (userData) => {
   try {
     const token = store.getState().user?.token ?? "";
-    const response = await fetch(`${API_BASE_URL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(userData),
+    const url = `${endpoint}`;
+    const response = await fetchData({
+        url,
+        method: "POST",
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(userData),
     });
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-      
-    return responseJson;
+    return response.data;
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;
@@ -113,19 +109,15 @@ const createUser = async (userData) => {
 // Update user
 const updateUser = async (userId, updatedUserData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedUserData),
+    const url = `${endpoint}/${userId}`;
+    const response = await fetchData({
+        url,
+        method: "PUT",
+        contentType: "application/json",
+        token,
+        body: JSON.stringify(updatedUserData),
     });
-
-    if (!response.ok) {
-      throw new Error("Update user failed");
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;
@@ -135,21 +127,15 @@ const updateUser = async (userId, updatedUserData) => {
 // Update user status
 const updateUserStatus = async (userId, status) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/${userId}/status?status=${status}`,
-      {
+    const url = `${endpoint}/${userId}/status?status=${status}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Update user status failed");
-    }
-
-    return await response.json();
+        contentType: "application/json",
+        token,
+        body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error updating user status:", error);
     throw error;

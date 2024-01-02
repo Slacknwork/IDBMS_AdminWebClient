@@ -1,5 +1,7 @@
 import { store } from "/store";
+import { fetchData } from "/utils/api";
 
+const endpoint = "/InteriorItems";
 const getAllInteriorItems = async ({
   itemCategoryId = "",
   status = "",
@@ -9,19 +11,14 @@ const getAllInteriorItems = async ({
   pageNo = "",
 } = {}) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Get all interior items failed");
-    }
-
-    const items = await response.json();
-    return items.data;
+    const url = `${endpoint}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching all interior items:", error);
     throw error;
@@ -38,17 +35,14 @@ const getItemsByInteriorItemCategoryId = async ({
   pageNo = "",
 } = {}) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`,
-      { cache: "no-store" }
-    );
-
-    if (!response.ok) {
-      throw new Error("Get items by interior item category ID failed");
-    }
-
-    const items = await response.json();
-    return items.data;
+    const url = `${endpoint}/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching items by interior item category ID:", error);
     throw error;
@@ -66,20 +60,14 @@ const createInteriorItem = async (request) => {
       }
     });
 
-    const response = await fetch("https://localhost:7062/api/InteriorItems", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const createdItem = await response.json();
-
-    if (!response.ok) {
-      throw createdItem.message;
-    }
-
-    return createdItem;
+    const url = `${endpoint}`;
+    const response = await fetchData({
+        url,
+        method: "POST",
+        token,
+        body: formData,
+      });
+    return response.data;
   } catch (error) {
     console.error("Error creating interior item:", error);
     throw error;
@@ -97,23 +85,14 @@ const updateInteriorItem = async (itemId, request) => {
       }
     });
 
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/${itemId}`,
-      {
+    const url = `${endpoint}/${itemId}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
+        token,
         body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const updatedItem = await response.json();
-
-    if (!response.ok) {
-      throw updatedItem.message;
-    }
-
-    return updatedItem;
+      });
+    return response.data;
   } catch (error) {
     console.error("Error updating interior item:", error);
     throw error;
@@ -123,25 +102,14 @@ const updateInteriorItem = async (itemId, request) => {
 const deleteInteriorItem = async (itemId) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/${itemId}`,
-      {
+    const url = `${endpoint}/${itemId}`;
+    const response = await fetchData({
+        url,
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-        throw responseJson.message;
-    }
-
-    // Assuming successful deletion doesn't return data, you can adjust as needed.
-    return { success: true };
+        token,
+        body: null,
+    });
+    return response.message;
   } catch (error) {
     console.error("Error deleting interior item:", error);
     throw error;
@@ -151,23 +119,14 @@ const deleteInteriorItem = async (itemId) => {
 const updateInteriorItemStatus = async (itemId, newStatus) => {
   try {
     const token = store.getState().user?.token ?? "";
-
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/${itemId}/status?status=${newStatus}`,
-      {
+    const url = `${endpoint}/${itemId}/status?status=${newStatus}`;
+    const response = await fetchData({
+        url,
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const updatedItem = await response.json();
-
-    if (!response.ok) {
-      throw updatedItem.message;
-    }
-
-    return updatedItem;
+        token,
+        body: null,
+    });
+    return response.message;
   } catch (error) {
     console.error("Error updating interior item status:", error);
     throw error;
@@ -176,12 +135,14 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
 
 const getInteriorItemById = async (itemId) => {
   try {
-    const response = await fetch(
-      `https://localhost:7062/api/InteriorItems/${itemId}`,
-      { cache: "no-store" }
-    );
-    const interiorItem = await response.json();
-    return interiorItem.data;
+    const url = `${endpoint}/${itemId}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching interior item by ID:", error);
     throw error;
