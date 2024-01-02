@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 
 import { getSites } from "/api/siteServices";
 
-import CreateSiteModal from "/components/shared/Modals/sites/CreateModal";
+import CreateSiteModal from "/components/shared/Modals/Sites/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 

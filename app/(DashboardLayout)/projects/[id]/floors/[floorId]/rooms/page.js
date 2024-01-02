@@ -23,7 +23,7 @@ import { getRoomsByFloorId } from "/api/roomServices";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-import CreateRoomModal from "components/shared/Modals/rooms/CreateModal";
+import CreateRoomModal from "components/shared/Modals/Rooms/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
