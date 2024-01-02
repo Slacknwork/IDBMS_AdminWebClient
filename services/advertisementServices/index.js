@@ -115,11 +115,11 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
   }
 };
 
-const CreateAdvertisementProject = async (newProject) => {
+const CreateAdvertisementProject = async (request) => {
   const token = store.getState().user?.token ?? ""
 
   try {
-    const url = `${endpoint}`;
+    const url = `${endpoint}/project`;
     const response = await fetchData({
       url,
       method: "POST",

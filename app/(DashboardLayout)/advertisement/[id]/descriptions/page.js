@@ -103,8 +103,8 @@ export default function AdvertisementDetailsPage() {
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
         loading={loading}
-        title="Thông tin dự án"
-        saveMessage="Lưu thông tin dự án?"
+        title="Mô tả dự án"
+        saveMessage="Lưu thông tin mô tả dự án?"
         onSave={onSaveAdvertisementProject}
       >
         <Grid item xs={12} lg={8}>
@@ -139,6 +139,88 @@ export default function AdvertisementDetailsPage() {
                 }
               ></RichTextForm>
             </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <Card
+            variant="outlined"
+            sx={{ p: 2, border: 1, borderColor: "gray" }}
+          >
+            <Typography variant="h5" sx={{ my: "auto" }}>
+              {contactLabel}
+            </Typography>
+            <UserCard
+              sx={{ mt: 2 }}
+              name={projectOwner?.name || "Không tìm thấy"}
+              email={projectOwner?.email || "..."}
+              phone={projectOwner?.phone || "..."}
+            ></UserCard>
+          </Card>
+
+          <Grid item xs={12} lg={12}>
+            <Card
+              variant="outlined"
+              sx={{ p: 2, border: 1, borderColor: "gray", mt: 2 }}
+            >
+              <Typography variant="h5" sx={{ my: "auto" }}>
+                {priceLabel}
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{ my: "auto", mt: 1, borderTop: 1, borderColor: "gray" }}
+              ></Typography>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Giá ước tính:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.estimatedPrice?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Giá thực tế:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.finalPrice?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Tổng diện tích:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData?.area ?? 0} m²
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Ngày làm việc:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {formData.estimateBusinessDay ?? 0} ngày
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Card>
           </Grid>
         </Grid>
       </DetailsPage>

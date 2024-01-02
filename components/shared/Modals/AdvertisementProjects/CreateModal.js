@@ -18,7 +18,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import SelectForm from "../../Forms/Select";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
-import CreateAdvertisementProject from "/services/advertisementServices"
+import { CreateAdvertisementProject } from "/services/advertisementServices"
 import NumberForm from "/components/shared/Forms/Number";
 
 const style = {
@@ -42,14 +42,10 @@ export default function CreateProjectModal({ children }) {
     nameError: { hasError: false, label: "" },
     type: 0,
     typeError: { hasError: false, label: "" },
-    status: 0,
-    statusError: { hasError: false, label: "" },
     language: 0,
     languageError: { hasError: false, label: "" },
     projectCategoryId: null,
     projectCategoryIdError: { hasError: false, label: "" },
-    description: "",
-    descriptionError: { hasError: false, label: "" },
     finalPrice: 0,
     finalPriceError: { hasError: false, label: "" },
     area: 0,
@@ -197,23 +193,6 @@ export default function CreateProjectModal({ children }) {
         ></SelectForm>
       </Grid>
 
-      {/* PROJECT STATUS */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Trạng thái"
-          required
-          subtitle="Chọn trạng thái của dự án"
-          value={formData.status}
-          options={projectStatusOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn trạng thái"
-          error={formData.statusError.hasError}
-          errorLabel={formData.statusError.label}
-          onChange={(value) => handleInputChange("status", value)}
-          disableOptions={[3, 4, 5, 6, 7, 8]}
-        ></SelectForm>
-      </Grid>
-
       {/* PROJECT CATEGORY */}
       <Grid item xs={12} lg={6}>
         <AutocompleteForm
@@ -244,21 +223,54 @@ export default function CreateProjectModal({ children }) {
         ></SelectForm>
       </Grid>
 
-      {/* DESCRIPTION */}
-      <Grid item xs={12} lg={12}>
-        <TextForm
-          title="Mô tả"
-          multiline
-          titleSpan={2}
-          fieldSpan={10}
-          rows={4}
-          subtitle="Mô tả dự án"
-          value={formData.description}
-          error={formData.descriptionError.hasError}
-          errorLabel={formData.descriptionError.label}
-          onChange={(e) => handleInputChange("description", e.target.value)}
-        ></TextForm>
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Giá cuối cùng"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
+          required
+          subtitle="Nhập giá cuối cùng của sản phẩm"
+          value={formData.finalPrice}
+          error={formData.finalPriceError.hasError}
+          errorLabel={formData.finalPriceError.label}
+          onChange={(value) => handleInputChange("finalPrice", value)}
+          endAdornment={<>₫</>}
+        ></NumberForm>
       </Grid>
+
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Diện tích"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
+          required
+          subtitle="Nhập diện tích của sản phẩm"
+          value={formData.area}
+          error={formData.areaError.hasError}
+          errorLabel={formData.areaError.label}
+          onChange={(value) => handleInputChange("area", value)}
+          endAdornment={<>m²</>}
+        ></NumberForm>
+      </Grid>
+
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Ngày làm việc ước tính"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
+          required
+          subtitle="Nhập số ngày làm việc ước tính để hoàn thành"
+          value={formData.estimateBusinessDay}
+          error={formData.estimateBusinessDayError.hasError}
+          errorLabel={formData.estimateBusinessDayError.label}
+          onChange={(value) => handleInputChange("estimateBusinessDay", value)}
+          endAdornment={<>ngày</>}
+        ></NumberForm>
+      </Grid>
+
     </FormModal>
   );
 }

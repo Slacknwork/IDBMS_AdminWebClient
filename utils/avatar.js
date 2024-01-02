@@ -12,6 +12,7 @@ import {
   purple,
   brown,
   grey,
+  white,
 } from "@mui/material/colors";
 
 function getAvatarContent(name) {
