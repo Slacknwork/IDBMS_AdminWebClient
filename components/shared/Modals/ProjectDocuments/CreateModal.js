@@ -1,33 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControl,
-  Grid,
-  IconButton,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { IconPencil } from "@tabler/icons-react";
+import { useState } from "react";
+import { Grid } from "@mui/material";
+import { toast } from "react-toastify";
+import { useParams } from "next/navigation";
 
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
-import { getAllProjectDocumentTemplates } from "../../../../api/projectDocumentTemplateServices";
-import { createProjectDocument } from "../../../../api/projectDocumentServices";
-import AutocompleteForm from "../../Forms/Autocomplete";
+
+import { createProjectDocument } from "/api/projectDocumentServices";
+
 import SelectForm from "../../Forms/Select";
 import FileForm from "../../Forms/File";
 import CheckForm from "../../Forms/Checkbox";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
-import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -97,11 +83,10 @@ export default function DocumentModal({ success, projectDocument }) {
       [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
     }));
     console.log(value);
-
   };
 
   const handleCreate = async () => {
-    console.log(formData)
+    console.log(formData);
     try {
       const response = await createProjectDocument(formData);
       toast.success("Thêm thành công!");
@@ -121,7 +106,6 @@ export default function DocumentModal({ success, projectDocument }) {
       onSubmit={handleCreate}
       size="big"
     >
-
       {/* NAME */}
       <Grid item xs={12} lg={12}>
         <TextForm

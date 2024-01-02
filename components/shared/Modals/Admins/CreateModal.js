@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Autocomplete, Grid } from "@mui/material";
+import { useState } from "react";
+import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import { createAdmin } from "/api/AdminServices";
-
-import adminStatusOptions from "/constants/enums/adminStatus";
+import { createAdmin } from "/api/adminServices";
 
 export default function CreateAdminModal({ success }) {
   const params = useParams();
