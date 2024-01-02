@@ -1,4 +1,3 @@
-const API_BASE_URL = 'https://localhost:7062/api/Authentications';
 import { fetchData } from "/utils/api";
 
 const endpoint = "/Authentications";
@@ -9,7 +8,6 @@ const loginAdmin = async (request) => {
             url,
             method: "POST",
             contentType: "application/json",
-            token,
             body: JSON.stringify(request),
         });
         return response.data;
@@ -26,7 +24,6 @@ const loginByGoogle = async (request) => {
             url,
             method: "POST",
             contentType: "application/json",
-            token,
             body: JSON.stringify(request),
         });
         return response.data;
