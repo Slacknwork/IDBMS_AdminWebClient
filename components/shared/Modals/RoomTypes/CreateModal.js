@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
@@ -39,14 +39,54 @@ export default function CreateRoomTypeModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "pricePerArea":
+      case "estimateDayPerArea":
+      case "isHidden":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && (field !== "estimateDayPerArea" || field !== "pricePerArea") && value <= 0)
+          || (typeof value === "number" && (field === "estimateDayPerArea" || field === "pricePerArea") && value < 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const handleCreate = async () => {
@@ -63,13 +103,30 @@ export default function CreateRoomTypeModal({ success }) {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo loại phòng"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
@@ -181,6 +238,7 @@ export default function CreateRoomTypeModal({ success }) {
       {/* IS HIDDEN */}
       <Grid item xs={12} lg={6}>
         <CheckboxForm
+          required
           title="Ẩn"
           subtitle="Check vào ô nếu muốn ẩn"
           value={formData.isHidden}

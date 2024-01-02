@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
@@ -27,7 +27,7 @@ export default function CreateUserModal({ success }) {
     password: "",
     phone: "",
     dateOfBirth: null,
-    language: -1,
+    language: 0,
     nameError: { hasError: false, label: "" },
     bioError: { hasError: false, label: "" },
     jobPositionError: { hasError: false, label: "" },
@@ -43,8 +43,40 @@ export default function CreateUserModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "address":
+      case "email":
+      case "password":
+      case "phone":
+      case "language":
+      case "role":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -53,6 +85,16 @@ export default function CreateUserModal({ success }) {
     }));
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+  
   const handleCreate = async () => {
     console.log(formData);
     try {
@@ -66,13 +108,30 @@ export default function CreateUserModal({ success }) {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo người dùng"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
@@ -179,7 +238,6 @@ export default function CreateUserModal({ success }) {
       <Grid item xs={12} lg={6}>
         <DateForm
           title="Ngày sinh"
-          required
           subtitle="Nhập ngày sinh"
           value={formData.dateOfBirth}
           error={formData.dateOfBirthError.hasError}

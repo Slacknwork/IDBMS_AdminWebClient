@@ -53,6 +53,32 @@ export default function CreateReportModal({ children }) {
           unitUsed: (task.unitInContract * (value / 100)).toFixed(2),
         }));
         break;
+      case "name":
+      case "unitUsed":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      break;  
       default:
     }
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -89,6 +115,16 @@ export default function CreateReportModal({ children }) {
     }));
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const handleCreate = async () => {
     try {
       const response = await createTaskReport(params.id, formData);
@@ -111,15 +147,29 @@ export default function CreateReportModal({ children }) {
 
   useEffect(() => {
     fetchTask();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo báo cáo"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       <Grid item xs={12} lg={6}>
         <Grid container spacing={4}>
