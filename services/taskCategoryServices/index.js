@@ -10,6 +10,7 @@ const getAllTaskCategories = async ({
   pageNo= "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
         url,
@@ -26,6 +27,7 @@ const getAllTaskCategories = async ({
 
 const getTaskCategoryById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
         url,

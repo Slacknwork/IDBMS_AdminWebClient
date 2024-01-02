@@ -3,6 +3,7 @@ import { fetchData } from "/utils/api";
 const endpoint = "/InteriorItemBookmarks";
 const getAllInteriorItemBookmarks = async () => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
             url,
@@ -19,6 +20,7 @@ const getAllInteriorItemBookmarks = async () => {
 
 const getInteriorItemBookmarksByUserId = async (userId) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}`;
         const response = await fetchData({
             url,
@@ -35,6 +37,7 @@ const getInteriorItemBookmarksByUserId = async (userId) => {
 
 const createInteriorItemBookmark = async (request) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
             url,
@@ -52,6 +55,7 @@ const createInteriorItemBookmark = async (request) => {
 
 const deleteInteriorItemBookmark = async (bookmarkId) => {
     try {
+        const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${bookmarkId}`;
         const response = await fetchData({
             url,

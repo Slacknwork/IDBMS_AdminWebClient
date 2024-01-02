@@ -11,6 +11,7 @@ const getAllInteriorItems = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
       url,
@@ -35,6 +36,7 @@ const getItemsByInteriorItemCategoryId = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/interior-item-category/${categoryId}?itemCategoryId=${itemCategoryId}&status=${status}&codeOrName=${codeOrName}&itemType=${itemType}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
       url,
@@ -135,6 +137,7 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
 
 const getInteriorItemById = async (itemId) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${itemId}`;
     const response = await fetchData({
       url,
