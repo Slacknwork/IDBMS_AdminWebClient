@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -16,8 +18,6 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";
 import { useRouter } from "next/navigation";
-import { GoogleLogin } from 'react-google-login';
-import { gapi } from 'gapi-script';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const dispatch = useDispatch();
@@ -54,28 +54,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       toast.error("Email không hợp lệ!");
     }
   };
-
-  const responseGoogle = (response) => {
-    var token = gapi.auth.getToken().access_token;
-    console.log(token);
-    console.log(response.profileObj.email);
-    toast.success("Đăng nhập thành công!");
-    router.push(`http://localhost:3000`);
-  };
-  const errorResponseGoogle = (response) => {
-    console.log(response);
-    toast.error("Đăng nhập thất bại!");
-  };
-
-  useEffect(() => {
-    function start() {
-      gapi.client.init({
-        clientId: "982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com",
-        scope: ""
-      })
-    };
-    gapi.load("client:auth2", start);
-  });
 
   return (
     <>
@@ -146,16 +124,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           </Button>
         </Box>
 
-        <Box>
-          <GoogleLogin
-            clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
-            buttonText="Login with Google"
-            onSuccess={handleFormSubmit}
-            onFailure={errorResponseGoogle}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={true}
-          />
-        </Box>
       </Stack>
       {subtitle}
     </>

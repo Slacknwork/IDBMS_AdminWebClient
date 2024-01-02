@@ -11,6 +11,7 @@ import {
 
 import Profile from "./Profile";
 import { IconBellRinging, IconMenu } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 
 export default function Header({ toggleMobileSidebar }) {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
@@ -26,6 +27,9 @@ export default function Header({ toggleMobileSidebar }) {
     width: "100%",
     color: theme.palette.text.secondary,
   }));
+
+  const user = useSelector((state) => state.user);
+  console.log(user)
 
   return (
     <AppBarStyled position="sticky" color="default">
@@ -57,7 +61,8 @@ export default function Header({ toggleMobileSidebar }) {
         </IconButton>
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
-          <Profile />
+          <Profile
+            name={user?.name ?? "Không tìm thấy"} />
         </Stack>
       </ToolbarStyled>
     </AppBarStyled>

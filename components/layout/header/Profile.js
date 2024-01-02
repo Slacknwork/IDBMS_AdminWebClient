@@ -12,21 +12,15 @@ import {
 } from "@mui/material";
 
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
-import { GoogleLogout } from "react-google-login";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { gapi } from "gapi-script";
+import { getAvatarContent, getColorForAvatar } from "../../../utils/avatar";
 
-const Profile = () => {
+const Profile = ({ name }) => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const router = useRouter();
   let isGoogleLoggedIn = false;
 
-  const handleClick2 = (event: any) => {
-    var token = gapi?.auth?.getToken().access_token;
-    if (token != null || token === "") isGoogleLoggedIn = true;
-    setAnchorEl2(event.currentTarget);
-  };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
@@ -34,6 +28,7 @@ const Profile = () => {
     toast.success("Đăng xuất thành công!");
     router.push(`/authentication/engineer-login`);
   };
+  console.log(name)
 
   return (
     <Box>
@@ -50,14 +45,9 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
-          src="/images/profile/user-1.jpg"
-          alt="image"
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <Avatar sx={{ bgcolor: getColorForAvatar(name), my: "auto" }}>
+          {getAvatarContent(name)}
+        </Avatar>
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}
@@ -96,26 +86,21 @@ const Profile = () => {
         </MenuItem>
 
         {isGoogleLoggedIn ? (
-        <Box mt={1} py={1} px={2}>
-          <Button
-            href="/authentication/login"
-            variant="outlined"
-            color="primary"
-            component={Link}
-            fullWidth
-          >
-            Logout
-          </Button>
-        </Box>
-      ) : (
-        <Box>
-          <GoogleLogout
-            clientId="982175343540-ocj3fml5872ctrnittr7ljfupcu2crb8.apps.googleusercontent.com"
-            buttonText="Logout"
-            onLogoutSuccess={responseGoogle}
-          />
-        </Box>
-      )}
+          <Box mt={1} py={1} px={2}>
+            <Button
+              href="/authentication/login"
+              variant="outlined"
+              color="primary"
+              component={Link}
+              fullWidth
+            >
+              Logout
+            </Button>
+          </Box>
+        ) : (
+          <Box>
+          </Box>
+        )}
       </Menu>
     </Box>
   );
