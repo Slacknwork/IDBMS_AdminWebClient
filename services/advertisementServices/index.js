@@ -11,6 +11,8 @@ const getAdvertisementProjects = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
+
     const url = `${endpoint}?name=${search}&status=${status}&type=${type}&pageNo=${page}&pageSize=${pageSize}`;
 
     const response = await fetchData({
@@ -28,6 +30,7 @@ const getAdvertisementProjects = async ({
 
 const getAdvertisementProjectById = async (projectId = "") => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}`;
     const response = await fetchData({
       url,
@@ -51,6 +54,7 @@ const getAdvertisementProjectDocuments = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}/documents?documentName=${search}&isPublicAdvertisement=${status}&category=${category}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
       url,

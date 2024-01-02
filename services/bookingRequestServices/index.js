@@ -9,6 +9,7 @@ const getBookingRequests = async ({
   pageSize = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?type=${type}&status=${status}&contactName=${search}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
         url,
@@ -25,6 +26,7 @@ const getBookingRequests = async ({
 
 const createBookingRequest = async (request) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
         url,
@@ -42,6 +44,7 @@ const createBookingRequest = async (request) => {
 
 const updateBookingRequest = async (id, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
         url,
@@ -59,6 +62,7 @@ const updateBookingRequest = async (id, request) => {
 
 const updateBookingRequestStatus = async (id, status, request) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/process?status=${status}`;
     const response = await fetchData({
         url,

@@ -11,6 +11,7 @@ const getAllRoomTypes = async ({
   pageNo = "",
 } = {}) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const paramString = `isHidden=${isHidden}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const url = `${endpoint}?${paramString}`;
     const response = await fetchData({
@@ -28,6 +29,7 @@ const getAllRoomTypes = async ({
 
 const getRoomTypeById = async (id) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
       url,
