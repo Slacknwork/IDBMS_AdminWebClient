@@ -37,6 +37,9 @@ import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import Search from "/components/shared/Search";
+import CreateAdvertisementProjectModal from "/components/shared/Modals/AdvertisementProjects/CreateModal"
+import FilterCategory from "/components/shared/FilterAutocomplete";
+import { getProjectCategories } from "/services/projectCategoryServices";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -77,6 +80,8 @@ export default function AdvertisementPage() {
   const advertisementStatusAllValue = -1;
   const advertisementStatusAllLabel = "Tất cả";
 
+  const categoryQuery = "category";
+
   // INIT
   const params = useParams();
   const searchParams = useSearchParams();
@@ -92,13 +97,15 @@ export default function AdvertisementPage() {
       const search = searchParams.get(searchQuery) ?? "";
       const status = searchParams.get(advertisementStatusQuery) ?? "";
       const type = searchParams.get(projectTypeQuery) ?? "";
+      const categoryId = searchParams.get(categoryQuery) ?? "";
       const page = searchParams.get(pageQuery) ?? defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
       try {
         const data = await getAdvertisementProjects({
           search,
-          type,
           status,
+          type,
+          categoryId,
           page,
           pageSize,
         });
@@ -111,8 +118,33 @@ export default function AdvertisementPage() {
       }
     };
     fetchDataFromApi();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [searchParams]);
+
+  const [projectCategories, setProjectCategories] = useState([]);
+
+  // FETCH OPTIONS
+  const fetchOptionsFromApi = async () => {
+    const fetchProjectCategories = async () => {
+      try {
+        const response = await getProjectCategories();
+        setProjectCategories(response?.list || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Phân loại dự án' từ hệ thống");
+      }
+    };
+    await Promise.all([fetchProjectCategories()]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchOptionsFromApi();
+  }, []);
+
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  };
 
   return (
     <PageContainer title="Quảng cáo" description="Danh sách dự án quảng cáo">
@@ -123,6 +155,15 @@ export default function AdvertisementPage() {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ display: "flex" }}>
                 <Search placeholder="Tìm tên dự án"></Search>
+
+                <FilterCategory
+                  query={categoryQuery}
+                  options={projectCategories}
+                  label="Phân loại"
+                  allValue={-1}
+                  allLabel="Tất cả"
+                ></FilterCategory>
+
                 <FilterStatus
                   query={projectTypeQuery}
                   options={projectTypeOptions}
@@ -130,6 +171,7 @@ export default function AdvertisementPage() {
                   allValue={projectTypeAllValue}
                   allLabel={projectTypeAllLabel}
                 ></FilterStatus>
+
                 <FilterStatus
                   query={advertisementStatusQuery}
                   options={advertisementStatusOptions}
@@ -137,6 +179,10 @@ export default function AdvertisementPage() {
                   allValue={advertisementStatusAllValue}
                   allLabel={advertisementStatusAllLabel}
                 ></FilterStatus>
+
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <CreateAdvertisementProjectModal success={handleModalResult}>Tạo</CreateAdvertisementProjectModal>
               </Box>
             </Box>
             {loading ? (
@@ -147,17 +193,22 @@ export default function AdvertisementPage() {
               <Table aria-label="simple table" sx={{ mt: 1 }}>
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell width={"40%"}>
+                    <StyledTableCell width={"30%"}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Tên
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell width={"15%"}>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        Loại
+                        Phân loại
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell width={"15%"}>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Loại dự án
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell width={"12%"}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Ngôn ngữ
                       </Typography>
@@ -179,6 +230,11 @@ export default function AdvertisementPage() {
                       <TableCell>
                         <Typography variant="subtitle2" fontWeight={400}>
                           {project.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2" fontWeight={400}>
+                          {project.projectCategory.name}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -205,7 +261,7 @@ export default function AdvertisementPage() {
                         <Chip
                           label={
                             advertisementStatusOptions[
-                              project.advertisementStatus
+                            project.advertisementStatus
                             ]
                           }
                           fontWeight={400}
