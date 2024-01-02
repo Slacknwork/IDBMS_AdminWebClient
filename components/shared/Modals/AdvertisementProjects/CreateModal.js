@@ -48,6 +48,8 @@ export default function CreateProjectModal({ children }) {
     projectCategoryIdError: { hasError: false, label: "" },
     finalPrice: 0,
     finalPriceError: { hasError: false, label: "" },
+    estimatedPrice: 0,
+    estimatedPriceError: { hasError: false, label: "" },
     area: 0,
     areaError: { hasError: false, label: "" },
     estimateBusinessDay: 0,
@@ -223,6 +225,24 @@ export default function CreateProjectModal({ children }) {
         ></SelectForm>
       </Grid>
 
+      {/* ESTIMATE PRICE */}
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Giá ước tính"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
+          required
+          subtitle="Nhập giá ước tính của dự án"
+          value={formData.estimatedPrice}
+          error={formData.estimatedPriceError.hasError}
+          errorLabel={formData.estimatedPriceError.label}
+          onChange={(value) => handleInputChange("estimatedPrice", value)}
+          endAdornment={<>₫</>}
+        ></NumberForm>
+      </Grid>
+
+      {/* FINAL PRICE */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Giá cuối cùng"
@@ -230,7 +250,7 @@ export default function CreateProjectModal({ children }) {
           fieldSpan={6}
           spacing={5}
           required
-          subtitle="Nhập giá cuối cùng của sản phẩm"
+          subtitle="Nhập giá cuối cùng của dự án"
           value={formData.finalPrice}
           error={formData.finalPriceError.hasError}
           errorLabel={formData.finalPriceError.label}
@@ -239,6 +259,7 @@ export default function CreateProjectModal({ children }) {
         ></NumberForm>
       </Grid>
 
+      {/* AREA */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Diện tích"
@@ -255,6 +276,7 @@ export default function CreateProjectModal({ children }) {
         ></NumberForm>
       </Grid>
 
+      {/* ESTIMATE BUSINESS DAY */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Ngày làm việc ước tính"

@@ -18,6 +18,8 @@ const style = {
 
 export default function MessageModal({
   color = "primary",
+  chipColor = "primary",
+  backgroundColor = "",
   sx,
   chip,
   disabled = false,
@@ -57,9 +59,10 @@ export default function MessageModal({
             disabled={disabled}
             variant={buttonVariant ?? "contained"}
             label={buttonLabel}
-            color={color}
+            color={chipColor}
             onClick={handleOpen}
             icon={buttonEndIcon}
+            sx={{ backgroundColor: backgroundColor }}
           ></Chip>
         </Tooltip>
       ) : (

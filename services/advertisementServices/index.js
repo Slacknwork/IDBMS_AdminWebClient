@@ -92,7 +92,7 @@ const updateAdvertisementProjectDescription = async (id, request) => {
       url,
       method: "PUT",
       token,
-      body: JSON.stringify(request),
+      body: formData,
     });
     return response.data;
   } catch (error) {
@@ -101,7 +101,7 @@ const updateAdvertisementProjectDescription = async (id, request) => {
   }
 };
 
-const updateAdvertisementProjectStatus = async (id, status = "") => {
+const updateAdvertisementProjectStatus = async (id, status) => {
   const token = store.getState().user?.token ?? "";
   try {
     const url = `${endpoint}/${id}/advertisementStatus?status=${status}`;
@@ -110,7 +110,7 @@ const updateAdvertisementProjectStatus = async (id, status = "") => {
       method: "PUT",
       contentType: "application/json",
       token,
-      body: JSON.stringify(request),
+      body: null,
     });
     return response.data;
   } catch (error) {

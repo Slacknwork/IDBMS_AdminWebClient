@@ -22,6 +22,8 @@ export default function AdvertisementDetailsPage() {
   const [formData, setFormData] = useState({
     advertisementDescription: "",
     advertisementDescriptionError: { hasError: false, label: "" },
+    englishAdvertisementDescription: "",
+    englishAdvertisementDescriptionError: { hasError: false, label: "" },
     file: null,
     fileError: { hasError: false, label: "" },
     representImageUrl: "",
@@ -85,12 +87,7 @@ export default function AdvertisementDetailsPage() {
 
   const onSaveAdvertisementProject = async () => {
     try {
-      await updateAdvertisementProjectDescription(params.id, {
-        description: formData.advertisementDescription,
-        representImage: formData.file,
-      });
-      setPageName(formData.name);
-      setPageDescription(formData.description);
+      await updateAdvertisementProjectDescription(params.id, formData);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
@@ -127,10 +124,10 @@ export default function AdvertisementDetailsPage() {
             {/* ADVERTISEMENT DESCRIPTION */}
             <Grid item xs={12} lg={12}>
               <RichTextForm
-                title="Mô tả"
+                title="Mô tả tiếng Việt"
                 titleSpan={2}
                 fieldSpan={10}
-                subtitle="Mô tả dự án"
+                subtitle="Mô tả dự án viết bằng tiếng Việt"
                 value={formData.advertisementDescription}
                 error={formData.advertisementDescriptionError.hasError}
                 errorLabel={formData.advertisementDescriptionError.label}
@@ -139,6 +136,24 @@ export default function AdvertisementDetailsPage() {
                 }
               ></RichTextForm>
             </Grid>
+
+
+            {/* ENGLISH ADVERTISEMENT DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <RichTextForm
+                title="Mô tả bằng tiếng Anh"
+                titleSpan={2}
+                fieldSpan={10}
+                subtitle="Mô tả dự án viết bằng tiếng Anh"
+                value={formData.englishAdvertisementDescription}
+                error={formData.englishAdvertisementDescriptionError.hasError}
+                errorLabel={formData.englishAdvertisementDescriptionError.label}
+                onChange={(e) =>
+                  handleInputChange("englishAdvertisementDescription", e)
+                }
+              ></RichTextForm>
+            </Grid>
+
           </Grid>
         </Grid>
         <Grid item xs={12} lg={4}>
