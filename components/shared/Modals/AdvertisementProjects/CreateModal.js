@@ -20,6 +20,9 @@ import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
 import { CreateAdvertisementProject } from "/services/advertisementServices"
 import NumberForm from "/components/shared/Forms/Number";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 const style = {
   position: "absolute",
@@ -63,21 +66,20 @@ export default function CreateProjectModal({ children }) {
       case "name":
       case "projectCategoryId":
       case "type":
-      case "status":
+      case "area":
       case "language":
-      case "advertisementStatus":
-        if (
-          value === null ||
-          value === undefined ||
-          (typeof value === "string" && value.trim() === "") ||
-          (typeof value === "number" && value < 0)
-        ) {
+      case "finalPrice":
+      case "estimatedPrice":
+      case "estimateBusinessDay":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

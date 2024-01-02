@@ -24,6 +24,7 @@ import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
 import { getProjectCategories } from "/services/projectCategoryServices";
 import { getProjectOwnerByProjectId } from "/services/projectParticipationServices";
+import checkValidField from "/components/validations/field"
 
 export default function AdvertisementDetailsPage() {
   const params = useParams();
@@ -50,23 +51,40 @@ export default function AdvertisementDetailsPage() {
     createdByAdminId: admin?.id || "",
   });
 
-  const validateInput = (field, value) => {
+  const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Không thể để trống" : "";
-      // Add validation for other fields as needed
-      default:
-        return "";
-    }
-  };
+      case "projectCategoryId":
+      case "type":
+      case "area":
+      case "language":
+      case "finalPrice":
+      case "estimatedPrice":
+      case "estimateBusinessDay":
+        const result = checkValidField(value);
 
-  const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   // GET SITE DETAILS
