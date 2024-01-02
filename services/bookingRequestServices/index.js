@@ -1,4 +1,5 @@
 import { fetchData } from "/utils/api";
+import { store } from "/store";
 
 const endpoint = "/BookingRequests";
 const getBookingRequests = async ({
@@ -12,10 +13,10 @@ const getBookingRequests = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?type=${type}&status=${status}&contactName=${search}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-        url,
-        method: "GET",
-        token,
-        body: null,
+      url,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -29,11 +30,11 @@ const createBookingRequest = async (request) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-        url,
-        method: "POST",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url,
+      method: "POST",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -47,11 +48,11 @@ const updateBookingRequest = async (id, request) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -65,11 +66,11 @@ const updateBookingRequestStatus = async (id, status, request) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/process?status=${status}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {

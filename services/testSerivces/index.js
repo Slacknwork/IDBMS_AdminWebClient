@@ -1,7 +1,5 @@
 import { store } from "/store";
 
-const getUserStoreData = () => {
-  console.log(store.getState().user);
-};
+const getUserStoreData = () => {};
 
 export { getUserStoreData };
