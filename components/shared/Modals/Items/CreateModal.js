@@ -27,8 +27,6 @@ export default function CreateItemModal() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    code: "",
-    codeError: { hasError: false, label: "" },
     name: "",
     nameError: { hasError: false, label: "" },
     description: "",
@@ -43,7 +41,7 @@ export default function CreateItemModal() {
     widthError: { hasError: false, label: "" },
     height: 0,
     heightError: { hasError: false, label: "" },
-    calculationUnit: -1,
+    calculationUnit: 0,
     calculationUnitError: { hasError: false, label: "" },
     material: "",
     materialError: { hasError: false, label: "" },
@@ -55,7 +53,7 @@ export default function CreateItemModal() {
     interiorItemColorIdError: { hasError: false, label: "" },
     interiorItemCategoryId: "",
     interiorItemCategoryIdError: { hasError: false, label: "" },
-    status: -1,
+    status: 0,
     statusError: { hasError: false, label: "" },
     parentItemId: "",
     parentItemIdError: { hasError: false, label: "" },
@@ -105,13 +103,40 @@ export default function CreateItemModal() {
   }, []);
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    // Handle error here
     switch (field) {
       case "name":
       case "length":
+      case "width":
+      case "height":
+      case "material":
+      case "estimatePrice":
+      case "status":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "status" && value <= 0)
+          || (typeof value === "number" && field === "status" && value < 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
       default:
-        handleInputError(field, false, "");
     }
   };
 
@@ -120,6 +145,16 @@ export default function CreateItemModal() {
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const onCreateInteriorItem = async () => {
@@ -133,28 +168,32 @@ export default function CreateItemModal() {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onCreateInteriorItem();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
   return (
     <FormModal
       buttonLabel="Tạo đồ dùng"
       title="Tạo đồ dùng"
       submitLabel="Tạo"
-      onSubmit={onCreateInteriorItem}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
-      {/* CODE */}
-      <Grid item xs={12} lg={12}>
-        <TextForm
-          title="Mã"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Mã sản phẩm"
-          value={formData.code}
-          error={formData.codeError.hasError}
-          errorLabel={formData.codeError.label}
-          onChange={(e) => handleInputChange("code", e.target.value)}
-        ></TextForm>
-      </Grid>
 
       {/* NAME */}
       <Grid item xs={12} lg={12}>
@@ -177,7 +216,6 @@ export default function CreateItemModal() {
           title="Hình ảnh"
           titleSpan={3}
           fieldSpan={9}
-          required
           subtitle="Kéo thả / chọn hình ảnh cho sản phẩm"
           value={formData.image}
           error={formData.imageError.hasError}

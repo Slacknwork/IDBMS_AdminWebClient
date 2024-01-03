@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import TextForm from "../../Forms/Text";
 import SelectForm from "../../Forms/Select";
@@ -16,14 +16,51 @@ export default function CreateNotificationModalForCustomers(success) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "category":
+      case "content":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const handleCreate = async () => {
@@ -39,16 +76,34 @@ export default function CreateNotificationModalForCustomers(success) {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       buttonLabel="Gửi thông báo"
       title="Gửi thông báo cho tất cả khách hàng trong hệ thống"
       submitLabel="Gửi"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
+      disableCloseOnSubmit={formHasError}
     >
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>
         <SelectForm
+          required
           title="Loại thông báo"
           subtitle="Chọn loại thông báo"
           value={formData.category}
@@ -63,6 +118,7 @@ export default function CreateNotificationModalForCustomers(success) {
       <Grid item xs={12} lg={12}>
         <TextForm
           fullWidth
+          required
           multiline
           title="Nội dung"
           subtitle="Nhập nội dung thông báo"

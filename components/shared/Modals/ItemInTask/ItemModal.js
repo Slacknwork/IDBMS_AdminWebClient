@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 
@@ -15,8 +15,6 @@ import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 
 const initialState = {
-  code: "",
-  codeError: { hasError: false, label: "" },
   name: "",
   nameError: { hasError: false, label: "" },
   description: "",
@@ -31,7 +29,7 @@ const initialState = {
   widthError: { hasError: false, label: "" },
   height: 0,
   heightError: { hasError: false, label: "" },
-  calculationUnit: -1,
+  calculationUnit: 0,
   calculationUnitError: { hasError: false, label: "" },
   material: "",
   materialError: { hasError: false, label: "" },
@@ -43,7 +41,7 @@ const initialState = {
   interiorItemColorIdError: { hasError: false, label: "" },
   interiorItemCategoryId: "",
   interiorItemCategoryIdError: { hasError: false, label: "" },
-  status: -1,
+  status: 0,
   statusError: { hasError: false, label: "" },
   parentItemId: "",
   parentItemIdError: { hasError: false, label: "" },
@@ -61,13 +59,40 @@ export default function ItemModal({
   const [formData, setFormData] = useState({ ...initialState, ...item });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    // Handle error here
     switch (field) {
       case "name":
       case "length":
+      case "width":
+      case "height":
+      case "material":
+      case "estimatePrice":
+      case "status":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "status" && value <= 0)
+          || (typeof value === "number" && field === "status" && value < 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
       default:
-        handleInputError(field, false, "");
     }
   };
 
@@ -76,6 +101,16 @@ export default function ItemModal({
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const onCreateInteriorItem = () => {
@@ -89,29 +124,32 @@ export default function ItemModal({
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onCreateInteriorItem();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       sx={sx}
       buttonLabel={buttonLabel ?? "Tạo mới"}
       title="Thông tin đồ nội thất"
       submitLabel="Tạo"
-      onSubmit={onCreateInteriorItem}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
-      {/* CODE */}
-      <Grid item xs={12} lg={12}>
-        <TextForm
-          title="Mã"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Mã sản phẩm"
-          value={formData.code}
-          error={formData.codeError.hasError}
-          errorLabel={formData.codeError.label}
-          onChange={(e) => handleInputChange("code", e.target.value)}
-        ></TextForm>
-      </Grid>
 
       {/* NAME */}
       <Grid item xs={12} lg={12}>
