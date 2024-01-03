@@ -29,7 +29,7 @@ import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import checkValidField from "/components/validations/field"
 
-export default function CreateReportModal({ children }) {
+export default function CreateReportModal({ success }) {
   const params = useParams();
   const router = useRouter();
 
@@ -87,7 +87,7 @@ export default function CreateReportModal({ children }) {
             hasError: false,
             label: "",
           },
-        }));  
+        }));
         break;
       default:
     }
@@ -138,6 +138,7 @@ export default function CreateReportModal({ children }) {
     try {
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
+      success(true)
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

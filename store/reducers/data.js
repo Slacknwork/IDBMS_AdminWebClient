@@ -43,7 +43,7 @@ export const fetchProjectData = (id) => {
   return async (dispatch) => {
     try {
       const response = await getProjectById(id);
-      dispatch(setProject({ project: response.data }));
+      dispatch(setProject({ project: response }));
     } catch (error) {
       dispatch(clearProject());
     }
@@ -61,6 +61,7 @@ export const fetchSiteData = (id) => {
   };
 };
 
-export const { setProject, setSite, clearSite } = dataSlice.actions;
+export const { setProject, setSite, clearSite, clearProject } =
+  dataSlice.actions;
 
 export default dataSlice.reducer;

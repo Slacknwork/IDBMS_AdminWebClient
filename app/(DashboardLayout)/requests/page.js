@@ -116,13 +116,9 @@ export default function RequestList() {
     try {
       await updateBookingRequestStatus(request.id, status, note);
       toast.success("Cập nhật thàng công!");
-      if (status === bookingRequestStatusIndex.Accepted) {
-        router.push(
-          `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
-        );
-      } else {
-        fetchDataFromApi();
-      }
+      router.push(
+        `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
+      );
     } catch (error) {
       toast.error("Lỗi cập nhật yêu cầu!");
       console.log(error);
@@ -164,11 +160,6 @@ export default function RequestList() {
                   </StyledTableCell>
                   <StyledTableCell width={"15%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Loại dự án
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell width={"15%"}>
-                    <Typography variant="subtitle2" fontWeight={600}>
                       Địa chỉ
                     </Typography>
                   </StyledTableCell>
@@ -192,12 +183,6 @@ export default function RequestList() {
                         email={request?.contactEmail || "..."}
                         phone={request?.contactPhone || "..."}
                       ></UserCard>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        color={projectTypeChipColors[request.projectType]}
-                        label={projectTypeOptions[request.projectType]}
-                      ></Chip>
                     </TableCell>
                     <TableCell>
                       <Typography variant="p">
