@@ -73,6 +73,27 @@ const getAdvertisementProjectDocuments = async ({
   }
 };
 
+
+const updateAdvertisementProject = async (id, request) => {
+  const token = store.getState().user?.token ?? "";
+  console.log(request)
+
+  try {
+    const url = `${endpoint}/${id}`;
+    const response = await fetchData({
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+};
+
 const updateAdvertisementProjectDescription = async (id, request) => {
   const token = store.getState().user?.token ?? "";
   try {
@@ -121,7 +142,7 @@ const createAdvertisementProject = async (request) => {
   const token = store.getState().user?.token ?? ""
 
   try {
-    const url = `${endpoint}/project`;
+    const url = `${endpoint}`;
     const response = await fetchData({
       url,
       method: "POST",
@@ -197,6 +218,7 @@ export {
   getAdvertisementProjects,
   getAdvertisementProjectById,
   getAdvertisementProjectDocuments,
+  updateAdvertisementProject,
   updateAdvertisementProjectDescription,
   updateAdvertisementProjectStatus,
   createAdvertisementProject,
