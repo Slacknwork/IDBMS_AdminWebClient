@@ -8,6 +8,9 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createSite } from "/services/siteServices";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 export default function CreateSiteModal({ onCreate }) {
   // CONSTANTS
@@ -47,20 +50,61 @@ export default function CreateSiteModal({ onCreate }) {
       case "address":
       case "contactName":
       case "contactLocation":
-      case "contactPhone":
-      case "contactEmail":
-        if (
-          value === null ||
-          value === undefined ||
-          (typeof value === "string" && value.trim() === "") ||
-          (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "contactPhone":
+        const validPhone = checkValidPhone(value);
+
+        if (validPhone.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validPhone.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "contactEmail":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
             },
           }));
         } else {
