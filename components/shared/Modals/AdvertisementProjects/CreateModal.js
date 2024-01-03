@@ -18,7 +18,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import SelectForm from "../../Forms/Select";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
-import { CreateAdvertisementProject } from "/services/advertisementServices"
+import { createAdvertisementProject } from "/services/advertisementServices"
 import NumberForm from "/components/shared/Forms/Number";
 import checkValidField from "/components/validations/field"
 import checkValidEmail from "/components/validations/email"
@@ -149,7 +149,7 @@ export default function CreateProjectModal({ children }) {
   const handleCreate = async () => {
     console.log(formData);
     try {
-      const response = await CreateAdvertisementProject(formData);
+      const response = await createAdvertisementProject(formData);
       console.log(response);
       toast.success("Thêm thành công!");
       router.push(`/advertisement/${response.id}`);

@@ -98,7 +98,7 @@ export default function MessageModal({
                 <Box>
                   {!disableSubmit && (
                     <Button
-                      color={color}
+                      color="error"
                       variant="outlined"
                       disableElevation
                       onClick={handleClose}
@@ -108,7 +108,7 @@ export default function MessageModal({
                     </Button>
                   )}
                   <Button
-                    color={color}
+                    color="primary"
                     variant={disableSubmit ? "outlined" : "contained"}
                     disableElevation
                     onClick={disableSubmit ? handleClose : handleSubmit}

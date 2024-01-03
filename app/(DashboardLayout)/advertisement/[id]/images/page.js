@@ -21,16 +21,19 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import checkValidUrl from "components/validations/url";
 
-import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
+import CreateImagesModal from "/components/shared/Modals/AdvertisementProjects/CreateImagesModal";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
-import { getAdvertisementProjectDocuments } from "/services/advertisementServices";
+import { getAdvertisementProjectDocuments, deleteImageById } from "/services/advertisementServices";
+import { downloadFileByUrl } from "/services/downloadServices";
 import moment from "moment-timezone";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
-import FilterCategory from "/components/shared/FilterStatus";
+import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MessageModal from "/components/shared/Modals/Message";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,13 +53,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const isPublicOptions = ["Tạm ẩn", "Công khai"];
+
 export default function ProjectDocuments() {
-  const searchQuery = "search";
 
-  const statusQuery = "status";
-
-  const categoryQuery = "category";
-  const categoryAllValue = -1;
+  const isPublicQuery = "public";
 
   const pageQuery = "page";
   const defaultPage = 1;
@@ -79,21 +80,23 @@ export default function ProjectDocuments() {
   const fetchDataFromApi = async () => {
     const fetchDocuments = async () => {
       const projectId = params.id;
-      const search = searchParams.get(searchQuery) ?? "";
-      const status = searchParams.get(statusQuery) ?? "";
-      const category = searchParams.get(categoryQuery) ?? "";
+      const isPublic =
+        searchParams.get(isPublicQuery) === "1"
+          ? true
+          : searchParams.get(isPublicQuery) === "0"
+            ? false
+            : "";
       const page = searchParams.get(pageQuery) ?? defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
         const response = await getAdvertisementProjectDocuments({
           projectId,
-          search,
-          status,
-          category,
+          isPublic,
           page,
           pageSize,
         });
+        console.log(response)
         setDocuments(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
       } catch (error) {
@@ -114,24 +117,44 @@ export default function ProjectDocuments() {
     fetchDataFromApi();
   };
 
+  const handleDownload = async (imageUrl) => {
+    try {
+      const response = await downloadFileByUrl({ imageUrl: "https://firebasestorage.googleapis.com/v0/b/idbms-7f5e1.appspot.com/o/images%2F521e6447-119c-4c4f-89e0-4e4328eb0dae.png?alt=media&token=ae5b332c-966c-421e-9b9e-67949c8dacb2", name: "Hình ảnh minh họa" });
+      toast.success("Tải thành công!");
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
+  const handleDelete = async (imageId) => {
+    try {
+      const response = await deleteImageById(imageId);
+      console.log(response);
+      toast.success("Xoá thành công!");
+      fetchDataFromApi();
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi!");
+    }
+  };
+
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Filter and Search */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search placeholder="Tìm theo tên.."></Search>
-
-          <FilterCategory
-            query={categoryQuery}
-            options={projectDocumentCategories}
-            label="Danh mục"
-            allValue={categoryAllValue}
+          <FilterComponent
+            query={isPublicQuery}
+            options={isPublicOptions}
+            label="Trạng thái"
+            allValue={-1}
             allLabel="Tất cả"
-          ></FilterCategory>
+          ></FilterComponent>
         </Box>
-        <DocumentModal success={handleModalResult}>
+        <CreateImagesModal success={handleModalResult}>
           <span>Tạo</span>
-        </DocumentModal>
+        </CreateImagesModal>
       </Box>
       {/* Table */}
       {(documents && documents.length) > 0 ? (
@@ -143,14 +166,9 @@ export default function ProjectDocuments() {
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"15%"}>
+              <StyledTableCell width={"25%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Hình ảnh
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Danh mục
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"15%"}>
@@ -158,7 +176,7 @@ export default function ProjectDocuments() {
                   Ngày tạo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"25%"} align="right"></StyledTableCell>
+              <StyledTableCell width={"30%"} align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -188,12 +206,6 @@ export default function ProjectDocuments() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {projectDocumentCategories[document?.category] ??
-                      "Không xác định"}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
                     {document?.createdDate
                       ? moment(document?.createdDate).format("L")
                       : "Chưa xác định"}
@@ -208,22 +220,28 @@ export default function ProjectDocuments() {
                     }}
                   >
                     <Button
-                      sx={{ mr: 2 }}
                       variant="contained"
-                      disableElevation
-                      component={Link}
-                      href={`/advertisement/${params.id}/documents/${document.id}`}
-                    >
-                      Chi tiết
-                    </Button>
-                    <Button
-                      variant="contained"
+                      sx={{ mr: 5 }}
                       disableElevation
                       color="primary"
                       endIcon={<IconDownload></IconDownload>}
+                      onClick={() => handleDownload(document.url)}
                     >
                       Tải
                     </Button>
+                    <MessageModal
+                      disabled={loading}
+                      color="error"
+                      buttonLabel={"Xóa"}
+                      onSubmit={() => handleDelete(document.id)}
+                      title={"Xóa hình ảnh minh họa"}
+                      submitLabel={"Xác nhận"}
+                      buttonEndIcon={<DeleteIcon></DeleteIcon>}
+                    >
+                      <Typography variant="p">
+                        {"Xác nhận xóa hình ảnh này?"}
+                      </Typography>
+                    </MessageModal>
                   </Box>
                 </TableCell>
               </StyledTableRow>
@@ -240,8 +258,9 @@ export default function ProjectDocuments() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )}
+      )
+      }
       <Pagination count={count}></Pagination>
-    </Box>
+    </Box >
   );
 }
