@@ -52,16 +52,14 @@ const getAdvertisementProjectById = async (projectId = "") => {
 
 const getAdvertisementProjectDocuments = async ({
   projectId = "",
-  search = "",
-  status = "",
-  category = "",
+  isPublic = "",
   page = "",
   pageSize = "",
 } = {}) => {
   const token = store.getState().user?.token ?? "";
 
   try {
-    const url = `${endpoint}/${projectId}/documents?documentName=${search}&isPublicAdvertisement=${status}&category=${category}&pageNo=${page}&pageSize=${pageSize}`;
+    const url = `${endpoint}/${projectId}/documents?isPublicAdvertisement=${isPublic}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
       url,
       method: "GET",
@@ -119,7 +117,7 @@ const updateAdvertisementProjectStatus = async (id, status) => {
   }
 };
 
-const CreateAdvertisementProject = async (request) => {
+const createAdvertisementProject = async (request) => {
   const token = store.getState().user?.token ?? ""
 
   try {
@@ -138,11 +136,70 @@ const CreateAdvertisementProject = async (request) => {
   }
 };
 
+
+const createAdvertisementImages = async (projectId, request) => {
+  const formData = new FormData();
+  const token = store.getState().user?.token ?? "";
+  console.log(request)
+
+  const appendFormData = (data, prefix = "", suffix = "") => {
+    for (const key in data) {
+      const value = data[key];
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+
+      if (Array.isArray(value)) {
+        value.forEach((element, index) => {
+          for (const key in element) {
+            const value = element[key];
+            formData.append(`${fullKey}[${index}].${key}`, value);
+          }
+        });
+      } else {
+        formData.append(fullKey, value ?? "");
+      }
+    }
+  };
+
+  appendFormData(request);
+  try {
+    const url = `${endpoint}/${projectId}/images`;
+    const response = await fetchData({
+      url,
+      method: "POST",
+      token,
+      body: formData,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating ads image:", error);
+    throw error;
+  }
+};
+
+const deleteImageById = async (id) => {
+  try {
+    const token = store.getState().user?.token ?? ""
+    const url = `${endpoint}/image/${id}`;
+    const response = await fetchData({
+      url,
+      method: "DELETE",
+      token,
+      body: null,
+    });
+    return response.message;
+  } catch (error) {
+    console.error("Error fetching delete ads image:", error);
+    throw error;
+  }
+};
+
 export {
   getAdvertisementProjects,
   getAdvertisementProjectById,
   getAdvertisementProjectDocuments,
   updateAdvertisementProjectDescription,
   updateAdvertisementProjectStatus,
-  CreateAdvertisementProject,
+  createAdvertisementProject,
+  createAdvertisementImages,
+  deleteImageById,
 };

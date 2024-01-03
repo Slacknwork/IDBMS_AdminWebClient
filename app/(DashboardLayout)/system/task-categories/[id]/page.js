@@ -38,6 +38,7 @@ export default function TaskCategoryDetails() {
     projectType: -1,
     projectTypeError: { hasError: false, label: "" },
     iconImage: null,
+    iconImageUrl: null,
     iconImageError: { hasError: false, label: "" },
   });
 
@@ -214,6 +215,7 @@ export default function TaskCategoryDetails() {
             required
             subtitle="Chọn biểu tượng minh họa"
             value={formData.iconImage}
+            imgDisplay={formData.iconImageUrl}
             error={formData.iconImageError.hasError}
             errorLabel={formData.iconImageError.label}
             onChange={(file) => handleInputChange("iconImage", file)}

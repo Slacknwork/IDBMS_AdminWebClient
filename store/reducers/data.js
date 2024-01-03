@@ -61,6 +61,6 @@ export const fetchSiteData = (id) => {
   };
 };
 
-export const { setProject, setSite, clearSite } = dataSlice.actions;
+export const { setProject, setSite, clearSite, clearProject } = dataSlice.actions;
 
 export default dataSlice.reducer;

@@ -28,7 +28,7 @@ import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 
-export default function CreateReportModal({ children }) {
+export default function CreateReportModal({ success }) {
   const params = useParams();
   const router = useRouter();
 
@@ -78,7 +78,7 @@ export default function CreateReportModal({ children }) {
             },
           }));
         }
-      break;  
+        break;
       default:
     }
     setFormData((prevData) => ({ ...prevData, [field]: value }));
@@ -129,6 +129,7 @@ export default function CreateReportModal({ children }) {
     try {
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
+      success(true)
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
