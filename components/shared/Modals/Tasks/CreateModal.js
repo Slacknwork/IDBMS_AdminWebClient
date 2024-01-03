@@ -47,9 +47,9 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     descriptionError: { hasError: false, label: "" },
     percentage: 0,
     percentageError: { hasError: false, label: "" },
-    calculationUnit: "",
+    calculationUnit: 0,
     calculationUnitError: { hasError: false, label: "" },
-    pricePerUnit: "",
+    pricePerUnit: 0,
     pricePerUnitError: { hasError: false, label: "" },
     unitInContract: 0,
     unitInContractError: { hasError: false, label: "" },
@@ -58,9 +58,8 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     isIncurred: false,
     startedDate: moment(),
     startedDateError: { hasError: false, label: "" },
-    endDate: moment(),
-    endDateError: { hasError: false, label: "" },
-    noDate: 0,
+    estimateBusinessDay: 0,
+    estimateBusinessDayError: { hasError: false, label: "" },
     parentTaskId: null,
     parentTaskIdError: { hasError: false, label: "" },
     interiorItem: null,
@@ -69,7 +68,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     taskDesignIdError: { hasError: false, label: "" },
     roomId: searchParams.get(roomQuery) ?? null,
     roomIdError: { hasError: false, label: "" },
-    status: -1,
+    status: 0,
     statusError: { hasError: false, label: "" },
     designCategoryId: "",
     taskCategoryId: "",
@@ -89,7 +88,42 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
+    switch (field) {
+      case "name":
+      case "calculationUnit":
+      case "pricePerUnit":
+      case "unitInContract":
+      case "isIncurred":
+      case "status":
+        console.log(field)
+        console.log(value)
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "status" && value <= 0)
+          || (typeof value === "number" && field === "status" && value < 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -136,10 +170,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     }
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
-
   const updateFormFields = (selectedTaskDesign) => {
     if (selectedTaskDesign) {
       setFormData((prevData) => ({
@@ -156,6 +186,33 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       }));
     }
   };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   const handleCreate = async () => {
     try {
@@ -176,8 +233,9 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       submitLabel="Tạo"
       hasOpenEvent
       onOpen={onModalOpen}
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* TASK DESIGN (OPTIONAL) */}
       <Grid item xs={12} lg={12}>
@@ -319,7 +377,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
         <DateForm
           datetime
           title="Ngày bắt đầu"
-          required
           titleSpan={6}
           fieldSpan={6}
           spacing={5}
@@ -331,19 +388,20 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
         ></DateForm>
       </Grid>
 
-      {/* END (OPTIONAL) */}
+      {/* ESTIMATE BUSINESS DAY */}
       <Grid item xs={12} lg={6}>
-        <DateForm
-          datetime
-          title="Ngày kết thúc"
+        <NumberForm
+          title="Ước tính số ngày làm việc"
           titleSpan={6}
           fieldSpan={6}
-          subtitle="Ngày hoàn thành công việc"
-          value={formData.endDate}
-          error={formData.endDateError.hasError}
-          errorLabel={formData.endDateError.label}
-          onChange={(value) => handleInputChange("endDate", value)}
-        ></DateForm>
+          spacing={5}
+          subtitle="Nhập số ngày"
+          value={formData.estimateBusinessDay}
+          error={formData.estimateBusinessDayError.hasError}
+          errorLabel={formData.estimateBusinessDayError.label}
+          onChange={(value) => handleInputChange("estimateBusinessDay", value)}
+          endAdornment={<></>}
+        ></NumberForm>
       </Grid>
 
       {/* PAYMENT STAGE */}

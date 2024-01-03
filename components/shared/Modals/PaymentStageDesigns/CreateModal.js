@@ -34,14 +34,46 @@ export default function CreateProjectCategoryModal({ success }) {
     stageNoError: { hasError: false, label: "" },
     isPrepaid: false,
     isPrepaidError: { hasError: false, label: "" },
+    isWarrantyStage: false,
+    isWarrantyStageError: { hasError: false, label: "" },
     projectDesignId: "",
     projectDesignIdError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
-    console.log(`${field} ${value}`);
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "pricePercentage":
+      case "stageNo":
+      case "isPrepaid":
+      case "isWarrantyStage":
+      case "projectDesignId":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -66,6 +98,16 @@ export default function CreateProjectCategoryModal({ success }) {
     await Promise.all([fetchProjectDesigns()]);
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const handleCreate = async () => {
     console.log(formData);
     try {
@@ -81,14 +123,28 @@ export default function CreateProjectCategoryModal({ success }) {
 
   useEffect(() => {
     fetchDataFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo thiết kế giai đoạn thanh toán"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={12}>
@@ -201,14 +257,27 @@ export default function CreateProjectCategoryModal({ success }) {
       </Grid>
 
       {/* IS PREPAID */}
-      <Grid item xs={12} lg={12}>
+      <Grid item xs={12} lg={6}>
         <CheckboxForm
+          required
           title="Trả trước"
           subtitle="Check vào ô nếu đã trả trước"
           value={formData.isPrepaid}
           onChange={(e) => handleInputChange("isPrepaid", e.target.checked)}
         ></CheckboxForm>
       </Grid>
+
+      {/* IS WARRANTY STAGE */}
+      <Grid item xs={12} lg={6}>
+        <CheckboxForm
+          required
+          title="Bảo hành"
+          subtitle="Check vào ô nếu giai đoạn này có bảo hành"
+          value={formData.isWarrantyStage}
+          onChange={(e) => handleInputChange("isWarrantyStage", e.target.checked)}
+        ></CheckboxForm>
+      </Grid>
+
     </FormModal>
   );
 }

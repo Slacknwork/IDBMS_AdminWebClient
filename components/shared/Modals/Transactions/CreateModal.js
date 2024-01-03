@@ -81,22 +81,46 @@ export default function CreateTransactionModal({ success }) {
     payerNameError: { hasError: false, label: "" },
     userId: "",
     userIdError: { hasError: false, label: "" },
-    warrantyClaimId: "",
-    warrantyClaimIdError: { hasError: false, label: "" },
     ProjectId: params.id,
-    status: "",
+    status: 0,
     statusError: { hasError: false, label: "" },
     transactionReceiptImage: null,
     transactionReceiptImageError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "type":
+      case "amount":
+      case "payerName":
+      case "status":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "status" && value <= 0)
+          || (typeof value === "number" && field === "status" && value < 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -131,6 +155,16 @@ export default function CreateTransactionModal({ success }) {
       ...prevData,
       [fieldName]: !formData[fieldName],
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const handleCreate = async () => {
@@ -178,19 +212,34 @@ export default function CreateTransactionModal({ success }) {
 
   useEffect(() => {
     fetchOptionsFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo tài liệu"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* TYPE */}
       <Grid item xs={12} lg={6}>
         <SelectForm
+          required
           title="Kiểu thanh toán"
           subtitle="Chọn kiểu thanh toán"
           value={formData.type}
@@ -241,7 +290,7 @@ export default function CreateTransactionModal({ success }) {
         ></TextForm>
       </Grid>
 
-      {/* WARRANTY CLAIM */}
+      {/* WARRANTY CLAIM 
       <Grid item xs={12} lg={6}>
         <AutocompleteForm
           title="Bảo hiểm"
@@ -255,10 +304,13 @@ export default function CreateTransactionModal({ success }) {
           }
         ></AutocompleteForm>
       </Grid>
+      */}
+      
 
       {/* STATUS */}
       <Grid item xs={12} lg={6}>
         <SelectForm
+          required
           title="Trạng thái"
           subtitle="Chọn trạng thái"
           value={formData.status}

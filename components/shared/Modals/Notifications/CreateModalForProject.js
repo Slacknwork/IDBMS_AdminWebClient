@@ -31,8 +31,35 @@ export default function CreateNotificationModalForProject(success) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "category":
+      case "content":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -94,9 +121,32 @@ export default function CreateNotificationModalForProject(success) {
     setLoading(false);
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   useEffect(() => {
     fetchOptionsFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   const notificationOptions = [
     "Tất cả thành viên",
@@ -109,7 +159,8 @@ export default function CreateNotificationModalForProject(success) {
       buttonLabel="Gửi thông báo"
       title="Gửi thông báo cho thành viên dự án"
       submitLabel="Gửi"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
+      disableCloseOnSubmit={formHasError}
     >
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>

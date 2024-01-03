@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
@@ -60,12 +60,36 @@ export default function DocumentModal({ success, projectDocument }) {
   ];
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" }, // Reset error on change
-    }));
-    console.log(value);
+    switch (field) {
+      case "name":
+      case "category":
+      case "IsPublicAdvertisement":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && value < 0)
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   const handleFileInputChange = (file) => {
@@ -85,6 +109,16 @@ export default function DocumentModal({ success, projectDocument }) {
     console.log(value);
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const handleCreate = async () => {
     console.log(formData);
     try {
@@ -98,13 +132,30 @@ export default function DocumentModal({ success, projectDocument }) {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo tài liệu"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={12}>
@@ -124,7 +175,6 @@ export default function DocumentModal({ success, projectDocument }) {
         <FileForm
           fullWidth
           title="Tệp đính kèm"
-          required
           subtitle="Chọn tệp"
           titleSpan={3}
           fieldSpan={9}
@@ -149,6 +199,19 @@ export default function DocumentModal({ success, projectDocument }) {
         ></SelectForm>
       </Grid>
 
+      {/* IS PUBLIC ADVERTISEMENT */}
+      <Grid item xs={12} lg={6}>
+        <CheckForm
+          required
+          title="Công khai"
+          subtitle="Check vào ô nếu muốn công khai"
+          checked={formData.IsPublicAdvertisement}
+          onChange={(e) =>
+            handleCheckboxChange("IsPublicAdvertisement", e.target.checked)
+          }
+        />
+      </Grid>
+
       {/* DESCRIPTION */}
       <Grid item xs={12} lg={12}>
         <TextForm
@@ -163,16 +226,7 @@ export default function DocumentModal({ success, projectDocument }) {
         ></TextForm>
       </Grid>
 
-      {/* IS PUBLIC ADVERTISEMENT */}
-      <Grid item xs={12} lg={6}>
-        <CheckForm
-          title="Công khai"
-          checked={formData.IsPublicAdvertisement}
-          onChange={(e) =>
-            handleCheckboxChange("IsPublicAdvertisement", e.target.checked)
-          }
-        />
-      </Grid>
+      
     </FormModal>
   );
 }

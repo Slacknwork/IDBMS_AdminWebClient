@@ -22,7 +22,7 @@ export default function ReopenStageModal({ stageId, success }) {
   const params = useParams();
 
   const [formData, setFormData] = useState({
-    status: -1,
+    status: 0,
     statusError: { hasError: false, label: "" },
     stageId: stageId,
     penaltyFee: 0,

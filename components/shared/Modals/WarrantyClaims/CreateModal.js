@@ -70,12 +70,37 @@ export default function CreateWarrantyClaimModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "totalPaid":
+      case "isCompanyCover":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "totalPaid" && value < 0)
+          || (typeof value === "number" && field === "totalPaid" && value <= 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -112,6 +137,16 @@ export default function CreateWarrantyClaimModal({ success }) {
     handleInputChange("confirmationDocument", file);
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const handleCreate = async () => {
     console.log(formData);
     try {
@@ -125,13 +160,30 @@ export default function CreateWarrantyClaimModal({ success }) {
     }
   };
 
+  useEffect(() => {
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo phiếu bảo hiểm"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
@@ -187,6 +239,7 @@ export default function CreateWarrantyClaimModal({ success }) {
       {/* IS COMPANY COVER */}
       <Grid item xs={12} lg={6}>
         <CheckForm
+          required
           title="Bảo Hiểm Công Ty"
           checked={formData.isCompanyCover}
           onChange={(e) =>

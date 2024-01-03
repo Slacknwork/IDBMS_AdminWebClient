@@ -24,8 +24,6 @@ export default function CreateTaskDesignModal({ success }) {
   const params = useParams();
 
   const [formData, setFormData] = useState({
-    code: "",
-    codeError: { hasError: false, label: "" },
     name: "",
     nameError: { hasError: false, label: "" },
     englishName: "",
@@ -34,7 +32,7 @@ export default function CreateTaskDesignModal({ success }) {
     descriptionError: { hasError: false, label: "" },
     englishDescription: "",
     englishDescriptionError: { hasError: false, label: "" },
-    calculationUnit: -1,
+    calculationUnit: 0,
     calculationUnitError: { hasError: false, label: "" },
     estimatePricePerUnit: 0,
     estimatePricePerUnitError: { hasError: false, label: "" },
@@ -45,14 +43,53 @@ export default function CreateTaskDesignModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "calculationUnit":
+      case "estimatePricePerUnit":
+        if (
+          value === null || value === undefined
+          || (typeof value === "string" && value.trim() === "")
+          || (typeof value === "number" && field !== "estimatePricePerUnit" && value < 0)
+          || (typeof value === "number" && field === "estimatePricePerUnit" && value <= 0) 
+        ) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: "Không được để trống!",
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
       ...prevData,
       [`${field}Error`]: { hasError, label },
     }));
+  };
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
   };
 
   const handleCreate = async () => {
@@ -100,15 +137,29 @@ export default function CreateTaskDesignModal({ success }) {
 
   useEffect(() => {
     fetchOptionsFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <FormModal
       buttonLabel="Tạo"
       title="Tạo thiết kế công việc"
       submitLabel="Tạo"
-      onSubmit={handleCreate}
+      onSubmit={handleSubmit}
       size="big"
+      disableCloseOnSubmit={formHasError}
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
@@ -215,19 +266,6 @@ export default function CreateTaskDesignModal({ success }) {
           errorLabel={formData.taskCategoryIdError.label}
           onChange={(value) => handleInputChange("taskCategoryId", value)}
         ></AutocompleteForm>
-      </Grid>
-
-      {/* CODE */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Mã"
-          required
-          subtitle="Nhập mã"
-          value={formData.code}
-          error={formData.codeError.hasError}
-          errorLabel={formData.codeError.label}
-          onChange={(e) => handleInputChange("code", e.target.value)}
-        ></TextForm>
       </Grid>
     </FormModal>
   );
