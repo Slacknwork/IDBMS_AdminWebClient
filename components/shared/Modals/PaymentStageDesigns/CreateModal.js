@@ -71,6 +71,18 @@ export default function CreateProjectCategoryModal({ success }) {
           }));
         }
         break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

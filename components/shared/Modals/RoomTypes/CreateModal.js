@@ -67,6 +67,20 @@ export default function CreateRoomTypeModal({ success }) {
           }));
         }
         break;
+      case "englishName":
+      case "image":
+      case "description":
+      case "englishDescription":
+      case "iconImage":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

@@ -109,6 +109,7 @@ export default function CreateItemModal() {
       case "length":
       case "width":
       case "height":
+      case "calculationUnit":
       case "material":
       case "estimatePrice":
       case "status":
@@ -133,6 +134,22 @@ export default function CreateItemModal() {
             },
           }));
         }
+        break;
+      case "englishName":
+      case "description":
+      case "image":
+      case "origin":
+      case "interiorItemColorId":
+      case "interiorItemCategoryId":
+      case "parentItemId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

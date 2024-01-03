@@ -118,6 +118,24 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           }));
         }
         break;
+      case "description":
+      case "startedDate":
+      case "estimateBusinessDay":
+      case "unitUsed":
+      case "isIncurred":
+      case "parentTaskId":  
+      case "taskDesignId":  
+      case "taskCategoryId":  
+      case "designCategoryId":  
+      case "paymentStageId":  
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
       default:
     }
   };

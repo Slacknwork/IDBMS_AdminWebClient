@@ -65,6 +65,7 @@ export default function ItemModal({
       case "length":
       case "width":
       case "height":
+      case "calculationUnit":
       case "material":
       case "estimatePrice":
       case "status":
@@ -76,7 +77,7 @@ export default function ItemModal({
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -89,6 +90,22 @@ export default function ItemModal({
             },
           }));
         }
+        break;
+      case "englishName":
+      case "description":
+      case "image":
+      case "origin":
+      case "interiorItemColorId":
+      case "interiorItemCategoryId":
+      case "parentItemId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

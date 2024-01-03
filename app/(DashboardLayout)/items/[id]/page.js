@@ -25,6 +25,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
+import checkValidField from "/components/validations/field"
 
 export default function ItemDetails() {
   // INIT
@@ -75,13 +76,54 @@ export default function ItemDetails() {
   const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    // Handle error here
     switch (field) {
       case "name":
       case "length":
+      case "width":
+      case "height":
+      case "calculationUnit":
+      case "material":
+      case "estimatePrice":
+      case "status":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "description":
+      case "image":
+      case "origin":
+      case "interiorItemColorId":
+      case "interiorItemCategoryId":
+      case "parentItemId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
-        handleInputError(field, false, "");
     }
   };
   const handleInputError = (field, hasError, label) => {
@@ -142,9 +184,15 @@ export default function ItemDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const onSaveInteriorItem = async () => {
     try {
@@ -167,13 +215,32 @@ export default function ItemDetails() {
     }
   };
 
+
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveInteriorItem();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
   return (
     <PageContainer title={formData.name} description="Chi tiết sản phẩm">
       <DetailsPage
         title="Thông tin đồ nội thất"
         saveMessage="Lưu thông tin đồ nội thất?"
         deleteMessage="Xóa món đồ này?"
-        onSave={onSaveInteriorItem}
+        onSave={handleSubmit}
         hasDelete
         onDelete={onDeleteInteriorItem}
         loading={loading}
@@ -216,7 +283,6 @@ export default function ItemDetails() {
                 title="Hình ảnh"
                 titleSpan={3}
                 fieldSpan={9}
-                required
                 subtitle="Kéo thả / chọn hình ảnh cho sản phẩm"
                 value={formData.image}
                 imgDisplay={formData.imageUrl}
@@ -302,6 +368,7 @@ export default function ItemDetails() {
             <Grid item xs={12} lg={6}>
               <TextForm
                 title="Chất liệu"
+                required
                 titleSpan={6}
                 fieldSpan={6}
                 spacing={5}

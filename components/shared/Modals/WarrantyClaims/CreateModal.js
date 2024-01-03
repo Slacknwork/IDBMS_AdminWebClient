@@ -97,6 +97,20 @@ export default function CreateWarrantyClaimModal({ success }) {
           }));
         }
         break;
+      case "reason":
+      case "solution":
+      case "note":  
+      case "endDate":
+      case "confirmationDocument":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

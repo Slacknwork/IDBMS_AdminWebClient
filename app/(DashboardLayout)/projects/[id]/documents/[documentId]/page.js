@@ -24,6 +24,7 @@ import {
 } from "/services/projectDocumentServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import checkValidField from "/components/validations/field"
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -45,12 +46,46 @@ export default function ProjectDocumentDetails(projectDocument) {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "category":
+      case "IsPublicAdvertisement":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "description":
+      case "file":
+      case "projectDocumentTemplateId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -66,6 +101,16 @@ export default function ProjectDocumentDetails(projectDocument) {
   // INIT CONST
   const [loading, setLoading] = useState(true);
   const [projectDocumentTemplates, setProjectDocumentTemplates] = useState([]);
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // FETCH DATA
   const fetchDataFromApi = async () => {
@@ -95,10 +140,6 @@ export default function ProjectDocumentDetails(projectDocument) {
     ]);
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -141,6 +182,23 @@ export default function ProjectDocumentDetails(projectDocument) {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer
       title={formData.name}
@@ -149,7 +207,7 @@ export default function ProjectDocumentDetails(projectDocument) {
       <DetailsPage
         title="Thông tin thiết kế công việc"
         saveMessage="Lưu thông tin thiết kế công việc?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá thiết kế công việc này?"}
         deleteLabel={"Xoá"}
         hasDelete
@@ -173,7 +231,6 @@ export default function ProjectDocumentDetails(projectDocument) {
           <FileForm
             fullWidth
             title="Tệp đính kèm"
-            required
             subtitle="Chọn tệp"
             titleSpan={3}
             fieldSpan={9}
@@ -231,6 +288,7 @@ export default function ProjectDocumentDetails(projectDocument) {
         <Grid item xs={12} lg={6}>
           <CheckForm
             title="Công khai"
+            required
             checked={formData.IsPublicAdvertisement}
             onChange={(e) =>
               handleCheckboxChange("IsPublicAdvertisement", e.target.checked)

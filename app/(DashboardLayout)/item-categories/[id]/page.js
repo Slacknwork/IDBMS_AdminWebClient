@@ -28,6 +28,8 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import colorTypeOptions from "/constants/enums/colorType";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import checkValidField from "/components/validations/field"
+
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -54,12 +56,48 @@ export default function TaskCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "interiorItemType":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "bannerImage":
+      case "iconImage":
+      case "parentCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -103,9 +141,16 @@ export default function TaskCategoryDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -148,12 +193,29 @@ export default function TaskCategoryDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title={formData.name} description="Chi tiết loại sản phẩm">
       <DetailsPage
         title="Thông tin loại sản phẩm"
         saveMessage="Lưu thông tin loại sản phẩm?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá loại sản phẩm này?"}
         deleteLabel={"Xoá"}
         hasDelete

@@ -78,13 +78,13 @@ const updateRoom = async (id, request) => {
   }
 };
 
-const updateRoomIsHidden = async (id, isHidden, projectId) => {
+const deleteRoom = async (id, projectId) => {
   try {
     const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/${id}/isHidden?isHidden=${isHidden}&projectId=${projectId}`;
+    const url = `${endpoint}/${id}?projectId=${projectId}`;
     const response = await fetchData({
         url,
-        method: "PUT",
+        method: "DELETE",
         token,
         body: null,
     });
@@ -100,5 +100,5 @@ export {
   getRoomById,
   createRoom,
   updateRoom,
-  updateRoomIsHidden,
+  deleteRoom,
 };

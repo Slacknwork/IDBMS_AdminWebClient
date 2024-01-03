@@ -70,6 +70,20 @@ export default function CreateTaskDesignModal({ success }) {
           }));
         }
         break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "interiorItemCategoryId":
+      case "taskCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

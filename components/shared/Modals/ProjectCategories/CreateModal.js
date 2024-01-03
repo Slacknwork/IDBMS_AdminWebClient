@@ -51,6 +51,18 @@ export default function CreateProjectCategoryModal({ success }) {
           }));
         }
         break;
+      case "englishName":
+      case "iconImage":
+      case "isHidden":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

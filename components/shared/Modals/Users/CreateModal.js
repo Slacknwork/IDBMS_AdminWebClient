@@ -120,6 +120,19 @@ export default function CreateUserModal({ success }) {
           }));
         }
         break;
+      case "bio":
+      case "jobPosition":
+      case "companyName":
+      case "dateOfBirth":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

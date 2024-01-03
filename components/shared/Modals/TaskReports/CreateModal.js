@@ -77,10 +77,20 @@ export default function CreateReportModal({ children }) {
             },
           }));
         }
-      break;  
+      break;
+      case "description":
+      case "documentList":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));  
+        break;
       default:
     }
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
   const handleFileInputChange = (files) => {

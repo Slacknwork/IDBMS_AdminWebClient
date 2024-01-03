@@ -57,6 +57,16 @@ export default function CreateNotificationModalForProject(success) {
           }));
         }
         break;
+      case "listUserId":
+      case "selectedNotificationOption":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
       default:
     }
   };

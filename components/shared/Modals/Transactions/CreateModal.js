@@ -117,6 +117,18 @@ export default function CreateTransactionModal({ success }) {
           }));
         }
         break;
+      case "note":
+      case "userId":
+      case "transactionReceiptImage":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

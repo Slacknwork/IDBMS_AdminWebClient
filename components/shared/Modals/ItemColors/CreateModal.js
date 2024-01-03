@@ -76,6 +76,17 @@ export default function CreateItemModal() {
           }));
         }
         break;
+      case "englishName":
+      case "secondaryColor":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

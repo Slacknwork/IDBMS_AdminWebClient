@@ -21,7 +21,7 @@ export default function CreateRoomModal({ onCreate }) {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    floorNo: "",
+    floorNo: 0,
     floorNoError: { hasError: false, label: "" },
     usePurpose: "",
     usePurposeError: { hasError: false, label: "" },
@@ -63,6 +63,18 @@ export default function CreateRoomModal({ onCreate }) {
             },
           }));
         }
+        break;
+      case "floorNo":
+      case "description":
+      case "roomTypeId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 
 import languageOptions from "/constants/enums/language";
+import companyRoleOptions from "/constants/enums/companyRole";
 
 import DashboardCard from "/components/shared/DashboardCard";
 import PageContainer from "/components/container/PageContainer";
@@ -18,6 +19,7 @@ import {
 } from "../../../../services/userServices";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import checkValidField from "/components/validations/field"
 
 export default function ItemDetails() {
   const [formData, setFormData] = useState({
@@ -41,14 +43,100 @@ export default function ItemDetails() {
     phoneError: { hasError: false, label: "" },
     dateOfBirthError: { hasError: false, label: "" },
     languageError: { hasError: false, label: "" },
+    role: 0,
+    roleError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
+    switch (field) {
+      case "name":
+      case "address":
+      case "password":
+      case "language":
+      case "role":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "email":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "phone":
+        const validPhone = checkValidPhone(value);
+
+        if (validPhone.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validPhone.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "bio":
+      case "jobPosition":
+      case "companyName":
+      case "dateOfBirth":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -64,7 +152,15 @@ export default function ItemDetails() {
 
   // INIT CONST
   const [loading, setLoading] = useState(true);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
 
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
   // FETCH DATA
   const fetchDataFromApi = async () => {
     setLoading(true);
@@ -81,10 +177,6 @@ export default function ItemDetails() {
     await Promise.all([fetchUser()]);
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
 
   const onSaveUser = async () => {
     const transformedValue = transformData(formData);
@@ -125,6 +217,25 @@ export default function ItemDetails() {
 
     return result;
   };
+
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveUser();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
   return (
     <PageContainer title={formData.name} description="Chi tiết người dùng">
       <DashboardCard>
@@ -136,7 +247,7 @@ export default function ItemDetails() {
               ? "Phục hồi người dùng này?"
               : "Đình chỉ người dùng này?"
           }
-          onSave={onSaveUser}
+          onSave={handleSubmit}
           deleteLabel={formData?.status === 2 ? "Phục hồi" : "Đình chỉ"}
           hasDelete
           onDelete={onSuspendUser}
@@ -255,7 +366,6 @@ export default function ItemDetails() {
               <Grid item xs={12} lg={6}>
                 <DateForm
                   title="Ngày sinh"
-                  required
                   subtitle="Nhập ngày sinh"
                   value={formData.dateOfBirth}
                   error={formData.dateOfBirthError.hasError}
@@ -279,6 +389,21 @@ export default function ItemDetails() {
                   onChange={(value) => handleInputChange("language", value)}
                 ></SelectForm>
               </Grid>
+
+      {/* COMPANY ROLE */}
+      <Grid item xs={12} lg={6}>
+        <SelectForm
+          title="Vai trò trong công ty"
+          required
+          subtitle="Chọn vai trò"
+          value={formData.role}
+          options={companyRoleOptions}
+          defaultLabel="Chọn một..."
+          error={formData.roleError.hasError}
+          errorLabel={formData.roleError.label}
+          onChange={(value) => handleInputChange("role", value)}
+        ></SelectForm>
+      </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} lg={4}>

@@ -65,6 +65,17 @@ export default function CreateProjectDesignModal({ success }) {
           }));
         }
         break;
+      case "estimateBusinessDay":
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

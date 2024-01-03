@@ -35,7 +35,6 @@ export default function CreateFloorModal({ onCreate }) {
       case "floorNo":
       case "usePurpose":
         const result = checkValidField(value);
-
         if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -55,6 +54,16 @@ export default function CreateFloorModal({ onCreate }) {
             },
           }));
         }
+        break;
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

@@ -90,6 +90,21 @@ export default function CreateItemModal() {
           }));
         }
         break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "bannerImage":
+      case "iconImage":
+      case "parentCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };

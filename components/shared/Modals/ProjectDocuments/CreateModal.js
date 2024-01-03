@@ -9,12 +9,14 @@ import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCate
 
 import { createProjectDocument } from "/services/projectDocumentServices";
 import checkValidField from "/components/validations/field"
+import { getAllProjectDocumentTemplates } from "/services/projectDocumentTemplateServices";
 
 import SelectForm from "../../Forms/Select";
 import FileForm from "../../Forms/File";
 import CheckForm from "../../Forms/Checkbox";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
+import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 const style = {
   position: "absolute",
@@ -45,10 +47,11 @@ export default function DocumentModal({ success, projectDocument }) {
     descriptionError: { hasError: false, label: "" },
     file: null,
     fileError: { hasError: false, label: "" },
-    category: projectDocument?.category || -1,
+    category: projectDocument?.category || 0,
     categoryError: { hasError: false, label: "" },
     projectId: params.id,
-    projectDocumentTemplateId: null,
+    projectDocumentTemplateId: "",
+    projectDocumentTemplateIdError: { hasError: false, label: "" },
     IsPublicAdvertisement: projectDocument?.isPublicAdvertisement || false,
     isPublicAdvertisementError: { hasError: false, label: "" },
     // ... other fields if needed
@@ -87,6 +90,18 @@ export default function DocumentModal({ success, projectDocument }) {
           }));
         }
         break;
+      case "description":
+      case "file":
+      case "projectDocumentTemplateId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };
@@ -108,8 +123,28 @@ export default function DocumentModal({ success, projectDocument }) {
     console.log(value);
   };
 
+  const [loading, setLoading] = useState(true);
+
+  const fetchDataFromApi = async () => {
+    const fetchProjectDocumentTemplates = async () => {
+      try {
+        const response = await getAllProjectDocumentTemplates();
+        console.log(response);
+        setProjectDocumentTemplates(response.list || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      }
+    };
+    await Promise.all([
+      fetchProjectDocumentTemplates(),
+    ]);
+    setLoading(false);
+  };
+
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
+  const [projectDocumentTemplates, setProjectDocumentTemplates] = useState([]);
 
   const handleSubmit = () => {
     for (const field in formData) {
@@ -132,6 +167,7 @@ export default function DocumentModal({ success, projectDocument }) {
   };
 
   useEffect(() => {
+    fetchDataFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -197,6 +233,21 @@ export default function DocumentModal({ success, projectDocument }) {
           onChange={(value) => handleInputChange("category", value)}
         ></SelectForm>
       </Grid>
+
+      {/* PROJECT DOCUMENT TEMPLATE */}
+      <Grid item xs={12} lg={6}>
+          <AutocompleteForm
+            title="Mẫu tài liệu"
+            subtitle="Chọn mẫu tài liệu"
+            value={formData.projectDocumentTemplateId}
+            options={projectDocumentTemplates}
+            error={formData.projectDocumentTemplateIdError.hasError}
+            errorLabel={formData.projectDocumentTemplateIdError.label}
+            onChange={(value) =>
+              handleInputChange("projectDocumentTemplateId", value)
+            }
+          ></AutocompleteForm>
+        </Grid>
 
       {/* IS PUBLIC ADVERTISEMENT */}
       <Grid item xs={12} lg={6}>

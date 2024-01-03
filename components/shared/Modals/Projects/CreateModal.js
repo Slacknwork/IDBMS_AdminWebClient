@@ -98,6 +98,22 @@ export default function CreateProjectModal({ children }) {
           }));
         }
         break;
+      case "description":
+      case "basedOnDecorProjectId":
+      case "estimatedPrice":
+      case "finalPrice":
+      case "totalWarrantyPaid":
+      case "area":
+      case "estimateBusinessDay":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };
