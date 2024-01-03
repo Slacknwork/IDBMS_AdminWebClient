@@ -20,6 +20,9 @@ import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
 import { CreateAdvertisementProject } from "/services/advertisementServices"
 import NumberForm from "/components/shared/Forms/Number";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 const style = {
   position: "absolute",
@@ -48,6 +51,8 @@ export default function CreateProjectModal({ children }) {
     projectCategoryIdError: { hasError: false, label: "" },
     finalPrice: 0,
     finalPriceError: { hasError: false, label: "" },
+    estimatedPrice: 0,
+    estimatedPriceError: { hasError: false, label: "" },
     area: 0,
     areaError: { hasError: false, label: "" },
     estimateBusinessDay: 0,
@@ -61,21 +66,20 @@ export default function CreateProjectModal({ children }) {
       case "name":
       case "projectCategoryId":
       case "type":
-      case "status":
+      case "area":
       case "language":
-      case "advertisementStatus":
-        if (
-          value === null ||
-          value === undefined ||
-          (typeof value === "string" && value.trim() === "") ||
-          (typeof value === "number" && value < 0)
-        ) {
+      case "finalPrice":
+      case "estimatedPrice":
+      case "estimateBusinessDay":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -223,6 +227,24 @@ export default function CreateProjectModal({ children }) {
         ></SelectForm>
       </Grid>
 
+      {/* ESTIMATE PRICE */}
+      <Grid item xs={12} lg={6}>
+        <NumberForm
+          title="Giá ước tính"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
+          required
+          subtitle="Nhập giá ước tính của dự án"
+          value={formData.estimatedPrice}
+          error={formData.estimatedPriceError.hasError}
+          errorLabel={formData.estimatedPriceError.label}
+          onChange={(value) => handleInputChange("estimatedPrice", value)}
+          endAdornment={<>₫</>}
+        ></NumberForm>
+      </Grid>
+
+      {/* FINAL PRICE */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Giá cuối cùng"
@@ -230,7 +252,7 @@ export default function CreateProjectModal({ children }) {
           fieldSpan={6}
           spacing={5}
           required
-          subtitle="Nhập giá cuối cùng của sản phẩm"
+          subtitle="Nhập giá cuối cùng của dự án"
           value={formData.finalPrice}
           error={formData.finalPriceError.hasError}
           errorLabel={formData.finalPriceError.label}
@@ -239,6 +261,7 @@ export default function CreateProjectModal({ children }) {
         ></NumberForm>
       </Grid>
 
+      {/* AREA */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Diện tích"
@@ -255,6 +278,7 @@ export default function CreateProjectModal({ children }) {
         ></NumberForm>
       </Grid>
 
+      {/* ESTIMATE BUSINESS DAY */}
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Ngày làm việc ước tính"

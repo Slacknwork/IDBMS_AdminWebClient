@@ -90,6 +90,24 @@ const getUsersByParticipationInProject = async ({
     }
 };
 
+const getProjectOwnerByProjectId = async (projectId) => {
+    const token = store.getState().user?.token ?? "";
+
+    try {
+        const url = `${endpoint}/project-owner?projectId=${projectId}`;
+        const response = await fetchData({
+            url,
+            method: "GET",
+            token,
+            body: null,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching project owner by project ID:', error);
+        throw error;
+    }
+};
+
 const createProjectParticipation = async (request) => {
     try {
         const token = store.getState().user?.token ?? "";
@@ -170,4 +188,5 @@ export {
     createEmployees,
     updateProjectParticipation,
     deleteProjectParticipation,
+    getProjectOwnerByProjectId,
 };

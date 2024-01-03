@@ -12,75 +12,137 @@ import {
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
-import RichTextForm from "/components/shared/Forms/RichText";
-import FileForm from "/components/shared/Forms/File";
-import UserCard from "/components/shared/UserCard";
+import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import SelectForm from "/components/shared/Forms/Select";
+import TextForm from "/components/shared/Forms/Text";
+import NumberForm from "/components/shared/Forms/Number";
+import { useSelector } from "react-redux";
+
+import projectTypeOptions from "/constants/enums/projectType";
+import projectStatusOptions from "/constants/enums/projectStatus";
+import languageOptions from "/constants/enums/language";
+import advertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { getProjectCategories } from "/services/projectCategoryServices";
+import { getProjectOwnerByProjectId } from "/services/projectParticipationServices";
+import checkValidField from "/components/validations/field"
 
 export default function AdvertisementDetailsPage() {
   const params = useParams();
+  const admin = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
-    advertisementDescription: "",
-    advertisementDescriptionError: { hasError: false, label: "" },
-    file: null,
-    fileError: { hasError: false, label: "" },
-    representImageUrl: "",
+    name: "",
+    nameError: { hasError: false, label: "" },
+    type: 0,
+    typeError: { hasError: false, label: "" },
+    language: 0,
+    languageError: { hasError: false, label: "" },
+    projectCategoryId: null,
+    projectCategoryIdError: { hasError: false, label: "" },
+    estimatedPrice: 0,
+    estimatedPriceError: { hasError: false, label: "" },
+    finalPrice: 0,
+    finalPriceError: { hasError: false, label: "" },
+    area: 0,
+    areaError: { hasError: false, label: "" },
+    estimateBusinessDay: 0,
+    estimateBusinessDayError: { hasError: false, label: "" },
+    createdAdminUsername: admin?.username || "",
+    createdByAdminId: admin?.id || "",
   });
 
-  const validateInput = (field, value) => {
+  const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-        return value.trim() === "" ? "Không thể để trống" : "";
-      // Add validation for other fields as needed
-      default:
-        return "";
-    }
-  };
+      case "projectCategoryId":
+      case "type":
+      case "area":
+      case "language":
+      case "finalPrice":
+      case "estimatedPrice":
+      case "estimateBusinessDay":
+        const result = checkValidField(value);
 
-  const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   // GET SITE DETAILS
-  const [pageName, setPageName] = useState("Tên khu công trình");
-  const [pageDescription, setPageDescription] = useState(
-    "Mô tả khu công trình"
-  );
-
-  // CONTACT
-  const contactLabel = "Thông tin liên hệ chủ dự án";
-  const priceLabel = "Tổng quan";
+  const [pageName, setPageName] = useState("");
 
   const [loading, setLoading] = useState(true);
-  const [projectOwner, setProjectOwner] = useState("");
+  const [editEnable, setEditEnable] = useState(false);
 
   const fetchDataFromApi = async () => {
     setLoading(true);
-    try {
-      const projectResponse = await getAdvertisementProjectById(params.id);
-      const project = projectResponse;
-      setFormData((prevData) => ({ ...prevData, ...project }));
-      setPageName(project.name);
-      setPageDescription(project.description);
-      const participation = project?.projectParticipations.find(
-        (par) => par.role === 0
-      );
-      setProjectOwner(participation?.user ?? "");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
+    const fetchProjectById = async () => {
+      try {
+        const response = await getAdvertisementProjectById(params.id);
+        setFormData((prevData) => ({ ...prevData, ...response }));
+        setPageName(response.name);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
+      }
+    };
+    const fetchProjectOwnerByProjectId = async () => {
+      try {
+        const response = await getProjectOwnerByProjectId(params.id);
+
+        // if project no owner (advertisement create purpose)
+        if (response === null) {
+          setEditEnable(true)
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Chủ dự án' từ hệ thống");
+      }
+    };
+    await Promise.all([fetchProjectById(), fetchProjectOwnerByProjectId()]);
+    setLoading(false);
+  };
+
+  const [projectCategories, setProjectCategories] = useState([]);
+
+  // FETCH OPTIONS
+  const fetchOptionsFromApi = async () => {
+    setLoading(true);
+    const fetchProjectCategories = async () => {
+      try {
+        const response = await getProjectCategories();
+        setProjectCategories(response?.list || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Lỗi nạp dữ liệu 'Phân loại dự án' từ hệ thống");
+      }
+    };
+    await Promise.all([fetchProjectCategories()]);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
+    fetchOptionsFromApi();
   }, []);
 
   const onSaveAdvertisementProject = async () => {
@@ -100,44 +162,148 @@ export default function AdvertisementDetailsPage() {
   };
 
   return (
-    <PageContainer title={pageName} description={pageDescription}>
+    <PageContainer title={pageName} description={"Chi tiết dự án quảng cáo"}>
       <DetailsPage
         loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
         onSave={onSaveAdvertisementProject}
       >
-        <Grid item xs={12} lg={8}>
-          <Grid container columnSpacing={2} rowSpacing={4}>
-            {/* REPRESENT IMAGE */}
-            <Grid item xs={12} lg={12}>
-              <FileForm
-                title="Hình ảnh"
-                titleSpan={2}
-                fieldSpan={10}
-                subtitle="Chọn hình ảnh minh họa"
-                value={formData.file}
-                imgDisplay={formData.representImageUrl}
-                error={formData.fileError.hasError}
-                errorLabel={formData.fileError.label}
-                onChange={(file) => handleInputChange("file", file)}
-              ></FileForm>
+        <Grid item xs={12} lg={12}>
+          <Grid container columnSpacing={8} rowSpacing={3}>
+            {/* NAME */}
+            <Grid item xs={12} lg={6}>
+              <TextForm
+                title="Tên"
+                required
+                subtitle="Nhập tên dự án"
+                value={formData.name}
+                error={formData.nameError.hasError}
+                errorLabel={formData.nameError.label}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                disabled={!editEnable}
+              ></TextForm>
             </Grid>
 
-            {/* ADVERTISEMENT DESCRIPTION */}
-            <Grid item xs={12} lg={12}>
-              <RichTextForm
-                title="Mô tả"
-                titleSpan={2}
-                fieldSpan={10}
-                subtitle="Mô tả dự án"
-                value={formData.advertisementDescription}
-                error={formData.advertisementDescriptionError.hasError}
-                errorLabel={formData.advertisementDescriptionError.label}
-                onChange={(e) =>
-                  handleInputChange("advertisementDescription", e)
-                }
-              ></RichTextForm>
+            {/* PROJECT TYPE */}
+            <Grid item xs={12} lg={6}>
+              <SelectForm
+                title="Kiểu dự án"
+                required
+                subtitle="Chọn kiểu dự án"
+                value={formData.type}
+                options={projectTypeOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn kiểu dự án"
+                error={formData.typeError.hasError}
+                errorLabel={formData.typeError.label}
+                onChange={(value) => handleInputChange("type", value)}
+                disabled={!editEnable}
+              ></SelectForm>
+            </Grid>
+
+            {/* PROJECT CATEGORY */}
+            <Grid item xs={12} lg={6}>
+              <AutocompleteForm
+                required
+                title="Phân loại"
+                subtitle="Chọn phân loại dự án"
+                value={formData.projectCategoryId}
+                options={projectCategories}
+                error={formData.projectCategoryIdError.hasError}
+                errorLabel={formData.projectCategoryIdError.label}
+                onChange={(value) => handleInputChange("projectCategoryId", value)}
+                disabled={!editEnable}
+              ></AutocompleteForm>
+            </Grid>
+
+            {/* LANGUAGE */}
+            <Grid item xs={12} lg={6}>
+              <SelectForm
+                title="Ngôn ngữ"
+                required
+                subtitle="Chọn ngôn ngữ của dự án"
+                value={formData.language}
+                options={languageOptions}
+                defaultValue={-1}
+                defaultLabel="Chọn một..."
+                error={formData.languageError.hasError}
+                errorLabel={formData.languageError.label}
+                onChange={(value) => handleInputChange("language", value)}
+                disabled={!editEnable}
+              ></SelectForm>
+            </Grid>
+
+            {/* ESTIMATE PRICE */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Giá ước tính"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                required
+                subtitle="Nhập giá ước tính của dự án"
+                value={formData.estimatedPrice}
+                error={formData.estimatedPriceError.hasError}
+                errorLabel={formData.estimatedPriceError.label}
+                onChange={(value) => handleInputChange("estimatedPrice", value)}
+                endAdornment={<>₫</>}
+                disabled={!editEnable}
+              ></NumberForm>
+            </Grid>
+
+            {/* FINAL PRICE */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Giá cuối cùng"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                required
+                subtitle="Nhập giá cuối cùng của sản phẩm"
+                value={formData.finalPrice}
+                error={formData.finalPriceError.hasError}
+                errorLabel={formData.finalPriceError.label}
+                onChange={(value) => handleInputChange("finalPrice", value)}
+                endAdornment={<>₫</>}
+                disabled={!editEnable}
+              ></NumberForm>
+            </Grid>
+
+            {/* AREA */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Diện tích"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                required
+                subtitle="Nhập diện tích của sản phẩm"
+                value={formData.area}
+                error={formData.areaError.hasError}
+                errorLabel={formData.areaError.label}
+                onChange={(value) => handleInputChange("area", value)}
+                endAdornment={<>m²</>}
+                disabled={!editEnable}
+              ></NumberForm>
+            </Grid>
+
+            {/* ESTIMATE BUSINESS DAY */}
+            <Grid item xs={12} lg={6}>
+              <NumberForm
+                title="Ngày làm việc ước tính"
+                titleSpan={6}
+                fieldSpan={6}
+                spacing={5}
+                required
+                subtitle="Nhập số ngày làm việc ước tính để hoàn thành"
+                value={formData.estimateBusinessDay}
+                error={formData.estimateBusinessDayError.hasError}
+                errorLabel={formData.estimateBusinessDayError.label}
+                onChange={(value) => handleInputChange("estimateBusinessDay", value)}
+                endAdornment={<>ngày</>}
+                disabled={!editEnable}
+              ></NumberForm>
             </Grid>
           </Grid>
         </Grid>

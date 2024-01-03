@@ -55,8 +55,6 @@ export default function TaskOverviewPage() {
     endDate: null,
     endDateError: { hasError: false, label: "" },
     noDate: 0,
-    parentTaskId: null,
-    parentTaskIdError: { hasError: false, label: "" },
     interiorItem: null,
     taskDesign: null,
     taskDesignId: null,
@@ -328,23 +326,6 @@ export default function TaskOverviewPage() {
                   handleInputChange("roomId", value);
                 }}
               ></AutocompleteGroupForm>
-            </Grid>
-
-            {/* PARENT TASK */}
-            <Grid item xs={12} lg={12}>
-              <AutocompleteForm
-                title="Công việc phụ thuộc"
-                titleSpan={3}
-                fieldSpan={9}
-                subtitle="Chọn công việc phụ thuộc"
-                value={formData.parentTaskId}
-                options={tasks}
-                error={formData.parentTaskIdError.hasError}
-                errorLabel={formData.parentTaskIdError.label}
-                onChange={(value) => {
-                  handleInputChange("parentTaskId", value);
-                }}
-              ></AutocompleteForm>
             </Grid>
 
             {/* DESCRIPTION */}

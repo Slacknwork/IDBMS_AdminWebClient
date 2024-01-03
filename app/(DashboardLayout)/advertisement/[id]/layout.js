@@ -13,7 +13,7 @@ import languageOptions, {
   languageTypeChipImages,
   languageTypeChipColors,
 } from "/constants/enums/language";
-import advertisementStatusOptions from "/constants/enums/advertisementStatus";
+import advertisementStatusOptions, { advertisementStatusBackgroundChipColors } from "/constants/enums/advertisementStatus";
 import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
@@ -90,6 +90,7 @@ export default function ProjectDetailsLayout({ children }) {
               }}
             ></Chip>
             <MessageModal
+              backgroundColor={advertisementStatusBackgroundChipColors[project?.advertisementStatus]}
               chip
               tooltipTitle="Cập nhật trạng thái"
               tooltipPlacement="top"
@@ -103,14 +104,14 @@ export default function ProjectDetailsLayout({ children }) {
               }
               title="Trạng thái quảng cáo"
               buttonLabel={
-                advertisementStatusOptions[project.advertisementStatus]
+                advertisementStatusOptions[project?.advertisementStatus]
               }
               buttonEndIcon={<ChangeCircleIcon />}
               bottomLeftContent={
                 <MessageModal
-                  sx={{ width: 125 }}
+                  sx={{ width: 165 }}
                   color="error"
-                  buttonLabel="Chưa đồng ý"
+                  buttonLabel="Từ chối quảng cáo"
                   onSubmit={() => onUpdateAdvertisementStatus(0)}
                 >
                   a
@@ -121,7 +122,7 @@ export default function ProjectDetailsLayout({ children }) {
                 <Typography variant="h6" fontWeight={400}>
                   {project.advertisementStatus === 1
                     ? "Công khai dự án này?"
-                    : "Không công khai dự án này?"}
+                    : "Hủy công khai dự án này?"}
                 </Typography>
               </Grid>
             </MessageModal>
