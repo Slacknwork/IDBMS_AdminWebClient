@@ -1,4 +1,4 @@
-const checkValidField = (value) => {
+const checkValidField = (value, checkZeroValue = false) => {
     try {
         if (
             value === null ||
@@ -9,7 +9,13 @@ const checkValidField = (value) => {
         }
 
         if (
-            (typeof value === "number" && value < 0)
+            (typeof value === "number" && !checkZeroValue && value < 0)
+        ) {
+            return { isValid: false, label: "Số phải lớn hơn hoặc bằng 0!" };
+        }
+
+        if (
+            (typeof value === "number" && checkZeroValue && value <= 0)
         ) {
             return { isValid: false, label: "Số phải lớn hơn 0!" };
         }
