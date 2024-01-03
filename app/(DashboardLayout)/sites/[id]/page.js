@@ -15,6 +15,9 @@ import UserCard from "/components/shared/UserCard";
 import TextForm from "/components/shared/Forms/Text";
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 export default function SiteDetails() {
   const params = useParams();
@@ -40,22 +43,81 @@ export default function SiteDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    // Handle error here
     switch (field) {
       case "name":
       case "address":
-      // add more cases as needed
-      default:
-        handleInputError(field, false, "");
-    }
-  };
+      case "contactName":
+      case "contactLocation":
+        const result = checkValidField(value);
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "contactPhone":
+        const validPhone = checkValidPhone(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validPhone.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "contactEmail":
+        const validEmail = checkValidEmail(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   // FETCH DATA FROM API
