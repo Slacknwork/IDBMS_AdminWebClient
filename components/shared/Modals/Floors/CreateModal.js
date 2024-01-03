@@ -14,6 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createFloor } from "/services/floorServices";
+import checkValidField from "/components/validations/field"
 
 export default function CreateFloorModal({ onCreate }) {
   const params = useParams();
@@ -33,17 +34,15 @@ export default function CreateFloorModal({ onCreate }) {
     switch (field) {
       case "floorNo":
       case "usePurpose":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

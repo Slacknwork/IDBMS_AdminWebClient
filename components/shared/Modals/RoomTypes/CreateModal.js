@@ -13,6 +13,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 import FileForm from "/components/shared/Forms/File";
 import { createRoomType } from "/services/roomTypeServices";
+import checkValidField from "/components/validations/field"
 
 export default function CreateRoomTypeModal({ success }) {
   const params = useParams();
@@ -44,18 +45,15 @@ export default function CreateRoomTypeModal({ success }) {
       case "pricePerArea":
       case "estimateDayPerArea":
       case "isHidden":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && (field !== "estimateDayPerArea" || field !== "pricePerArea") && value <= 0)
-          || (typeof value === "number" && (field === "estimateDayPerArea" || field === "pricePerArea") && value < 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

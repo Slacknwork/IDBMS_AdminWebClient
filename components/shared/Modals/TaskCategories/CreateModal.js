@@ -14,6 +14,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import FileForm from "/components/shared/Forms/File";
 import { createTaskCategory } from "../../../../services/taskCategoryServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
+import checkValidField from "/components/validations/field"
 
 export default function CreateTaskCategoryModal({ success }) {
   const params = useParams();
@@ -37,17 +38,15 @@ export default function CreateTaskCategoryModal({ success }) {
     switch (field) {
       case "name":
       case "projectType":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

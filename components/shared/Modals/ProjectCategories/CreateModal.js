@@ -10,6 +10,7 @@ import TextForm from "/components/shared/Forms/Text";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import FileForm from "/components/shared/Forms/File";
 import { createProjectCategory } from "/services/projectCategoryServices";
+import checkValidField from "/components/validations/field"
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
@@ -28,17 +29,15 @@ export default function CreateProjectCategoryModal({ success }) {
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

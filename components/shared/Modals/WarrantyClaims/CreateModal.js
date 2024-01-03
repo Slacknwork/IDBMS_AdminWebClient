@@ -27,6 +27,7 @@ import FormModal from "../../Modals/Form";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
+import checkValidField from "/components/validations/field"
 
 const style = {
   position: "absolute",
@@ -74,18 +75,15 @@ export default function CreateWarrantyClaimModal({ success }) {
       case "name":
       case "totalPaid":
       case "isCompanyCover":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "totalPaid" && value < 0)
-          || (typeof value === "number" && field === "totalPaid" && value <= 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

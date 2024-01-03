@@ -13,6 +13,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
+import checkValidField from "/components/validations/field"
 
 const initialState = {
   name: "",
@@ -67,12 +68,9 @@ export default function ItemModal({
       case "material":
       case "estimatePrice":
       case "status":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "status" && value <= 0)
-          || (typeof value === "number" && field === "status" && value < 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,

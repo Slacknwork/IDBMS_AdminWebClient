@@ -13,6 +13,9 @@ import { createUser } from "/services/userServices";
 
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "/constants/enums/companyRole";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 export default function CreateUserModal({ success }) {
   const params = useParams();
@@ -46,22 +49,64 @@ export default function CreateUserModal({ success }) {
     switch (field) {
       case "name":
       case "address":
-      case "email":
       case "password":
-      case "phone":
       case "language":
       case "role":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "email":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "phone":
+        const validPhone = checkValidPhone(value);
+
+        if (validPhone.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validPhone.label,
             },
           }));
         } else {

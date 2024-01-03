@@ -16,6 +16,7 @@ import { createNotificationForProject } from "/services/notificationServices";
 import { getUsersByParticipationInProject } from "/services/projectParticipationServices";
 import { useParams } from "next/navigation";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
+import checkValidField from "/components/validations/field"
 
 export default function CreateNotificationModalForProject(success) {
   const params = useParams();
@@ -34,11 +35,9 @@ export default function CreateNotificationModalForProject(success) {
     switch (field) {
       case "category":
       case "content":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,

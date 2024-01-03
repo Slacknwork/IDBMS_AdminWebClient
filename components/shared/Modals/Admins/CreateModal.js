@@ -8,6 +8,8 @@ import { useParams } from "next/navigation";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createAdmin } from "/services/adminServices";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
 
 export default function CreateAdminModal({ success }) {
   const params = useParams();
@@ -28,19 +30,40 @@ export default function CreateAdminModal({ success }) {
     switch (field) {
       case "name":
       case "username":
-      case "email":
       case "password":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false)
+        {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
+            },
+        }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "email":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
             },
           }));
         } else {

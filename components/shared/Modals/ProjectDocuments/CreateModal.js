@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
 
 import { createProjectDocument } from "/services/projectDocumentServices";
+import checkValidField from "/components/validations/field"
 
 import SelectForm from "../../Forms/Select";
 import FileForm from "../../Forms/File";
@@ -64,17 +65,15 @@ export default function DocumentModal({ success, projectDocument }) {
       case "name":
       case "category":
       case "IsPublicAdvertisement":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
