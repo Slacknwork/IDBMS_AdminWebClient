@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -33,7 +33,9 @@ import checkValidUrl from "/components/validations/url"
 export default function CreateReportModal({ success }) {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [task, setTask] = useState({});
   const [formData, setFormData] = useState({
     name: "",
@@ -144,7 +146,9 @@ export default function CreateReportModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -157,6 +161,7 @@ export default function CreateReportModal({ success }) {
 
   const handleCreate = async () => {
     try {
+      if (!switchSubmit) return;
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
       success(true)
@@ -189,18 +194,21 @@ export default function CreateReportModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo báo cáo"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       <Grid item xs={12} lg={6}>
         <Grid container spacing={4}>

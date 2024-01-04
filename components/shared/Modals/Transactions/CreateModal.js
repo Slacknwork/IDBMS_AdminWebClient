@@ -29,7 +29,7 @@ import FileForm from "../../Forms/File";
 import TextForm from "../../Forms/Text";
 import NumberForm from "../../Forms/Number";
 import FormModal from "../../Modals/Form";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import checkValidField from "/components/validations/field"
 import checkValidUrl from "/components/validations/url"
@@ -53,7 +53,9 @@ export default function CreateTransactionModal({ success }) {
   const handleClose = () => {
     setOpen(false);
   };
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const userList = [
     { id: 1, name: "John Doe" },
     { id: 2, name: "Jane Doe" },
@@ -153,7 +155,9 @@ export default function CreateTransactionModal({ success }) {
       default:
     }
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -165,7 +169,7 @@ export default function CreateTransactionModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createTransaction(formData);
       toast.success("Thêm thành công!");
@@ -220,18 +224,21 @@ export default function CreateTransactionModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo tài liệu"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* TYPE */}
       <Grid item xs={12} lg={6}>

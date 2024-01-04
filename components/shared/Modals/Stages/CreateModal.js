@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { createPaymentStage } from "/services/paymentStageServices";
 
@@ -19,7 +19,9 @@ import checkValidField from "/components/validations/field"
 
 export default function CreateStageModal({ success }) {
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -82,7 +84,9 @@ export default function CreateStageModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -95,6 +99,7 @@ export default function CreateStageModal({ success }) {
 
   const handleCreate = async () => {
     try {
+      if (!switchSubmit) return;
       const response = await createPaymentStage(formData);
       toast.success("Thêm thành công!");
       success(true);
@@ -116,18 +121,21 @@ export default function CreateStageModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo giai đoạn"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import languageOptions from "/constants/enums/language";
 
 import { getAllRoomTypes } from "/services/roomTypeServices";
@@ -19,7 +19,9 @@ import checkValidField from "/components/validations/field"
 export default function CreateRoomModal({ onCreate }) {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     floorNo: 0,
     floorNoError: { hasError: false, label: "" },
@@ -85,7 +87,9 @@ export default function CreateRoomModal({ onCreate }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -97,7 +101,7 @@ export default function CreateRoomModal({ onCreate }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createRoom(formData);
       console.log(response);
@@ -141,18 +145,21 @@ export default function CreateRoomModal({ onCreate }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo loại phòng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* USE PURPOSE */}
       <Grid item xs={12} lg={12}>
