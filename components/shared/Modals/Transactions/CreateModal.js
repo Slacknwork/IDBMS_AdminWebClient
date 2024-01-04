@@ -27,7 +27,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import SelectForm from "../../Forms/Select";
 import FileForm from "../../Forms/File";
 import TextForm from "../../Forms/Text";
-import NumberForm from "../../Forms/Text";
+import NumberForm from "../../Forms/Number";
 import FormModal from "../../Modals/Form";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -133,40 +133,6 @@ export default function CreateTransactionModal({ success }) {
     }
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
-  const handleNumberChange = (field, value) => {
-    const val = parseFloat(value);
-    if (!isNaN(val)) handleInputChange(field, val);
-    else handleInputChange(field, "");
-  };
-
-  const handleAutocompleteChange = (field, selectedOption) => {
-    handleInputChange(field, selectedOption);
-    if (field === "user") {
-      users.forEach((user) => {
-        if (user.id === selectedOption) selectedOption = user.name;
-      });
-      handleInputChange("payerName", selectedOption);
-    }
-  };
-
-  const handleFileInputChange = (file) => {
-    handleInputChange("transactionReceiptImage", file);
-  };
-
-  const handleCheckboxChange = (fieldName, checked) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [fieldName]: !formData[fieldName],
-    }));
-  };
-
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -269,7 +235,7 @@ export default function CreateTransactionModal({ success }) {
           value={formData.amount}
           error={formData.amountError.hasError}
           errorLabel={formData.amountError.label}
-          onChange={(e) => handleNumberChange("amount", e.target.value)}
+          onChange={(value) => handleInputChange("amount", value)}
           endAdornment={<>VND</>}
         ></NumberForm>
       </Grid>
@@ -283,7 +249,7 @@ export default function CreateTransactionModal({ success }) {
           options={users}
           error={formData.userIdError.hasError}
           errorLabel={formData.userIdError.label}
-          onChange={(value) => handleAutocompleteChange("user", value)}
+          onChange={(value) => handleInputChange("user", value)}
         ></AutocompleteForm>
       </Grid>
 
@@ -299,23 +265,6 @@ export default function CreateTransactionModal({ success }) {
           onChange={(e) => handleInputChange("payerName", e.target.value)}
         ></TextForm>
       </Grid>
-
-      {/* WARRANTY CLAIM 
-      <Grid item xs={12} lg={6}>
-        <AutocompleteForm
-          title="Bảo hiểm"
-          subtitle="Chọn bảo hiểm"
-          value={formData.warrantyClaimId}
-          options={warrantyClaims}
-          error={formData.warrantyClaimIdError.hasError}
-          errorLabel={formData.warrantyClaimIdError.label}
-          onChange={(value) =>
-            handleAutocompleteChange("warrantyClaimId", value)
-          }
-        ></AutocompleteForm>
-      </Grid>
-      */}
-      
 
       {/* STATUS */}
       <Grid item xs={12} lg={6}>
@@ -350,7 +299,6 @@ export default function CreateTransactionModal({ success }) {
         <FileForm
           fullWidth
           title="Ảnh hoá đơn"
-          required
           subtitle="Chọn tệp"
           titleSpan={3}
           fieldSpan={9}

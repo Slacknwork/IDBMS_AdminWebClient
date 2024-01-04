@@ -21,7 +21,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import DateForm from "../../Forms/Date";
 import FileForm from "../../Forms/File";
 import TextForm from "../../Forms/Text";
-import NumberForm from "../../Forms/Text";
+import NumberForm from "../../Forms/Number";
 import CheckForm from "../../Forms/Checkbox";
 import FormModal from "../../Modals/Form";
 import { useParams } from "next/navigation";
@@ -99,7 +99,7 @@ export default function CreateWarrantyClaimModal({ success }) {
         break;
       case "reason":
       case "solution":
-      case "note":  
+      case "note":
       case "endDate":
       case "confirmationDocument":
         setFormData((prevData) => ({
@@ -113,40 +113,6 @@ export default function CreateWarrantyClaimModal({ success }) {
         break;
       default:
     }
-  };
-
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
-  const handleNumberChange = (field, value) => {
-    const val = parseFloat(value);
-    if (!isNaN(val)) handleInputChange(field, val);
-    else handleInputChange(field, "");
-  };
-
-  const handleAutocompleteChange = (field, selectedOption) => {
-    handleInputChange(field, selectedOption);
-    if (field === "userId") {
-      users.forEach((user) => {
-        if (user.id === selectedOption) selectedOption = user.name;
-      });
-      handleInputChange("payerName", selectedOption);
-    }
-  };
-
-  const handleCheckboxChange = (field, checked) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: checked,
-    }));
-  };
-
-  const handleFileInputChange = (file) => {
-    handleInputChange("confirmationDocument", file);
   };
 
   const [formHasError, setFormHasError] = useState(true);
@@ -243,7 +209,7 @@ export default function CreateWarrantyClaimModal({ success }) {
           value={formData.totalPaid}
           error={formData.totalPaidError.hasError}
           errorLabel={formData.totalPaidError.label}
-          onChange={(e) => handleNumberChange("totalPaid", e.target.value)}
+          onChange={(value) => handleInputChange("totalPaid", value)}
           endAdornment={<>VND</>}
         ></NumberForm>
       </Grid>
@@ -255,7 +221,7 @@ export default function CreateWarrantyClaimModal({ success }) {
           title="Bảo Hiểm Công Ty"
           checked={formData.isCompanyCover}
           onChange={(e) =>
-            handleCheckboxChange("isCompanyCover", e.target.checked)
+            handleInputChange("isCompanyCover", e.target.checked)
           }
         />
       </Grid>
@@ -301,7 +267,7 @@ export default function CreateWarrantyClaimModal({ success }) {
           error={formData.confirmationDocumentError.hasError}
           errorLabel={formData.confirmationDocumentError.label}
           onChange={(file) =>
-            handleFileInputChange("confirmationDocument", file)
+            handleInputChange("confirmationDocument", file)
           }
         ></FileForm>
       </Grid>
