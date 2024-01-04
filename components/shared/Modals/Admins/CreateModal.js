@@ -3,38 +3,39 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createAdmin } from "/services/adminServices";
 import checkValidField from "/components/validations/field"
 import checkValidEmail from "/components/validations/email"
+import { useSelector } from "react-redux";
 
 export default function CreateAdminModal({ success }) {
   const params = useParams();
+  const admin = useSelector((state) => state.user);
+  const searchParams = useSearchParams();
+
+  const modalOpenQuery = "create";
 
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    username: "",
-    usernameError: { hasError: false, label: "" },
     email: "",
     emailError: { hasError: false, label: "" },
     password: "",
     passwordError: { hasError: false, label: "" },
-    creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
+    creatorId: admin?.id || "",
   });
 
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-      case "username":
       case "password":
         const result = checkValidField(value);
 
-        if (result.isValid == false)
-        {
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -42,7 +43,7 @@ export default function CreateAdminModal({ success }) {
               hasError: true,
               label: result.label,
             },
-        }));
+          }));
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -80,14 +81,11 @@ export default function CreateAdminModal({ success }) {
       default:
     }
   };
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
 
-  const [formHasError, setFormHasError] = useState(true);
+  // SUBMIT FORM
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleSubmit = () => {
@@ -98,7 +96,7 @@ export default function CreateAdminModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createAdmin(formData);
       toast.success("Thêm thành công!");
@@ -114,7 +112,6 @@ export default function CreateAdminModal({ success }) {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
@@ -122,18 +119,21 @@ export default function CreateAdminModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo người quản lý"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* TÊN */}
       <Grid item xs={12} lg={6}>
@@ -145,19 +145,6 @@ export default function CreateAdminModal({ success }) {
           error={formData.nameError.hasError}
           errorLabel={formData.nameError.label}
           onChange={(e) => handleInputChange("name", e.target.value)}
-        ></TextForm>
-      </Grid>
-
-      {/* TÊN ĐĂNG NHẬP */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Tên đăng nhập"
-          required
-          subtitle="Nhập username quản lý"
-          value={formData.username}
-          error={formData.usernameError.hasError}
-          errorLabel={formData.usernameError.label}
-          onChange={(e) => handleInputChange("username", e.target.value)}
         ></TextForm>
       </Grid>
 
@@ -184,23 +171,10 @@ export default function CreateAdminModal({ success }) {
           error={formData.passwordError.hasError}
           errorLabel={formData.passwordError.label}
           onChange={(e) => handleInputChange("password", e.target.value)}
+          password={true}
         ></TextForm>
       </Grid>
 
-      {/* TRẠNG THÁI */}
-      {/* <Grid item xs={12} lg={6}>
-                <SelectForm
-                    title="Trạng thái"
-                    required
-                    subtitle="Nhập trạng thái"
-                    value={formData.status}
-                    options={adminStatusOptions}
-                    defaultLabel="Chọn một..."
-                    error={formData.statusError.hasError}
-                    errorLabel={formData.statusError.label}
-                    onChange={(e) => handleInputChange("status", e.target.value)}
-                ></SelectForm>
-            </Grid> */}
     </FormModal>
   );
 }

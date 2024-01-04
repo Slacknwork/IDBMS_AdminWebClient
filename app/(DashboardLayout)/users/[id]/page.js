@@ -334,21 +334,6 @@ export default function ItemDetails() {
                 ></TextForm>
               </Grid>
 
-              {/* PASSWORD */}
-              <Grid item xs={12} lg={6}>
-                <TextForm
-                  title="Mật khẩu"
-                  required
-                  subtitle="Nhập mật khẩu"
-                  value={formData.password}
-                  error={formData.passwordError.hasError}
-                  errorLabel={formData.passwordError.label}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
-                ></TextForm>
-              </Grid>
-
               {/* PHONE */}
               <Grid item xs={12} lg={6}>
                 <TextForm
@@ -390,20 +375,20 @@ export default function ItemDetails() {
                 ></SelectForm>
               </Grid>
 
-      {/* COMPANY ROLE */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Vai trò trong công ty"
-          required
-          subtitle="Chọn vai trò"
-          value={formData.role}
-          options={companyRoleOptions}
-          defaultLabel="Chọn một..."
-          error={formData.roleError.hasError}
-          errorLabel={formData.roleError.label}
-          onChange={(value) => handleInputChange("role", value)}
-        ></SelectForm>
-      </Grid>
+              {/* COMPANY ROLE */}
+              <Grid item xs={12} lg={6}>
+                <SelectForm
+                  title="Vai trò trong công ty"
+                  required
+                  subtitle="Chọn vai trò"
+                  value={formData.role}
+                  options={companyRoleOptions}
+                  defaultLabel="Chọn một..."
+                  error={formData.roleError.hasError}
+                  errorLabel={formData.roleError.label}
+                  onChange={(value) => handleInputChange("role", value)}
+                ></SelectForm>
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} lg={4}>
