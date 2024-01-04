@@ -163,35 +163,6 @@ export default function CreateItemModal() {
         ></TextForm>
       </Grid>
 
-      {/* PRIMARY COLOR */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu chính"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Nhập tên màu chính"
-          value={formData.primaryColor}
-          error={formData.primaryColorError.hasError}
-          errorLabel={formData.primaryColorError.label}
-          onChange={(e) => handleInputChange("primaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
-
-      {/* SECONDARY COLOR */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu phụ"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Nhập tên màu phụ"
-          value={formData.secondaryColor}
-          error={formData.secondaryColorError.hasError}
-          errorLabel={formData.secondaryColorError.label}
-          onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
-
       {/* COLOR TYPE */}
       <Grid item xs={12} lg={6}>
         <SelectForm
@@ -209,6 +180,38 @@ export default function CreateItemModal() {
           onChange={(value) => handleInputChange("type", value)}
         ></SelectForm>
       </Grid>
+
+      {/* PRIMARY COLOR */}
+      <Grid item xs={12} lg={6}>
+        <TextForm
+          title="Màu chính"
+          titleSpan={3}
+          fieldSpan={9}
+          required
+          subtitle="Nhập tên màu chính"
+          value={formData.primaryColor}
+          error={formData.primaryColorError.hasError}
+          errorLabel={formData.primaryColorError.label}
+          onChange={(e) => handleInputChange("primaryColor", e.target.value)}
+        ></TextForm>
+      </Grid>
+
+      {/* SECONDARY COLOR */}
+      {formData.type === 0 && (
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Màu phụ"
+            titleSpan={3}
+            fieldSpan={9}
+            subtitle="Nhập tên màu phụ"
+            value={formData.secondaryColor}
+            error={formData.secondaryColorError.hasError}
+            errorLabel={formData.secondaryColorError.label}
+            onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
+          ></TextForm>
+        </Grid>
+      )}
+
     </FormModal>
   );
 }
