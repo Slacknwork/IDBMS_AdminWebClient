@@ -39,6 +39,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const modalOpenQuery = "create";
 
   const [formData, setFormData] = useState({
     code: null,
@@ -200,7 +201,9 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       }));
     }
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -224,11 +227,13 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   const handleCreate = async () => {
+    if (!switchSubmit) return;
     try {
       const response = await createProjectTask(formData);
       console.log(response);
@@ -242,6 +247,8 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo công việc"
       submitLabel="Tạo"
@@ -249,7 +256,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       onOpen={onModalOpen}
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* TASK DESIGN (OPTIONAL) */}
       <Grid item xs={12} lg={12}>

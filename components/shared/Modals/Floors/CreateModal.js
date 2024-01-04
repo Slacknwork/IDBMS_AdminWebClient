@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
@@ -19,7 +19,9 @@ import checkValidField from "/components/validations/field"
 export default function CreateFloorModal({ onCreate }) {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     floorNo: 0,
     floorNoError: { hasError: false, label: "" },
@@ -74,7 +76,9 @@ export default function CreateFloorModal({ onCreate }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -86,6 +90,7 @@ export default function CreateFloorModal({ onCreate }) {
   };
 
   const handleCreate = async () => {
+    if (!switchSubmit) return;
     console.log(formData);
     try {
       const response = await createFloor(formData);
@@ -134,18 +139,21 @@ export default function CreateFloorModal({ onCreate }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo loại phòng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* FLOOR NO */}
       <Grid item xs={12} lg={12}>

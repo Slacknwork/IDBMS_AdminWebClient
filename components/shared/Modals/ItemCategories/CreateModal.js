@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
@@ -24,7 +24,9 @@ import checkValidUrl from "/components/validations/url"
 export default function CreateItemModal() {
   // INIT
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -60,10 +62,6 @@ export default function CreateItemModal() {
     };
     await Promise.all([fetchParentCategories()]);
   };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
 
   const handleInputChange = (field, value) => {
     switch (field) {
@@ -131,15 +129,11 @@ export default function CreateItemModal() {
     }
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-  const [formHasError, setFormHasError] = useState(true);
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [switchSubmit, setSwitchSubmit] = useState(false);
-
+  
   const handleSubmit = () => {
     for (const field in formData) {
       handleInputChange(field, formData[field]);
@@ -149,6 +143,7 @@ export default function CreateItemModal() {
 
   const handleCreate = async () => {
     try {
+      if (!switchSubmit) return;
       console.log(formData);
       const response = await createInteriorItemCategory(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
@@ -161,10 +156,11 @@ export default function CreateItemModal() {
   };
 
   useEffect(() => {
+    fetchDataFromApi();
+
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
@@ -172,18 +168,21 @@ export default function CreateItemModal() {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo loại sản phẩm"
       title="Tạo loại sản phẩm"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>

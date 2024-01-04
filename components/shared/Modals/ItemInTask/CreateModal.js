@@ -28,7 +28,7 @@ import checkValidUrl from "components/validations/url";
 import FormModal from "/components/shared/Modals/Form";
 import MessageModal from "/components/shared/Modals/Message";
 import ItemModal from "./ItemModal";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -56,7 +56,9 @@ export default function CreateItemModal({ success }) {
   const [interiorItemColors, setInteriorItemColors] = useState([]);
   const [interiorItemCategories, setInteriorItemCategories] = useState([]);
   const [parentItems, setParentItems] = useState([]);
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const fetchDataFromApi = async () => {
     const fetchInteriorItemColors = async () => {
       try {
@@ -129,8 +131,22 @@ export default function CreateItemModal({ success }) {
     });
   };
 
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+  
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const onCreateItemInTask = async () => {
+    if (!switchSubmit) return;
     try {
+      if (!switchSubmit) return;
       await createItemInTask(params.taskId, items);
       toast.success("Tạo sản phẩm thành công!");
       success(true);
@@ -142,15 +158,31 @@ export default function CreateItemModal({ success }) {
 
   useEffect(() => {
     fetchDataFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    setOpenModal(false);
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Thêm"
       title="Thêm nội thất cho công việc"
       submitLabel="Tạo"
       onSubmit={onCreateItemInTask}
       size="big"
+      disableCloseOnSubmit
     >
       <Grid item xs={12} lg={12}>
         {items && items.length > 0 && (
