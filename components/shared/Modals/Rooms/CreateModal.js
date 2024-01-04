@@ -29,7 +29,7 @@ export default function CreateRoomModal({ onCreate }) {
     descriptionError: { hasError: false, label: "" },
     area: 0,
     areaError: { hasError: false, label: "" },
-    roomTypeId: "",
+    roomTypeId: null,
     roomTypeError: { hasError: false, label: "" },
     language: 0,
     languageError: { hasError: false, label: "" },
