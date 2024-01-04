@@ -5,6 +5,7 @@ const initialState = {
   username: "",
   name: "",
   token: "",
+  role: "",
   loggedIn: false,
 };
 
@@ -17,6 +18,7 @@ export const userSlice = createSlice({
       state.username = actions.payload.username || state.username;
       state.name = actions.payload.name || state.name;
       state.token = actions.payload.token || state.token;
+      state.role = actions.payload.role || state.role;
       state.loggedIn = true;
     },
     logout: () => initialState,

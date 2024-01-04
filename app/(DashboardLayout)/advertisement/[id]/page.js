@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 import {
   getAdvertisementProjectById,
-  updateAdvertisementProjectDescription,
+  updateAdvertisementProject,
 } from "/services/advertisementServices";
 
 import PageContainer from "/components/container/PageContainer";
@@ -147,12 +147,7 @@ export default function AdvertisementDetailsPage() {
 
   const onSaveAdvertisementProject = async () => {
     try {
-      await updateAdvertisementProjectDescription(params.id, {
-        description: formData.advertisementDescription,
-        representImage: formData.file,
-      });
-      setPageName(formData.name);
-      setPageDescription(formData.description);
+      await updateAdvertisementProject(params.id, formData);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
