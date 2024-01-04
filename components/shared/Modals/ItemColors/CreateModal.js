@@ -173,6 +173,24 @@ export default function CreateItemModal() {
         ></TextForm>
       </Grid>
 
+      {/* COLOR TYPE */}
+      <Grid item xs={12} lg={8}>
+        <SelectForm
+          title="Loại màu"
+          required
+          titleSpan={6}
+          fieldSpan={6}
+          subtitle="Chọn loại màu"
+          value={formData.type}
+          options={colorTypeOptions}
+          defaultValue={-1}
+          defaultLabel="Chọn một..."
+          error={formData.typeError.hasError}
+          errorLabel={formData.typeError.label}
+          onChange={(value) => handleInputChange("type", value)}
+        ></SelectForm>
+      </Grid>
+
       {/* PRIMARY COLOR */}
       <Grid item xs={12} lg={6}>
         <TextForm
@@ -189,36 +207,21 @@ export default function CreateItemModal() {
       </Grid>
 
       {/* SECONDARY COLOR */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu phụ"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Nhập tên màu phụ"
-          value={formData.secondaryColor}
-          error={formData.secondaryColorError.hasError}
-          errorLabel={formData.secondaryColorError.label}
-          onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
+      {formData.type === 0 && (
+        <Grid item xs={12} lg={6}>
+          <TextForm
+            title="Màu phụ"
+            titleSpan={3}
+            fieldSpan={9}
+            subtitle="Nhập tên màu phụ"
+            value={formData.secondaryColor}
+            error={formData.secondaryColorError.hasError}
+            errorLabel={formData.secondaryColorError.label}
+            onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
+          ></TextForm>
+        </Grid>
+      )}
 
-      {/* COLOR TYPE */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Loại màu"
-          required
-          titleSpan={6}
-          fieldSpan={6}
-          subtitle="Chọn loại màu"
-          value={formData.type}
-          options={colorTypeOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn một..."
-          error={formData.typeError.hasError}
-          errorLabel={formData.typeError.label}
-          onChange={(value) => handleInputChange("type", value)}
-        ></SelectForm>
-      </Grid>
     </FormModal>
   );
 }
