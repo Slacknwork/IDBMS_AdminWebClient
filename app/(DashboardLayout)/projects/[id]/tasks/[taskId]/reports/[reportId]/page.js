@@ -40,6 +40,7 @@ import {
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -65,10 +66,63 @@ export default function ProjectDocumentDetails(projectDocument) {
           unitUsed: (task.unitInContract * (value / 100)).toFixed(2),
         }));
         break;
+      case "name":
+      case "unitUsed":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      break;
+      case "documentList":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
-    handleInputError(field, false, "");
   };
 
   const handleInputError = (field, hasError, label) => {

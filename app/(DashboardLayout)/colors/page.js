@@ -30,12 +30,14 @@ import { getAllInteriorItems } from "/services/interiorItemServices";
 import colorType from "/constants/enums/colorType";
 import { useSearchParams } from "next/navigation";
 import FilterComponent from "/components/shared/FilterStatus";
+import checkValidUrl from "components/validations/url";
 
 import PageContainer from "/components/container/PageContainer";
 import CreateItemColorModal from "/components/shared/Modals/ItemColors/CreateModal";
 import Search from "/components/shared/Search";
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import Pagination from "/components/shared/Pagination";
+import Image from "next/image";
 
 const projects = [
   {
@@ -204,14 +206,38 @@ export default function ItemColorList() {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {itemColor.primaryColor}
-                  </Typography>
+                  <Image
+                    src={checkValidUrl(itemColor.primaryColor)}
+                    alt={itemColor.name ?? ""}
+                    width={200}
+                    height={200}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }}
+                    unoptimized={true}
+                    style={{
+                      objectFit: "cover",
+                      width: "7rem",
+                      height: "7rem",
+                    }}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {itemColor.secondaryColor ?? ""}
-                  </Typography>
+                  <Image
+                    src={checkValidUrl(itemColor.secondaryColor)}
+                    alt={itemColor.name ?? ""}
+                    width={200}
+                    height={200}
+                    onError={(e) => {
+                      e.target.src = "/images/results/no-image.png";
+                    }}
+                    unoptimized={true}
+                    style={{
+                      objectFit: "cover",
+                      width: "7rem",
+                      height: "7rem",
+                    }}
+                  />
                 </TableCell>
                 <TableCell align="right">
                   <Button

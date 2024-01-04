@@ -15,6 +15,7 @@ import FileForm from "/components/shared/Forms/File";
 import { createTaskCategory } from "../../../../services/taskCategoryServices";
 import projectTypeOptions from "../../../../constants/enums/projectType";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateTaskCategoryModal({ success }) {
   const params = useParams();
@@ -60,10 +61,31 @@ export default function CreateTaskCategoryModal({ success }) {
           }));
         }
         break;
+      case "iconImage":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
       case "description":
       case "englishDescription":
-      case "iconImage":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,

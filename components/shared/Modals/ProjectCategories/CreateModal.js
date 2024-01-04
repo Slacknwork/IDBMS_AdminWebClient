@@ -11,6 +11,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import FileForm from "/components/shared/Forms/File";
 import { createProjectCategory } from "/services/projectCategoryServices";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
@@ -51,8 +52,28 @@ export default function CreateProjectCategoryModal({ success }) {
           }));
         }
         break;
-      case "englishName":
       case "iconImage":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "englishName":
       case "isHidden":
         setFormData((prevData) => ({
           ...prevData,

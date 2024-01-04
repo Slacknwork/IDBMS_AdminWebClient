@@ -28,6 +28,7 @@ import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 const style = {
   position: "absolute",
@@ -97,11 +98,31 @@ export default function CreateWarrantyClaimModal({ success }) {
           }));
         }
         break;
+      case "confirmationDocument":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "reason":
       case "solution":
       case "note":
       case "endDate":
-      case "confirmationDocument":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,

@@ -10,6 +10,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import FileForm from "/components/shared/Forms/File";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 import {
   getRoomTypeById,
@@ -72,11 +73,32 @@ export default function RoomTypeDetails() {
           }));
         }
         break;
-      case "englishName":
+      case "iconImage":
       case "image":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "englishName":
       case "description":
       case "englishDescription":
-      case "iconImage":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,

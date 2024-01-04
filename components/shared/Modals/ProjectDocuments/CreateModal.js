@@ -90,8 +90,28 @@ export default function DocumentModal({ success, projectDocument }) {
           }));
         }
         break;
-      case "description":
       case "file":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "description":
       case "projectDocumentTemplateId":
         setFormData((prevData) => ({
           ...prevData,

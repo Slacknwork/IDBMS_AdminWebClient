@@ -25,6 +25,7 @@ import {
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -72,8 +73,28 @@ export default function ProjectDocumentDetails(projectDocument) {
           }));
         }
         break;
-      case "description":
       case "file":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "description":
       case "projectDocumentTemplateId":
         setFormData((prevData) => ({
           ...prevData,
