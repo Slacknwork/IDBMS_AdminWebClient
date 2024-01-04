@@ -288,8 +288,8 @@ export default function CreateTransactionModal({ success }) {
           title="Ghi chú"
           subtitle="Nhập ghi chú cho thanh toán"
           value={formData.note}
-          error={formData.note.hasError}
-          errorLabel={formData.note.label}
+          error={formData.noteError.hasError}
+          errorLabel={formData.noteError.label}
           onChange={(e) => handleInputChange("note", e.target.value)}
         ></TextForm>
       </Grid>
