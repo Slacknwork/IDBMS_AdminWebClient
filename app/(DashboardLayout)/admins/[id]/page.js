@@ -248,20 +248,6 @@ export default function TaskCategoryDetails() {
           ></TextForm>
         </Grid>
 
-        {/* MẬT KHẨU */}
-        <Grid item xs={12} lg={6}>
-          <TextForm
-            title="Mật khẩu"
-            required
-            subtitle="Nhập mật khẩu"
-            value={formData.password}
-            error={formData.passwordError.hasError}
-            errorLabel={formData.passwordError.label}
-            onChange={(e) => handleInputChange("password", e.target.value)}
-            password
-          ></TextForm>
-        </Grid>
-
         {/* STATUS */}
         <Grid item xs={12} lg={6}>
           <SelectForm
