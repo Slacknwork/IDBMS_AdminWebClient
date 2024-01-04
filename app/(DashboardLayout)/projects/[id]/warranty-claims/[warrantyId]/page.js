@@ -11,6 +11,7 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import FileForm from "/components/shared/Forms/File";
 import DateForm from "/components/shared/Forms/Date";
 import CheckForm from "/components/shared/Forms/Checkbox";
+import checkValidField from "/components/validations/field"
 
 import {
   getWarrantyClaimById,
@@ -47,14 +48,49 @@ export default function WarrantyClaimDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
-  };
+    switch (field) {
+      case "name":
+      case "totalPaid":
+      case "isCompanyCover":
+        const result = checkValidField(value);
 
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "reason":
+      case "solution":
+      case "note":  
+      case "endDate":
+      case "confirmationDocument":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
+  };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -62,6 +98,9 @@ export default function WarrantyClaimDetails() {
     }));
   };
 
+  const handleFileInputChange = (file) => {
+    handleInputChange("confirmationDocument", file);
+  };
   // INIT CONST
   const [loading, setLoading] = useState(true);
 
@@ -81,9 +120,15 @@ export default function WarrantyClaimDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -136,12 +181,29 @@ export default function WarrantyClaimDetails() {
     }));
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title={formData?.name} description="Chi tiết Bảo hiểm">
       <DetailsPage
         title="Thông tin Bảo hiểm"
         saveMessage="Lưu thông tin Bảo hiểm?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xóa Bảo hiểm này?"}
         deleteLabel={"Xóa"}
         hasDelete
@@ -215,6 +277,7 @@ export default function WarrantyClaimDetails() {
             <Grid item xs={12} lg={6}>
               <CheckForm
                 title="Bảo Hiểm bởi Công Ty"
+                required
                 checked={formData.isCompanyCover}
                 onChange={(e) =>
                   handleCheckboxChange("isCompanyCover", e.target.checked)

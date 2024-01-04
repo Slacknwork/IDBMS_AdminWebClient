@@ -15,6 +15,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
 import projectTypeOptions from "../../../../../constants/enums/projectType";
+import checkValidField from "/components/validations/field"
 
 import {
   getTaskCategoryById,
@@ -43,12 +44,46 @@ export default function TaskCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "projectType":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "iconImage":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -82,9 +117,15 @@ export default function TaskCategoryDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -124,6 +165,23 @@ export default function TaskCategoryDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer
       title={formData.name}
@@ -132,7 +190,7 @@ export default function TaskCategoryDetails() {
       <DetailsPage
         title="Thông tin phân loại công việc"
         saveMessage="Lưu thông tin phân loại công việc?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá phân loại công việc này?"}
         deleteLabel={"Xoá"}
         hasDelete
@@ -212,7 +270,6 @@ export default function TaskCategoryDetails() {
             title="Biểu tượng"
             titleSpan={3}
             fieldSpan={9}
-            required
             subtitle="Chọn biểu tượng minh họa"
             value={formData.iconImage}
             imgDisplay={formData.iconImageUrl}

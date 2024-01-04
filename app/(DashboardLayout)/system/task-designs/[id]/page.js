@@ -17,6 +17,7 @@ import FileForm from "/components/shared/Forms/File";
 import calculationUnitOptions from "../../../../../constants/enums/calculationUnit";
 import { getAllTaskCategories } from "../../../../../services/taskCategoryServices";
 import { getAllInteriorItemCategories } from "../../../../../services/interiorItemCategoryServices";
+import checkValidField from "/components/validations/field"
 
 import {
   getTaskDesignById,
@@ -51,12 +52,48 @@ export default function TaskDesignDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "calculationUnit":
+      case "estimatePricePerUnit":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "interiorItemCategoryId":
+      case "taskCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -74,7 +111,15 @@ export default function TaskDesignDetails() {
   const [loading, setLoading] = useState(true);
   const [taskCategories, setTaskCategories] = useState([]);
   const [itemCategories, setItemCategories] = useState([]);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
 
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
   // FETCH DATA
   const fetchDataFromApi = async () => {
     const fetchTaskDesign = async () => {
@@ -115,9 +160,7 @@ export default function TaskDesignDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -157,6 +200,23 @@ export default function TaskDesignDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer
       title={formData.name}
@@ -165,7 +225,7 @@ export default function TaskDesignDetails() {
       <DetailsPage
         title="Thông tin thiết kế công việc"
         saveMessage="Lưu thông tin thiết kế công việc?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá thiết kế công việc này?"}
         deleteLabel={"Xoá"}
         hasDelete

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Button,
   Card,
@@ -15,16 +15,18 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { getRoomById, updateRoom } from "/services/roomServices";
+import { getRoomById, updateRoom, deleteRoom } from "/services/roomServices";
 import { getAllRoomTypes } from "/services/roomTypeServices";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
+import checkValidField from "/components/validations/field"
 
 export default function RoomDetailsPage() {
   const params = useParams();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     usePurpose: "",
@@ -57,17 +59,54 @@ export default function RoomDetailsPage() {
   };
 
   const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+    switch (field) {
+      case "usePurpose":
+      case "area":
+      case "language":  
+      case "pricePerArea":
+      const result = checkValidField(value);
+
+      if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "floorNo":
+      case "description":
+      case "roomTypeId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [roomtypes, setRoomTypes] = useState([]);
+
+  
 
   const fetchDataFromApi = async () => {
     try {
@@ -90,14 +129,23 @@ export default function RoomDetailsPage() {
     }
   };
 
-  const onHiddenRoom = async () => {
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
+  const onDeleteRoom = async () => {
     try {
-      const response = await updateRoomIsHidden(
+      const response = await deleteRoom(
         params.roomId,
-        isHidden,
-        params.id
       );
-      toast.success("Cập nhật thành công!");
+      toast.success("Xoá thành công!");
+      router.push(`/projects/${params.id}/floors/${params.floorId}/rooms`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -117,7 +165,20 @@ export default function RoomDetailsPage() {
 
   useEffect(() => {
     fetchDataFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveRoom();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
 
   return (
     <PageContainer
@@ -141,10 +202,10 @@ export default function RoomDetailsPage() {
           <DetailsPage
             title="Thông tin phòng"
             saveMessage="Lưu thông tin phòng?"
-            onSave={onSaveRoom}
+            onSave={handleSubmit}
             hasDelete
-            deleteMessage="Ẩn phỏng?"
-            onDelete={onHiddenRoom}
+            deleteMessage="Xoá phỏng?"
+            onDelete={onDeleteRoom}
           >
             <Grid item xs={12} lg={8}>
               <Grid container columnSpacing={2} rowSpacing={4}>

@@ -10,6 +10,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import projectTypeOptions from "/constants/enums/projectType";
+import checkValidField from "/components/validations/field"
 
 import {
   getProjectDesignById,
@@ -39,12 +40,47 @@ export default function ProjectDesignDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "minBudget":
+      case "maxBudget":
+      case "projectType":
+      case "isHidden":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "estimateBusinessDay":
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -77,9 +113,15 @@ export default function ProjectDesignDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -121,12 +163,29 @@ export default function ProjectDesignDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title={formData.name} description="Chi tiết thiết kế dự án">
       <DetailsPage
         title="Thông tin thiết kế dự án"
         saveMessage="Lưu thông tin thiết kế dự án?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={
           formData?.isHidden
             ? "Hiện thiết kế dự án này?"
@@ -199,7 +258,6 @@ export default function ProjectDesignDetails() {
             <Grid item xs={12} lg={6}>
               <NumberForm
                 title="Ngày hoàn thành dự kiến"
-                required
                 subtitle="Nhập số ngày"
                 value={formData.estimateBusinessDay}
                 error={formData.estimateBusinessDayError.hasError}

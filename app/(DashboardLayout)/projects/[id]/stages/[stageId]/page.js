@@ -45,7 +45,7 @@ export default function StageOverview() {
     pricePercentageError: { hasError: false, label: "" },
     endTimePayment: null,
     endTimePaymentError: { hasError: false, label: "" },
-    status: -1,
+    status: 0,
     statusError: { hasError: false, label: "" },
     projectId: params.id,
   });
@@ -55,12 +55,46 @@ export default function StageOverview() {
   const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "isPrepaid":
+      case "isWarrantyStage":
+      case "pricePercentage":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "endTimePayment":
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -84,10 +118,17 @@ export default function StageOverview() {
     }
   };
 
-  // FETCH DATA FROM API
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
+  
 
   const onSaveStage = async () => {
     try {
@@ -112,12 +153,30 @@ export default function StageOverview() {
     }
   };
 
+// FETCH DATA FROM API
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveStage();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
         title="Thông tin giai đoạn"
         saveMessage="Lưu thông tin giai đoạn?"
-        onSave={onSaveStage}
+        onSave={handleSubmit}
         hasDelete
         deleteMessage="Xóa giai đoạn?"
         onDelete={onDeleteStage}
@@ -142,7 +201,6 @@ export default function StageOverview() {
               <DateForm
                 datetime
                 title="Hạn chót thanh toán"
-                required
                 subtitle="Hạn chót thanh toán cho giai đoạn này"
                 value={formData.endTimePayment}
                 error={formData.endTimePaymentError.hasError}
@@ -156,6 +214,7 @@ export default function StageOverview() {
               <CheckboxForm
                 title="Giai đoạn bảo hành"
                 subtitle="Check vào ô nếu là giai đoạn bảo hành"
+                required
                 checked={formData.isWarrantyStage}
                 onChange={(e) =>
                   handleInputChange("isWarrantyStage", e.target.checked)
@@ -168,6 +227,7 @@ export default function StageOverview() {
               <CheckboxForm
                 title="Phải trả trước"
                 subtitle="Check nếu phải thanh toán trước khi bắt đầu"
+                required
                 checked={formData.isPrepaid}
                 onChange={(e) =>
                   handleInputChange("isPrepaid", e.target.checked)

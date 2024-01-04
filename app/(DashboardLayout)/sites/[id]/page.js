@@ -116,6 +116,17 @@ export default function SiteDetails() {
           }));
         }
         break;
+      case "companyCode":
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
     }
   };
@@ -150,9 +161,14 @@ export default function SiteDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const onSaveSite = async () => {
     try {
@@ -178,6 +194,23 @@ export default function SiteDetails() {
     }
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveSite();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
@@ -185,7 +218,7 @@ export default function SiteDetails() {
         title="Thông tin khu công trình"
         saveMessage="Lưu thông khu công trình?"
         deleteMessage="Xóa khu công trình?"
-        onSave={onSaveSite}
+        onSave={handleSubmit}
         hasDelete
         onDelete={onDeleteSite}
       >

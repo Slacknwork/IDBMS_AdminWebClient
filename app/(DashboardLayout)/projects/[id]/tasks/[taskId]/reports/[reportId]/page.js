@@ -39,6 +39,7 @@ import {
 } from "/services/taskReportServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import checkValidField from "/components/validations/field"
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -125,9 +126,16 @@ export default function ProjectDocumentDetails(projectDocument) {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -170,6 +178,23 @@ export default function ProjectDocumentDetails(projectDocument) {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer
       title={formData.name}
@@ -178,7 +203,7 @@ export default function ProjectDocumentDetails(projectDocument) {
       <DetailsPage
         title="Thông tin thiết kế công việc"
         saveMessage="Lưu thông tin thiết kế công việc?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá thiết kế công việc này?"}
         deleteLabel={"Xoá"}
         hasDelete

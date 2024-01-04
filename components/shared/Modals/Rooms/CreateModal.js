@@ -14,13 +14,14 @@ import SelectForm from "/components/shared/Forms/Select";
 import TextForm from "/components/shared/Forms/Text";
 import NumberForm from "/components/shared/Forms/Number";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import checkValidField from "/components/validations/field"
 
 export default function CreateRoomModal({ onCreate }) {
   const params = useParams();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    floorNo: "",
+    floorNo: 0,
     floorNoError: { hasError: false, label: "" },
     usePurpose: "",
     usePurposeError: { hasError: false, label: "" },
@@ -41,18 +42,15 @@ export default function CreateRoomModal({ onCreate }) {
       case "usePurpose":
       case "area":
       case "language":  
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "area" && value < 0)
-          || (typeof value === "number" && field === "area" && value <= 0) 
-        ) {
+      const result = checkValidField(value);
+
+      if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -65,6 +63,18 @@ export default function CreateRoomModal({ onCreate }) {
             },
           }));
         }
+        break;
+      case "floorNo":
+      case "description":
+      case "roomTypeId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

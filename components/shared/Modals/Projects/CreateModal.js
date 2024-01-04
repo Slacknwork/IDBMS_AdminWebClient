@@ -18,6 +18,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import SelectForm from "../../Forms/Select";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
+import checkValidField from "/components/validations/field"
 
 const style = {
   position: "absolute",
@@ -75,18 +76,15 @@ export default function CreateProjectModal({ children }) {
       case "status":
       case "language":
       case "advertisementStatus":
-        if (
-          value === null ||
-          value === undefined ||
-          (typeof value === "string" && value.trim() === "") ||
-          (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -99,6 +97,22 @@ export default function CreateProjectModal({ children }) {
             },
           }));
         }
+        break;
+      case "description":
+      case "basedOnDecorProjectId":
+      case "estimatedPrice":
+      case "finalPrice":
+      case "totalWarrantyPaid":
+      case "area":
+      case "estimateBusinessDay":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }
