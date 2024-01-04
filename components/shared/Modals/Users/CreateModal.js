@@ -152,7 +152,7 @@ export default function CreateUserModal({ success }) {
     }
     setSwitchSubmit(true);
   };
-  
+
   const handleCreate = async () => {
     console.log(formData);
     try {
@@ -276,6 +276,7 @@ export default function CreateUserModal({ success }) {
           error={formData.passwordError.hasError}
           errorLabel={formData.passwordError.label}
           onChange={(e) => handleInputChange("password", e.target.value)}
+          password
         ></TextForm>
       </Grid>
 

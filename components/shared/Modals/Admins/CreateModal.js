@@ -10,31 +10,29 @@ import TextForm from "/components/shared/Forms/Text";
 import { createAdmin } from "/services/adminServices";
 import checkValidField from "/components/validations/field"
 import checkValidEmail from "/components/validations/email"
+import { useSelector } from "react-redux";
 
 export default function CreateAdminModal({ success }) {
   const params = useParams();
+  const admin = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
-    username: "",
-    usernameError: { hasError: false, label: "" },
     email: "",
     emailError: { hasError: false, label: "" },
     password: "",
     passwordError: { hasError: false, label: "" },
-    creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
+    creatorId: admin?.id || "",
   });
 
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-      case "username":
       case "password":
         const result = checkValidField(value);
 
-        if (result.isValid == false)
-        {
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -42,7 +40,7 @@ export default function CreateAdminModal({ success }) {
               hasError: true,
               label: result.label,
             },
-        }));
+          }));
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -148,19 +146,6 @@ export default function CreateAdminModal({ success }) {
         ></TextForm>
       </Grid>
 
-      {/* TÊN ĐĂNG NHẬP */}
-      <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Tên đăng nhập"
-          required
-          subtitle="Nhập username quản lý"
-          value={formData.username}
-          error={formData.usernameError.hasError}
-          errorLabel={formData.usernameError.label}
-          onChange={(e) => handleInputChange("username", e.target.value)}
-        ></TextForm>
-      </Grid>
-
       {/* EMAIL */}
       <Grid item xs={12} lg={6}>
         <TextForm
@@ -184,23 +169,10 @@ export default function CreateAdminModal({ success }) {
           error={formData.passwordError.hasError}
           errorLabel={formData.passwordError.label}
           onChange={(e) => handleInputChange("password", e.target.value)}
+          password={true}
         ></TextForm>
       </Grid>
 
-      {/* TRẠNG THÁI */}
-      {/* <Grid item xs={12} lg={6}>
-                <SelectForm
-                    title="Trạng thái"
-                    required
-                    subtitle="Nhập trạng thái"
-                    value={formData.status}
-                    options={adminStatusOptions}
-                    defaultLabel="Chọn một..."
-                    error={formData.statusError.hasError}
-                    errorLabel={formData.statusError.label}
-                    onChange={(e) => handleInputChange("status", e.target.value)}
-                ></SelectForm>
-            </Grid> */}
     </FormModal>
   );
 }
