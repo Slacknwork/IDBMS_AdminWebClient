@@ -76,7 +76,7 @@ const deleteAdmin = async (adminId) => {
             url,
             method: "DELETE",
             token,
-            body: JSON.stringify(request),
+            body: null,
         });
         return response.data;
     } catch (error) {
@@ -85,7 +85,7 @@ const deleteAdmin = async (adminId) => {
     }
 };
 
-const createAdmin = async (newAdmin) => {
+const createAdmin = async (request) => {
     const token = store.getState().user?.token ?? ""
 
     try {

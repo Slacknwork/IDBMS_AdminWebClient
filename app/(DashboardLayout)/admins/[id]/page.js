@@ -48,12 +48,10 @@ export default function TaskCategoryDetails() {
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
-      case "username":
       case "password":
         const result = checkValidField(value);
 
-        if (result.isValid == false)
-        {
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -61,7 +59,7 @@ export default function TaskCategoryDetails() {
               hasError: true,
               label: result.label,
             },
-        }));
+          }));
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -228,11 +226,12 @@ export default function TaskCategoryDetails() {
           <TextForm
             title="Tên đăng nhập"
             required
-            subtitle="Nhập username quản lý"
+            subtitle="Username quản lý"
             value={formData.username}
             error={formData.usernameError.hasError}
             errorLabel={formData.usernameError.label}
             onChange={(e) => handleInputChange("username", e.target.value)}
+            disabled
           ></TextForm>
         </Grid>
 
@@ -259,6 +258,7 @@ export default function TaskCategoryDetails() {
             error={formData.passwordError.hasError}
             errorLabel={formData.passwordError.label}
             onChange={(e) => handleInputChange("password", e.target.value)}
+            password
           ></TextForm>
         </Grid>
 
