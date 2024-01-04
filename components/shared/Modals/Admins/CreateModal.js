@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
@@ -15,6 +15,9 @@ import { useSelector } from "react-redux";
 export default function CreateAdminModal({ success }) {
   const params = useParams();
   const admin = useSelector((state) => state.user);
+  const searchParams = useSearchParams();
+
+  const modalOpenQuery = "create";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -78,14 +81,11 @@ export default function CreateAdminModal({ success }) {
       default:
     }
   };
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
 
-  const [formHasError, setFormHasError] = useState(true);
+  // SUBMIT FORM
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleSubmit = () => {
@@ -96,7 +96,7 @@ export default function CreateAdminModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createAdmin(formData);
       toast.success("Thêm thành công!");
@@ -112,7 +112,6 @@ export default function CreateAdminModal({ success }) {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
@@ -120,18 +119,21 @@ export default function CreateAdminModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo người quản lý"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* TÊN */}
       <Grid item xs={12} lg={6}>
