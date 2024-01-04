@@ -15,6 +15,7 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
 import { getAllProjectDesigns } from "/services/projectDesignServices";
+import checkValidField from "/components/validations/field"
 
 import {
   getPaymentStageDesignById,
@@ -43,17 +44,56 @@ export default function PaymentStageDesignDetails() {
     stageNoError: { hasError: false, label: "" },
     isPrepaid: false,
     isPrepaidError: { hasError: false, label: "" },
+    isWarrantyStage: false,
+    isWarrantyStageError: { hasError: false, label: "" },
     projectDesignId: "",
     projectDesignIdError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "pricePercentage":
+      case "stageNo":
+      case "isPrepaid":
+      case "isWarrantyStage":
+      case "projectDesignId":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -99,9 +139,15 @@ export default function PaymentStageDesignDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -146,6 +192,23 @@ export default function PaymentStageDesignDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+  
   return (
     <PageContainer
       title={formData.name}
@@ -154,7 +217,7 @@ export default function PaymentStageDesignDetails() {
       <DetailsPage
         title="Thông tin thiết kế công việc"
         saveMessage="Lưu thông tin thiết kế công việc?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá thiết kế công việc này?"}
         deleteLabel={"Xoá"}
         hasDelete
@@ -275,6 +338,7 @@ export default function PaymentStageDesignDetails() {
           <CheckboxForm
             title="Trả trước"
             subtitle="Check vào ô nếu đã trả trước"
+            required
             value={formData.isPrepaid}
             onChange={(e) => handleInputChange("isPrepaid", e.target.checked)}
           ></CheckboxForm>
@@ -282,6 +346,17 @@ export default function PaymentStageDesignDetails() {
         <Grid item xs={12} lg={4}>
           {/* Additional details can be added here */}
         </Grid>
+
+      {/* IS WARRANTY STAGE */}
+      <Grid item xs={12} lg={6}>
+        <CheckboxForm
+          required
+          title="Bảo hành"
+          subtitle="Check vào ô nếu giai đoạn này có bảo hành"
+          value={formData.isWarrantyStage}
+          onChange={(e) => handleInputChange("isWarrantyStage", e.target.checked)}
+        ></CheckboxForm>
+      </Grid>
       </DetailsPage>
     </PageContainer>
   );

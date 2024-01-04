@@ -26,6 +26,8 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
+import checkValidField from "/components/validations/field"
+
 
 export default function TaskOverviewPage() {
   const params = useParams();
@@ -73,7 +75,55 @@ export default function TaskOverviewPage() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
+    switch (field) {
+      case "name":
+      case "calculationUnit":
+      case "pricePerUnit":
+      case "unitInContract":
+      case "isIncurred":
+      case "status":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "description":
+      case "startedDate":
+      case "estimateBusinessDay":
+      case "unitUsed":
+      case "isIncurred":
+      case "parentTaskId":  
+      case "taskDesignId":  
+      case "taskCategoryId":  
+      case "designCategoryId":  
+      case "paymentStageId":  
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -125,9 +175,15 @@ export default function TaskOverviewPage() {
     }
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const onSaveTask = async () => {
     try {
@@ -141,12 +197,29 @@ export default function TaskOverviewPage() {
     }
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveTask();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer title="Task Details" description="Details of the task">
       <DetailsPage
         title="Thông tin công việc"
         saveMessage="Lưu thông tin công việc?"
-        onSave={onSaveTask}
+        onSave={handleSubmit}
         loading={loading}
       >
         <Grid item xs={12} lg={12}>

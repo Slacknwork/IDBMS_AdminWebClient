@@ -6,6 +6,7 @@ import FormModal from "../Form";
 import { createNotificationForAllCustomers } from "/services/notificationServices";
 import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
+import checkValidField from "/components/validations/field"
 
 export default function CreateNotificationModalForCustomers(success) {
   const [formData, setFormData] = useState({
@@ -19,17 +20,15 @@ export default function CreateNotificationModalForCustomers(success) {
     switch (field) {
       case "category":
       case "content":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {

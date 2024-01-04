@@ -18,6 +18,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
+import checkValidField from "/components/validations/field"
 
 export default function CreateItemModal() {
   // INIT
@@ -67,17 +68,15 @@ export default function CreateItemModal() {
     switch (field) {
       case "name":
       case "interiorItemType":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -90,6 +89,21 @@ export default function CreateItemModal() {
             },
           }));
         }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "bannerImage":
+      case "iconImage":
+      case "parentCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

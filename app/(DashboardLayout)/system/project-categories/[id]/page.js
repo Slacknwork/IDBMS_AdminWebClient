@@ -14,6 +14,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
+import checkValidField from "/components/validations/field"
 
 import {
   getProjectCategoryById,
@@ -38,12 +39,44 @@ export default function ProjectCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "englishName":
+      case "iconImage":
+      case "isHidden":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -76,9 +109,15 @@ export default function ProjectCategoryDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -120,12 +159,30 @@ export default function ProjectCategoryDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
   return (
     <PageContainer title={formData.name} description="Chi tiết phân loại dự án">
       <DetailsPage
         title="Thông tin phân loại dự án"
         saveMessage="Lưu thông tin phân loại dự án?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={
           formData?.isHidden
             ? "Hiện phân loại dự án này?"
@@ -170,7 +227,6 @@ export default function ProjectCategoryDetails() {
                 title="Biểu tượng"
                 titleSpan={4}
                 fieldSpan={8}
-                required
                 subtitle="Chọn biểu tượng minh họa"
                 value={formData.iconImage}
                 imgDisplay={formData.iconImageUrl}

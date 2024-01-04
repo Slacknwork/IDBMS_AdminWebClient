@@ -21,6 +21,7 @@ import {
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
+import checkValidField from "/components/validations/field"
 
 export default function FloorDetailsPage() {
   const params = useParams();
@@ -38,12 +39,41 @@ export default function FloorDetailsPage() {
 
   const validateInput = (field, value) => {
     switch (field) {
-      case "description":
-        return value.trim() === "" ? "Description cannot be empty" : "";
+      case "floorNo":
       case "usePurpose":
-        return value.trim() === "" ? "Use Purpose cannot be empty" : "";
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+        break;
       default:
-        return "";
     }
   };
 
@@ -60,6 +90,16 @@ export default function FloorDetailsPage() {
   const initialized = useRef(false);
   const [rooms, setRooms] = useState([]);
   const [total, setTotal] = useState(0);
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const fetchDataFromApi = async () => {
     if (!initialized.current) {
@@ -98,9 +138,7 @@ export default function FloorDetailsPage() {
     }
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  
 
   const handleFloorIncrement = (incrementBy) => {
     const newValue = formData.floorNo + incrementBy;
@@ -143,6 +181,23 @@ export default function FloorDetailsPage() {
     }
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveFloor();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <PageContainer
       title="Thông tin tầng"
@@ -151,7 +206,7 @@ export default function FloorDetailsPage() {
       <DetailsPage
         title="Thông tin tầng"
         saveMessage="Lưu thông tin tầng?"
-        onSave={onSaveFloor}
+        onSave={handleSubmit}
         hasDelete
         onDelete={onDeleteFloor}
       >

@@ -24,6 +24,7 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import UserCard from "/components/shared/UserCard";
+import checkValidField from "/components/validations/field"
 
 export default function ProjectDetails() {
   const params = useParams();
@@ -68,12 +69,45 @@ export default function ProjectDetails() {
   };
 
   const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+    switch (field) {
+      case "name":
+      case "projectCategoryId":
+      case "type":
+      case "status":
+      case "language":
+      case "advertisementStatus":
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
+    }
   };
 
   // GET SITE DETAILS
@@ -91,6 +125,16 @@ export default function ProjectDetails() {
   const [projectCategories, setProjectCategories] = useState([]);
   const [decorProjects, setDecorProjects] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
+
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   useEffect(() => {
     const fetchDataFromApi = async () => {
@@ -124,7 +168,21 @@ export default function ProjectDetails() {
       }
     };
     fetchDataFromApi();
-  }, []);
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveProject();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
 
   const onSaveProject = async () => {
     try {
@@ -144,7 +202,7 @@ export default function ProjectDetails() {
         loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
-        onSave={onSaveProject}
+        onSave={handleSubmit}
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
@@ -166,6 +224,7 @@ export default function ProjectDetails() {
               <AutocompleteForm
                 title="Phân loại"
                 subtitle="Chọn phân loại dự án"
+                required
                 value={formData.projectCategoryId}
                 options={projectCategories}
                 error={formData.projectCategoryIdError.hasError}

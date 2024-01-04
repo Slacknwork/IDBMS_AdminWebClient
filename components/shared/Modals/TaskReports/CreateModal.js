@@ -27,6 +27,7 @@ import { getProjectTaskById } from "/services/projectTaskServices";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
+import checkValidField from "/components/validations/field"
 
 export default function CreateReportModal({ success }) {
   const params = useParams();
@@ -55,17 +56,15 @@ export default function CreateReportModal({ success }) {
         break;
       case "name":
       case "unitUsed":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -78,10 +77,20 @@ export default function CreateReportModal({ success }) {
             },
           }));
         }
+      break;
+      case "description":
+      case "documentList":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }
-    setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
   const handleFileInputChange = (files) => {

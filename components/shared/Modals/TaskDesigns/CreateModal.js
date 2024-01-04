@@ -19,6 +19,7 @@ import projectTypeOptions from "../../../../constants/enums/projectType";
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import { getAllTaskCategories } from "../../../../services/taskCategoryServices";
 import { getAllInteriorItemCategories } from "../../../../services/interiorItemCategoryServices";
+import checkValidField from "/components/validations/field"
 
 export default function CreateTaskDesignModal({ success }) {
   const params = useParams();
@@ -47,18 +48,15 @@ export default function CreateTaskDesignModal({ success }) {
       case "name":
       case "calculationUnit":
       case "estimatePricePerUnit":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "estimatePricePerUnit" && value < 0)
-          || (typeof value === "number" && field === "estimatePricePerUnit" && value <= 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -71,6 +69,20 @@ export default function CreateTaskDesignModal({ success }) {
             },
           }));
         }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+      case "interiorItemCategoryId":
+      case "taskCategoryId":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

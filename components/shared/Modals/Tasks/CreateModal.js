@@ -28,6 +28,7 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
+import checkValidField from "/components/validations/field"
 
 export default function CreateTaskModal({ hasCallback, onCallback }) {
   // CONSTANTS
@@ -95,20 +96,15 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       case "unitInContract":
       case "isIncurred":
       case "status":
-        console.log(field)
-        console.log(value)
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "status" && value <= 0)
-          || (typeof value === "number" && field === "status" && value < 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -122,6 +118,24 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           }));
         }
         break;
+      case "description":
+      case "startedDate":
+      case "estimateBusinessDay":
+      case "unitUsed":
+      case "isIncurred":
+      case "parentTaskId":  
+      case "taskDesignId":  
+      case "taskCategoryId":  
+      case "designCategoryId":  
+      case "paymentStageId":  
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
       default:
     }
   };

@@ -15,6 +15,7 @@ import DateForm from "/components/shared/Forms/Date";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
+import checkValidField from "/components/validations/field"
 
 export default function CreateStageModal({ success }) {
   const params = useParams();
@@ -39,18 +40,15 @@ export default function CreateStageModal({ success }) {
       case "isPrepaid":
       case "isWarrantyStage":
       case "pricePercentage":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "pricePercentage" && value < 0)
-          || (typeof value === "number" && field === "pricePercentage" && value <= 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -63,6 +61,17 @@ export default function CreateStageModal({ success }) {
             },
           }));
         }
+        break;
+      case "endTimePayment":
+      case "description":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

@@ -15,6 +15,7 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 import { createPaymentStageDesign } from "/services/paymentStageDesignServices";
 import { getAllProjectDesigns } from "/services/projectDesignServices";
+import checkValidField from "/components/validations/field"
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
@@ -48,17 +49,15 @@ export default function CreateProjectCategoryModal({ success }) {
       case "isPrepaid":
       case "isWarrantyStage":
       case "projectDesignId":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && value < 0)
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -71,6 +70,18 @@ export default function CreateProjectCategoryModal({ success }) {
             },
           }));
         }
+        break;
+      case "englishName":
+      case "description":
+      case "englishDescription":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }

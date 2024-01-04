@@ -16,6 +16,8 @@ import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
 import projectTypeOptions from "/constants/enums/projectType";
 import interiorItemTypeOptions from "/constants/enums/interiorItemType";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
 
 import {
   getAdminById,
@@ -44,12 +46,58 @@ export default function TaskCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: false, label: "" },
-    }));
-    handleInputError(field, false, "");
+    switch (field) {
+      case "name":
+      case "username":
+      case "password":
+        const result = checkValidField(value);
+
+        if (result.isValid == false)
+        {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: result.label,
+            },
+        }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "email":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      default:
+    }
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -84,10 +132,6 @@ export default function TaskCategoryDetails() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
-
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
     const transformedValue = transformData(formData);
@@ -115,6 +159,16 @@ export default function TaskCategoryDetails() {
     }
   };
 
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
+
   const transformData = (obj) => {
     const result = { ...obj };
     for (const key in result) {
@@ -126,12 +180,30 @@ export default function TaskCategoryDetails() {
     return result;
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    handleSave();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
   return (
     <PageContainer title={formData.name} description="Chi tiết loại sản phẩm">
       <DetailsPage
         title="Thông tin người quản lý"
         saveMessage="Lưu thông tin người quản lý?"
-        onSave={handleSave}
+        onSave={handleSubmit}
         deleteMessage={"Xoá người quản lý?"}
         deleteLabel={"Xoá"}
         hasDelete

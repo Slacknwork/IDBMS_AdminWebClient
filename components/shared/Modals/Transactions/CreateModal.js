@@ -31,6 +31,7 @@ import NumberForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
+import checkValidField from "/components/validations/field"
 
 const style = {
   position: "absolute",
@@ -94,18 +95,15 @@ export default function CreateTransactionModal({ success }) {
       case "amount":
       case "payerName":
       case "status":
-        if (
-          value === null || value === undefined
-          || (typeof value === "string" && value.trim() === "")
-          || (typeof value === "number" && field !== "status" && value <= 0)
-          || (typeof value === "number" && field === "status" && value < 0) 
-        ) {
+        const result = checkValidField(value);
+
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
             [`${field}Error`]: {
               hasError: true,
-              label: "Không được để trống!",
+              label: result.label,
             },
           }));
         } else {
@@ -118,6 +116,18 @@ export default function CreateTransactionModal({ success }) {
             },
           }));
         }
+        break;
+      case "note":
+      case "userId":
+      case "transactionReceiptImage":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
         break;
       default:
     }
