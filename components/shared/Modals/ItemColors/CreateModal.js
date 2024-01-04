@@ -164,7 +164,7 @@ export default function CreateItemModal() {
       </Grid>
 
       {/* COLOR TYPE */}
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={8}>
         <SelectForm
           title="Loại màu"
           required
