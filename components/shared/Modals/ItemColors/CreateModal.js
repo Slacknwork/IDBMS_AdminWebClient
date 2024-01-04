@@ -19,6 +19,7 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateItemModal() {
   // INIT
@@ -35,6 +36,10 @@ export default function CreateItemModal() {
     primaryColorError: { hasError: false, label: "" },
     secondaryColor: "",
     secondaryColorError: { hasError: false, label: "" },
+    primaryColorFile: null,
+    primaryColorFileError: { hasError: false, label: "" },
+    secondaryColorFile: null,
+    secondaryColorFileError: { hasError: false, label: "" },
   });
 
   const [interiorItemColors, setInteriorItemColors] = useState([]);
@@ -53,9 +58,8 @@ export default function CreateItemModal() {
     switch (field) {
       case "name":
       case "type":
-      case "primaryColor":
         const result = checkValidField(value);
-
+        console.log(field)
         if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -76,8 +80,30 @@ export default function CreateItemModal() {
           }));
         }
         break;
+      case "primaryColorFile":
+      case "secondaryColorFile":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
-      case "secondaryColor":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,
@@ -193,35 +219,36 @@ export default function CreateItemModal() {
 
       {/* PRIMARY COLOR */}
       <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu chính"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Nhập tên màu chính"
-          value={formData.primaryColor}
-          error={formData.primaryColorError.hasError}
-          errorLabel={formData.primaryColorError.label}
-          onChange={(e) => handleInputChange("primaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
+          <FileForm
+            title="Màu chính"
+            titleSpan={3}
+            fieldSpan={9}
+            required
+            subtitle="Kéo thả / chọn hình ảnh màu chính"
+            value={formData.primaryColorFile}
+            imgDisplay={formData.primaryColor}
+            error={formData.primaryColorFileError.hasError}
+            errorLabel={formData.primaryColorFileError.label}
+            onChange={(file) => handleInputChange("primaryColorFile", file)}
+          ></FileForm>
+        </Grid>
 
       {/* SECONDARY COLOR */}
       {formData.type === 0 && (
         <Grid item xs={12} lg={6}>
-          <TextForm
+          <FileForm
             title="Màu phụ"
             titleSpan={3}
             fieldSpan={9}
-            subtitle="Nhập tên màu phụ"
-            value={formData.secondaryColor}
-            error={formData.secondaryColorError.hasError}
-            errorLabel={formData.secondaryColorError.label}
-            onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-          ></TextForm>
+            subtitle="Kéo thả / chọn hình ảnh màu phụ"
+            value={formData.secondaryColorFile}
+            imgDisplay={formData.secondaryColor}
+            error={formData.secondaryColorFileError.hasError}
+            errorLabel={formData.secondaryColorFileError.label}
+            onChange={(file) => handleInputChange("secondaryColorFile", file)}
+          ></FileForm>
         </Grid>
-      )}
-
+        )}
     </FormModal>
   );
 }

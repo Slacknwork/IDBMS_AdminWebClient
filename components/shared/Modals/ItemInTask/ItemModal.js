@@ -91,9 +91,30 @@ export default function ItemModal({
           }));
         }
         break;
+      case "image":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
       case "description":
-      case "image":
       case "origin":
       case "interiorItemColorId":
       case "interiorItemCategoryId":

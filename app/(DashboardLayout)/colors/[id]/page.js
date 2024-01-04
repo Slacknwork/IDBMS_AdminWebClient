@@ -16,6 +16,7 @@ import NumberForm from "/components/shared/Forms/Number";
 import FileForm from "/components/shared/Forms/File";
 import projectTypeOptions from "/constants/enums/projectType";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 import {
   getColorById,
@@ -35,9 +36,13 @@ export default function TaskCategoryDetails() {
     englishNameError: { hasError: false, label: "" },
     type: 0,
     typeError: { hasError: false, label: "" },
-    primaryColor: "",
+    primaryColorFile: null,
+    primaryColorFileError: { hasError: false, label: "" },
+    secondaryColorFile: null,
+    secondaryColorFileError: { hasError: false, label: "" },
+    primaryColor: null,
     primaryColorError: { hasError: false, label: "" },
-    secondaryColor: "",
+    secondaryColor: null,
     secondaryColorError: { hasError: false, label: "" },
   });
 
@@ -45,7 +50,6 @@ export default function TaskCategoryDetails() {
     switch (field) {
       case "name":
       case "type":
-      case "primaryColor":
         const result = checkValidField(value);
         console.log(field)
         if (result.isValid == false) {
@@ -68,8 +72,29 @@ export default function TaskCategoryDetails() {
           }));
         }
         break;
+      case "primaryColorFile":
+      case "secondaryColorFile":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
-      case "secondaryColor":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,
@@ -244,35 +269,36 @@ export default function TaskCategoryDetails() {
 
         {/* PRIMARY COLOR */}
         <Grid item xs={12} lg={6}>
-          <TextForm
+          <FileForm
             title="Màu chính"
             titleSpan={3}
             fieldSpan={9}
             required
-            subtitle="Nhập tên màu chính"
-            value={formData.primaryColor}
-            error={formData.primaryColorError.hasError}
-            errorLabel={formData.primaryColorError.label}
-            onChange={(e) => handleInputChange("primaryColor", e.target.value)}
-          ></TextForm>
+            subtitle="Kéo thả / chọn hình ảnh màu chính"
+            value={formData.primaryColorFile}
+            imgDisplay={formData.primaryColor}
+            error={formData.primaryColorFileError.hasError}
+            errorLabel={formData.primaryColorFileError.label}
+            onChange={(file) => handleInputChange("primaryColorFile", file)}
+          ></FileForm>
         </Grid>
 
-        {/* SECONDARY COLOR */}
-        {formData.type === 0 && (
-          <Grid item xs={12} lg={6}>
-            <TextForm
-              title="Màu phụ"
-              titleSpan={3}
-              fieldSpan={9}
-              subtitle="Nhập tên màu phụ"
-              value={formData.secondaryColor}
-              error={formData.secondaryColorError.hasError}
-              errorLabel={formData.secondaryColorError.label}
-              onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-            ></TextForm>
-          </Grid>
+      {/* SECONDARY COLOR */}
+      {formData.type === 0 && (
+        <Grid item xs={12} lg={6}>
+          <FileForm
+            title="Màu phụ"
+            titleSpan={3}
+            fieldSpan={9}
+            subtitle="Kéo thả / chọn hình ảnh màu phụ"
+            value={formData.secondaryColorFile}
+            imgDisplay={formData.secondaryColor}
+            error={formData.secondaryColorFileError.hasError}
+            errorLabel={formData.secondaryColorFileError.label}
+            onChange={(file) => handleInputChange("secondaryColorFile", file)}
+          ></FileForm>
+        </Grid>
         )}
-
       </DetailsPage>
     </PageContainer>
   );

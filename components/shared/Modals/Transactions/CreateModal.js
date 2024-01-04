@@ -32,6 +32,7 @@ import FormModal from "../../Modals/Form";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 const style = {
   position: "absolute",
@@ -117,9 +118,29 @@ export default function CreateTransactionModal({ success }) {
           }));
         }
         break;
+      case "transactionReceiptImage":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "note":
       case "userId":
-      case "transactionReceiptImage":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,

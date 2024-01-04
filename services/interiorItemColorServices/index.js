@@ -66,15 +66,22 @@ const getColorById = async (id) => {
 
 const createInteriorItemColor = async (request) => {
     try {
-        const token = store.getState().user?.token ?? ""
+        const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
+
+        Object.keys(request).forEach((key) => {
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
+        });
+
         const url = `${endpoint}`;
         const response = await fetchData({
             url,
             method: "POST",
-            contentType: "application/json",
             token,
-            body: JSON.stringify(request),
-        });
+            body: formData,
+          });
         return response.data;
     } catch (error) {
         console.error('Error creating interior item color:', error);
@@ -84,15 +91,22 @@ const createInteriorItemColor = async (request) => {
 
 const updateInteriorItemColor = async (colorId, request) => {
     try {
-        const token = store.getState().user?.token ?? ""
+        const formData = new FormData();
+        const token = store.getState().user?.token ?? "";
+
+        Object.keys(request).forEach((key) => {
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
+        });
+
         const url = `${endpoint}/${colorId}`;
         const response = await fetchData({
             url,
             method: "PUT",
-            contentType: "application/json",
             token,
-            body: JSON.stringify(request),
-        });
+            body: formData,
+          });
         return response.data;
     } catch (error) {
         console.error('Error updating interior item color:', error);
