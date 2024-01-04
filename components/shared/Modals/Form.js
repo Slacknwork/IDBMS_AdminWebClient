@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -34,6 +34,7 @@ export default function FormModal({
   submitLabel,
   hasOpenEvent,
   isOpen = false,
+  setOpenModal,
   onOpen,
   onSubmit,
   stickyBottom,
@@ -64,17 +65,22 @@ export default function FormModal({
 
   // MODAL TOGGLE
   const [open, setOpen] = useState(isOpen);
-  const handleOpen = () => {
+  const handleOpenModal = () => {
     hasOpenEvent && onOpen();
+    setOpenModal(true);
     setOpen(true);
   };
-  const handleClose = () => {
+  const handleCloseModal = () => {
     setOpen(false);
   };
   const handleSubmit = () => {
     !disableSubmitFunction && onSubmit();
-    !disableCloseOnSubmit && handleClose();
+    !disableCloseOnSubmit && handleCloseModal();
   };
+
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
 
   return (
     <Box sx={sx}>
@@ -85,7 +91,7 @@ export default function FormModal({
             variant={buttonVariant ?? "contained"}
             label={buttonLabel}
             color={color ?? "primary"}
-            onClick={handleOpen}
+            onClick={handleOpenModal}
             icon={buttonEndIcon}
             sx={{
               display: "flex",
@@ -112,7 +118,7 @@ export default function FormModal({
             color={color}
             variant={buttonVariant ?? "contained"}
             disableElevation
-            onClick={handleOpen}
+            onClick={handleOpenModal}
             endIcon={buttonEndIcon}
           >
             {buttonLabel}
@@ -121,7 +127,7 @@ export default function FormModal({
       )}
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseModal}
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
@@ -148,7 +154,7 @@ export default function FormModal({
               sx={{
                 my: "auto",
               }}
-              onClick={handleClose}
+              onClick={handleCloseModal}
             >
               <CloseIcon />
             </IconButton>

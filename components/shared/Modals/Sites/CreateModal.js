@@ -8,9 +8,9 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createSite } from "/services/siteServices";
-import checkValidField from "/components/validations/field"
-import checkValidEmail from "/components/validations/email"
-import checkValidPhone from "/components/validations/phone"
+import checkValidField from "/components/validations/field";
+import checkValidEmail from "/components/validations/email";
+import checkValidPhone from "/components/validations/phone";
 
 export default function CreateSiteModal({ onCreate }) {
   // CONSTANTS
@@ -134,7 +134,9 @@ export default function CreateSiteModal({ onCreate }) {
   };
 
   // SUBMIT FORM
-  const [formHasError, setFormHasError] = useState(true);
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleCreate = async () => {
@@ -160,14 +162,13 @@ export default function CreateSiteModal({ onCreate }) {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
       setSwitchSubmit(false);
       return;
     }
-
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
@@ -191,13 +192,14 @@ export default function CreateSiteModal({ onCreate }) {
 
   return (
     <FormModal
-      isOpen={searchParams.get(modalOpenQuery) ?? false}
+      isOpen={openModal}
       buttonLabel="Tạo"
       title="Tạo khu công trình"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
+      setOpenModal={setOpenModal}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
