@@ -28,7 +28,7 @@ export default function CreateRoomModal({ onCreate }) {
     descriptionError: { hasError: false, label: "" },
     area: 0,
     areaError: { hasError: false, label: "" },
-    roomTypeId: "",
+    roomTypeId: null,
     roomTypeError: { hasError: false, label: "" },
     language: 0,
     languageError: { hasError: false, label: "" },
@@ -40,12 +40,12 @@ export default function CreateRoomModal({ onCreate }) {
     switch (field) {
       case "usePurpose":
       case "area":
-      case "language":  
+      case "language":
         if (
           value === null || value === undefined
           || (typeof value === "string" && value.trim() === "")
           || (typeof value === "number" && field !== "area" && value < 0)
-          || (typeof value === "number" && field === "area" && value <= 0) 
+          || (typeof value === "number" && field === "area" && value <= 0)
         ) {
           setFormData((prevData) => ({
             ...prevData,
