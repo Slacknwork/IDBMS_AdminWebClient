@@ -96,6 +96,7 @@ export default function WarrantyClaimDetails() {
             },
           }));
         }
+        break;
       case "reason":
       case "solution":
       case "note":  

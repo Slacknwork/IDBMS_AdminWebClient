@@ -493,29 +493,34 @@ export default function ProjectTasksPage() {
                   <TableHead>
                     <TableRow>
                       <StyledTableCell width={"1%"}></StyledTableCell>
-                      <StyledTableCell width={"24%"}>
+                      <StyledTableCell width={"22%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Công việc
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"12.5%"}>
+                      <StyledTableCell width={"11.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Giá ước tính
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"12.5%"}>
+                      <StyledTableCell width={"11.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Ngày bắt đầu
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"17.5%"}>
+                      <StyledTableCell width={"15.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Tiến độ
                         </Typography>
                       </StyledTableCell>
-                      <StyledTableCell width={"12.5%"}>
+                      <StyledTableCell width={"11.5%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Phân công
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell width={"11.5%"}>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Trạng thái
                         </Typography>
                       </StyledTableCell>
                       <StyledTableCell align="right"></StyledTableCell>
@@ -589,6 +594,11 @@ export default function ProjectTasksPage() {
                           ) : (
                             <Typography variant="p">Chưa phân công</Typography>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" fontWeight={400}>
+                            {projectTaskStatusOptions[task.status]}
+                          </Typography>
                         </TableCell>
                         <TableCell align="right">
                           <Button

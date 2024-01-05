@@ -96,6 +96,7 @@ export default function RoomTypeDetails() {
             },
           }));
         }
+        break;
       case "englishName":
       case "description":
       case "englishDescription":

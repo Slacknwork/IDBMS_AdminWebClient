@@ -93,6 +93,7 @@ export default function CreateRoomTypeModal({ success }) {
             },
           }));
         }
+        break;
       case "englishName":
       case "description":
       case "englishDescription":

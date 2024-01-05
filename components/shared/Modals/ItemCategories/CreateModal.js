@@ -112,6 +112,7 @@ export default function CreateItemModal() {
             },
           }));
         }
+        break;
       case "englishName":
       case "description":
       case "englishDescription":
