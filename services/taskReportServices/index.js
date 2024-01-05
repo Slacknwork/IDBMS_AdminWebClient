@@ -4,6 +4,7 @@ import { fetchData } from "/utils/api";
 const endpoint = "/TaskReports";
 
 const getAllTaskReports = async ({
+  projectId = "",
   name = "",
   pageSize = "",
   pageNo = "",
@@ -12,7 +13,7 @@ const getAllTaskReports = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -25,6 +26,7 @@ const getAllTaskReports = async ({
 };
 
 const getTaskReportsByProjectTaskId = async ({
+  projectId = "",
   projectTaskId = "",
   name = "",
   pageSize = "",
@@ -34,7 +36,7 @@ const getTaskReportsByProjectTaskId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -72,7 +74,7 @@ const createTaskReport = async (projectId, request) => {
   try {
     const url = `${endpoint}?projectId=${projectId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "POST",
         token,
         body: formData,
@@ -84,12 +86,12 @@ const createTaskReport = async (projectId, request) => {
   }
 };
 
-const updateTaskReport = async (reportId, request) => {
+const updateTaskReport = async (reportId, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         contentType: "application/json",
         token,
@@ -102,12 +104,12 @@ const updateTaskReport = async (reportId, request) => {
   }
 };
 
-const deleteTaskReport = async (reportId) => {
+const deleteTaskReport = async (reportId, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "DELETE",
         token,
         body: null,
@@ -119,12 +121,12 @@ const deleteTaskReport = async (reportId) => {
   }
 };
 
-const getTaskReportById = async (reportId) => {
+const getTaskReportById = async (reportId, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,

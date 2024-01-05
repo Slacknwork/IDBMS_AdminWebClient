@@ -13,7 +13,7 @@ const getSitesByProjectId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -26,6 +26,7 @@ const getSitesByProjectId = async ({
 };
 
 const getSitesByUserId = async ({
+  projectId = "",
   userId = "",
   nameOrAddress = "",
   pageSize = "",
@@ -35,7 +36,7 @@ const getSitesByUserId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/user/${userId}?nameOrAddress=${nameOrAddress}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -47,13 +48,13 @@ const getSitesByUserId = async ({
   }
 };
 
-const getSiteById = async (id) => {
+const getSiteById = async (id, projectId = "") => {
   const token = store.getState().user?.token ?? "";
 
   try {
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -65,13 +66,13 @@ const getSiteById = async (id) => {
   }
 };
 
-const getSites = async ({ search = "", page = "", pageSize = "" } = {}) => {
+const getSites = async ({ projectId = "", search = "", page = "", pageSize = "" } = {}) => {
   const token = store.getState().user?.token ?? "";
 
   try {
     const url = `${endpoint}?nameOrAddress=${search}&pageSize=${pageSize}&pageNo=${page}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,

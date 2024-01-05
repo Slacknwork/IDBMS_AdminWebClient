@@ -15,7 +15,7 @@ const getPaymentStagesByProjectId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -38,7 +38,7 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -50,12 +50,12 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
   }
 };
 
-const getPaymentStagesById = async (id) => {
+const getPaymentStagesById = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -67,12 +67,12 @@ const getPaymentStagesById = async (id) => {
   }
 };
 
-const createPaymentStage = async (request) => {
+const createPaymentStage = async (request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "POST",
       contentType: "application/json",
       token,
@@ -85,12 +85,12 @@ const createPaymentStage = async (request) => {
   }
 };
 
-const updatePaymentStage = async (id, request) => {
+const updatePaymentStage = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -103,12 +103,12 @@ const updatePaymentStage = async (id, request) => {
   }
 };
 
-const deletePaymentStage = async (id) => {
+const deletePaymentStage = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "DELETE",
       token,
       body: null,
@@ -120,12 +120,12 @@ const deletePaymentStage = async (id) => {
   }
 };
 
-const startPaymentStage = async (id) => {
+const startPaymentStage = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/start`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -138,12 +138,12 @@ const startPaymentStage = async (id) => {
   }
 };
 
-const endPaymentStage = async (id) => {
+const endPaymentStage = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/end`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -156,12 +156,12 @@ const endPaymentStage = async (id) => {
   }
 };
 
-const reopenPaymentStage = async (id, request) => {
+const reopenPaymentStage = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/reopen`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -174,12 +174,12 @@ const reopenPaymentStage = async (id, request) => {
   }
 };
 
-const suspendPaymentStage = async (id) => {
+const suspendPaymentStage = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/suspend`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,
