@@ -102,6 +102,7 @@ export default function CreateReportModal({ success }) {
             },
           }));
         }
+        break;
       case "description":
         setFormData((prevData) => ({
           ...prevData,

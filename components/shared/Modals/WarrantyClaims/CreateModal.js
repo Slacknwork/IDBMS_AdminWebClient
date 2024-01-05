@@ -121,6 +121,7 @@ export default function CreateWarrantyClaimModal({ success }) {
             },
           }));
         }
+        break;
       case "reason":
       case "solution":
       case "note":

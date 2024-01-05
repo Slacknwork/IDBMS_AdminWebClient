@@ -111,6 +111,7 @@ export default function ProjectDocumentDetails(projectDocument) {
             },
           }));
         }
+        break;
       case "description":
         setFormData((prevData) => ({
           ...prevData,

@@ -104,6 +104,7 @@ export default function TaskCategoryDetails() {
             },
           }));
         }
+        break;
       case "englishName":
       case "description":
       case "englishDescription":
