@@ -7,6 +7,7 @@ import { createNotificationForAllCustomers } from "/services/notificationService
 import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
 import checkValidField from "/components/validations/field"
+import { useSearchParams } from "next/navigation";
 
 export default function CreateNotificationModalForCustomers(success) {
   const [formData, setFormData] = useState({
@@ -15,7 +16,9 @@ export default function CreateNotificationModalForCustomers(success) {
     content: "",
     contentError: { hasError: false, label: "" },
   });
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const handleInputChange = (field, value) => {
     switch (field) {
       case "category":
@@ -51,7 +54,9 @@ export default function CreateNotificationModalForCustomers(success) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -64,6 +69,7 @@ export default function CreateNotificationModalForCustomers(success) {
 
   const handleCreate = async () => {
     try {
+      if (!switchSubmit) return;
       const response = await createNotificationForAllCustomers(formData);
       toast.success("Gửi thành công!");
       console.log(response);
@@ -87,17 +93,20 @@ export default function CreateNotificationModalForCustomers(success) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Gửi thông báo"
       title="Gửi thông báo cho tất cả khách hàng trong hệ thống"
       submitLabel="Gửi"
       onSubmit={handleSubmit}
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>

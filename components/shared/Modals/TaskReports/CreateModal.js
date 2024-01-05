@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -28,11 +28,14 @@ import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateReportModal({ success }) {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [task, setTask] = useState({});
   const [formData, setFormData] = useState({
     name: "",
@@ -78,8 +81,28 @@ export default function CreateReportModal({ success }) {
           }));
         }
       break;
-      case "description":
       case "documentList":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "description":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,
@@ -123,7 +146,9 @@ export default function CreateReportModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -136,6 +161,7 @@ export default function CreateReportModal({ success }) {
 
   const handleCreate = async () => {
     try {
+      if (!switchSubmit) return;
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
       success(true)
@@ -168,18 +194,21 @@ export default function CreateReportModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo báo cáo"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       <Grid item xs={12} lg={6}>
         <Grid container spacing={4}>

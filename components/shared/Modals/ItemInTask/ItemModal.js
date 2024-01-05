@@ -14,6 +14,7 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 import checkValidField from "/components/validations/field"
+import { useSearchParams } from "next/navigation";
 
 const initialState = {
   name: "",
@@ -58,7 +59,9 @@ export default function ItemModal({
   onCreateItemInTask,
 }) {
   const [formData, setFormData] = useState({ ...initialState, ...item });
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
@@ -91,9 +94,30 @@ export default function ItemModal({
           }));
         }
         break;
+      case "image":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
       case "description":
-      case "image":
       case "origin":
       case "interiorItemColorId":
       case "interiorItemCategoryId":
@@ -117,7 +141,9 @@ export default function ItemModal({
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -129,6 +155,7 @@ export default function ItemModal({
   };
 
   const onCreateInteriorItem = () => {
+    if (!switchSubmit) return;
     try {
       onCreateItemInTask(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
@@ -151,19 +178,22 @@ export default function ItemModal({
       return;
     }
 
+    setOpenModal(false);
     onCreateInteriorItem();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       sx={sx}
       buttonLabel={buttonLabel ?? "Tạo mới"}
       title="Thông tin đồ nội thất"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
 
       {/* NAME */}

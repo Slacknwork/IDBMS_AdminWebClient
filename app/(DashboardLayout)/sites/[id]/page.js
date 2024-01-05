@@ -217,10 +217,7 @@ export default function SiteDetails() {
         loading={loading}
         title="Thông tin khu công trình"
         saveMessage="Lưu thông khu công trình?"
-        deleteMessage="Xóa khu công trình?"
         onSave={handleSubmit}
-        hasDelete
-        onDelete={onDeleteSite}
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>

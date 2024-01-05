@@ -29,7 +29,7 @@ import { toast } from "react-toastify";
 import colorTypeOptions from "/constants/enums/colorType";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import checkValidField from "/components/validations/field"
-
+import checkValidUrl from "/components/validations/url"
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -81,11 +81,32 @@ export default function TaskCategoryDetails() {
           }));
         }
         break;
+      case "bannerImage":
+      case "iconImage":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
       case "description":
       case "englishDescription":
-      case "bannerImage":
-      case "iconImage":
       case "parentCategoryId":
         setFormData((prevData) => ({
           ...prevData,

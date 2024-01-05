@@ -67,10 +67,15 @@ export default function FormModal({
   const [open, setOpen] = useState(isOpen);
   const handleOpenModal = () => {
     hasOpenEvent && onOpen();
-    setOpenModal(true);
+    if (typeof setOpenModal === "function") {
+      setOpenModal(true);
+    }
     setOpen(true);
   };
   const handleCloseModal = () => {
+    if (typeof setOpenModal === "function") {
+      setOpenModal(false);
+    }
     setOpen(false);
   };
   const handleSubmit = () => {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
@@ -11,10 +11,13 @@ import CheckboxForm from "/components/shared/Forms/Checkbox";
 import FileForm from "/components/shared/Forms/File";
 import { createProjectCategory } from "/services/projectCategoryServices";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateProjectCategoryModal({ success }) {
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -51,8 +54,28 @@ export default function CreateProjectCategoryModal({ success }) {
           }));
         }
         break;
-      case "englishName":
       case "iconImage":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "englishName":
       case "isHidden":
         setFormData((prevData) => ({
           ...prevData,
@@ -72,7 +95,9 @@ export default function CreateProjectCategoryModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -84,7 +109,7 @@ export default function CreateProjectCategoryModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createProjectCategory(formData);
       toast.success("Thêm thành công!");
@@ -108,17 +133,20 @@ export default function CreateProjectCategoryModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo phân loại dự án"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={12}>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Autocomplete, Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
@@ -23,7 +23,9 @@ import checkValidField from "/components/validations/field"
 
 export default function CreateTaskDesignModal({ success }) {
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -93,7 +95,9 @@ export default function CreateTaskDesignModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -105,7 +109,7 @@ export default function CreateTaskDesignModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createTaskDesign(formData);
       toast.success("Thêm thành công!");
@@ -160,18 +164,21 @@ export default function CreateTaskDesignModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo thiết kế công việc"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>

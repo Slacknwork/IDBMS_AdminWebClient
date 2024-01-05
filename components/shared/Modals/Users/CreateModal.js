@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
@@ -19,7 +19,9 @@ import checkValidPhone from "/components/validations/phone"
 
 export default function CreateUserModal({ success }) {
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     bio: "",
@@ -142,7 +144,9 @@ export default function CreateUserModal({ success }) {
       [`${field}Error`]: { hasError, label },
     }));
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -154,7 +158,7 @@ export default function CreateUserModal({ success }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createUser(formData);
       toast.success("Thêm thành công!");
@@ -178,18 +182,21 @@ export default function CreateUserModal({ success }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo người dùng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>

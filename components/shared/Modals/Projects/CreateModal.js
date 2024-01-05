@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 
 import { createProject, getProjectsBySiteId } from "/services/projectServices";
@@ -35,7 +35,9 @@ export default function CreateProjectModal({ children }) {
   const params = useParams();
   const router = useRouter();
   const admin = useSelector((state) => state.user);
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -121,29 +123,15 @@ export default function CreateProjectModal({ children }) {
   // SUBMIT FORM
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const handleSubmit = () => {
     for (const field in formData) {
       handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
-
-  useEffect(() => {
-    if (!switchSubmit) return;
-
-    const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
-
-    if (hasErrors) {
-      toast.error("Dữ liệu nhập không đúng yêu cầu!");
-      setSwitchSubmit(false);
-      return;
-    }
-
-    handleCreate();
-    setSwitchSubmit(false);
-  }, [switchSubmit]);
 
   const [decorProjects, setDecorProjects] = useState([]);
 
@@ -177,12 +165,8 @@ export default function CreateProjectModal({ children }) {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchOptionsFromApi();
-  }, []);
-
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createProject(formData);
       console.log(response);
@@ -194,14 +178,35 @@ export default function CreateProjectModal({ children }) {
     }
   };
 
+  useEffect(() => {
+    fetchOptionsFromApi();
+
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    setOpenModal(false);
+    handleCreate();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo dự án"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>

@@ -26,7 +26,9 @@ import checkValidField from "/components/validations/field"
 export default function CreateItemModal() {
   // INIT
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -135,9 +137,30 @@ export default function CreateItemModal() {
           }));
         }
         break;
+      case "image":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
       case "description":
-      case "image":
       case "origin":
       case "interiorItemColorId":
       case "interiorItemCategoryId":
@@ -155,14 +178,9 @@ export default function CreateItemModal() {
     }
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
-  const [formHasError, setFormHasError] = useState(true);
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleSubmit = () => {
@@ -174,6 +192,7 @@ export default function CreateItemModal() {
 
   const onCreateInteriorItem = async () => {
     try {
+      if (!switchSubmit) return;
       const response = await createInteriorItem(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
       router.push(`/items/${response?.id}`);
@@ -187,14 +206,14 @@ export default function CreateItemModal() {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
       setSwitchSubmit(false);
       return;
     }
-
+    
+    setOpenModal(false);
     onCreateInteriorItem();
     setSwitchSubmit(false);
   }, [switchSubmit]);
@@ -202,12 +221,14 @@ export default function CreateItemModal() {
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo đồ dùng"
       title="Tạo đồ dùng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
 
       {/* NAME */}

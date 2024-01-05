@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
@@ -19,11 +19,14 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateItemModal() {
   // INIT
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -35,6 +38,10 @@ export default function CreateItemModal() {
     primaryColorError: { hasError: false, label: "" },
     secondaryColor: "",
     secondaryColorError: { hasError: false, label: "" },
+    primaryColorFile: null,
+    primaryColorFileError: { hasError: false, label: "" },
+    secondaryColorFile: null,
+    secondaryColorFileError: { hasError: false, label: "" },
   });
 
   const [interiorItemColors, setInteriorItemColors] = useState([]);
@@ -45,17 +52,12 @@ export default function CreateItemModal() {
     await Promise.all([]);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
-
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
       case "type":
-      case "primaryColor":
         const result = checkValidField(value);
-
+        console.log(field)
         if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -76,8 +78,30 @@ export default function CreateItemModal() {
           }));
         }
         break;
+      case "primaryColorFile":
+      case "secondaryColorFile":
+        const validFile = checkValidUrl(value);
+        console.log(field)
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "englishName":
-      case "secondaryColor":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,
@@ -100,7 +124,9 @@ export default function CreateItemModal() {
 
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const handleSubmit = () => {
     for (const field in formData) {
       handleInputChange(field, formData[field]);
@@ -109,6 +135,7 @@ export default function CreateItemModal() {
   };
 
   const handleCreate = async () => {
+    if (!switchSubmit) return;
     try {
       const response = await createInteriorItemColor(formData);
       toast.success(`Đã tạo '${formData?.name}!'`);
@@ -120,6 +147,8 @@ export default function CreateItemModal() {
   };
 
   useEffect(() => {
+    fetchDataFromApi();
+
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -131,18 +160,21 @@ export default function CreateItemModal() {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo màu"
       title="Tạo màu"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={6}>
@@ -193,35 +225,36 @@ export default function CreateItemModal() {
 
       {/* PRIMARY COLOR */}
       <Grid item xs={12} lg={6}>
-        <TextForm
-          title="Màu chính"
-          titleSpan={3}
-          fieldSpan={9}
-          required
-          subtitle="Nhập tên màu chính"
-          value={formData.primaryColor}
-          error={formData.primaryColorError.hasError}
-          errorLabel={formData.primaryColorError.label}
-          onChange={(e) => handleInputChange("primaryColor", e.target.value)}
-        ></TextForm>
-      </Grid>
+          <FileForm
+            title="Màu chính"
+            titleSpan={3}
+            fieldSpan={9}
+            required
+            subtitle="Kéo thả / chọn hình ảnh màu chính"
+            value={formData.primaryColorFile}
+            imgDisplay={formData.primaryColor}
+            error={formData.primaryColorFileError.hasError}
+            errorLabel={formData.primaryColorFileError.label}
+            onChange={(file) => handleInputChange("primaryColorFile", file)}
+          ></FileForm>
+        </Grid>
 
       {/* SECONDARY COLOR */}
       {formData.type === 0 && (
         <Grid item xs={12} lg={6}>
-          <TextForm
+          <FileForm
             title="Màu phụ"
             titleSpan={3}
             fieldSpan={9}
-            subtitle="Nhập tên màu phụ"
-            value={formData.secondaryColor}
-            error={formData.secondaryColorError.hasError}
-            errorLabel={formData.secondaryColorError.label}
-            onChange={(e) => handleInputChange("secondaryColor", e.target.value)}
-          ></TextForm>
+            subtitle="Kéo thả / chọn hình ảnh màu phụ"
+            value={formData.secondaryColorFile}
+            imgDisplay={formData.secondaryColor}
+            error={formData.secondaryColorFileError.hasError}
+            errorLabel={formData.secondaryColorFileError.label}
+            onChange={(file) => handleInputChange("secondaryColorFile", file)}
+          ></FileForm>
         </Grid>
-      )}
-
+        )}
     </FormModal>
   );
 }

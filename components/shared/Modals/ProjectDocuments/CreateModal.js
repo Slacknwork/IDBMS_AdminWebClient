@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
 
@@ -39,7 +39,9 @@ export default function DocumentModal({ success, projectDocument }) {
     setOpen(false);
   };
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     name: projectDocument?.name || "",
     nameError: { hasError: false, label: "" },
@@ -90,8 +92,28 @@ export default function DocumentModal({ success, projectDocument }) {
           }));
         }
         break;
-      case "description":
       case "file":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+      case "description":
       case "projectDocumentTemplateId":
         setFormData((prevData) => ({
           ...prevData,
@@ -145,7 +167,9 @@ export default function DocumentModal({ success, projectDocument }) {
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
   const [projectDocumentTemplates, setProjectDocumentTemplates] = useState([]);
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const handleSubmit = () => {
     for (const field in formData) {
       handleInputChange(field, formData[field]);
@@ -154,7 +178,7 @@ export default function DocumentModal({ success, projectDocument }) {
   };
 
   const handleCreate = async () => {
-    console.log(formData);
+    if (!switchSubmit) return;
     try {
       const response = await createProjectDocument(formData);
       toast.success("Thêm thành công!");
@@ -179,18 +203,21 @@ export default function DocumentModal({ success, projectDocument }) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Tạo"
       title="Tạo tài liệu"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* NAME */}
       <Grid item xs={12} lg={12}>

@@ -17,6 +17,7 @@ import FileForm from "/components/shared/Forms/File";
 import projectTypeOptions from "/constants/enums/projectType";
 import interiorItemTypeOptions from "/constants/enums/interiorItemType";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 import {
   getAllTransactions,
@@ -85,9 +86,29 @@ export default function TransactionDetails() {
           }));
         }
         break;
+      case "transactionReceiptImage":
+        const validFile = checkValidUrl(value);
+        if (validFile.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validFile.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
       case "note":
       case "userId":
-      case "transactionReceiptImage":
         setFormData((prevData) => ({
           ...prevData,
           [field]: value,

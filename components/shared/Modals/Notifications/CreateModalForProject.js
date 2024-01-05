@@ -14,13 +14,15 @@ import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
 import { createNotificationForProject } from "/services/notificationServices";
 import { getUsersByParticipationInProject } from "/services/projectParticipationServices";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import participationRoleOptions from "../../../../constants/enums/participationRole";
 import checkValidField from "/components/validations/field"
 
 export default function CreateNotificationModalForProject(success) {
   const params = useParams();
+  const searchParams = useSearchParams();
 
+  const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
     category: "",
     categoryError: { hasError: false, label: "" },
@@ -78,6 +80,7 @@ export default function CreateNotificationModalForProject(success) {
   };
 
   const handleCreate = async () => {
+    if (!switchSubmit) return;
     let userIds = [];
     if (formData.selectedNotificationOption === 0) {
       userIds = users.map((participation) => participation?.user?.id);
@@ -129,7 +132,9 @@ export default function CreateNotificationModalForProject(success) {
     await Promise.all([fetchUsers()]);
     setLoading(false);
   };
-
+  const [openModal, setOpenModal] = useState(
+    searchParams.get(modalOpenQuery) ?? false
+  );
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
@@ -153,6 +158,7 @@ export default function CreateNotificationModalForProject(success) {
       return;
     }
 
+    setOpenModal(false);
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
@@ -165,11 +171,13 @@ export default function CreateNotificationModalForProject(success) {
 
   return (
     <FormModal
+      isOpen={openModal}
+      setOpenModal={setOpenModal}
       buttonLabel="Gửi thông báo"
       title="Gửi thông báo cho thành viên dự án"
       submitLabel="Gửi"
       onSubmit={handleSubmit}
-      disableCloseOnSubmit={formHasError}
+      disableCloseOnSubmit
     >
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>
