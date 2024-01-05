@@ -86,17 +86,17 @@ export default function PaymentStages() {
       const projectId = params.id;
       const search = searchParams.get(searchQuery) ?? "";
       const status = searchParams.get(statusQuery) ?? "";
-      const page = searchParams.get(pageQuery) || defaultPage;
+      const pageNo = searchParams.get(pageQuery) || defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) || defaultPageSize;
 
       try {
         setLoading(true);
         const data = await getPaymentStagesByProjectIdWithAllowedAction({
           projectId,
-          search,
           status,
-          page,
+          search,
           pageSize,
+          pageNo,
         });
         setCount(data.totalItem);
         setStages(data.list);
@@ -255,14 +255,14 @@ export default function PaymentStages() {
                   </Typography>
                   {response.stage?.penaltyFee > 0
                     ? "+ " +
-                      (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
+                    (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
                     : null}
                   <Typography variant="subtitle2" fontWeight={800}>
                     {response.stage?.isIncurredAmountPaid
                       ? "(Đã trả)"
                       : response.stage?.isContractAmountPaid
-                      ? "(Chưa trả)"
-                      : null}
+                        ? "(Chưa trả)"
+                        : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -273,8 +273,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.startedDate
                       ? `${new Date(
-                          response.stage.startedDate
-                        ).toLocaleDateString("vi-VN")}`
+                        response.stage.startedDate
+                      ).toLocaleDateString("vi-VN")}`
                       : "Chưa xác định"}
                   </Typography>
                   <Typography
@@ -291,8 +291,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.endDate
                       ? `${new Date(response.stage.endDate).toLocaleDateString(
-                          "vi-VN"
-                        )}`
+                        "vi-VN"
+                      )}`
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
@@ -312,7 +312,7 @@ export default function PaymentStages() {
                       px: "4px",
                       backgroundColor:
                         stageStatusBackgroundChipColors[
-                          response.stage?.status
+                        response.stage?.status
                         ] || "error",
                     }}
                     size="small"
