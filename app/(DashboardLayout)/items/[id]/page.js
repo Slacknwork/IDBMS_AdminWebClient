@@ -281,6 +281,7 @@ export default function ItemDetails() {
                 error={formData.codeError.hasError}
                 errorLabel={formData.codeError.label}
                 onChange={(e) => handleInputChange("code", e.target.value)}
+                disabled
               ></TextForm>
             </Grid>
 
