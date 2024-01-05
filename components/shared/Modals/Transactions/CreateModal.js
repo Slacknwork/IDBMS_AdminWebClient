@@ -141,6 +141,7 @@ export default function CreateTransactionModal({ success }) {
             },
           }));
         }
+        break;
       case "note":
       case "userId":
         setFormData((prevData) => ({
@@ -229,6 +230,17 @@ export default function CreateTransactionModal({ success }) {
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
+  useEffect(() => {
+    const selectedUser = users.find(u => u.id === formData.userId);
+
+    if (selectedUser) {
+      setFormData(prevData => ({
+        ...prevData,
+        payerName: selectedUser.name ?? "",
+      }));
+    }
+  }, [formData.userId, users]);
+
   return (
     <FormModal
       isOpen={openModal}
@@ -277,7 +289,7 @@ export default function CreateTransactionModal({ success }) {
           options={users}
           error={formData.userIdError.hasError}
           errorLabel={formData.userIdError.label}
-          onChange={(value) => handleInputChange("user", value)}
+          onChange={(value) => handleInputChange("userId", value)}
         ></AutocompleteForm>
       </Grid>
 

@@ -33,43 +33,6 @@ const getAllUsers = async ({
   }
 };
 
-// Count users with ODATA
-const countUsersFilter = async (search, status) => {
-  const searchQuery = `(contains(Name, '${search}') or contains(email, '${search}'))`;
-  const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
-  try {
-    const response = await fetch(
-      `${API_ODATA_URL}/$count?$filter=${statusQuery}${searchQuery}`
-    );
-    const count = await response.text();
-    return parseInt(count, 10);
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
-
-// Fetch users with ODATA
-const getUsersFilter = async (search, status, page, pageSize) => {
-  const searchQuery = `(contains(Name, '${search}') or contains(email, '${search}'))`;
-  const statusQuery = status ? `Status in ('${status.join("','")}') and ` : "";
-  const pagination = `$top=${pageSize}&$skip=${page * pageSize}`;
-  try {
-    const response = await fetch(
-      `${API_ODATA_URL}?$filter=${statusQuery}${searchQuery}&${pagination}`
-    );
-    const users = await response.json();
-    return mapFromOdata(users).map((user) => ({
-      ...user,
-      language: languageIndex[user.language],
-      status: userStatusIndex[user.status],
-    }));
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
-
 // Fetch user by ID
 const getUserById = async (userId) => {
   try {
@@ -145,8 +108,6 @@ const updateUserStatus = async (userId, status) => {
 
 export {
   getAllUsers,
-  countUsersFilter,
-  getUsersFilter,
   getUserById,
   createUser,
   updateUser,

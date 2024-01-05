@@ -63,6 +63,8 @@ export default function TaskOverviewPage() {
     taskDesignIdError: { hasError: false, label: "" },
     roomId: null,
     roomIdError: { hasError: false, label: "" },
+    parentTaskId: null,
+    parentTaskIdError: { hasError: false, label: "" },
     status: -1,
     statusError: { hasError: false, label: "" },
     designCategoryId: "",
@@ -109,19 +111,19 @@ export default function TaskOverviewPage() {
       case "estimateBusinessDay":
       case "unitUsed":
       case "isIncurred":
-      case "parentTaskId":  
-      case "taskDesignId":  
-      case "taskCategoryId":  
-      case "designCategoryId":  
-      case "paymentStageId":  
+      case "parentTaskId":
+      case "taskDesignId":
+      case "taskCategoryId":
+      case "designCategoryId":
+      case "paymentStageId":
         setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
       default:
     }
   };
@@ -399,6 +401,24 @@ export default function TaskOverviewPage() {
                   handleInputChange("roomId", value);
                 }}
               ></AutocompleteGroupForm>
+            </Grid>
+
+            {/* PARENT TASK */}
+            <Grid item xs={12} lg={12}>
+              <AutocompleteForm
+                title="Công việc phụ thuộc"
+                titleSpan={3}
+                fieldSpan={9}
+                subtitle="Chọn công việc phụ thuộc"
+                value={formData.parentTaskId}
+                options={tasks}
+                error={formData.parentTaskIdError.hasError}
+                errorLabel={formData.parentTaskIdError.label}
+                onChange={(value) => {
+                  handleInputChange("parentTaskId", value);
+                }}
+                disableOptions={formData.id}
+              ></AutocompleteForm>
             </Grid>
 
             {/* DESCRIPTION */}

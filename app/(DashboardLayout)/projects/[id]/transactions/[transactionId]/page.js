@@ -107,6 +107,7 @@ export default function TransactionDetails() {
             },
           }));
         }
+        break;
       case "note":
       case "userId":
         setFormData((prevData) => ({

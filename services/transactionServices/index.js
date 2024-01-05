@@ -8,7 +8,7 @@ const getAllTransactions = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
@@ -32,7 +32,7 @@ const getTransactionsByProjectId = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
@@ -56,7 +56,7 @@ const getTransactionsByUserId = async ({
     type = "",
     status = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
@@ -91,24 +91,24 @@ const getTransactionById = async (id) => {
     }
 };
 
-const createTransaction = async (request) => {
+const createTransaction = async (request, projectId = "") => {
     try {
         const formData = new FormData();
         const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const url = `${endpoint}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching create transaction:', error);
@@ -122,9 +122,9 @@ const updateTransaction = async (id, request) => {
         const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const url = `${endpoint}/${id}`;
@@ -133,7 +133,7 @@ const updateTransaction = async (id, request) => {
             method: "PUT",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching update transaction:', error);
