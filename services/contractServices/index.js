@@ -8,7 +8,7 @@ const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}/individual`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -25,7 +25,7 @@ const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}/company`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,

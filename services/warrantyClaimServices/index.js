@@ -36,7 +36,7 @@ const getWarrantyClaimsByProjectId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/project/${projectId}?isCompanyCover=${isCompanyCover}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -71,12 +71,12 @@ const getWarrantyClaimsByUserId = async ({
     }
 };
 
-const getWarrantyClaimById = async (id) => {
+const getWarrantyClaimById = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -149,7 +149,7 @@ const deleteWarrantyClaimById = async (id, projectId) => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}?projectId=${projectId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "DELETE",
             token,
             body: null,

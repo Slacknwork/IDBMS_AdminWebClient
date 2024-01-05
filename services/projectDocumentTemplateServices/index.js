@@ -3,6 +3,7 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/DocumentTemplates";
 const getAllProjectDocumentTemplates = async ({
+    projectId = "",
     type = "",
     name = "",
     pageSize = "",
@@ -12,7 +13,7 @@ const getAllProjectDocumentTemplates = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -24,12 +25,12 @@ const getAllProjectDocumentTemplates = async ({
     }
 };
 
-const getProjectDocumentTemplateById = async (id) => {
+const getProjectDocumentTemplateById = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,

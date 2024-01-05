@@ -3,6 +3,7 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/Rooms";
 const getRoomsByFloorId = async ({
+  projectId = "",
   floorId = "",
   search = "",
   isHidden = false,
@@ -13,7 +14,7 @@ const getRoomsByFloorId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/floor/${floorId}?usePurpose=${search}&isHidden=${isHidden}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -25,12 +26,12 @@ const getRoomsByFloorId = async ({
   }
 };
 
-const getRoomById = async (roomId) => {
+const getRoomById = async (roomId, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${roomId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -42,12 +43,12 @@ const getRoomById = async (roomId) => {
   }
 };
 
-const createRoom = async (request) => {
+const createRoom = async (request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "POST",
         contentType: "application/json",
         token,
@@ -60,12 +61,12 @@ const createRoom = async (request) => {
   }
 };
 
-const updateRoom = async (id, request) => {
+const updateRoom = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         contentType: "application/json",
         token,
@@ -83,7 +84,7 @@ const deleteRoom = async (id, projectId) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}?projectId=${projectId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "DELETE",
         token,
         body: null,

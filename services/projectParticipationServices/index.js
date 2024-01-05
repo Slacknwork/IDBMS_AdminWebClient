@@ -3,6 +3,7 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/ProjectParticipations";
 const getAllProjectParticipations = async ({
+    projectId = "",
     role = "",
     name = "",
     pageSize = "",
@@ -12,7 +13,7 @@ const getAllProjectParticipations = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -59,7 +60,7 @@ const getParticipationsByProjectId = async ({
         const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`
         const url = `${endpoint}/project/${projectId}?${paramString}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -78,7 +79,7 @@ const getUsersByParticipationInProject = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/project/${projectId}/users`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -96,7 +97,7 @@ const getProjectOwnerByProjectId = async (projectId) => {
     try {
         const url = `${endpoint}/project-owner?projectId=${projectId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -108,12 +109,12 @@ const getProjectOwnerByProjectId = async (projectId) => {
     }
 };
 
-const createProjectParticipation = async (request) => {
+const createProjectParticipation = async (request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             contentType: "application/json",
             token,
@@ -126,12 +127,12 @@ const createProjectParticipation = async (request) => {
     }
 };
 
-const createEmployees = async (request) => {
+const createEmployees = async (request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/employees`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             contentType: "application/json",
             token,
@@ -144,12 +145,12 @@ const createEmployees = async (request) => {
     }
 };
 
-const updateProjectParticipation = async (participationId, request) => {
+const updateProjectParticipation = async (participationId, request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${participationId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "PUT",
             contentType: "application/json",
             token,
@@ -162,12 +163,12 @@ const updateProjectParticipation = async (participationId, request) => {
     }
 };
 
-const deleteProjectParticipation = async (participationId) => {
+const deleteProjectParticipation = async (participationId, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${participationId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "DELETE",
             token,
             body: null,
