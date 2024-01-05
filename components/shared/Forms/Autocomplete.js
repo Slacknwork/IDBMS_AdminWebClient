@@ -19,6 +19,7 @@ export default function AutocompleteForm({
   error,
   errorLabel,
   onChange,
+  disableOptions = [],
 }) {
   const [selectedObject, setSelectedObject] = useState(null);
   const onSelectedObjectChange = (value) => {
@@ -53,6 +54,7 @@ export default function AutocompleteForm({
                 : option.name ?? option
           }
           isOptionEqualToValue={(option, value) => option.id === value?.id}
+          getOptionDisabled={(option) => disableOptions.includes(option.id)}
           value={selectedObject}
           onChange={(_, newValue) => onSelectedObjectChange(newValue)}
           renderInput={(params) => (
