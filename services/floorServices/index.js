@@ -13,7 +13,7 @@ const getFloorsByProjectId = async ({
     const url = `${endpoint}/project/${projectId}?noOfFloor=${!isNaN(search) ? search : ""
       }&usePurpose=${search}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -30,7 +30,7 @@ const getFloorsById = async (floorId, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${floorId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -47,7 +47,7 @@ const createFloor = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "POST",
       contentType: "application/json",
       token,
@@ -65,7 +65,7 @@ const updateFloor = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -83,7 +83,7 @@ const deleteFloorById = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "DELETE",
       token,
       body: null,

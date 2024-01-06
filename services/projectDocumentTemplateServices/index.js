@@ -13,7 +13,7 @@ const getAllProjectDocumentTemplates = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}&projectId=${projectId}`,
+            url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -30,7 +30,7 @@ const getProjectDocumentTemplateById = async (id, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,

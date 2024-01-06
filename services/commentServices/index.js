@@ -24,7 +24,7 @@ const getCommentsByProjectTaskId = async (projectTaskId, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/project-task/${projectTaskId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -48,7 +48,7 @@ const getCommentsByProjectId = async ({
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -65,7 +65,7 @@ const getCommentsById = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -89,7 +89,7 @@ const createComment = async (request, projectId = "") => {
     });
     const url = `${endpoint}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "POST",
       token,
       body: formData,
@@ -120,7 +120,7 @@ const updateComment = async (commentId, request, projectId = "") => {
 
     const url = `${endpoint}/${commentId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       token,
       body: formData,
@@ -137,7 +137,7 @@ const deleteComment = async (commentId, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${commentId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "DELETE",
       token,
       body: null,
@@ -154,7 +154,7 @@ const updateCommentStatus = async (commentId, newStatus, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${commentId}/status?status=${newStatus}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,

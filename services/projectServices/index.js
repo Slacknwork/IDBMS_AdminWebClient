@@ -32,7 +32,7 @@ const getProjectById = async (projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${projectId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,

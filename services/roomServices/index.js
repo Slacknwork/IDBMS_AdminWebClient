@@ -14,7 +14,7 @@ const getRoomsByFloorId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/floor/${floorId}?usePurpose=${search}&isHidden=${isHidden}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -31,7 +31,7 @@ const getRoomById = async (roomId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${roomId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -48,7 +48,7 @@ const createRoom = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "POST",
       contentType: "application/json",
       token,
@@ -66,7 +66,7 @@ const updateRoom = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
