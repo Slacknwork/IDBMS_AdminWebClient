@@ -94,12 +94,18 @@ const updateAdvertisementProject = async (id, request) => {
   }
 };
 
-const updateAdvertisementProjectDescription = async (id, request, projectId = "") => {
+const updateAdvertisementProjectDescription = async (id, request) => {
   const token = store.getState().user?.token ?? "";
   try {
 
     const formData = new FormData();
 
+    for (const key in request) {
+      if (request[key] === null) {
+        request[key] = "";
+      }
+    }
+    
     Object.keys(request).forEach((key) => {
       if (!key.endsWith("Error")) {
         formData.append(key, request[key]);
@@ -108,7 +114,7 @@ const updateAdvertisementProjectDescription = async (id, request, projectId = ""
 
     const url = `${endpoint}/${id}/advertisementDescription`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}?projectId=${id}`,
       method: "PUT",
       token,
       body: formData,
@@ -120,12 +126,12 @@ const updateAdvertisementProjectDescription = async (id, request, projectId = ""
   }
 };
 
-const updateAdvertisementProjectStatus = async (id, status, projectId = "") => {
+const updateAdvertisementProjectStatus = async (id, status) => {
   const token = store.getState().user?.token ?? "";
   try {
     const url = `${endpoint}/${id}/advertisementStatus?status=${status}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}&projectId=${id}`,
       method: "PUT",
       contentType: "application/json",
       token,
