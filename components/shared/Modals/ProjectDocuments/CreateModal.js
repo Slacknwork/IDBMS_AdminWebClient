@@ -17,6 +17,7 @@ import CheckForm from "../../Forms/Checkbox";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
+import checkValidUrl from "/components/validations/url"
 
 const style = {
   position: "absolute",
