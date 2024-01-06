@@ -8,7 +8,7 @@ const getAllTaskDocuments = async (projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -25,7 +25,7 @@ const getTaskDocumentById = async (id, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -42,7 +42,7 @@ const getTaskDocumentsByTaskReportId = async (taskReportId, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/task-report/${taskReportId}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -59,7 +59,7 @@ const createTaskDocument = async (request, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "POST",
             contentType: "application/json",
             token,
@@ -77,7 +77,7 @@ const deleteTaskDocument = async (documentId, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${documentId}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "DELETE",
             token,
             body: null,

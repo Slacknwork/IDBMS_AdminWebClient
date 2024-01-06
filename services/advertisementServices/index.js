@@ -108,7 +108,7 @@ const updateAdvertisementProjectDescription = async (id, request, projectId = ""
 
     const url = `${endpoint}/${id}/advertisementDescription`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       token,
       body: formData,
@@ -125,7 +125,7 @@ const updateAdvertisementProjectStatus = async (id, status, projectId = "") => {
   try {
     const url = `${endpoint}/${id}/advertisementStatus?status=${status}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,

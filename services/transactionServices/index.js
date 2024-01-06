@@ -38,7 +38,7 @@ const getTransactionsByProjectId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}&projectId=${projectId}`,
+            url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -63,7 +63,7 @@ const getTransactionsByUserId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}&projectId=${projectId}`,
+            url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -80,7 +80,7 @@ const getTransactionById = async (id, projectId = "") => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "GET",
             token,
             body: null,
@@ -105,7 +105,7 @@ const createTransaction = async (request, projectId = "") => {
 
         const url = `${endpoint}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "POST",
             token,
             body: formData,

@@ -11,10 +11,10 @@ const getAllNotifications = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-          url,
-          method: "GET",
-          token,
-          body: null,
+            url,
+            method: "GET",
+            token,
+            body: null,
         });
         return response.data;
     } catch (error) {
@@ -33,10 +33,10 @@ const getNotificationsByUserId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}?category=${category}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-          url,
-          method: "GET",
-          token,
-          body: null,
+            url,
+            method: "GET",
+            token,
+            body: null,
         });
         return response.data;
     } catch (error) {
@@ -50,10 +50,10 @@ const getNotificationById = async (id) => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-          url,
-          method: "GET",
-          token,
-          body: null,
+            url,
+            method: "GET",
+            token,
+            body: null,
         });
         return response.data;
     } catch (error) {
@@ -85,7 +85,7 @@ const createNotificationForProject = async (projectId, request) => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/projects/${projectId}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
             method: "POST",
             contentType: "application/json",
             token,

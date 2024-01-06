@@ -15,7 +15,7 @@ const getPaymentStagesByProjectId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -38,7 +38,7 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -55,7 +55,7 @@ const getPaymentStagesById = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -72,7 +72,7 @@ const createPaymentStage = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "POST",
       contentType: "application/json",
       token,
@@ -90,7 +90,7 @@ const updatePaymentStage = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -108,7 +108,7 @@ const deletePaymentStage = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "DELETE",
       token,
       body: null,
@@ -125,7 +125,7 @@ const startPaymentStage = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/start`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -143,7 +143,7 @@ const endPaymentStage = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/end`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -161,7 +161,7 @@ const reopenPaymentStage = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/reopen`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -179,7 +179,7 @@ const suspendPaymentStage = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/suspend`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,

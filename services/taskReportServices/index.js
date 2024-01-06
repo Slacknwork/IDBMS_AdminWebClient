@@ -13,7 +13,7 @@ const getAllTaskReports = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -36,7 +36,7 @@ const getTaskReportsByProjectTaskId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project-task/${projectTaskId}?name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
@@ -91,7 +91,7 @@ const updateTaskReport = async (reportId, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -109,7 +109,7 @@ const deleteTaskReport = async (reportId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "DELETE",
       token,
       body: null,
@@ -126,7 +126,7 @@ const getTaskReportById = async (reportId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "GET",
       token,
       body: null,
