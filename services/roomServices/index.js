@@ -14,10 +14,10 @@ const getRoomsByFloorId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/floor/${floorId}?usePurpose=${search}&isHidden=${isHidden}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}&projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -31,10 +31,10 @@ const getRoomById = async (roomId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${roomId}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -48,11 +48,11 @@ const createRoom = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "POST",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "POST",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -66,11 +66,11 @@ const updateRoom = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -84,10 +84,10 @@ const deleteRoom = async (id, projectId) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}?projectId=${projectId}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "DELETE",
-        token,
-        body: null,
+      url: `${url}`,
+      method: "DELETE",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {

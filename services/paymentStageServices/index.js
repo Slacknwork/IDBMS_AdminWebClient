@@ -15,7 +15,7 @@ const getPaymentStagesByProjectId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}&projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -38,7 +38,7 @@ const getPaymentStagesByProjectIdWithAllowedAction = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}/actions?status=${status}&name=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}&projectId=${projectId}`,
       method: "GET",
       token,
       body: null,

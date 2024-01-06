@@ -67,11 +67,11 @@ const updateProject = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -85,10 +85,10 @@ const updateProjectStatus = async (id, status, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/status?status=${status}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        token,
-        body: null,
+      url: `${url}&projectId=${projectId}`,
+      method: "PUT",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {
@@ -97,28 +97,11 @@ const updateProjectStatus = async (id, status, projectId = "") => {
   }
 };
 
-const updateProjectAdvertisementStatus = async (id, status, projectId = "") => {
-  try {
-    const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/${id}/isAdvertisement/${status}`;
-    const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        token,
-        body: null,
-    });
-    return response.message;
-  } catch (error) {
-    console.error("Error updating project advertisement status:", error);
-    throw error;
-  }
-};
 
 export {
   getProjectById,
   createProject,
   updateProject,
   updateProjectStatus,
-  updateProjectAdvertisementStatus,
   getProjectsBySiteId,
 };

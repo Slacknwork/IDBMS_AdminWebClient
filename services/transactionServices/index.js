@@ -38,7 +38,7 @@ const getTransactionsByProjectId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -63,7 +63,7 @@ const getTransactionsByUserId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
