@@ -7,13 +7,13 @@ const getAllProjectDocumentTemplates = async ({
     type = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?type=${type}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -48,18 +48,18 @@ const createProjectDocumentTemplates = async (request) => {
         const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
-        
+
         const url = `${endpoint}`;
         const response = await fetchData({
             url,
             method: "POST",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating project document template:', error);
@@ -73,9 +73,9 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const url = `${endpoint}/${documentId}`;
@@ -84,7 +84,7 @@ const updateProjectDocumentTemplates = async (documentId, request) => {
             method: "PUT",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error updating project document template:', error);

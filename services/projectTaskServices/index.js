@@ -18,10 +18,10 @@ const getProjectTasksByProjectId = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}?codeOrName=${search}&includeStageIdFilter=${includeStageIdFilter}&stageId=${stageId}&includeRoomIdFilter=${includeRoomIdFilter}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}&projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -33,13 +33,13 @@ const getProjectTasksByProjectId = async ({
 const getProjectTasksByRoomId = async (roomId, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
-      const url = `${endpoint}/room/${roomId}`;
-      const response = await fetchData({
-          url: `${url}?projectId=${projectId}`,
-          method: "GET",
-          token,
-          body: null,
-      });
+    const url = `${endpoint}/room/${roomId}`;
+    const response = await fetchData({
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching project tasks by room ID:", error);
@@ -52,10 +52,10 @@ const getProjectTasksWithItemByProjectId = async (projectId) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/project/${projectId}/interior-items`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -72,10 +72,10 @@ const getProjectTasksWithItemByRoomId = async (roomId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/room/${roomId}/interior-items`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -89,10 +89,10 @@ const getProjectTasksByPaymentStageId = async (paymentStageId, projectId = "") =
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/payment-stage/${paymentStageId}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -106,11 +106,11 @@ const createProjectTask = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "POST",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "POST",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -124,10 +124,10 @@ const getProjectTaskById = async (taskId, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${taskId}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
     });
     return response.data;
   } catch (error) {
@@ -141,11 +141,11 @@ const updateProjectTask = async (taskId, request, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${taskId}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -159,11 +159,11 @@ const updateProjectTaskStatus = async (taskId, status, projectId = "") => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${taskId}/status?status=${status}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: null,
+      url: `${url}&projectId=${projectId}`,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: null,
     });
     return response.message;
 
@@ -182,7 +182,7 @@ const updateProjectTaskStage = async ({
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/payment-stage/${stageId}?projectId=${projectId}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}`,
       method: "PUT",
       contentType: "application/json",
       token,

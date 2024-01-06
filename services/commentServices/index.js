@@ -48,7 +48,7 @@ const getCommentsByProjectId = async ({
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/project/${projectId}?content=${search}&type=${type}&status=${status}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}&projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -148,7 +148,7 @@ const updateCommentStatus = async (commentId, newStatus, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${commentId}/status?status=${newStatus}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}&projectId=${projectId}`,
       method: "PUT",
       contentType: "application/json",
       token,

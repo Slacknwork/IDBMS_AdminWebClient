@@ -13,7 +13,7 @@ const getAllProjectParticipations = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -60,7 +60,7 @@ const getParticipationsByProjectId = async ({
         const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`
         const url = `${endpoint}/project/${projectId}?${paramString}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -97,7 +97,7 @@ const getProjectOwnerByProjectId = async (projectId) => {
     try {
         const url = `${endpoint}/project-owner?projectId=${projectId}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}`,
             method: "GET",
             token,
             body: null,

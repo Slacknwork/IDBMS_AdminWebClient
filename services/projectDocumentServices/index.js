@@ -7,13 +7,13 @@ const getAllProjectDocuments = async ({
     category = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -31,13 +31,13 @@ const getDocumentsByDocumentTemplateId = async ({
     category = "",
     name = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/document-template/${documentTemplateId}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -61,7 +61,7 @@ const getDocumentsByProjectId = async ({
         const paramString = `name=${search}&category=${categoryEnum}&pageNo=${page}&pageSize=${pageSize}`
         const url = `${endpoint}/project/${projectId}?${paramString}`;
         const response = await fetchData({
-            url: `${url}?projectId=${projectId}`,
+            url: `${url}&projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -96,9 +96,9 @@ const createProjectDocument = async (request, projectId = "") => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const url = `${endpoint}`;
@@ -107,7 +107,7 @@ const createProjectDocument = async (request, projectId = "") => {
             method: "POST",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating project document:', error);
@@ -121,9 +121,9 @@ const updateProjectDocument = async (documentId, request, projectId = "") => {
         const formData = new FormData();
 
         Object.keys(request).forEach((key) => {
-          if (!key.endsWith("Error")) {
-            formData.append(key, request[key]);
-          }
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
+            }
         });
 
         const url = `${endpoint}/${documentId}`;
@@ -132,7 +132,7 @@ const updateProjectDocument = async (documentId, request, projectId = "") => {
             method: "PUT",
             token,
             body: formData,
-          });
+        });
         return response.data;
     } catch (error) {
         console.error('Error updating project document:', error);

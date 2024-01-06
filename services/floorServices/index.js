@@ -11,14 +11,14 @@ const getFloorsByProjectId = async ({
   try {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/project/${projectId}?noOfFloor=${!isNaN(search) ? search : ""
-    }&usePurpose=${search}&pageNo=${page}&pageSize=${pageSize}`;
-      const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
-      });
-      return response.data;
+      }&usePurpose=${search}&pageNo=${page}&pageSize=${pageSize}`;
+    const response = await fetchData({
+      url: `${url}&projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching floors by project ID:", error);
     throw error;
@@ -27,15 +27,15 @@ const getFloorsByProjectId = async ({
 
 const getFloorsById = async (floorId, projectId = "") => {
   try {
-      const token = store.getState().user?.token ?? ""
-      const url = `${endpoint}/${floorId}`;
-      const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "GET",
-        token,
-        body: null,
-      });
-      return response.data;
+    const token = store.getState().user?.token ?? ""
+    const url = `${endpoint}/${floorId}`;
+    const response = await fetchData({
+      url: `${url}?projectId=${projectId}`,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching floors by ID:", error);
     throw error;
@@ -47,11 +47,11 @@ const createFloor = async (request, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "POST",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "POST",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -65,11 +65,11 @@ const updateFloor = async (id, request, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "PUT",
-        contentType: "application/json",
-        token,
-        body: JSON.stringify(request),
+      url: `${url}?projectId=${projectId}`,
+      method: "PUT",
+      contentType: "application/json",
+      token,
+      body: JSON.stringify(request),
     });
     return response.data;
   } catch (error) {
@@ -83,10 +83,10 @@ const deleteFloorById = async (id, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url: `${url}?projectId=${projectId}`,
-        method: "DELETE",
-        token,
-        body: null,
+      url: `${url}?projectId=${projectId}`,
+      method: "DELETE",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {
