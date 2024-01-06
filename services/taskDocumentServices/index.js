@@ -3,12 +3,12 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/TaskDocuments";
 
-const getAllTaskDocuments = async () => {
+const getAllTaskDocuments = async (projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -20,12 +20,12 @@ const getAllTaskDocuments = async () => {
     }
 };
 
-const getTaskDocumentById = async (id) => {
+const getTaskDocumentById = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -37,12 +37,12 @@ const getTaskDocumentById = async (id) => {
     }
 };
 
-const getTaskDocumentsByTaskReportId = async (taskReportId) => {
+const getTaskDocumentsByTaskReportId = async (taskReportId, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/task-report/${taskReportId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -54,12 +54,12 @@ const getTaskDocumentsByTaskReportId = async (taskReportId) => {
     }
 };
 
-const createTaskDocument = async (request) => {
+const createTaskDocument = async (request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             contentType: "application/json",
             token,
@@ -72,12 +72,12 @@ const createTaskDocument = async (request) => {
     }
 };
 
-const deleteTaskDocument = async (documentId) => {
+const deleteTaskDocument = async (documentId, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${documentId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "DELETE",
             token,
             body: null,

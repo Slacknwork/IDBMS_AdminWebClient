@@ -27,10 +27,10 @@ import { getProjectTaskById } from "/services/projectTaskServices";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
-import checkValidField from "/components/validations/field"
-import checkValidUrl from "/components/validations/url"
+import checkValidField from "/components/validations/field";
+import checkValidUrl from "/components/validations/url";
 
-export default function CreateReportModal({ success }) {
+export default function CreateReportModal() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -80,7 +80,7 @@ export default function CreateReportModal({ success }) {
             },
           }));
         }
-      break;
+        break;
       case "documentList":
         const validFile = checkValidUrl(value);
         if (validFile.isValid == false) {
@@ -102,6 +102,7 @@ export default function CreateReportModal({ success }) {
             },
           }));
         }
+        break;
       case "description":
         setFormData((prevData) => ({
           ...prevData,
@@ -164,7 +165,6 @@ export default function CreateReportModal({ success }) {
       if (!switchSubmit) return;
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
-      success(true)
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

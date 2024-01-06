@@ -85,6 +85,7 @@ export default function CreateTaskCategoryModal({ success }) {
             },
           }));
         }
+        break;
       case "englishName":
       case "description":
       case "englishDescription":

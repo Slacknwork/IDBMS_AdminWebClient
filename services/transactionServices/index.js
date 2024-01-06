@@ -38,7 +38,7 @@ const getTransactionsByProjectId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/project/${projectId}?payerName=${search}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -51,6 +51,7 @@ const getTransactionsByProjectId = async ({
 };
 
 const getTransactionsByUserId = async ({
+    projectId = "",
     userId = "",
     payerName = "",
     type = "",
@@ -62,7 +63,7 @@ const getTransactionsByUserId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/user/${userId}?payerName=${payerName}&type=${type}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -74,12 +75,12 @@ const getTransactionsByUserId = async ({
     }
 };
 
-const getTransactionById = async (id) => {
+const getTransactionById = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,

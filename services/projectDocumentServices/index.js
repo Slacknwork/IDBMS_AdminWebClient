@@ -3,6 +3,7 @@ import { fetchData } from "/utils/api";
 
 const endpoint = "/ProjectDocuments";
 const getAllProjectDocuments = async ({
+    projectId = "",
     category = "",
     name = "",
     pageSize = "",
@@ -12,7 +13,7 @@ const getAllProjectDocuments = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -25,6 +26,7 @@ const getAllProjectDocuments = async ({
 };
 
 const getDocumentsByDocumentTemplateId = async ({
+    projectId = "",
     documentTemplateId = "",
     category = "",
     name = "",
@@ -35,7 +37,7 @@ const getDocumentsByDocumentTemplateId = async ({
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/document-template/${documentTemplateId}?category=${category}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -59,7 +61,7 @@ const getDocumentsByProjectId = async ({
         const paramString = `name=${search}&category=${categoryEnum}&pageNo=${page}&pageSize=${pageSize}`
         const url = `${endpoint}/project/${projectId}?${paramString}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -71,12 +73,12 @@ const getDocumentsByProjectId = async ({
     }
 };
 
-const getDocumentById = async (id) => {
+const getDocumentById = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "GET",
             token,
             body: null,
@@ -88,7 +90,7 @@ const getDocumentById = async (id) => {
     }
 };
 
-const createProjectDocument = async (request) => {
+const createProjectDocument = async (request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const formData = new FormData();
@@ -101,7 +103,7 @@ const createProjectDocument = async (request) => {
 
         const url = `${endpoint}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             token,
             body: formData,
@@ -113,7 +115,7 @@ const createProjectDocument = async (request) => {
     }
 };
 
-const updateProjectDocument = async (documentId, request) => {
+const updateProjectDocument = async (documentId, request, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const formData = new FormData();
@@ -126,7 +128,7 @@ const updateProjectDocument = async (documentId, request) => {
 
         const url = `${endpoint}/${documentId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "PUT",
             token,
             body: formData,
@@ -138,12 +140,12 @@ const updateProjectDocument = async (documentId, request) => {
     }
 };
 
-const deleteProjectDocument = async (documentId) => {
+const deleteProjectDocument = async (id, projectId = "") => {
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${id}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "DELETE",
             token,
             body: null,

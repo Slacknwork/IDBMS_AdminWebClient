@@ -17,36 +17,14 @@ import {
   Typography,
 } from "@mui/material";
 
-import calculationUnitOptions from "/constants/enums/calculationUnit";
-
 import PageContainer from "/components/container/PageContainer";
 import { getTaskReportsByProjectTaskId } from "/services/taskReportServices";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import TaskModal from "/components/shared/Modals/TaskReports/CreateModal";
+import CreateTaskReportModal from "/components/shared/Modals/TaskReports/CreateModal";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-
-const taskReports = [
-  {
-    id: "1",
-    name: "Task Report 1",
-    calculationUnit: 5,
-    unitUsed: 25,
-    createdTime: new Date("2023-01-15T08:00:00"),
-    description: "Description for Task 1",
-  },
-  {
-    id: "2",
-    name: "Task Report 2",
-    calculationUnit: 10,
-    unitUsed: 50,
-    createdTime: new Date("2023-02-01T10:30:00"),
-    description: "Description for Task 2",
-  },
-  // Add more task reports as needed
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -102,9 +80,7 @@ export default function ReportListPage() {
           <Box sx={{ display: "flex" }}>
             <Search placeholder="Tìm tên báo cáo"></Search>
           </Box>
-          <TaskModal>
-            <span>Tạo</span>
-          </TaskModal>
+          <CreateTaskReportModal></CreateTaskReportModal>
         </Box>
         <Box>
           {loading ? (

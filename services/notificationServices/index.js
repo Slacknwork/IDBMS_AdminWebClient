@@ -85,7 +85,7 @@ const createNotificationForProject = async (projectId, request) => {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/projects/${projectId}`;
         const response = await fetchData({
-            url,
+            url: `${url}?projectId=${projectId}`,
             method: "POST",
             contentType: "application/json",
             token,

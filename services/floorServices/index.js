@@ -13,7 +13,7 @@ const getFloorsByProjectId = async ({
     const url = `${endpoint}/project/${projectId}?noOfFloor=${!isNaN(search) ? search : ""
     }&usePurpose=${search}&pageNo=${page}&pageSize=${pageSize}`;
       const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -25,12 +25,12 @@ const getFloorsByProjectId = async ({
   }
 };
 
-const getFloorsById = async (floorId) => {
+const getFloorsById = async (floorId, projectId = "") => {
   try {
       const token = store.getState().user?.token ?? ""
       const url = `${endpoint}/${floorId}`;
       const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -42,12 +42,12 @@ const getFloorsById = async (floorId) => {
   }
 };
 
-const createFloor = async (request) => {
+const createFloor = async (request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "POST",
         contentType: "application/json",
         token,
@@ -60,12 +60,12 @@ const createFloor = async (request) => {
   }
 };
 
-const updateFloor = async (id, request) => {
+const updateFloor = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         contentType: "application/json",
         token,
@@ -78,12 +78,12 @@ const updateFloor = async (id, request) => {
   }
 };
 
-const deleteFloorById = async (id) => {
+const deleteFloorById = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? ""
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "DELETE",
         token,
         body: null,

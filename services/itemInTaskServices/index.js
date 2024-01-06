@@ -2,12 +2,12 @@ import { store } from "/store";
 import { fetchData } from "/utils/api";
 
 const endpoint = "/ItemInTasks";
-const getItemInTaskById = async (itemId) => {
+const getItemInTaskById = async (itemId, projectId = "") => {
   try {
       const token = store.getState().user?.token ?? "";
       const url = `${endpoint}/${itemId}`;
       const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -33,7 +33,7 @@ const getItemInTasksByProjectId = async ({
       const paramString = `itemCodeOrName=${search}&itemCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
       const url = `${endpoint}/project/${projectId}?${paramString}`;
       const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -49,6 +49,7 @@ const getItemInTasksByProjectId = async ({
 };
 
 const getItemInTasksByTaskId = async ({
+  projectId = "",
   taskId = "",
   search = "",
   category = "",
@@ -60,7 +61,7 @@ const getItemInTasksByTaskId = async ({
       const token = store.getState().user?.token ?? "";
       const url = `${endpoint}/project-task/${taskId}?itemCodeOrName=${search}&itemCategoryId=${category}&status=${status}&pageNo=${page}&pageSize=${pageSize}`;
       const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "GET",
         token,
         body: null,
@@ -72,7 +73,7 @@ const getItemInTasksByTaskId = async ({
   }
 };
 
-const createItemInTask = async (taskId, request) => {
+const createItemInTask = async (taskId, request, projectId = "") => {
   const formData = new FormData();
   const token = store.getState().user?.token ?? "";
 
@@ -102,7 +103,7 @@ const createItemInTask = async (taskId, request) => {
   try {
     const url = `${endpoint}/project-task/${taskId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "POST",
         token,
         body: formData,
@@ -115,12 +116,12 @@ const createItemInTask = async (taskId, request) => {
   }
 };
 
-const updateItemInTaskQuantity = async (itemId, quantity) => {
+const updateItemInTaskQuantity = async (itemId, quantity, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${itemId}/quantity?quantity=${quantity}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         contentType: "application/json",
         token,
@@ -133,12 +134,12 @@ const updateItemInTaskQuantity = async (itemId, quantity) => {
   }
 };
 
-const deleteItemInTask = async (itemId) => {
+const deleteItemInTask = async (itemId, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${itemId}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "DELETE",
         token,
         body: null,

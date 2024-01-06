@@ -27,12 +27,12 @@ const getProjectsBySiteId = async ({
   }
 };
 
-const getProjectById = async (id) => {
+const getProjectById = async (id, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url,
+      url: `${url}?projectId=${projectId}`,
       method: "GET",
       token,
       body: null,
@@ -62,12 +62,12 @@ const createProject = async (request) => {
   }
 };
 
-const updateProject = async (id, request) => {
+const updateProject = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         contentType: "application/json",
         token,
@@ -80,12 +80,12 @@ const updateProject = async (id, request) => {
   }
 };
 
-const updateProjectStatus = async (id, status) => {
+const updateProjectStatus = async (id, status, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/status?status=${status}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         token,
         body: null,
@@ -97,12 +97,12 @@ const updateProjectStatus = async (id, status) => {
   }
 };
 
-const updateProjectAdvertisementStatus = async (id, status) => {
+const updateProjectAdvertisementStatus = async (id, status, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/isAdvertisement/${status}`;
     const response = await fetchData({
-        url,
+        url: `${url}?projectId=${projectId}`,
         method: "PUT",
         token,
         body: null,
