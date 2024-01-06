@@ -106,6 +106,12 @@ const updateComment = async (commentId, request, projectId = "") => {
     const token = store.getState().user?.token ?? ""
     const formData = new FormData();
 
+    for (const key in request) {
+      if (request[key] === null) {
+        request[key] = "";
+      }
+    }
+    
     Object.keys(request).forEach((key) => {
       if (!key.endsWith("Error")) {
         formData.append(key, request[key]);
