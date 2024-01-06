@@ -27,10 +27,10 @@ const getProjectsBySiteId = async ({
   }
 };
 
-const getProjectById = async (id, projectId = "") => {
+const getProjectById = async (projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/${id}`;
+    const url = `${endpoint}/${projectId}`;
     const response = await fetchData({
       url: `${url}?projectId=${projectId}`,
       method: "GET",
@@ -62,12 +62,12 @@ const createProject = async (request) => {
   }
 };
 
-const updateProject = async (id, request, projectId = "") => {
+const updateProject = async (id, request) => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}`;
     const response = await fetchData({
-      url: `${url}?projectId=${projectId}`,
+      url: `${url}?projectId=${id}`,
       method: "PUT",
       contentType: "application/json",
       token,
@@ -80,12 +80,12 @@ const updateProject = async (id, request, projectId = "") => {
   }
 };
 
-const updateProjectStatus = async (id, status, projectId = "") => {
+const updateProjectStatus = async (id, status) => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${id}/status?status=${status}`;
     const response = await fetchData({
-      url: `${url}&projectId=${projectId}`,
+      url: `${url}&projectId=${id}`,
       method: "PUT",
       token,
       body: null,
