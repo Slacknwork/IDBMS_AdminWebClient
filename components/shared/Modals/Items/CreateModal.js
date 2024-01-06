@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { getAllInteriorItemColors } from "/services/interiorItemColorServices";
 import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
@@ -22,6 +22,7 @@ import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import FileForm from "/components/shared/Forms/File";
 import FormModal from "/components/shared/Modals/Form";
 import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function CreateItemModal() {
   // INIT
@@ -212,7 +213,7 @@ export default function CreateItemModal() {
       setSwitchSubmit(false);
       return;
     }
-    
+
     setOpenModal(false);
     onCreateInteriorItem();
     setSwitchSubmit(false);
