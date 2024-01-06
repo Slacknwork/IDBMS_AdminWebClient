@@ -64,11 +64,11 @@ const createInteriorItem = async (request) => {
 
     const url = `${endpoint}`;
     const response = await fetchData({
-        url,
-        method: "POST",
-        token,
-        body: formData,
-      });
+      url,
+      method: "POST",
+      token,
+      body: formData,
+    });
     return response.data;
   } catch (error) {
     console.error("Error creating interior item:", error);
@@ -78,6 +78,13 @@ const createInteriorItem = async (request) => {
 
 const updateInteriorItem = async (itemId, request) => {
   try {
+
+    for (const key in request) {
+      if (request[key] === null) {
+        request[key] = "";
+      }
+    }
+
     const formData = new FormData();
     const token = store.getState().user?.token ?? ""
 
@@ -89,11 +96,11 @@ const updateInteriorItem = async (itemId, request) => {
 
     const url = `${endpoint}/${itemId}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        token,
-        body: formData,
-      });
+      url,
+      method: "PUT",
+      token,
+      body: formData,
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating interior item:", error);
@@ -106,10 +113,10 @@ const deleteInteriorItem = async (itemId) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${itemId}`;
     const response = await fetchData({
-        url,
-        method: "DELETE",
-        token,
-        body: null,
+      url,
+      method: "DELETE",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {
@@ -123,10 +130,10 @@ const updateInteriorItemStatus = async (itemId, newStatus) => {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${itemId}/status?status=${newStatus}`;
     const response = await fetchData({
-        url,
-        method: "PUT",
-        token,
-        body: null,
+      url,
+      method: "PUT",
+      token,
+      body: null,
     });
     return response.message;
   } catch (error) {
