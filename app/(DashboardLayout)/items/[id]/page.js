@@ -110,7 +110,6 @@ export default function ItemDetails() {
         break;
       case "image":
         const validFile = checkValidUrl(value);
-        console.log(field)
         if (validFile.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
