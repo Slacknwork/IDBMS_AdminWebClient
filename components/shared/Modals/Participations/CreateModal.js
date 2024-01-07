@@ -23,9 +23,12 @@ import { getAllUsers } from "/services/userServices";
 import FormModal from "/components/shared/Modals/Form";
 import participationRoleOptions from "/constants/enums/participationRole";
 import companyRoleOptions from "/constants/enums/companyRole";
+import { useSelector } from "react-redux";
 
 export default function CreateParticipationModal({ sx, success }) {
   const params = useParams();
+  const data = useSelector((state) => state.data);
+  const project = data?.project;
 
   const [formData, setFormData] = useState({
     role: -1,
@@ -67,20 +70,17 @@ export default function CreateParticipationModal({ sx, success }) {
 
     switch (participationRole) {
       case 0: // pj owner
-      case 1: // viewer
-        setFilteredUsers(users.filter((user) => user.role === 0)); // customer
-        break;
-      case 2: // lead architect
-      case 3: // architect
+      case 1: // pj manager
+        setFilteredUsers([]);
+        break
+      case 2: // architect
         setFilteredUsers(users.filter((user) => user.role === 1)); // architect
         break;
-      case 4: // construction manager
+      case 3: // construction manager
         setFilteredUsers(users.filter((user) => user.role === 2)); // construction manager
         break;
-      case 5: // pj manager
-        setFilteredUsers(
-          users.filter((user) => user.role === 1 || user.role === 2)
-        ); // arc / cons
+      case 4: // viewer
+        setFilteredUsers(users); // anyone
         break;
       default:
         setFilteredUsers(users);
@@ -183,7 +183,9 @@ export default function CreateParticipationModal({ sx, success }) {
                   <MenuItem
                     key={index}
                     value={index}
-                    disabled={index === 0 || index === 1}
+                    disabled={index === 0 || index === 1
+                      || (project.type === 0 && index === 3) // decor pj disabled cons manager
+                      || (project.type === 1 && index === 2)} // cons pj disabled arc
                   >
                     {option}
                   </MenuItem>

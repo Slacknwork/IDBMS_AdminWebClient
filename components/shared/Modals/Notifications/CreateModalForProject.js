@@ -9,7 +9,7 @@ import {
 import TextForm from "../../Forms/Text";
 import SelectForm from "../../Forms/Select";
 import FormModal from "../Form";
-import {} from "/services/notificationServices";
+import { } from "/services/notificationServices";
 import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
 import { createNotificationForProject } from "/services/notificationServices";
@@ -230,7 +230,7 @@ export default function CreateNotificationModalForProject(success) {
                 Thành viên
                 <span style={{ color: "red" }}>*</span>
               </Typography>
-              <Typography variant="p">Chọn người tham gia dự án</Typography>
+              <Typography variant="p">Chọn người để gửi thông báo</Typography>
             </Grid>
             <Grid item xs={8} lg={8}>
               <FormControl fullWidth>
@@ -238,8 +238,7 @@ export default function CreateNotificationModalForProject(success) {
                   multiple
                   options={users}
                   getOptionLabel={(option) =>
-                    `${option?.user?.name} - ${
-                      participationRoleOptions[option?.role]
+                    `${option?.user?.name} - ${participationRoleOptions[option?.role]
                     }`
                   }
                   noOptionsText="Không tìm thấy"

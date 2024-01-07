@@ -28,9 +28,12 @@ import {
 } from "../../../../services/projectParticipationServices";
 
 import participationRoleOptions from "../../../../constants/enums/participationRole";
+import { useSelector } from "react-redux";
 
 export default function UpdateParticipationRoleModal({ participant }) {
   const params = useParams();
+  const data = useSelector((state) => state.data);
+  const project = data?.project;
 
   const [formData, setFormData] = useState({
     role: participant.role,
@@ -90,11 +93,17 @@ export default function UpdateParticipationRoleModal({ participant }) {
     // all role can be Viewer
     if (index === 4) return false;
 
+    if (project?.type == 0 && index == 3) // cannot add cons man to decor pj
+      return true;
+
+    if (project?.type == 1 && index == 2) // cannot add arc to cons pj
+      return true;
+
     switch (participant?.user?.role) {
       case 1: // architect
         return index !== 2; // Allow participation role 2 - Architect
       case 2: // construction
-        return index !== 3; // Allow participation role 4 - Construction Manager
+        return index !== 3; // Allow participation role 3 - Construction Manager
       default:
         return true;
     }
