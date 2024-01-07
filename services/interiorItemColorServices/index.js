@@ -94,6 +94,12 @@ const updateInteriorItemColor = async (colorId, request) => {
         const formData = new FormData();
         const token = store.getState().user?.token ?? "";
 
+        for (const key in request) {
+            if (request[key] === null) {
+              request[key] = "";
+            }
+          }
+          
         Object.keys(request).forEach((key) => {
             if (!key.endsWith("Error")) {
                 formData.append(key, request[key]);
