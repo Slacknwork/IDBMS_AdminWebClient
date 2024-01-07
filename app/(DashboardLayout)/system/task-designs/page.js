@@ -152,9 +152,14 @@ export default function ProjectList() {
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell width={"30%"}>
+              <StyledTableCell width={"25%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell width={"30%"}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Mô tả
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"10%"}>
@@ -162,14 +167,9 @@ export default function ProjectList() {
                   Tính theo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"20%"}>
+              <StyledTableCell width={"11%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
                   Giá ước tính/đơn vị (VND)
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Loại đồ nội thất
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"10%"}>
@@ -193,6 +193,11 @@ export default function ProjectList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
+                    {taskDesign?.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="subtitle2" fontWeight={400}>
                     {calculationUnit[taskDesign?.calculationUnit] ||
                       "Không xác định"}
                   </Typography>
@@ -204,12 +209,7 @@ export default function ProjectList() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {taskDesign?.interiorItemCategory?.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {taskDesign?.taskCategory.name}
+                    {taskDesign?.taskCategory?.name}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
