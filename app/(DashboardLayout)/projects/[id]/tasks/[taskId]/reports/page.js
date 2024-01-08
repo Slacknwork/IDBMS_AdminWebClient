@@ -73,6 +73,10 @@ export default function ReportListPage() {
     fetchDataFromApi();
   }, []);
 
+  const handleModalResult = () => {
+    fetchDataFromApi();
+  };
+
   return (
     <PageContainer title={"Báo cáo công việc"}>
       <Box sx={{ zIndex: 1 }}>
@@ -80,7 +84,7 @@ export default function ReportListPage() {
           <Box sx={{ display: "flex" }}>
             <Search placeholder="Tìm tên báo cáo"></Search>
           </Box>
-          <CreateTaskReportModal></CreateTaskReportModal>
+          <CreateTaskReportModal success={handleModalResult}></CreateTaskReportModal>
         </Box>
         <Box>
           {loading ? (
