@@ -73,6 +73,7 @@ const createUser = async (userData) => {
 // Update user
 const updateUser = async (userId, updatedUserData) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${userId}`;
     const response = await fetchData({
       url,
@@ -91,6 +92,7 @@ const updateUser = async (userId, updatedUserData) => {
 // Update user status
 const updateUserStatus = async (userId, status) => {
   try {
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/${userId}/status?status=${status}`;
     const response = await fetchData({
       url,
@@ -106,10 +108,4 @@ const updateUserStatus = async (userId, status) => {
   }
 };
 
-export {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  updateUserStatus,
-};
+export { getAllUsers, getUserById, createUser, updateUser, updateUserStatus };
