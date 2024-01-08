@@ -23,7 +23,7 @@ import projectStatusOptions from "/constants/enums/projectStatus";
 import languageOptions from "/constants/enums/language";
 import advertisementStatusOptions from "/constants/enums/advertisementStatus";
 import { getProjectCategories } from "/services/projectCategoryServices";
-import { getProjectOwnerByProjectId } from "/services/projectParticipationServices";
+import { GetProjectDecisionMakersByProjectId } from "/services/projectParticipationServices";
 import checkValidField from "/components/validations/field"
 
 export default function AdvertisementDetailsPage() {
@@ -123,10 +123,10 @@ export default function AdvertisementDetailsPage() {
     };
     const fetchProjectOwnerByProjectId = async () => {
       try {
-        const response = await getProjectOwnerByProjectId(params.id);
+        const response = await GetProjectDecisionMakersByProjectId(params.id);
 
         // if project no owner (advertisement create purpose)
-        if (response === null) {
+        if (response?.projectOwner === null) {
           setEditEnable(true)
         }
       } catch (error) {

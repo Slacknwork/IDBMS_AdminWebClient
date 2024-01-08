@@ -91,11 +91,11 @@ const getUsersByParticipationInProject = async ({
     }
 };
 
-const getProjectOwnerByProjectId = async (projectId) => {
+const GetProjectDecisionMakersByProjectId = async (projectId) => {
     const token = store.getState().user?.token ?? "";
 
     try {
-        const url = `${endpoint}/project-owner?projectId=${projectId}`;
+        const url = `${endpoint}/decision-makers?projectId=${projectId}`;
         const response = await fetchData({
             url: `${url}`,
             method: "GET",
@@ -189,5 +189,5 @@ export {
     createEmployees,
     updateProjectParticipation,
     deleteProjectParticipation,
-    getProjectOwnerByProjectId,
+    GetProjectDecisionMakersByProjectId,
 };
