@@ -259,21 +259,6 @@ export default function CreateTaskDesignModal({ success }) {
         ></NumberForm>
       </Grid>
 
-      {/* INTERIOR ITEM CATEGORY ID */}
-      <Grid item xs={12} lg={6}>
-        <AutocompleteForm
-          title="Danh mục nội thất"
-          subtitle="Chọn danh mục nội thất"
-          value={formData.interiorItemCategoryId}
-          options={itemCategories}
-          error={formData.interiorItemCategoryIdError.hasError}
-          errorLabel={formData.interiorItemCategoryIdError.label}
-          onChange={(value) =>
-            handleInputChange("interiorItemCategoryId", value)
-          }
-        ></AutocompleteForm>
-      </Grid>
-
       {/* TASK CATEGORY ID */}
       <Grid item xs={12} lg={6}>
         <AutocompleteForm

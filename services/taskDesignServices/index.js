@@ -7,7 +7,7 @@ const getAllTaskDesigns = async ({
     codeOrName = "",
     taskCategoryId = "",
     pageSize = "",
-    pageNo= "",
+    pageNo = "",
 } = {}) => {
     try {
         const token = store.getState().user?.token ?? "";
@@ -61,6 +61,13 @@ const createTaskDesign = async (request) => {
 };
 
 const updateTaskDesign = async (designId, request) => {
+
+    for (const key in request) {
+        if (request[key] === "") {
+            request[key] = null;
+        }
+    }
+
     try {
         const token = store.getState().user?.token ?? "";
         const url = `${endpoint}/${designId}`;

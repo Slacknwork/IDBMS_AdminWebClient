@@ -160,7 +160,7 @@ export default function TaskDesignDetails() {
     setLoading(false);
   };
 
-  
+
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
@@ -223,7 +223,7 @@ export default function TaskDesignDetails() {
       description="Chi tiết thiết kế công việc"
     >
       <DetailsPage
-        title="Thông tin thiết kế công việc"
+        title={`Thông tin thiết kế công việc${formData.code ? ` mã ${formData.code}` : ''}`}
         saveMessage="Lưu thông tin thiết kế công việc?"
         onSave={handleSubmit}
         deleteMessage={"Xoá thiết kế công việc này?"}
@@ -231,6 +231,7 @@ export default function TaskDesignDetails() {
         hasDelete
         onDelete={handleDelete}
       >
+
         {/* NAME */}
         <Grid item xs={12} lg={6}>
           <TextForm
@@ -312,21 +313,6 @@ export default function TaskDesignDetails() {
           ></NumberForm>
         </Grid>
 
-        {/* INTERIOR ITEM CATEGORY ID */}
-        <Grid item xs={12} lg={6}>
-          <AutocompleteForm
-            title="Danh mục nội thất"
-            subtitle="Chọn danh mục nội thất"
-            value={formData.interiorItemCategoryId}
-            options={itemCategories}
-            error={formData.interiorItemCategoryIdError.hasError}
-            errorLabel={formData.interiorItemCategoryIdError.label}
-            onChange={(value) =>
-              handleInputChange("interiorItemCategoryId", value)
-            }
-          ></AutocompleteForm>
-        </Grid>
-
         {/* TASK CATEGORY ID */}
         <Grid item xs={12} lg={6}>
           <AutocompleteForm
@@ -340,18 +326,7 @@ export default function TaskDesignDetails() {
           ></AutocompleteForm>
         </Grid>
 
-        {/* CODE */}
-        <Grid item xs={12} lg={6}>
-          <TextForm
-            title="Mã"
-            required
-            subtitle="Nhập mã"
-            value={formData.code}
-            error={formData.codeError.hasError}
-            errorLabel={formData.codeError.label}
-            onChange={(e) => handleInputChange("code", e.target.value)}
-          ></TextForm>
-        </Grid>
+
         <Grid item xs={12} lg={4}>
           {/* Additional details can be added here */}
         </Grid>
