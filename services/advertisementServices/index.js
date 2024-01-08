@@ -73,10 +73,9 @@ const getAdvertisementProjectDocuments = async ({
   }
 };
 
-
 const updateAdvertisementProject = async (id, request) => {
   const token = store.getState().user?.token ?? "";
-  console.log(request)
+  console.log(request);
 
   try {
     const url = `${endpoint}/${id}`;
@@ -97,7 +96,6 @@ const updateAdvertisementProject = async (id, request) => {
 const updateAdvertisementProjectDescription = async (id, request) => {
   const token = store.getState().user?.token ?? "";
   try {
-
     const formData = new FormData();
 
     for (const key in request) {
@@ -105,7 +103,7 @@ const updateAdvertisementProjectDescription = async (id, request) => {
         request[key] = "";
       }
     }
-    
+
     Object.keys(request).forEach((key) => {
       if (!key.endsWith("Error")) {
         formData.append(key, request[key]);
@@ -145,7 +143,7 @@ const updateAdvertisementProjectStatus = async (id, status) => {
 };
 
 const createAdvertisementProject = async (request) => {
-  const token = store.getState().user?.token ?? ""
+  const token = store.getState().user?.token ?? "";
 
   try {
     const url = `${endpoint}`;
@@ -163,11 +161,9 @@ const createAdvertisementProject = async (request) => {
   }
 };
 
-
 const createAdvertisementImages = async (projectId, request) => {
   const formData = new FormData();
   const token = store.getState().user?.token ?? "";
-  console.log(request)
 
   const appendFormData = (data, prefix = "", suffix = "") => {
     for (const key in data) {
@@ -176,10 +172,7 @@ const createAdvertisementImages = async (projectId, request) => {
 
       if (Array.isArray(value)) {
         value.forEach((element, index) => {
-          for (const key in element) {
-            const value = element[key];
-            formData.append(`${fullKey}[${index}].${key}`, value);
-          }
+          formData.append(`${fullKey}`, element);
         });
       } else {
         formData.append(fullKey, value ?? "");
@@ -205,7 +198,7 @@ const createAdvertisementImages = async (projectId, request) => {
 
 const deleteImageById = async (id) => {
   try {
-    const token = store.getState().user?.token ?? ""
+    const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/image/${id}`;
     const response = await fetchData({
       url,
