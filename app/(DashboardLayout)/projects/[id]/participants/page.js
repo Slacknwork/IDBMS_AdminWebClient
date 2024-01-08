@@ -112,7 +112,7 @@ export default function Comments() {
         setProjectManager(response?.projectManager ?? []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Tài Liệu' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thành viên' từ hệ thống");
       }
     };
     await Promise.all([fetchParticipations()]);
