@@ -24,7 +24,10 @@ import checkValidUrl from "components/validations/url";
 import CreateImagesModal from "/components/shared/Modals/AdvertisementProjects/CreateImagesModal";
 
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
-import { getAdvertisementProjectDocuments, deleteImageById } from "/services/advertisementServices";
+import {
+  getAdvertisementProjectDocuments,
+  deleteImageById,
+} from "/services/advertisementServices";
 import { downloadFileByUrl } from "/services/downloadServices";
 import moment from "moment-timezone";
 
@@ -56,7 +59,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const isPublicOptions = ["Tạm ẩn", "Công khai"];
 
 export default function ProjectDocuments() {
-
   const isPublicQuery = "public";
 
   const pageQuery = "page";
@@ -84,8 +86,8 @@ export default function ProjectDocuments() {
         searchParams.get(isPublicQuery) === "1"
           ? true
           : searchParams.get(isPublicQuery) === "0"
-            ? false
-            : "";
+          ? false
+          : "";
       const page = searchParams.get(pageQuery) ?? defaultPage;
       const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
@@ -96,7 +98,7 @@ export default function ProjectDocuments() {
           page,
           pageSize,
         });
-        console.log(response)
+        console.log(response);
         setDocuments(response?.list ?? []);
         setCount(response?.totalItem ?? 0);
       } catch (error) {
@@ -119,8 +121,10 @@ export default function ProjectDocuments() {
 
   const handleDownload = async (imageUrl) => {
     try {
-      const response = await downloadFileByUrl({ imageUrl: "https://firebasestorage.googleapis.com/v0/b/idbms-7f5e1.appspot.com/o/images%2F521e6447-119c-4c4f-89e0-4e4328eb0dae.png?alt=media&token=ae5b332c-966c-421e-9b9e-67949c8dacb2", name: "Hình ảnh minh họa" });
-      toast.success("Tải thành công!");
+      await downloadFileByUrl({
+        imageUrl,
+        name: "Hình ảnh minh họa",
+      });
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -258,9 +262,8 @@ export default function ProjectDocuments() {
             Không có dữ liệu.
           </Typography>
         </Stack>
-      )
-      }
+      )}
       <Pagination count={count}></Pagination>
-    </Box >
+    </Box>
   );
 }
