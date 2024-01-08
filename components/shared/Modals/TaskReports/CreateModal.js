@@ -30,7 +30,7 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import checkValidField from "/components/validations/field";
 import checkValidUrl from "/components/validations/url";
 
-export default function CreateReportModal() {
+export default function CreateReportModal({ success }) {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -141,16 +141,9 @@ export default function CreateReportModal() {
     document.getElementById("fileInput").click();
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
   const [openModal, setOpenModal] = useState(
     searchParams.get(modalOpenQuery) ?? false
   );
-  const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
 
   const handleSubmit = () => {
@@ -165,6 +158,7 @@ export default function CreateReportModal() {
       if (!switchSubmit) return;
       const response = await createTaskReport(params.id, formData);
       toast.success("Thêm thành công!");
+      success(true)
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -186,7 +180,6 @@ export default function CreateReportModal() {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    setFormHasError(hasErrors);
 
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
