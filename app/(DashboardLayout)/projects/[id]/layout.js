@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProjectData } from "/store/reducers/data";
 import {
   Avatar,
   Box,
@@ -13,9 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment-timezone";
-
-moment.tz.setDefault("Asia/Ho_Chi_Minh");
-
+import { toast } from "react-toastify";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
@@ -30,8 +27,14 @@ import projectStatusOptions from "/constants/enums/projectStatus";
 import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
+import timezone from "/constants/timezone";
+import roleConstants from "/constants/roles";
+
+moment.tz.setDefault(timezone.momentDefault);
 
 import { updateProjectStatus } from "/services/projectServices";
+
+import { fetchProjectData, fetchProjectRoleData } from "/store/reducers/data";
 
 import PageContainer from "/components/container/PageContainer";
 import Tabs from "/components/shared/Tabs";
@@ -39,13 +42,13 @@ import MessageModal from "/components/shared/Modals/Message";
 import FormModal from "/components/shared/Modals/Form";
 
 import TabItems from "./tabItems";
-import { toast } from "react-toastify";
 
 export default function ProjectDetailsLayout({ children }) {
   // INIT
   const params = useParams();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
+  const user = useSelector((state) => state.user);
   const project = data?.project;
 
   const isInWarranty = () => {
@@ -68,6 +71,9 @@ export default function ProjectDetailsLayout({ children }) {
 
   useEffect(() => {
     dispatch(fetchProjectData(params.id));
+    if (user.role && user.role !== roleConstants.ADMIN) {
+      dispatch(fetchProjectRoleData({ userId: user.id, projectId: params.id }));
+    }
   }, [dispatch, params.id]);
 
   return (

@@ -24,7 +24,7 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import UserCard from "/components/shared/UserCard";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function ProjectDetails() {
   const params = useParams();
@@ -136,40 +136,39 @@ export default function ProjectDetails() {
     setSwitchSubmit(true);
   };
 
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    try {
+      const project = await getProjectById(params.id);
+      setFormData((prevData) => ({ ...prevData, ...project }));
+      setPageName(project.name);
+      setPageDescription(project.description);
+
+      const listCategories = await getProjectCategories({});
+      setProjectCategories(listCategories.list);
+      console.log(project);
+      const listProjectsBySiteId = await getProjectsBySiteId({
+        siteId: project.siteId,
+      });
+      setDecorProjects(
+        listProjectsBySiteId.list
+          .filter((project) => project.type === 0 && project.id !== params.id)
+          .map(({ id, name }) => ({ id, name }))
+      );
+      const participation = project?.projectParticipations.find(
+        (par) => par.role === 0
+      );
+      setProjectOwner(participation?.user ?? "");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDataFromApi = async () => {
-      setLoading(true);
-      try {
-        const project = await getProjectById(params.id);
-        setFormData((prevData) => ({ ...prevData, ...project }));
-        setPageName(project.name);
-        setPageDescription(project.description);
-
-        const listCategories = await getProjectCategories({});
-        setProjectCategories(listCategories.list);
-        console.log(project);
-        const listProjectsBySiteId = await getProjectsBySiteId({
-          siteId: project.siteId,
-        });
-        setDecorProjects(
-          listProjectsBySiteId.list
-            .filter((project) => project.type === 0 && project.id !== params.id)
-            .map(({ id, name }) => ({ id, name }))
-        );
-        const participation = project?.projectParticipations.find(
-          (par) => par.role === 0
-        );
-        setProjectOwner(participation?.user ?? "");
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDataFromApi();
     if (!switchSubmit) return;
-
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
 
@@ -183,13 +182,17 @@ export default function ProjectDetails() {
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
 
   const onSaveProject = async () => {
     try {
-      const project = await updateProject(params.id, formData);
+      await updateProject(params.id, formData);
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
