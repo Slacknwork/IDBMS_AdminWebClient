@@ -25,13 +25,14 @@ const getProjectParticipation = async ({
 const getParticipationsByUserId = async ({
   userId = "",
   role = "",
-  name = "",
+  search = "",
+  status = "",
   pageSize = "",
   pageNo = "",
 } = {}) => {
   try {
     const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/user/${userId}?role=${role}&name=${name}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const url = `${endpoint}/user/${userId}?role=${role}&projectName=${search}&projectStatus=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
     const response = await fetchData({
       url,
       method: "GET",

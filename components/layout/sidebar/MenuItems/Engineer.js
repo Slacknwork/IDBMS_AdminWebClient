@@ -1,16 +1,6 @@
 import {
-  IconArmchair,
-  IconCategory,
-  IconCategory2,
-  IconDoor,
   IconHome,
-  IconHomeStar,
   IconLayoutDashboard,
-  IconListDetails,
-  IconUser,
-  IconUserStar,
-  IconPalette,
-  IconFileInvoice,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";

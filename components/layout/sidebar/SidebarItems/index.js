@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
 import { Box, List } from "@mui/material";
 
-import roleConstants from "/constants/roles";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import Menuitems from "/components/layout/sidebar/MenuItems";
 import MenuitemsEngineer from "/components/layout/sidebar/MenuItems/Engineer";
@@ -20,12 +20,17 @@ export default function SidebarItems({ toggleMobileSidebar }) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
+    console.log(user);
     switch (user.role) {
-      case roleConstants.ADMIN:
+      case companyRoleConstants.ADMIN:
         setItems(Menuitems);
         break;
-      default:
+      case companyRoleConstants.ARCHITECT:
+      case companyRoleConstants.CONSTRUCTION_MANAGER:
         setItems(MenuitemsEngineer);
+        break;
+      default:
+        setItems([]);
     }
   }, [user.role]);
 

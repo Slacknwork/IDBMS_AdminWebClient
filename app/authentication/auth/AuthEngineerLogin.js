@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { login } from "/store/reducers/user";
 
-import roleConstants from "/constants/roles";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import { loginUser } from "/services/authenticationServices";
 
@@ -48,7 +48,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     };
     try {
       const response = await loginUser(request);
-      if (response.role === roleConstants.ARCHITECT) {
+      if (
+        response.role === companyRoleConstants.ARCHITECT ||
+        companyRoleConstants.CONSTRUCTION_MANAGER
+      ) {
         toast.success("Đăng nhập thành công!");
         dispatch(login(response));
         router.push("/");

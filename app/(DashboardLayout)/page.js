@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import "moment/locale/vi";
 
-import roleConstants from "/constants/roles";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 import timezone from "/constants/timezone";
 
 moment.tz.setDefault(timezone.momentDefault);
@@ -56,10 +56,12 @@ export default function DashboardPage() {
   const fetchDashboard = async () => {
     try {
       const dashboard =
-        user.role === roleConstants.ADMIN
+        user.role === companyRoleConstants.ADMIN
           ? await getDashboardData()
-          : user.role === roleConstants.ARCHITECT &&
+          : (user.role === companyRoleConstants.ARCHITECT ||
+              user.role === companyRoleConstants.CONSTRUCTION_MANAGER) &&
             (await getDashboardDataByUserId(user.id));
+
       setRecentReports(dashboard.recentReports);
       setRecentProjects(dashboard.recentProjects);
       setNumOngoingProjects(dashboard.numOngoingProjects);
