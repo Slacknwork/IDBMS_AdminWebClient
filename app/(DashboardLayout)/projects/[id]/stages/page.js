@@ -177,7 +177,7 @@ export default function PaymentStages() {
         <Box sx={{ display: "flex" }}>
           {!loading &&
             stages?.length === 0 &&
-            (projectRole.role === participationRoleIndex.ProjectManager ||
+            (projectRole?.role === participationRoleIndex.ProjectManager ||
               user.role === companyRoleConstants.ADMIN) && (
               <MapProjectDesignModal
                 success={fetchDataFromApi}
