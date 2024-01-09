@@ -19,8 +19,8 @@ export default function RootLayout({ children }) {
           <QueryClientProvider client={queryClient}>
             <CssBaseline />
             {children}
+            <ToastContainer />
           </QueryClientProvider>
-          <ToastContainer />
         </ThemeProvider>
       </PersistGate>
     </Provider>

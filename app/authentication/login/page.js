@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 // components
@@ -54,8 +55,7 @@ const Login2 = () => {
                     spacing={1}
                     justifyContent="center"
                     mt={3}
-                  >
-                  </Stack>
+                  ></Stack>
                 }
               />
             </Card>
