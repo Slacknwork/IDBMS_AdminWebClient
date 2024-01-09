@@ -122,7 +122,7 @@ export default function PaymentStageDesignDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'phân loại công việc' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế giai đoạn' từ hệ thống");
       }
     };
     const fetchProjectDesigns = async () => {
@@ -132,7 +132,7 @@ export default function PaymentStageDesignDetails() {
         setProjectDesigns(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế dự án' từ hệ thống");
       }
     };
     await Promise.all([fetchPaymentStageDesign(), fetchProjectDesigns()]);

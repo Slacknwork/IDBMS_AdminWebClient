@@ -106,7 +106,7 @@ export default function ProjectDesignDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'thiết kế dự án' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế dự án' từ hệ thống");
       }
     };
     await Promise.all([fetchProjectDesign()]);

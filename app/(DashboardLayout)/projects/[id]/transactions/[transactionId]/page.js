@@ -167,7 +167,7 @@ export default function TransactionDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'loại sản phẩm' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm' từ hệ thống");
       }
     };
     const fetchUsers = async () => {
@@ -175,7 +175,7 @@ export default function TransactionDetails() {
         const items = await getAllUsers({});
         setParentCategories(items.list);
       } catch (error) {
-        toast.error("Lỗi dữ liệu: Người dùng");
+        toast.error("Lỗi nạp dữ liệu 'Người dùng' từ hệ thống");
         console.log(error);
       }
     };
@@ -184,7 +184,7 @@ export default function TransactionDetails() {
         const items = await getAllWarrantyClaims({});
         setParentCategories(items.list);
       } catch (error) {
-        toast.error("Lỗi dữ liệu: Bảo hiểm");
+        toast.error("Lỗi nạp dữ liệu 'Bảo hiểm' từ hệ thống");
         console.log(error);
       }
     };
