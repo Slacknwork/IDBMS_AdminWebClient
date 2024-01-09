@@ -115,7 +115,7 @@ export default function RequestList() {
   const onUpdateSubmit = async (request, status) => {
     try {
       await updateBookingRequestStatus(request.id, status, note);
-      toast.success("Cập nhật thàng công!");
+      toast.success("Cập nhật thành công!");
       router.push(
         `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`
       );
