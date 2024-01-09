@@ -114,7 +114,7 @@ export default function StageOverview() {
       console.log(stage);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
     }
   };
 

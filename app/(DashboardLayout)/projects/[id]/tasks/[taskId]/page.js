@@ -149,32 +149,60 @@ export default function TaskOverviewPage() {
 
   const fetchDataFromApi = async () => {
     setLoading(true);
-    try {
-      const floors = await getFloorsByProjectId({ projectId });
-      setRooms(
-        floors.list.flatMap((floor) =>
-          floor.rooms?.map((room) => ({
-            ...room,
+      const fetchFloors = async () => {
+        try {
+          const floors = await getFloorsByProjectId({ projectId });
+          setRooms(
+          floors.list.flatMap((floor) =>
+            floor.rooms?.map((room) => ({
+              ...room,
             floorUsePurpose: floor.usePurpose,
-          }))
-        )
-      );
-      const listTask = await getProjectTasksByProjectId({ projectId });
-      setTasks(listTask.list);
-      const listTaskCategory = await getAllTaskCategories({});
-      setTaskCategories(listTaskCategory.list);
-      const listStagesByProjectId = await getPaymentStagesByProjectId({
-        projectId,
-      });
-      setStages(listStagesByProjectId.list);
-      const task = await getProjectTaskById(taskId);
-      setFormData((prevData) => ({ ...prevData, ...task }));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    } finally {
-      setLoading(false);
-    }
+            }))
+          )
+        );
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Tầng' từ hệ thống");
+          console.log(error);
+        }
+      };
+      const fetchTasks = async () => {
+        try {
+          const listTask = await getProjectTasksByProjectId({ projectId });
+          setTasks(listTask.list);
+          const task = await getProjectTaskById(taskId);
+          setFormData((prevData) => ({ ...prevData, ...task }));
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Công việc' từ hệ thống");
+          console.log(error);
+        }
+      };
+      const fetchTaskCategories= async () => {
+        try {
+          const listTaskCategory = await getAllTaskCategories({});
+          setTaskCategories(listTaskCategory.list);
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Loại công việc' từ hệ thống");
+          console.log(error);
+        }
+      };
+      const fetchStages= async () => {
+        try {
+          const listStagesByProjectId = await getPaymentStagesByProjectId({
+            projectId,
+          });
+          setStages(listStagesByProjectId.list);
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
+          console.log(error);
+        }
+      };
+      await Promise.all([
+        fetchFloors(),
+        fetchTasks(),
+        fetchTaskCategories(),
+        fetchStages(),
+      ]);
+      setLoading(false); 
   };
 
   const [formHasError, setFormHasError] = useState(true);

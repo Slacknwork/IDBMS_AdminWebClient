@@ -129,7 +129,7 @@ export default function TaskDesignDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'phân loại công việc' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế công việc' từ hệ thống");
       }
     };
     const fetchTaskCategories = async () => {
@@ -139,7 +139,7 @@ export default function TaskDesignDetails() {
         setTaskCategories(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống");
       }
     };
     const fetchItemCategories = async () => {
@@ -149,7 +149,7 @@ export default function TaskDesignDetails() {
         setItemCategories(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại sản phẩm' từ hệ thống");
       }
     };
     await Promise.all([

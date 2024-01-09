@@ -24,7 +24,7 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import UserCard from "/components/shared/UserCard";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function ProjectDetails() {
   const params = useParams();
@@ -136,9 +136,8 @@ export default function ProjectDetails() {
     setSwitchSubmit(true);
   };
 
-  useEffect(() => {
-    const fetchDataFromApi = async () => {
-      setLoading(true);
+  const fetchDataFromApi = async () => {
+    setLoading(true);
       try {
         const project = await getProjectById(params.id);
         setFormData((prevData) => ({ ...prevData, ...project }));
@@ -162,14 +161,14 @@ export default function ProjectDetails() {
         setProjectOwner(participation?.user ?? "");
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
       } finally {
         setLoading(false);
       }
     };
-    fetchDataFromApi();
-    if (!switchSubmit) return;
 
+  useEffect(() => {
+    if (!switchSubmit) return;
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
 
@@ -183,13 +182,17 @@ export default function ProjectDetails() {
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
 
   const onSaveProject = async () => {
     try {
-      const project = await updateProject(params.id, formData);
+      await updateProject(params.id, formData);
       setPageName(formData.name);
       setPageDescription(formData.description);
       toast.success("Cập nhật thành công!");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

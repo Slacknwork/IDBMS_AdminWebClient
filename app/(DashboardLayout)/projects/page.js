@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 import {
   Avatar,
@@ -21,22 +22,20 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import projectTypeOptions, {
-  projectTypeChipColors,
-} from "/constants/enums/projectType";
+import participationRoleOptions from "/constants/enums/participationRole";
+
 import languageTypeOptions, {
   languageTypeChipColors,
   languageTypeChipImages,
 } from "/constants/enums/language";
 import projectStatusOptions from "/constants/enums/projectStatus";
 
-import { getProjectsBySiteId } from "/services/projectServices";
+import { getParticipationsByUserId } from "/services/projectParticipationServices";
 
 import PageContainer from "/components/container/PageContainer";
 import Pagination from "/components/shared/Pagination";
 import FilterStatus from "/components/shared/FilterStatus";
 import Search from "/components/shared/Search";
-import CreateProjectModal from "/components/shared/Modals/Projects/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -78,56 +77,64 @@ export default function ProjectListPage() {
   const projectStatusAllLabel = "Tất cả";
 
   // INIT
-  const params = useParams();
+  const user = useSelector((state) => state.user);
   const searchParams = useSearchParams();
 
   // FETCH DATA FROM API
-  const [values, setValues] = useState([]);
+  const [participations, setParticipations] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const fetchParticipations = async () => {
+    const userId = user.id;
+    const search = searchParams.get(searchQuery) ?? "";
+    const status = searchParams.get(projectStatusQuery) ?? "";
+    const type = searchParams.get(projectTypeQuery) ?? "";
+    const page = searchParams.get(pageQuery) ?? defaultPage;
+    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
+    try {
+      const data = await getParticipationsByUserId({
+        userId,
+        search,
+        type,
+        status,
+        page,
+        pageSize,
+      });
+      setCount(data.totalItem);
+      setParticipations(data.list);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    await Promise.all([fetchParticipations()]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchDataFromApi = async () => {
-      const siteId = params.id;
-      const search = searchParams.get(searchQuery) ?? "";
-      const status = searchParams.get(projectStatusQuery) ?? "";
-      const type = searchParams.get(projectTypeQuery) ?? "";
-      const page = searchParams.get(pageQuery) ?? defaultPage;
-      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
-      try {
-        const data = await getProjectsBySiteId({
-          siteId,
-          search,
-          type,
-          status,
-          page,
-          pageSize,
-        });
-        setCount(data.totalItem);
-        setValues(data.list);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
-      }
-    };
-    fetchDataFromApi();
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   return (
     <PageContainer title="Danh sách dự án" description="Danh sách dự án">
-      <Box sx={{ zIndex: 1 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Typography variant="h2">{"Dự án tham gia"}</Typography>
+      <Box sx={{ mt: 3, minHeight: "30rem" }}>
+        <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
             <Search placeholder="Tìm tên dự án"></Search>
-            <FilterStatus
+            {/* <FilterStatus
               query={projectTypeQuery}
               options={projectTypeOptions}
               label={projectTypeLabel}
               allValue={projectTypeAllValue}
               allLabel={projectTypeAllLabel}
-            ></FilterStatus>
+            ></FilterStatus> */}
             <FilterStatus
               query={projectStatusQuery}
               options={projectStatusOptions}
@@ -136,9 +143,12 @@ export default function ProjectListPage() {
               allLabel={projectStatusAllLabel}
             ></FilterStatus>
           </Box>
-          <CreateProjectModal></CreateProjectModal>
         </Box>
-        {values && values.length > 0 ? (
+        {loading ? (
+          <Stack sx={{ my: 5 }}>
+            <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+          </Stack>
+        ) : participations && participations.length > 0 ? (
           <Table aria-label="simple table" sx={{ mt: 1 }}>
             <TableHead>
               <TableRow>
@@ -149,7 +159,7 @@ export default function ProjectListPage() {
                 </StyledTableCell>
                 <StyledTableCell width={"15%"}>
                   <Typography variant="subtitle2" fontWeight={600}>
-                    Loại
+                    Vai trò
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell width={"15%"}>
@@ -166,27 +176,34 @@ export default function ProjectListPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {values?.map((project) => (
-                <StyledTableRow key={project.id}>
+              {participations?.map((participation) => (
+                <StyledTableRow key={participation.project?.id}>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      {project.name}
+                      {participation.project?.name}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={projectTypeOptions[project.type]}
-                      color={projectTypeChipColors[project.type]}
+                      label={participationRoleOptions[participation.role]}
                       fontWeight={400}
                     ></Chip>
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={languageTypeOptions[project.language]}
-                      color={languageTypeChipColors[project.language]}
+                      label={
+                        languageTypeOptions[participation.project?.language]
+                      }
+                      color={
+                        languageTypeChipColors[participation.project?.language]
+                      }
                       avatar={
                         <Avatar
-                          src={languageTypeChipImages[project.language]}
+                          src={
+                            languageTypeChipImages[
+                              participation.project?.language
+                            ]
+                          }
                         />
                       }
                       variant="outlined"
@@ -195,7 +212,9 @@ export default function ProjectListPage() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={projectStatusOptions[project.status]}
+                      label={
+                        projectStatusOptions[participation.project?.status]
+                      }
                       fontWeight={400}
                     ></Chip>
                   </TableCell>
@@ -205,7 +224,7 @@ export default function ProjectListPage() {
                       variant="contained"
                       disableElevation
                       color="primary"
-                      href={`/projects/${project.id}`}
+                      href={`/projects/${participation.project?.id}`}
                     >
                       Chi tiết
                     </Button>
@@ -214,10 +233,6 @@ export default function ProjectListPage() {
               ))}
             </TableBody>
           </Table>
-        ) : loading ? (
-          <Stack sx={{ my: 5 }}>
-            <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-          </Stack>
         ) : (
           <Stack sx={{ my: 5 }}>
             <Typography variant="p" sx={{ textAlign: "center" }}>

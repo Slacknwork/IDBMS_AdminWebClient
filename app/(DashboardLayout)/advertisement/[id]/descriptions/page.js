@@ -75,7 +75,7 @@ export default function AdvertisementDetailsPage() {
       setProjectOwner(participation?.user ?? "");
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
     } finally {
       setLoading(false);
     }

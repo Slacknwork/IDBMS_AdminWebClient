@@ -117,7 +117,7 @@ export default function ItemCategoriesList() {
         setInteriorItemCount(data.totalItem);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại sản phẩm' từ hệ thống");
       } finally {
         setLoading(false);
       }

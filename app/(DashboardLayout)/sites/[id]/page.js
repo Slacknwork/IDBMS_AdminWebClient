@@ -154,7 +154,7 @@ export default function SiteDetails() {
         setPageDescription(data?.pageDescription);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Địa điểm' từ hệ thống");
       }
     };
     await Promise.all([fetchSite()]);

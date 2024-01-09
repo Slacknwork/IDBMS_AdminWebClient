@@ -132,7 +132,7 @@ export default function TaskCategoryDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'màu' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Màu' từ hệ thống");
       }
     };
     await Promise.all([fetchTaskCategory()]);

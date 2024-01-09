@@ -147,7 +147,7 @@ export default function TaskCategoryDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'loại sản phẩm' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm' từ hệ thống");
       }
     };
     const fetchParentCategories = async () => {
@@ -155,7 +155,7 @@ export default function TaskCategoryDetails() {
         const items = await getAllInteriorItemCategories({});
         setParentCategories(items.list);
       } catch (error) {
-        toast.error("Lỗi dữ liệu: Sản phẩm");
+        toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm 'từ hệ thống");
         console.log(error);
       }
     };

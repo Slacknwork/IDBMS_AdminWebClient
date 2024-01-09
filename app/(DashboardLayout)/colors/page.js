@@ -103,24 +103,39 @@ export default function ItemColorList() {
     const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
     const fetchDataFromApi = async () => {
-      try {
-        setLoading(true);
-        const items = await getAllInteriorItems({});
-        const data = await getAllInteriorItemColors({
-          type,
-          name,
-          pageNo,
-          pageSize,
-        });
-        setInteriorItems(items.list);
-        setInteriorItemColors(data.list);
-        setInteriorItemCount(data.totalItem);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+
+      const fetchInteriorItems = async () => {
+        try {
+          const items = await getAllInteriorItems({});
+          setInteriorItems(items.list);
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Sản phẩm' từ hệ thống");
+          console.log(error);
+        }
+      };
+      const fetchInteriorItemColors = async () => {
+        try {
+          const data = await getAllInteriorItemColors({
+            type,
+            name,
+            pageNo,
+            pageSize,
+          });
+          
+          setInteriorItemColors(data.list);
+          setInteriorItemCount(data.totalItem);
+        } catch (error) {
+          toast.error("Lỗi nạp dữ liệu 'Màu' từ hệ thống");
+          console.log(error);
+        }
+      };
+
+      await Promise.all([
+        fetchInteriorItems(),
+        fetchInteriorItemColors(),
+      ]);
+      setLoading(false);
     };
     fetchDataFromApi();
   }, [searchParams]);

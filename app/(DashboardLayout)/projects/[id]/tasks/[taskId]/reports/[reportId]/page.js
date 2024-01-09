@@ -173,7 +173,7 @@ export default function ProjectDocumentDetails(projectDocument) {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'phân loại công việc' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống");
       }
     };
 
