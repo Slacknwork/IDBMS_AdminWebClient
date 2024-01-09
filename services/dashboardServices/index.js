@@ -20,4 +20,21 @@ const getDashboardData = async () => {
   }
 };
 
-export { getDashboardData };
+const getDashboardDataByUserId = async (userId) => {
+  try {
+    const token = store.getState().user?.token ?? "";
+    const url = `${endpoint}/userId?userId=${userId}`;
+    const response = await fetchData({
+      url: `${url}`,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+};
+
+export { getDashboardData, getDashboardDataByUserId };

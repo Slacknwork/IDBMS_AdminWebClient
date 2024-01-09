@@ -28,12 +28,6 @@ const MenuitemsEngineer = [
   },
   {
     id: uniqueId(),
-    title: "Yêu cầu",
-    icon: IconFileInvoice,
-    href: "/requests",
-  },
-  {
-    id: uniqueId(),
     title: "Dự án",
     icon: IconHome,
     href: "/projects",

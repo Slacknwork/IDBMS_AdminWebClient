@@ -29,15 +29,19 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import "moment/locale/vi";
+
+import roleConstants from "/constants/roles";
 import timezone from "/constants/timezone";
 
-moment.tz.setDefault("Asia/Ho_Chi_Minh");
-moment.locale("vi");
+moment.tz.setDefault(timezone.momentDefault);
+moment.locale(timezone.momentLocale);
 
-import { getDashboardData } from "/services/dashboardServices";
+import {
+  getDashboardData,
+  getDashboardDataByUserId,
+} from "/services/dashboardServices";
 
 import DashboardCard from "/components/shared/DashboardCard";
-import ProductPerformance from "/components/dashboard/ProductPerformance";
 import PageContainer from "/components/container/PageContainer";
 
 export default function DashboardPage() {
@@ -51,7 +55,11 @@ export default function DashboardPage() {
 
   const fetchDashboard = async () => {
     try {
-      const dashboard = await getDashboardData();
+      const dashboard =
+        user.role === roleConstants.ADMIN
+          ? await getDashboardData()
+          : user.role === roleConstants.ARCHITECT &&
+            (await getDashboardDataByUserId(user.id));
       setRecentReports(dashboard.recentReports);
       setRecentProjects(dashboard.recentProjects);
       setNumOngoingProjects(dashboard.numOngoingProjects);
@@ -118,7 +126,7 @@ export default function DashboardPage() {
                 ))
               ) : (
                 <Stack sx={{ width: "100%", height: "10rem" }}>
-                  <Typography variant="p" sx={{ textAlign: "center" }}>
+                  <Typography variant="p" sx={{ m: "auto" }}>
                     Không có dữ liệu.
                   </Typography>
                 </Stack>
