@@ -13,11 +13,15 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { loginByGoogle } from "/services/authenticationServices";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
+
 import { login } from "/store/reducers/user";
-import { useRouter } from "next/navigation";
+
+import roleConstants from "/constants/roles";
+
+import { loginUser } from "/services/authenticationServices";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const dispatch = useDispatch();
@@ -37,18 +41,18 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   };
 
   const handleFormSubmit = async (event) => {
-    console.log(event.profileObj);
+    event.preventDefault();
     const request = {
-      email: event.profileObj.email ?? "",
-      googleId: event.profileObj.googleId ?? "",
+      email: email ?? "",
+      password: password ?? "",
     };
     try {
-      const response = await loginByGoogle(request);
-      console.log(response);
-      toast.success("Đăng nhập thành công!");
-      dispatch(login(response));
-
-      router.push(`/sites`);
+      const response = await loginUser(request);
+      if (response.role === roleConstants.ARCHITECT) {
+        toast.success("Đăng nhập thành công!");
+        dispatch(login(response));
+        router.push("/");
+      } else toast.error("Tài khoản không có quyền truy cập!");
     } catch (error) {
       console.error("Error :", error);
       toast.error("Email không hợp lệ!");

@@ -168,7 +168,6 @@ export default function ItemDetails() {
     const fetchUser = async () => {
       try {
         const response = await getUserById(params.id);
-        console.log(response);
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -183,8 +182,7 @@ export default function ItemDetails() {
     const transformedValue = transformData(formData);
     console.log(transformedValue);
     try {
-      const response = await updateUser(params.id, transformedValue);
-      console.log(response);
+      await updateUser(params.id, transformedValue);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
@@ -195,10 +193,10 @@ export default function ItemDetails() {
   const onSuspendUser = async () => {
     try {
       if (formData?.status === 2) {
-        const response = await updateUserStatus(params.id, 0);
+        await updateUserStatus(params.id, 0);
         toast.success("Phục hồi thành công!");
       } else if (formData?.status === 0) {
-        const response = await updateUserStatus(params.id, 2);
+        await updateUserStatus(params.id, 2);
         toast.success("Đình chỉ thành công!");
       }
       await fetchDataFromApi();
@@ -221,10 +219,12 @@ export default function ItemDetails() {
 
   useEffect(() => {
     fetchDataFromApi();
+  }, []);
+
+  useEffect(() => {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
-    console.log(formData);
     setFormHasError(hasErrors);
 
     if (hasErrors) {

@@ -1,5 +1,6 @@
 const roleConstants = {
   ADMIN: "Admin",
+  ARCHITECT: "Architect",
   project: {},
 };
 
