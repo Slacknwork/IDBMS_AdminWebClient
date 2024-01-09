@@ -123,7 +123,7 @@ export default function TaskCategoryDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'quản lý' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Quản lý' từ hệ thống");
       }
     };
     await Promise.all([fetchAdmin()]);

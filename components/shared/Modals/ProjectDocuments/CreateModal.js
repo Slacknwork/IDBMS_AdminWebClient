@@ -156,7 +156,7 @@ export default function DocumentModal({ success, projectDocument }) {
         setProjectDocumentTemplates(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Mẫu tài liệu' từ hệ thống");
       }
     };
     await Promise.all([

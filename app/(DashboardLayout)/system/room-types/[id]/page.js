@@ -144,7 +144,7 @@ export default function RoomTypeDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Loại Phòng' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
       }
     };
     await Promise.all([fetchRoomType()]);

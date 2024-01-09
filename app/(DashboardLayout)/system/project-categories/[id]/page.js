@@ -123,7 +123,7 @@ export default function ProjectCategoryDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'phân loại dự án' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại dự án' từ hệ thống");
       }
     };
     await Promise.all([fetchProjectCategory()]);

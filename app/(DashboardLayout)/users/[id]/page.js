@@ -171,7 +171,7 @@ export default function ItemDetails() {
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'người dùng' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Người dùng' từ hệ thống");
       }
     };
     await Promise.all([fetchUser()]);

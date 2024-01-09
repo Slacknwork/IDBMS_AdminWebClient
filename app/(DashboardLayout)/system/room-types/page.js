@@ -96,7 +96,7 @@ export default function RoomTypeList() {
         setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Loại Phòng' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
       }
     };
     await Promise.all([fetchRoomTypes()]);

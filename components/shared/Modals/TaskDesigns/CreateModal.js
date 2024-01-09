@@ -134,7 +134,7 @@ export default function CreateTaskDesignModal({ success }) {
         setTaskCategories(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống");
       }
     };
     const fetchItemCategories = async () => {
@@ -144,7 +144,7 @@ export default function CreateTaskDesignModal({ success }) {
         setItemCategories(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm' từ hệ thống");
       }
     };
     await Promise.all([fetchTaskCategories(), fetchItemCategories()]);

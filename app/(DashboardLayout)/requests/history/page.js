@@ -102,7 +102,7 @@ export default function RequestList() {
         setCount(data.totalItem);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Yêu cầu đặt' từ hệ thống");
       } finally {
         setLoading(false);
       }

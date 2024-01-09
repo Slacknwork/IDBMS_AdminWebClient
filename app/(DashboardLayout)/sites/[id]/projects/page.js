@@ -108,7 +108,7 @@ export default function ProjectListPage() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
       }
     };
     fetchDataFromApi();
