@@ -28,7 +28,7 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function CreateTaskModal({ hasCallback, onCallback }) {
   // CONSTANTS
@@ -124,19 +124,19 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       case "estimateBusinessDay":
       case "unitUsed":
       case "isIncurred":
-      case "parentTaskId":  
-      case "taskDesignId":  
-      case "taskCategoryId":  
-      case "designCategoryId":  
-      case "paymentStageId":  
+      case "parentTaskId":
+      case "taskDesignId":
+      case "taskCategoryId":
+      case "designCategoryId":
+      case "paymentStageId":
         setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
+          ...prevData,
+          [field]: value,
+          [`${field}Error`]: {
+            hasError: false,
+            label: "",
+          },
+        }));
       default:
     }
   };
@@ -253,7 +253,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   };
 
   useEffect(() => {
-    fetchDataFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -270,11 +269,14 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   const handleCreate = async () => {
     if (!switchSubmit) return;
     try {
       const response = await createProjectTask(formData);
-      console.log(response);
       toast.success("Thêm thành công!");
       hasCallback && onCallback();
     } catch (error) {
@@ -285,6 +287,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
   return (
     <FormModal
+      sx={{ ml: 1 }}
       isOpen={openModal}
       setOpenModal={setOpenModal}
       buttonLabel="Tạo"

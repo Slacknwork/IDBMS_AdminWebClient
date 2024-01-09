@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+import { getAdminById, updateAdmin } from "/services/adminServices";
+
+import adminStatusOptions from "/constants/enums/adminStatus";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
@@ -9,16 +15,6 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import checkValidField from "/components/validations/field";
 import checkValidEmail from "/components/validations/email";
-
-import {
-  getAdminById,
-  updateAdmin,
-  deleteAdmin,
-} from "/services/adminServices";
-
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
-import adminStatusOptions from "/constants/enums/adminStatus";
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -88,25 +84,14 @@ export default function TaskCategoryDetails() {
     }
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
-  const params = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [parentCategories, setParentCategories] = useState([]);
-
   // INIT CONST
+  const user = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
 
   // FETCH DATA
   const fetchAdmin = async () => {
     try {
-      const response = await getAdminById(params.id);
+      const response = await getAdminById(user.id);
       setFormData((prevData) => ({ ...prevData, ...response }));
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -123,22 +108,10 @@ export default function TaskCategoryDetails() {
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
     const transformedValue = transformData(formData);
-    console.log(transformedValue);
-
     try {
-      await updateAdmin(params.id, transformedValue);
+      await updateAdmin(user.id, transformedValue);
       toast.success("Cập nhật thành công!");
-      await fetchData();
-    } catch (error) {
-      console.error("Error :", error);
-      toast.error("Lỗi!");
-    }
-  };
-  const handleDelete = async () => {
-    try {
-      await deleteAdmin(params.id);
-      toast.success("Xoá thành công!");
-      router.push("/admins");
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -187,15 +160,11 @@ export default function TaskCategoryDetails() {
   }, []);
 
   return (
-    <PageContainer title={formData.name} description="Chi tiết loại sản phẩm">
+    <PageContainer title={formData.name} description="Thông tin cá nhân">
       <DetailsPage
-        title="Thông tin người quản lý"
-        saveMessage="Lưu thông tin người quản lý?"
+        title="Thông tin cá nhân"
+        saveMessage="Lưu thông tin?"
         onSave={handleSubmit}
-        deleteMessage={"Xoá người quản lý?"}
-        deleteLabel={"Xoá"}
-        hasDelete
-        onDelete={handleDelete}
         loading={loading}
       >
         {/* TÊN */}

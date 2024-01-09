@@ -48,4 +48,7 @@ const loginByGoogle = async (request) => {
     throw error;
   }
 };
+
+const logout = async (request) => {};
+
 export { loginAdmin, loginByGoogle, loginUser };

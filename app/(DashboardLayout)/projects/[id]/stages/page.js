@@ -346,7 +346,7 @@ export default function PaymentStages() {
                   ></Chip>
                 </TableCell>
                 <TableCell align="right">
-                  <Box display="flex" alignItems="center">
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     {response.openAllowed && (
                       <MessageModal
                         disabled={loading}
@@ -403,7 +403,7 @@ export default function PaymentStages() {
 
                     <Button
                       component={Link}
-                      sx={{ ml: "auto" }}
+                      sx={{ ml: 2 }}
                       variant="contained"
                       disableElevation
                       color="primary"
