@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ minHeight: "36rem" }}>
         <Grid item xs={12} lg={4}>
           <DashboardCard title="Báo cáo gần nhất">
             <Timeline
