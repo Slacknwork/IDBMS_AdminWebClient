@@ -272,7 +272,7 @@ export default function ProjectTasksPage() {
       const data = await await getAllTaskCategories({});
       setCategories(data.list);
     } catch (error) {
-      toast.error("Lỗi dữ liệu: Phân loại công việc!");
+      toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống!");
     }
   };
 
@@ -282,7 +282,7 @@ export default function ProjectTasksPage() {
       await Promise.all([fetchCategories(), fetchStages(), fetchFloors()]);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Tuỳ chọn trong công việc' từ hệ thống");
     } finally {
       setLoading(false);
     }
@@ -294,7 +294,7 @@ export default function ProjectTasksPage() {
       await fetchTasks();
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Công việc' từ hệ thống");
     } finally {
       setTasksLoading(false);
     }

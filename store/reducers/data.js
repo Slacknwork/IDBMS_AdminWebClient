@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { getAdvertisementProjectById } from "/services/advertisementServices";
+import { getProjectParticipation } from "/services/projectParticipationServices";
 import { getProjectById } from "/services/projectServices";
 import { getSiteById } from "/services/siteServices";
 
 const initialState = {
   project: { name: "Dự án", type: 0, status: 0, language: 0 },
+  projectRole: { userId: "", projectId: "", role: "" },
   site: { name: "Khu công trình" },
 };
 
@@ -18,6 +20,12 @@ export const dataSlice = createSlice({
     },
     clearProject: (state) => {
       state.project = { name: "Dự án", type: 0, status: 0, language: 0 };
+    },
+    setProjectRole: (state, actions) => {
+      state.projectRole = actions.payload.projectRole || state.projectRole;
+    },
+    clearProjectRole: (state) => {
+      state.projectRole = { userId: "", projectId: "", role: "" };
     },
     setSite: (state, actions) => {
       state.site = actions.payload.site || state.site;
@@ -50,6 +58,17 @@ export const fetchProjectData = (id) => {
   };
 };
 
+export const fetchProjectRoleData = ({ userId, projectId } = {}) => {
+  return async (dispatch) => {
+    try {
+      const response = await getProjectParticipation({ userId, projectId });
+      dispatch(setProjectRole({ projectRole: response }));
+    } catch (error) {
+      dispatch(clearProject());
+    }
+  };
+};
+
 export const fetchSiteData = (id) => {
   return async (dispatch) => {
     try {
@@ -61,7 +80,13 @@ export const fetchSiteData = (id) => {
   };
 };
 
-export const { setProject, setSite, clearSite, clearProject } =
-  dataSlice.actions;
+export const {
+  setProject,
+  setSite,
+  clearSite,
+  clearProject,
+  setProjectRole,
+  clearProjectRole,
+} = dataSlice.actions;
 
 export default dataSlice.reducer;

@@ -121,7 +121,7 @@ export default function ProjectList() {
         setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Phân Loại Dự Án' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế Dự Án' từ hệ thống");
       }
     };
     await Promise.all([fetchProjectDesigns()]);

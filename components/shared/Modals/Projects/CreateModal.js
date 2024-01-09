@@ -149,7 +149,7 @@ export default function CreateProjectModal({ children }) {
         setDecorProjects(response?.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Dự án thiết kế' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Dự án' từ hệ thống");
       }
     };
     const fetchProjectCategories = async () => {

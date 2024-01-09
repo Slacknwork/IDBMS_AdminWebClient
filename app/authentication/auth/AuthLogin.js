@@ -46,7 +46,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
     try {
       const response = await loginAdmin(request);
-      console.log(response);
       toast.success("Đăng nhập thành công!");
       dispatch(login(response));
 

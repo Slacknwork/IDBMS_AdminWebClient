@@ -104,7 +104,7 @@ export default function InteriorItems() {
       setCount(response?.totalItem ?? 0);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Sản phẩm trong công việc' từ hệ thống");
     }
     setLoading(false);
   };
@@ -123,7 +123,7 @@ export default function InteriorItems() {
       setItemCategories(response.list);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
+      toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm' từ hệ thống");
     }
   };
   const fetchOptionsFromApi = async () => {

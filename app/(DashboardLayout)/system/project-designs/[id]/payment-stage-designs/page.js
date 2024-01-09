@@ -91,7 +91,7 @@ export default function ProjectList() {
         setCount(response?.totalItem ?? 0);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Thiết Kế Công Việc' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết Kế giai đoạn' từ hệ thống");
       }
     };
     await Promise.all([fetchPaymentStageDesigns()]);
@@ -114,7 +114,7 @@ export default function ProjectList() {
         setProjectDesigns(response.list);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Thiết kế dự án' từ hệ thống");
       }
     };
     await Promise.all([fetchProjectDesigns()]);

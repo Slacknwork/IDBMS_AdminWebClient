@@ -103,7 +103,7 @@ export default function PaymentStages() {
         console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Giai đoạn' từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
       }
     };
     await Promise.all([fetchPaymentStages()]);

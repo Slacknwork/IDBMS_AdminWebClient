@@ -77,7 +77,7 @@ export default function SitesPage() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Địa điểm' từ hệ thống");
       }
     };
     fetchDataFromApi();

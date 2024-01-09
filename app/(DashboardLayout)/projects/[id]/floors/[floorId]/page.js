@@ -111,7 +111,7 @@ export default function FloorDetailsPage() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu từ hệ thống");
+        toast.error("Lỗi nạp dữ liệu 'Tầng' từ hệ thống");
       }
     }
   };

@@ -109,24 +109,37 @@ export default function RoomDetailsPage() {
   
 
   const fetchDataFromApi = async () => {
-    try {
-      const data = await getRoomById(params.roomId);
-      setFormData((prevData) => ({ ...prevData, ...data }));
-      setTotal(
-        data?.tasks?.reduce(
-          (acc, task) => acc + task.pricePerUnit * task.unitInContract,
-          0
-        )
-      );
+    setLoading(true);
 
-      const rts = await getAllRoomTypes({});
-      setRoomTypes(rts.list);
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu từ hệ thống");
-    }
+    const fetchRooms = async () => {
+      try {
+        const data = await getRoomById(params.roomId);
+        setFormData((prevData) => ({ ...prevData, ...data }));
+        setTotal(
+          data?.tasks?.reduce(
+            (acc, task) => acc + task.pricePerUnit * task.unitInContract,
+            0
+          )
+        );
+      } catch (error) {
+        toast.error("Lỗi nạp dữ liệu 'Phòng' từ hệ thống");
+        console.log(error);
+      }
+    };
+    const fetchRoomTypes = async () => {
+      try {
+        const rts = await getAllRoomTypes({});
+        setRoomTypes(rts.list);
+      } catch (error) {
+        toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
+        console.log(error);
+      }
+    };
+    await Promise.all([
+      fetchRooms(),
+      fetchRoomTypes(),
+    ]);
+    setLoading(false);
   };
 
   const [formHasError, setFormHasError] = useState(true);
