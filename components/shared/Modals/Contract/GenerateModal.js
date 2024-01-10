@@ -10,10 +10,16 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { IconBuilding, IconFileCheck, IconUser } from "@tabler/icons-react";
+import {
+  IconBuilding,
+  IconDownload,
+  IconFileCheck,
+  IconUser,
+} from "@tabler/icons-react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
+import locales from "/constants/locales";
 import fileConstants from "/constants/file";
 import { projectStatusIndex } from "/constants/enums/projectStatus";
 
@@ -21,6 +27,7 @@ import {
   generateCompanyContract,
   generateIndividualContract,
 } from "/services/contractServices";
+import { downloadSettlementFile } from "/services/excelServices";
 
 import FormModal from "../Form";
 import IndividualContractForm from "./IndividualContractForm";
@@ -255,7 +262,21 @@ export default function GenerateContractModal({ sx }) {
     }
   };
 
-  useEffect(() => {
+  const fetchSettlementFile = async () => {
+    try {
+      const fileName = `${fileConstants.documentType.SETTLEMENT} - ${project?.name}${fileConstants.type.XLS}`;
+      await downloadSettlementFile(project?.id, fileName);
+    } catch (error) {
+      console.error(error);
+      toast.error("Lỗi dữ liệu: Quyết toán!");
+    }
+  };
+
+  const fetchContract = () => {
+    if (screen === 1 && selectedContractType === 3) {
+      fetchSettlementFile();
+      return;
+    }
     if (screen !== 2) return;
     switch (selectedContractType) {
       case 1:
@@ -264,10 +285,12 @@ export default function GenerateContractModal({ sx }) {
       case 2:
         fetchIndividualContract();
         break;
-      case 3:
-        break;
       default:
     }
+  };
+
+  useEffect(() => {
+    fetchContract();
   }, [screen]);
 
   return (
@@ -289,7 +312,11 @@ export default function GenerateContractModal({ sx }) {
           Quay lại
         </Button>
       }
-      disableSubmit={selectedContractType === 0 || screen >= 2}
+      disableSubmit={
+        selectedContractType === 0 ||
+        screen >= 2 ||
+        (screen >= 1 && selectedContractType === 3)
+      }
       onSubmit={() => screen < 2 && handleScreen(screen + 1)}
     >
       <Grid item xs={12} lg={12}>
@@ -305,15 +332,65 @@ export default function GenerateContractModal({ sx }) {
               formData={companyFormData}
               setFormData={setCompanyFormData}
             ></CompanyContractForm>
+          ) : selectedContractType === 2 ? (
+            <IndividualContractForm
+              formData={individualFormData}
+              setFormData={setIndividualFormData}
+            ></IndividualContractForm>
           ) : (
-            selectedContractType === 2 && (
-              <IndividualContractForm
-                formData={individualFormData}
-                setFormData={setIndividualFormData}
-              ></IndividualContractForm>
+            selectedContractType === 3 && (
+              <Box sx={{ width: "100%", height: "15rem", textAlign: "center" }}>
+                <Box sx={{ my: "auto" }}>
+                  <IconDownload size={125} color="gray"></IconDownload>
+                  <Typography variant="h5" sx={{ mt: 2 }}>
+                    Tập tin đang được tải xuống...
+                  </Typography>
+                  <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                    <button
+                      onClick={fetchContract}
+                      style={{
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                        border: "none",
+                        background: "none",
+                        padding: 0,
+                        font: "inherit",
+                      }}
+                    >
+                      Click vào đây
+                    </button>{" "}
+                    nếu tập tin không tự động tải xuống.
+                  </Typography>
+                </Box>
+              </Box>
             )
           ))}
-        {screen === 2 && <Typography variant="body1">Đang tải...</Typography>}
+        {screen === 2 && (
+          <Box sx={{ width: "100%", height: "15rem", textAlign: "center" }}>
+            <Box sx={{ my: "auto" }}>
+              <IconDownload size={125} color="gray"></IconDownload>
+              <Typography variant="h5" sx={{ mt: 2 }}>
+                Tập tin đang được tải xuống...
+              </Typography>
+              <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                <button
+                  onClick={fetchContract}
+                  style={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    border: "none",
+                    background: "none",
+                    padding: 0,
+                    font: "inherit",
+                  }}
+                >
+                  Click vào đây
+                </button>{" "}
+                nếu tập tin không tự động tải xuống.
+              </Typography>
+            </Box>
+          </Box>
+        )}
       </Grid>
     </FormModal>
   );
