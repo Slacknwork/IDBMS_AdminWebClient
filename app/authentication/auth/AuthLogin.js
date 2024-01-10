@@ -1,20 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
-  FormGroup,
-  FormControlLabel,
   FormControl,
   Button,
   Stack,
-  Checkbox,
   TextField,
 } from "@mui/material";
 import Link from "next/link";
 import { loginAdmin } from "/services/authenticationServices";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "/store/reducers/user";
 import { useRouter } from "next/navigation";
@@ -46,13 +42,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
     try {
       const response = await loginAdmin(request);
-      toast.success("Đăng nhập thành công!");
       dispatch(login(response));
 
       router.push(`/`);
     } catch (error) {
       console.error("Error :", error);
-      toast.error("Lỗi!");
     }
   };
 

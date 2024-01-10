@@ -264,7 +264,7 @@ export default function GenerateContractModal({ sx }) {
 
   const fetchSettlementFile = async () => {
     try {
-      const fileName = `${fileConstants.documentType.SETTLEMENT} - ${project?.name}${fileConstants.type.XLS}`;
+      const fileName = `${fileConstants.documentType.SETTLEMENT} - ${project?.name}${fileConstants.type.XLSX}`;
       await downloadSettlementFile(project?.id, fileName);
     } catch (error) {
       console.error(error);

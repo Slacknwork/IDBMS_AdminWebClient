@@ -13,7 +13,6 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
 import { login } from "/store/reducers/user";
@@ -52,13 +51,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         response.role === companyRoleConstants.ARCHITECT ||
         response.role === companyRoleConstants.CONSTRUCTION_MANAGER
       ) {
-        toast.success("Đăng nhập thành công!");
         dispatch(login(response));
         router.push("/");
-      } else toast.error("Tài khoản không có quyền truy cập!");
+      } else {
+      }
     } catch (error) {
       console.error("Error :", error);
-      toast.error("Email không hợp lệ!");
     }
   };
 
@@ -74,7 +72,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       router.push("/");
     } catch (error) {
       console.error("Error :", error);
-      toast.error("Lỗi đăng nhập Google!");
     }
   };
 

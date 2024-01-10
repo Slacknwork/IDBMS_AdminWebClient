@@ -1,7 +1,7 @@
 const fileConstants = {
   type: {
     DOCX: ".docx",
-    XLS: ".xls",
+    XLSX: ".xlsx",
   },
   documentType: {
     CONTRACT: "Hợp đồng",
