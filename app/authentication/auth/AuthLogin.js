@@ -49,7 +49,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       toast.success("Đăng nhập thành công!");
       dispatch(login(response));
 
-      router.push(`/sites`);
+      router.push(`/`);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -94,12 +94,17 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           alignItems="center"
           my={2}
         >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Remember this Device"
-            />
-          </FormGroup>
+          <Typography
+            component={Link}
+            href="/authentication/engineer-login"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Đăng nhập nhân viên
+          </Typography>
           <Typography
             component={Link}
             href="/"

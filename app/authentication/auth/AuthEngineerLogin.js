@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  FormGroup,
-  FormControlLabel,
   FormControl,
   Button,
   Stack,
-  Checkbox,
   TextField,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -125,12 +123,17 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           alignItems="center"
           my={2}
         >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Remember this Device"
-            />
-          </FormGroup>
+          <Typography
+            component={Link}
+            href="/authentication/login"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Đăng nhập QTV
+          </Typography>
           <Typography
             component={Link}
             href="/"
@@ -154,8 +157,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           >
             Đăng nhập
           </Button>
+          <Typography sx={{ my: 2, textAlign: "center" }} variant="subtitle2">
+            Hoặc
+          </Typography>
           <Button
-            color="primary"
+            startIcon={<GoogleIcon />}
+            color="error"
             variant="contained"
             size="large"
             onClick={handleGoogleLogin}
