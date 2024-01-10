@@ -33,22 +33,22 @@ const loginUser = async (request) => {
   }
 };
 
-const loginByGoogle = async (request) => {
+const loginByGoogle = async ({ googleToken = "" } = {}) => {
   try {
     const url = `${endpoint}/loginByGoogle`;
     const response = await fetchData({
       url,
       method: "POST",
       contentType: "application/json",
-      body: JSON.stringify(request),
+      body: JSON.stringify({ googleToken }),
     });
     return response.data;
   } catch (error) {
-    console.error("Error logging in admin:", error);
+    console.error("Error logging in google:", error);
     throw error;
   }
 };
 
 const logout = async (request) => {};
 
-export { loginAdmin, loginByGoogle, loginUser };
+export { loginAdmin, loginByGoogle, loginUser, logout };

@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { loginByGoogle } from "/services/authenticationServices";
+
 const initialState = {
   id: "",
   username: "",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
   Box,
@@ -14,6 +14,8 @@ import {
 import { IconUser, IconLogout } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { logout } from "/store/reducers/user";
+import { signOut } from "next-auth/react";
 
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
@@ -21,6 +23,7 @@ import { getAvatarContent, getColorForAvatar } from "/utils/avatar";
 
 export default function Profile({ name }) {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const dispatch = useDispatch();
   const router = useRouter();
   const user = useSelector((state) => state.user);
   let isGoogleLoggedIn = false;
@@ -38,16 +41,14 @@ export default function Profile({ name }) {
         : "/profile/user"
     );
   };
-  const handleLogout = () => {
-    router.push(
-      user?.role === companyRoleConstants.ADMIN
+  const handleLogout = async () => {
+    dispatch(logout());
+    const callbackUrl =
+      user?.role && user?.role === companyRoleConstants.ADMIN
         ? "/authentication/login"
-        : "/authentication/engineer-login"
-    );
-  };
-  const responseGoogle = () => {
-    toast.success("Đăng xuất thành công!");
-    router.push(`/authentication/engineer-login`);
+        : "/authentication/engineer-login";
+
+    await signOut({ callbackUrl });
   };
 
   return (

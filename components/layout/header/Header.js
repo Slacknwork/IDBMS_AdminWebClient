@@ -29,7 +29,6 @@ export default function Header({ toggleMobileSidebar }) {
   }));
 
   const user = useSelector((state) => state.user);
-  console.log(user)
 
   return (
     <AppBarStyled position="sticky" color="default">
@@ -61,8 +60,7 @@ export default function Header({ toggleMobileSidebar }) {
         </IconButton>
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
-          <Profile
-            name={user?.name ?? "Không tìm thấy"} />
+          <Profile name={user?.name ?? "Không tìm thấy"} />
         </Stack>
       </ToolbarStyled>
     </AppBarStyled>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -12,6 +12,7 @@ import {
   Checkbox,
   TextField,
 } from "@mui/material";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -21,9 +22,10 @@ import { login } from "/store/reducers/user";
 
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
-import { loginUser } from "/services/authenticationServices";
+import { loginUser, loginByGoogle } from "/services/authenticationServices";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  const session = useSession();
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -50,7 +52,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       const response = await loginUser(request);
       if (
         response.role === companyRoleConstants.ARCHITECT ||
-        companyRoleConstants.CONSTRUCTION_MANAGER
+        response.role === companyRoleConstants.CONSTRUCTION_MANAGER
       ) {
         toast.success("Đăng nhập thành công!");
         dispatch(login(response));
@@ -61,6 +63,29 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       toast.error("Email không hợp lệ!");
     }
   };
+
+  const handleGoogleLogin = () => {
+    signIn("google");
+  };
+
+  const googleLoginServer = async () => {
+    try {
+      const googleToken = session?.data?.id_token;
+      const response = await loginByGoogle({ googleToken });
+      dispatch(login(response));
+      router.push("/");
+    } catch (error) {
+      console.error("Error :", error);
+      toast.error("Lỗi đăng nhập Google!");
+    }
+  };
+
+  useEffect(() => {
+    if (session?.data?.id_token) {
+      console.log("ok");
+      googleLoginServer();
+    }
+  }, [session]);
 
   return (
     <>
@@ -128,6 +153,15 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             type="submit"
           >
             Đăng nhập
+          </Button>
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            onClick={handleGoogleLogin}
+            fullWidth
+          >
+            Đăng nhập bằng Google
           </Button>
         </Box>
       </Stack>
