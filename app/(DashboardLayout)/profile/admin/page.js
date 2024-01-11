@@ -7,8 +7,6 @@ import { toast } from "react-toastify";
 
 import { getAdminById, updateAdmin } from "/services/adminServices";
 
-import adminStatusOptions from "/constants/enums/adminStatus";
-
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
@@ -26,8 +24,6 @@ export default function TaskCategoryDetails() {
     emailError: { hasError: false, label: "" },
     password: "",
     passwordError: { hasError: false, label: "" },
-    status: "",
-    statusError: { hasError: false, label: "" },
     creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
   });
 
@@ -205,20 +201,6 @@ export default function TaskCategoryDetails() {
             errorLabel={formData.emailError.label}
             onChange={(e) => handleInputChange("email", e.target.value)}
           ></TextForm>
-        </Grid>
-
-        {/* STATUS */}
-        <Grid item xs={12} lg={6}>
-          <SelectForm
-            title="Trạng thái"
-            required
-            subtitle="Chọn trạng thái"
-            value={formData.status}
-            options={adminStatusOptions}
-            error={formData.statusError?.hasError}
-            errorLabel={formData.statusError.label}
-            onChange={(value) => handleInputChange("status", value)}
-          ></SelectForm>
         </Grid>
       </DetailsPage>
     </PageContainer>

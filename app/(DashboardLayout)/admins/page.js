@@ -22,7 +22,6 @@ import PageContainer from "/components/container/PageContainer";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-import FilterStatus from "/components/shared/FilterStatus";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import CreateAdminModal from "/components/shared/Modals/Admins/CreateModal";
@@ -48,18 +47,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectList() {
   const searchQuery = "search";
-
-  const statusQuery = "status";
-  const statusAllValue = -1;
-
   const pageQuery = "page";
   const defaultPage = 1;
 
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
-
-  const params = useParams();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // INIT CONST
@@ -106,7 +98,6 @@ export default function ProjectList() {
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
           <Search placeholder="Tìm theo tên.."></Search>
-
         </Box>
         <CreateAdminModal success={handleModalResult}>Tạo</CreateAdminModal>
       </Box>

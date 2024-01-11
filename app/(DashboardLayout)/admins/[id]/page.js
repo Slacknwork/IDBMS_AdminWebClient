@@ -30,8 +30,6 @@ export default function TaskCategoryDetails() {
     emailError: { hasError: false, label: "" },
     password: "",
     passwordError: { hasError: false, label: "" },
-    status: "",
-    statusError: { hasError: false, label: "" },
     creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
   });
 
@@ -237,7 +235,6 @@ export default function TaskCategoryDetails() {
             onChange={(e) => handleInputChange("email", e.target.value)}
           ></TextForm>
         </Grid>
-
       </DetailsPage>
     </PageContainer>
   );
