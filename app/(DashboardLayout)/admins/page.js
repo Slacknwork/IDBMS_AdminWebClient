@@ -19,7 +19,6 @@ import { getAllAdmins } from "/services/adminServices";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import PageContainer from "/components/container/PageContainer";
-import adminStatus from "/constants/enums/adminStatus";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
@@ -72,7 +71,6 @@ export default function ProjectList() {
   const fetchDataFromApi = async () => {
     const fetchAdmins = async () => {
       const search = searchParams.get(searchQuery) || "";
-      const status = searchParams.get(statusQuery) || "";
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -80,7 +78,6 @@ export default function ProjectList() {
       try {
         const response = await getAllAdmins({
           search,
-          status,
           pageSize,
           pageNo,
         });
@@ -110,13 +107,6 @@ export default function ProjectList() {
         <Box sx={{ display: "flex" }}>
           <Search placeholder="Tìm theo tên.."></Search>
 
-          <FilterStatus
-            query={statusQuery}
-            options={adminStatus}
-            label="Trạng thái"
-            allValue={statusAllValue}
-            allLabel="Tất cả"
-          ></FilterStatus>
         </Box>
         <CreateAdminModal success={handleModalResult}>Tạo</CreateAdminModal>
       </Box>
@@ -149,11 +139,6 @@ export default function ProjectList() {
                 <StyledTableCell>
                   <Typography variant="subtitle2" fontWeight={600}>
                     Người tạo
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    Trạng thái
                   </Typography>
                 </StyledTableCell>
               </TableRow>
@@ -194,11 +179,6 @@ export default function ProjectList() {
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
                       {admin?.creator?.name ?? "Không"}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {adminStatus[admin.status ?? "Không xác định"]}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

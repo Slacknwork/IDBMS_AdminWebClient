@@ -27,7 +27,6 @@ import {
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import adminStatusOptions from "/constants/enums/adminStatus";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 export default function TaskCategoryDetails() {
@@ -248,19 +247,6 @@ export default function TaskCategoryDetails() {
           ></TextForm>
         </Grid>
 
-        {/* STATUS */}
-        <Grid item xs={12} lg={6}>
-          <SelectForm
-            title="Trạng thái"
-            required
-            subtitle="Chọn trạng thái"
-            value={formData.status}
-            options={adminStatusOptions}
-            error={formData.statusError?.hasError}
-            errorLabel={formData.statusError.label}
-            onChange={(value) => handleInputChange("status", value)}
-          ></SelectForm>
-        </Grid>
       </DetailsPage>
     </PageContainer>
   );
