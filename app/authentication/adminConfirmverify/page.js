@@ -20,7 +20,7 @@ export default function AdminConfirmVerify() {
       const code = searchParams.get(codeQuery) ?? "";
       const email = searchParams.get(emailQuery) ?? "";
       const response = await adminConfirmVerify({ code, email });
-      dispatch(login(response));
+      dispatch(login({ token: response }));
       router.push("/");
     } catch (error) {}
   };
