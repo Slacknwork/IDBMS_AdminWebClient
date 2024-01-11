@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -17,12 +17,14 @@ import { useRouter } from "next/navigation";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const dispatch = useDispatch();
-  const router = useRouter();
-
-  const user = useSelector((state) => state.user);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [response, setResponse] = useState({
+    message: "",
+    data: null,
+  });
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -42,13 +44,19 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
     try {
       const response = await loginAdmin(request);
-      dispatch(login(response));
-
-      router.push(`/`);
+      setResponse(response);
     } catch (error) {
       console.error("Error :", error);
     }
   };
+
+  const onLoginSuccess = () => {
+    response?.data && dispatch(login(response.data));
+  };
+
+  useEffect(() => {
+    onLoginSuccess();
+  }, [response]);
 
   return (
     <>
@@ -81,6 +89,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             onChange={handlePasswordChange}
           />
         </FormControl>
+
+        <Typography fontWeight="500">{response.message ?? ""}</Typography>
 
         <Stack
           justifyContent="space-between"

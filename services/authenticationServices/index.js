@@ -10,7 +10,7 @@ const loginAdmin = async (request) => {
       contentType: "application/json",
       body: JSON.stringify(request),
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error logging in admin:", error);
     throw error;
@@ -49,6 +49,43 @@ const loginByGoogle = async ({ googleToken = "" } = {}) => {
   }
 };
 
+const confirmVerify = async ({ code, email } = {}) => {
+  try {
+    const url = `${endpoint}/confirmverify?code=${code}&email=${email}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      contentType: "application/json",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error confirm verify:", error);
+    throw error;
+  }
+};
+
+const adminConfirmVerify = async ({ code, email } = {}) => {
+  try {
+    const url = `${endpoint}/adminConfirmverify?code=${code}&email=${email}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      contentType: "application/json",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error admin confirm verify:", error);
+    throw error;
+  }
+};
+
 const logout = async (request) => {};
 
-export { loginAdmin, loginByGoogle, loginUser, logout };
+export {
+  loginAdmin,
+  loginByGoogle,
+  loginUser,
+  logout,
+  confirmVerify,
+  adminConfirmVerify,
+};

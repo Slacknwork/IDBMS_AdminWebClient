@@ -27,7 +27,9 @@ import projectStatusOptions from "/constants/enums/projectStatus";
 import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
-import participationRoleOptions from "/constants/enums/participationRole";
+import participationRoleOptions, {
+  participationRoleIndex,
+} from "/constants/enums/participationRole";
 import timezone from "/constants/timezone";
 import roleConstants from "/constants/roles";
 
@@ -90,7 +92,11 @@ export default function ProjectDetailsLayout({ children }) {
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             {user?.role && user?.role !== roleConstants.ADMIN && (
               <Chip
-                label={participationRoleOptions[participationRole.role]}
+                label={
+                  participationRoleOptions[
+                    participationRole.role ?? participationRoleIndex.Viewer
+                  ]
+                }
                 color={"primary"}
                 sx={{
                   mr: 2,
