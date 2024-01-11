@@ -7,14 +7,13 @@ const endpoint = "/Admins";
 
 const getAllAdmins = async ({
     search = "",
-    status = "",
     pageSize = "",
     pageNo = "",
 } = {}) => {
     const token = store.getState().user?.token ?? ""
 
     try {
-        const paramString = `searchValue=${search}&status=${status}&pageSize=${pageSize}&pageNo=${pageNo}`;
+        const paramString = `searchValue=${search}&pageSize=${pageSize}&pageNo=${pageNo}`;
 
         const url = `${endpoint}?${paramString}`;
         const response = await fetchData({
