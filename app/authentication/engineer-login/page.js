@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 // components
 import PageContainer from "/components/container/PageContainer";
-import Logo from "components/layout/shared/logo/Logo";
+import Logo from "/components/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthEngineerLogin";
 
 const Login2 = () => {
@@ -54,8 +54,7 @@ const Login2 = () => {
                     spacing={1}
                     justifyContent="center"
                     mt={3}
-                  >
-                  </Stack>
+                  ></Stack>
                 }
               />
             </Card>

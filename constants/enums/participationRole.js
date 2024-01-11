@@ -6,4 +6,14 @@ const participationRoleOptions = [
   "Người xem",
 ];
 
+const participationRoleIndex = {
+  ProductOwner: 0,
+  ProjectManager: 1,
+  Architect: 2,
+  ConstructionManager: 3,
+  Viewer: 4,
+};
+
+export { participationRoleIndex };
+
 export default participationRoleOptions;

@@ -1,29 +1,28 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  FormGroup,
-  FormControlLabel,
   FormControl,
   Button,
   Stack,
-  Checkbox,
   TextField,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
 import { login } from "/store/reducers/user";
 
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
-import { loginUser } from "/services/authenticationServices";
+import { loginUser, loginByGoogle } from "/services/authenticationServices";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  const session = useSession();
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -50,17 +49,38 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       const response = await loginUser(request);
       if (
         response.role === companyRoleConstants.ARCHITECT ||
-        companyRoleConstants.CONSTRUCTION_MANAGER
+        response.role === companyRoleConstants.CONSTRUCTION_MANAGER
       ) {
-        toast.success("Đăng nhập thành công!");
         dispatch(login(response));
         router.push("/");
-      } else toast.error("Tài khoản không có quyền truy cập!");
+      } else {
+      }
     } catch (error) {
       console.error("Error :", error);
-      toast.error("Email không hợp lệ!");
     }
   };
+
+  const handleGoogleLogin = () => {
+    signIn("google");
+  };
+
+  const googleLoginServer = async () => {
+    try {
+      const googleToken = session?.data?.id_token;
+      const response = await loginByGoogle({ googleToken });
+      dispatch(login(response));
+      router.push("/");
+    } catch (error) {
+      console.error("Error :", error);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.data?.id_token) {
+      console.log("ok");
+      googleLoginServer();
+    }
+  }, [session]);
 
   return (
     <>
@@ -100,12 +120,17 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           alignItems="center"
           my={2}
         >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Remember this Device"
-            />
-          </FormGroup>
+          <Typography
+            component={Link}
+            href="/authentication/login"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Đăng nhập QTV
+          </Typography>
           <Typography
             component={Link}
             href="/"
@@ -128,6 +153,19 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             type="submit"
           >
             Đăng nhập
+          </Button>
+          <Typography sx={{ my: 2, textAlign: "center" }} variant="subtitle2">
+            Hoặc
+          </Typography>
+          <Button
+            startIcon={<GoogleIcon />}
+            color="error"
+            variant="contained"
+            size="large"
+            onClick={handleGoogleLogin}
+            fullWidth
+          >
+            Đăng nhập bằng Google
           </Button>
         </Box>
       </Stack>

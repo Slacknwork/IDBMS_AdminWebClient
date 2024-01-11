@@ -73,10 +73,12 @@ export default function ProjectDetailsLayout({ children }) {
 
   useEffect(() => {
     dispatch(fetchProjectData(params.id));
-    if (user.role && user.role !== roleConstants.ADMIN) {
-      dispatch(fetchProjectRoleData({ userId: user.id, projectId: params.id }));
+    if (user?.role && user?.role !== roleConstants.ADMIN) {
+      dispatch(
+        fetchProjectRoleData({ userId: user?.id, projectId: params.id })
+      );
     }
-  }, [dispatch, params.id, user.id, user.role]);
+  }, [dispatch, params.id, user?.id, user?.role]);
 
   return (
     <PageContainer>
@@ -86,7 +88,7 @@ export default function ProjectDetailsLayout({ children }) {
         </Grid>
         <Grid item xs={12} lg={5} sx={{ my: "auto" }}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            {user.role && user.role !== roleConstants.ADMIN && (
+            {user?.role && user?.role !== roleConstants.ADMIN && (
               <Chip
                 label={participationRoleOptions[participationRole.role]}
                 color={"primary"}

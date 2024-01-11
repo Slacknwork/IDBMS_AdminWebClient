@@ -3,16 +3,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import moment from "moment-timezone";
 import stageStatusOptions from "/constants/enums/stageStatus";
-import {
-  Button,
-  Card,
-  FormControl,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 
 import {
   getPaymentStagesById,
@@ -27,7 +20,8 @@ import DateForm from "/components/shared/Forms/Date";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
-import moment from "moment-timezone";
+
+import checkValidField from "/components/validations/field";
 
 export default function StageOverview() {
   const params = useParams();
@@ -62,7 +56,7 @@ export default function StageOverview() {
       case "pricePercentage":
         const result = checkValidField(value);
 
-        if (result.isValid == false) {
+        if (result.isValid === false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -111,7 +105,6 @@ export default function StageOverview() {
       setPageName(stage.name);
       setPageDescription(stage.description);
       setLoading(false);
-      console.log(stage);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
@@ -127,8 +120,6 @@ export default function StageOverview() {
     }
     setSwitchSubmit(true);
   };
-
-  
 
   const onSaveStage = async () => {
     try {
@@ -153,11 +144,10 @@ export default function StageOverview() {
     }
   };
 
-// FETCH DATA FROM API
+  // FETCH DATA FROM API
   useEffect(() => {
-    fetchDataFromApi();
     if (!switchSubmit) return;
-
+    console.log();
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
 
@@ -170,6 +160,10 @@ export default function StageOverview() {
     onSaveStage();
     setSwitchSubmit(false);
   }, [switchSubmit]);
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
 
   return (
     <PageContainer title={pageName} description={pageDescription}>

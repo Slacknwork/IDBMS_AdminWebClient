@@ -1,14 +1,15 @@
 "use client";
 
 import {
-  styled,
   Container,
   Box,
-  Breadcrumbs,
-  Link,
+  IconButton,
+  styled,
   Typography,
+  useTheme,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -34,9 +35,15 @@ const PageWrapper = styled("div")(() => ({
 
 export default function RootLayout({ children }) {
   const router = useRouter();
+  const theme = useTheme();
+  const pathname = usePathname();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const handleBack = () => {
+    router.back();
+  };
 
   const user = useSelector((state) => state.user);
   useEffect(() => {
@@ -60,13 +67,25 @@ export default function RootLayout({ children }) {
             maxWidth: "1200px",
           }}
         >
-          <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
-            <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-              <Link underline="hover" color="inherit" href="/">
-                Trang chủ
-              </Link>
-              <Typography color="text.primary">Khu công trình</Typography>
-            </Breadcrumbs>
+          <Box>
+            {pathname !== "/" && (
+              <IconButton
+                sx={{
+                  px: 0,
+                  pt: 0,
+                  "&:hover": {
+                    color: theme.palette.primary.main,
+                    backgroundColor: "white",
+                  },
+                  transition: "color 0.2s",
+                }}
+                onClick={handleBack}
+              >
+                <ChevronLeftIcon />
+                <Typography variant="body1">Quay về</Typography>
+              </IconButton>
+            )}
+
             {children}
           </Box>
         </Container>

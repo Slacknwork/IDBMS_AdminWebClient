@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 import {
   Avatar,
@@ -38,6 +39,8 @@ import { getFloorsByProjectId } from "/services/floorServices";
 import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
+import { companyRoleConstants } from "/constants/enums/companyRole";
+import { participationRoleIndex } from "/constants/enums/participationRole";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FormModal from "/components/shared/Modals/Form";
@@ -93,6 +96,9 @@ export default function ProjectTasksPage() {
   const defaultPageSize = 5;
 
   // INIT
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const projectRole = data?.projectRole;
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -368,15 +374,17 @@ export default function ProjectTasksPage() {
             disabled={tasksLoading}
             disableElevation
             variant="contained"
-            sx={{ mr: 2 }}
             onClick={onToggleViewMode}
           >
             {viewModeLabels[viewMode]}
           </Button>
-          <CreateTaskModal
-            hasCallback
-            onCallback={fetchDataFromApi}
-          ></CreateTaskModal>
+          {(user?.role === companyRoleConstants.ADMIN ||
+            projectRole.role === participationRoleIndex.ProjectManager) && (
+            <CreateTaskModal
+              hasCallback
+              onCallback={fetchDataFromApi}
+            ></CreateTaskModal>
+          )}
         </Box>
       </Box>
       {(stages && stages.length) || (floors && floors.length) > 0 ? (
@@ -492,7 +500,11 @@ export default function ProjectTasksPage() {
                 <Table aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell width={"1%"}></StyledTableCell>
+                      {(user?.role === companyRoleConstants.ADMIN ||
+                        projectRole.role ===
+                          participationRoleIndex.ProjectManager) && (
+                        <StyledTableCell width={"1%"}></StyledTableCell>
+                      )}
                       <StyledTableCell width={"22%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Công việc
@@ -529,13 +541,18 @@ export default function ProjectTasksPage() {
                   <TableBody>
                     {tasks?.map((task) => (
                       <StyledTableRow key={task.id}>
-                        <TableCell>
-                          <Checkbox
-                            color="primary"
-                            checked={task?.selected}
-                            onChange={(e) => onSelectedChange(task.id)}
-                          />
-                        </TableCell>
+                        {(user?.role === companyRoleConstants.ADMIN ||
+                          projectRole.role ===
+                            participationRoleIndex.ProjectManager) && (
+                          <TableCell>
+                            <Checkbox
+                              color="primary"
+                              checked={task?.selected}
+                              onChange={(e) => onSelectedChange(task.id)}
+                            />
+                          </TableCell>
+                        )}
+
                         <TableCell>
                           <Typography variant="p" fontWeight={600}>
                             {task.code}

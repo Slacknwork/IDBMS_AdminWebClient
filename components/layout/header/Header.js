@@ -29,7 +29,6 @@ export default function Header({ toggleMobileSidebar }) {
   }));
 
   const user = useSelector((state) => state.user);
-  console.log(user)
 
   return (
     <AppBarStyled position="sticky" color="default">
@@ -48,7 +47,7 @@ export default function Header({ toggleMobileSidebar }) {
           <IconMenu width="20" height="20" />
         </IconButton>
 
-        <IconButton
+        {/* <IconButton
           size="large"
           aria-label="show 11 new notifications"
           color="inherit"
@@ -58,11 +57,10 @@ export default function Header({ toggleMobileSidebar }) {
           <Badge variant="dot" color="primary">
             <IconBellRinging size="21" stroke="1.5" />
           </Badge>
-        </IconButton>
+        </IconButton> */}
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
-          <Profile
-            name={user?.name ?? "Không tìm thấy"} />
+          <Profile name={user?.name ?? "Không tìm thấy"} />
         </Stack>
       </ToolbarStyled>
     </AppBarStyled>

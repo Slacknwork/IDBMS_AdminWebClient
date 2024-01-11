@@ -12,7 +12,6 @@ import {
   purple,
   brown,
   grey,
-  white,
 } from "@mui/material/colors";
 
 function getAvatarContent(name) {
@@ -36,7 +35,7 @@ function getAvatarContent(name) {
 function getColorForAvatar(name) {
   const avatarContent = getAvatarContent(name);
 
-  if (avatarContent === "?") return white;
+  if (avatarContent === "?") return grey[50];
 
   const colorSeed = avatarContent
     .split("")

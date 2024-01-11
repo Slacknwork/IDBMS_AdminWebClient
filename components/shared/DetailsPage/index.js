@@ -7,7 +7,7 @@ import MessageModal from "/components/shared/Modals/Message";
 export default function DetailsPage({
   sx,
   loading,
-  title = "Tiêu đề",
+  title = "",
   saveLabel = "Lưu",
   saveMessage = "Lưu thông tin?",
   hasHide,
@@ -43,7 +43,6 @@ export default function DetailsPage({
             {title}
           </Typography>
           <Box sx={{ display: "flex" }}>
-
             {hasHide ? (
               isHidden ? (
                 <MessageModal

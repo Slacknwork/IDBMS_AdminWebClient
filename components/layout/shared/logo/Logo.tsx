@@ -10,12 +10,13 @@ const LinkStyled = styled(Link)(() => ({
 
 const Logo = () => {
   return (
-    <LinkStyled href="/" sx={{ height: 100, width: 100, position: "relative" }}>
+    <LinkStyled href="/">
       <Image
         src="/images/logos/IDTco_logo.jpg"
         alt="logo"
-        layout="fill"
-        objectFit="contain"
+        width={500}
+        height={500}
+        style={{ height: 100, width: 100, objectFit: "contain" }}
         priority
       />
     </LinkStyled>

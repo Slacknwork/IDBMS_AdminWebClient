@@ -15,6 +15,8 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseIcon from "@mui/icons-material/Close";
 
+import MessageModal from "/components/shared/Modals/Message";
+
 export default function FormModal({
   sx,
   children,
@@ -42,6 +44,8 @@ export default function FormModal({
   bottomLeftContent,
   size = "",
   disableClose,
+  confirmBeforeSubmit,
+  confirmBeforeSubmitMessage,
 }) {
   // STYLE
   const theme = useTheme();
@@ -184,14 +188,24 @@ export default function FormModal({
                   spacing={2}
                 >
                   <Box>{bottomLeftContent}</Box>
-                  <Button
-                    variant={submitVariant ?? "contained"}
-                    disableElevation
-                    disabled={disableSubmit}
-                    onClick={handleSubmit}
-                  >
-                    {submitLabel || ""}
-                  </Button>
+                  {confirmBeforeSubmit ? (
+                    <MessageModal
+                      buttonLabel={submitLabel}
+                      onSubmit={handleSubmit}
+                      submitLabel={submitLabel}
+                    >
+                      {confirmBeforeSubmitMessage}
+                    </MessageModal>
+                  ) : (
+                    <Button
+                      variant={submitVariant ?? "contained"}
+                      disableElevation
+                      disabled={disableSubmit}
+                      onClick={handleSubmit}
+                    >
+                      {submitLabel || ""}
+                    </Button>
+                  )}
                 </Box>
               </Grid>
             )}
@@ -213,14 +227,24 @@ export default function FormModal({
                 spacing={2}
               >
                 <Box>{bottomLeftContent}</Box>
-                <Button
-                  variant={submitVariant ?? "contained"}
-                  disableElevation
-                  disabled={disableSubmit}
-                  onClick={handleSubmit}
-                >
-                  {submitLabel || ""}
-                </Button>
+                {confirmBeforeSubmit ? (
+                  <MessageModal
+                    buttonLabel={submitLabel}
+                    onSubmit={handleSubmit}
+                    submitLabel={submitLabel}
+                  >
+                    {confirmBeforeSubmitMessage}
+                  </MessageModal>
+                ) : (
+                  <Button
+                    variant={submitVariant ?? "contained"}
+                    disableElevation
+                    disabled={disableSubmit}
+                    onClick={handleSubmit}
+                  >
+                    {submitLabel || ""}
+                  </Button>
+                )}
               </Box>
             </Grid>
           )}

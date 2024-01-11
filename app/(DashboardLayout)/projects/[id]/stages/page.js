@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 import Link from "next/link";
 import {
   Box,
@@ -19,8 +20,13 @@ import {
 } from "@mui/material";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import moment from "moment-timezone";
 
-import stageStatusOptions from "/constants/enums/stageStatus";
+import stageStatusOptions, {
+  stageStatusBackgroundChipColors,
+} from "/constants/enums/stageStatus";
+import { companyRoleConstants } from "/constants/enums/companyRole";
+import { participationRoleIndex } from "/constants/enums/participationRole";
 
 import {
   getPaymentStagesByProjectIdWithAllowedAction,
@@ -33,10 +39,9 @@ import CreateStageModal from "/components/shared/Modals/Stages/CreateModal";
 import Search from "/components/shared/Search";
 import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
-import { stageStatusBackgroundChipColors } from "../../../../../constants/enums/stageStatus";
 import ReopenStageModal from "/components/shared/Modals/Stages/ReopenStageModal";
 import MessageModal from "/components/shared/Modals/Message";
-import moment from "moment-timezone";
+import MapProjectDesignModal from "/components/shared/Modals/ProjectDesigns/MapModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,6 +75,10 @@ export default function PaymentStages() {
   const defaultPageSize = 5;
 
   // INIT
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const projectRole = data?.projectRole;
+
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -81,31 +90,31 @@ export default function PaymentStages() {
   const [loading, setLoading] = useState(true);
 
   // FETCH DATA
-  const fetchDataFromApi = async () => {
-    const fetchPaymentStages = async () => {
-      const projectId = params.id;
-      const search = searchParams.get(searchQuery) ?? "";
-      const status = searchParams.get(statusQuery) ?? "";
-      const pageNo = searchParams.get(pageQuery) || defaultPage;
-      const pageSize = searchParams.get(pageSizeQuery) || defaultPageSize;
+  const fetchPaymentStages = async () => {
+    const projectId = params.id;
+    const search = searchParams.get(searchQuery) ?? "";
+    const status = searchParams.get(statusQuery) ?? "";
+    const pageNo = searchParams.get(pageQuery) || defaultPage;
+    const pageSize = searchParams.get(pageSizeQuery) || defaultPageSize;
 
-      try {
-        setLoading(true);
-        const data = await getPaymentStagesByProjectIdWithAllowedAction({
-          projectId,
-          status,
-          search,
-          pageSize,
-          pageNo,
-        });
-        setCount(data.totalItem);
-        setStages(data.list);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
-      }
-    };
+    try {
+      setLoading(true);
+      const data = await getPaymentStagesByProjectIdWithAllowedAction({
+        projectId,
+        status,
+        search,
+        pageSize,
+        pageNo,
+      });
+      setCount(data.totalItem);
+      setStages(data.list);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
+    }
+  };
+
+  const fetchDataFromApi = async () => {
     await Promise.all([fetchPaymentStages()]);
     setLoading(false);
   };
@@ -165,10 +174,24 @@ export default function PaymentStages() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <CreateStageModal success={handleModalResult}>Thêm</CreateStageModal>
+        <Box sx={{ display: "flex" }}>
+          {!loading &&
+            stages?.length === 0 &&
+            (projectRole?.role === participationRoleIndex.ProjectManager ||
+              user.role === companyRoleConstants.ADMIN) && (
+              <MapProjectDesignModal
+                success={fetchDataFromApi}
+              ></MapProjectDesignModal>
+            )}
+          <CreateStageModal success={handleModalResult}>Thêm</CreateStageModal>
+        </Box>
       </Box>
       {/* Table */}
-      {stages && stages.length > 0 ? (
+      {loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : stages && stages.length > 0 ? (
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           {/* Table Head */}
           <TableHead>
@@ -255,14 +278,14 @@ export default function PaymentStages() {
                   </Typography>
                   {response.stage?.penaltyFee > 0
                     ? "+ " +
-                    (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
+                      (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
                     : null}
                   <Typography variant="subtitle2" fontWeight={800}>
                     {response.stage?.isIncurredAmountPaid
                       ? "(Đã trả)"
                       : response.stage?.isContractAmountPaid
-                        ? "(Chưa trả)"
-                        : null}
+                      ? "(Chưa trả)"
+                      : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -273,8 +296,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.startedDate
                       ? `${new Date(
-                        response.stage.startedDate
-                      ).toLocaleDateString("vi-VN")}`
+                          response.stage.startedDate
+                        ).toLocaleDateString("vi-VN")}`
                       : "Chưa xác định"}
                   </Typography>
                   <Typography
@@ -291,8 +314,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.endDate
                       ? `${new Date(response.stage.endDate).toLocaleDateString(
-                        "vi-VN"
-                      )}`
+                          "vi-VN"
+                        )}`
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
@@ -312,7 +335,7 @@ export default function PaymentStages() {
                       px: "4px",
                       backgroundColor:
                         stageStatusBackgroundChipColors[
-                        response.stage?.status
+                          response.stage?.status
                         ] || "error",
                     }}
                     size="small"
@@ -323,7 +346,7 @@ export default function PaymentStages() {
                   ></Chip>
                 </TableCell>
                 <TableCell align="right">
-                  <Box display="flex" alignItems="center">
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     {response.openAllowed && (
                       <MessageModal
                         disabled={loading}
@@ -380,7 +403,7 @@ export default function PaymentStages() {
 
                     <Button
                       component={Link}
-                      sx={{ ml: "auto" }}
+                      sx={{ ml: 2 }}
                       variant="contained"
                       disableElevation
                       color="primary"
@@ -394,10 +417,6 @@ export default function PaymentStages() {
             ))}
           </TableBody>
         </Table>
-      ) : loading ? (
-        <Stack sx={{ my: 5 }}>
-          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-        </Stack>
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>

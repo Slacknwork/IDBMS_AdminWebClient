@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ minHeight: "36rem" }}>
         <Grid item xs={12} lg={4}>
           <DashboardCard title="Báo cáo gần nhất">
             <Timeline
@@ -138,62 +138,74 @@ export default function DashboardPage() {
         </Grid>
         <Grid item xs={12} lg={8}>
           <DashboardCard title="Dự án gần nhất">
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell width="50%">
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Name
-                    </Typography>
-                  </TableCell>
-                  <TableCell width="25%">
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Last Updated
-                    </Typography>
-                  </TableCell>
-                  <TableCell width="25%" align="right">
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight={600}
-                    ></Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {recentProjects.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell>
+            {loading ? (
+              <Stack sx={{ width: "100%", height: "10rem" }}>
+                <CircularProgress sx={{ m: "auto" }}></CircularProgress>
+              </Stack>
+            ) : recentProjects && recentProjects.length > 0 ? (
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell width="50%">
                       <Typography variant="subtitle2" fontWeight={600}>
-                        {project.name}
+                        Name
                       </Typography>
+                    </TableCell>
+                    <TableCell width="25%">
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Last Updated
+                      </Typography>
+                    </TableCell>
+                    <TableCell width="25%" align="right">
                       <Typography
-                        color="textSecondary"
-                        sx={{
-                          fontSize: "13px",
-                        }}
-                      >
-                        {project.site?.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2">
-                        {moment(project.updatedDate).format("lll")}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Button
-                        disableElevation
-                        variant="contained"
-                        component={Link}
-                        href={`/projects/${project.id}`}
-                      >
-                        Xem
-                      </Button>
+                        variant="subtitle2"
+                        fontWeight={600}
+                      ></Typography>
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {recentProjects.map((project) => (
+                    <TableRow key={project.id}>
+                      <TableCell>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          {project.name}
+                        </Typography>
+                        <Typography
+                          color="textSecondary"
+                          sx={{
+                            fontSize: "13px",
+                          }}
+                        >
+                          {project.site?.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2">
+                          {moment(project.updatedDate).format("lll")}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          disableElevation
+                          variant="contained"
+                          component={Link}
+                          href={`/projects/${project.id}`}
+                        >
+                          Xem
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <Stack sx={{ width: "100%", height: "10rem" }}>
+                <Typography variant="p" sx={{ m: "auto" }}>
+                  Không có dữ liệu.
+                </Typography>
+              </Stack>
+            )}
           </DashboardCard>
         </Grid>
       </Grid>

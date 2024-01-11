@@ -85,6 +85,23 @@ const createPaymentStage = async (request, projectId = "") => {
   }
 };
 
+const createPaymentStagesByDesign = async (projectId = "") => {
+  try {
+    const token = store.getState().user?.token ?? "";
+    const url = `${endpoint}/project/${projectId}`;
+    const response = await fetchData({
+      url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
+      method: "POST",
+      contentType: "application/json",
+      token,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching create payment stage:", error);
+    throw error;
+  }
+};
+
 const updatePaymentStage = async (id, request, projectId = "") => {
   try {
     const token = store.getState().user?.token ?? "";
@@ -197,6 +214,7 @@ export {
   getPaymentStagesByProjectIdWithAllowedAction,
   getPaymentStagesById,
   createPaymentStage,
+  createPaymentStagesByDesign,
   updatePaymentStage,
   deletePaymentStage,
   startPaymentStage,

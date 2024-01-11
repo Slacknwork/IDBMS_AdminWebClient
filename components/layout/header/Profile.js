@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
   Box,
@@ -10,23 +11,44 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-
-import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { IconUser, IconLogout } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { getAvatarContent, getColorForAvatar } from "../../../utils/avatar";
+import { logout } from "/store/reducers/user";
+import { signOut } from "next-auth/react";
 
-const Profile = ({ name }) => {
+import { companyRoleConstants } from "/constants/enums/companyRole";
+
+import { getAvatarContent, getColorForAvatar } from "/utils/avatar";
+
+export default function Profile({ name }) {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const dispatch = useDispatch();
   const router = useRouter();
+  const user = useSelector((state) => state.user);
   let isGoogleLoggedIn = false;
 
+  const handleClick2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-  const responseGoogle = () => {
-    toast.success("Đăng xuất thành công!");
-    router.push(`/authentication/engineer-login`);
+  const handleClickProfile = () => {
+    router.push(
+      user?.role === companyRoleConstants.ADMIN
+        ? "/profile/admin"
+        : "/profile/user"
+    );
+  };
+  const handleLogout = async () => {
+    dispatch(logout());
+    const callbackUrl =
+      user?.role && user?.role === companyRoleConstants.ADMIN
+        ? "/authentication/login"
+        : "/authentication/engineer-login";
+
+    await signOut({ callbackUrl });
   };
 
   return (
@@ -42,14 +64,12 @@ const Profile = ({ name }) => {
             color: "primary.main",
           }),
         }}
+        onClick={handleClick2}
       >
         <Avatar sx={{ bgcolor: getColorForAvatar(name), my: "auto" }}>
           {getAvatarContent(name)}
         </Avatar>
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}
@@ -64,23 +84,17 @@ const Profile = ({ name }) => {
           },
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleClickProfile}>
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
+          <ListItemText>Thông tin cá nhân</ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <IconMail width={20} />
+            <IconLogout width={20} />
           </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
+          <ListItemText>Đăng xuất</ListItemText>
         </MenuItem>
 
         {isGoogleLoggedIn ? (
@@ -96,12 +110,9 @@ const Profile = ({ name }) => {
             </Button>
           </Box>
         ) : (
-          <Box>
-          </Box>
+          <Box></Box>
         )}
       </Menu>
     </Box>
   );
-};
-
-export default Profile;
+}
