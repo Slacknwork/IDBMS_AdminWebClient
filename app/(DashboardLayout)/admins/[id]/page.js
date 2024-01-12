@@ -6,7 +6,6 @@ import { Grid } from "@mui/material";
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
-import SelectForm from "/components/shared/Forms/Select";
 import checkValidField from "/components/validations/field";
 import checkValidEmail from "/components/validations/email";
 
@@ -18,7 +17,6 @@ import {
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({

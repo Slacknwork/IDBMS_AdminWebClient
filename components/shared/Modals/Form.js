@@ -46,6 +46,7 @@ export default function FormModal({
   disableClose,
   confirmBeforeSubmit,
   confirmBeforeSubmitMessage,
+  confirmBeforeSubmitButtonLabel,
 }) {
   // STYLE
   const theme = useTheme();
@@ -192,7 +193,9 @@ export default function FormModal({
                     <MessageModal
                       buttonLabel={submitLabel}
                       onSubmit={handleSubmit}
-                      submitLabel={submitLabel}
+                      submitLabel={
+                        confirmBeforeSubmitButtonLabel || submitLabel
+                      }
                     >
                       {confirmBeforeSubmitMessage}
                     </MessageModal>

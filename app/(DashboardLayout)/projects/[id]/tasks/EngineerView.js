@@ -12,7 +12,6 @@ import {
   Checkbox,
   CircularProgress,
   Grid,
-  IconButton,
   LinearProgress,
   Stack,
   Tab,
@@ -26,7 +25,6 @@ import {
   Typography,
 } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -43,14 +41,11 @@ import { companyRoleConstants } from "/constants/enums/companyRole";
 import { participationRoleIndex } from "/constants/enums/participationRole";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
-import FormModal from "/components/shared/Modals/Form";
 import FilterStatus from "/components/shared/FilterStatus";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
 import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
-import AssignModal from "./AssignModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -443,54 +438,6 @@ export default function ProjectTasksPage() {
               xs={12}
               lg={viewMode === 1 && rooms && rooms.length > 0 ? 10 : 12}
             >
-              {selectedTasks && selectedTasks.length > 0 && (
-                <Box
-                  sx={{
-                    backgroundColor: "aliceblue",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    px: 4,
-                    py: 1,
-                  }}
-                >
-                  <Typography variant="h6" sx={{ my: "auto" }}>
-                    Đã chọn {selectedTasks.length} công việc
-                  </Typography>
-                  <Box sx={{ display: "flex" }}>
-                    <AssignModal></AssignModal>
-                    <FormModal
-                      size="small"
-                      sx={{ my: "auto", mr: 1 }}
-                      submitLabel="Chọn"
-                      title="Chọn giai đoạn"
-                      buttonLabel="Chọn giai đoạn"
-                      onSubmit={updateSelectedTaskStage}
-                    >
-                      <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ mb: 1 }}>
-                          Chọn giai đoạn cho {selectedTasks?.length} công việc:
-                        </Typography>
-                        {/* PAYMENT STAGE */}
-                        <AutocompleteForm
-                          value={selectedStageId}
-                          options={stages}
-                          error={selectedStageIdError?.hasError}
-                          errorLabel={selectedStageIdError?.label}
-                          onChange={(value) =>
-                            handleSelectedStageIdChange(value)
-                          }
-                        ></AutocompleteForm>
-                      </Grid>
-                    </FormModal>
-                    <IconButton
-                      onClick={removeAllSelectedTasks}
-                      aria-label="remove-all-selected"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              )}
               {/* TABLE */}
               {tasksLoading ? (
                 <Stack sx={{ my: 5 }}>

@@ -50,7 +50,7 @@ import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
 import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
-import AssignModal from "./AssignModal";
+import CreateTaskAssignmentModal from "/components/shared/Modals/TaskAssignment/CreateModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -346,6 +346,11 @@ export default function ProjectTasksPage() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const onCreateTaskAssignmentSuccess = async () => {
+    await fetchDataFromApi();
+    removeAllSelectedTasks();
+  };
+
   return (
     <PageContainer
       title="Danh sách công việc"
@@ -443,7 +448,7 @@ export default function ProjectTasksPage() {
               xs={12}
               lg={viewMode === 1 && rooms && rooms.length > 0 ? 10 : 12}
             >
-              {selectedTasks && selectedTasks.length > 0 && (
+              {!tasksLoading && selectedTasks && selectedTasks.length > 0 && (
                 <Box
                   sx={{
                     backgroundColor: "aliceblue",
@@ -457,7 +462,10 @@ export default function ProjectTasksPage() {
                     Đã chọn {selectedTasks.length} công việc
                   </Typography>
                   <Box sx={{ display: "flex" }}>
-                    <AssignModal></AssignModal>
+                    <CreateTaskAssignmentModal
+                      selectedTasks={selectedTasks}
+                      success={onCreateTaskAssignmentSuccess}
+                    ></CreateTaskAssignmentModal>
                     <FormModal
                       size="small"
                       sx={{ my: "auto", mr: 1 }}
