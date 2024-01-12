@@ -198,13 +198,6 @@ export default function ProjectTasksPage() {
   // SELECTED TASKS
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [selectedStageId, setSelectedStageId] = useState(null);
-  const [selectedStageIdError, setSelectedStageIdError] = useState({
-    hasError: false,
-    label: "",
-  });
-  const handleSelectedStageIdChange = (newValue) => {
-    setSelectedStageId(newValue);
-  };
   const onSelectedChange = (id) => {
     setSelectedTasks((prevSelectedTasks) => {
       if (prevSelectedTasks.includes(id)) {
@@ -217,15 +210,6 @@ export default function ProjectTasksPage() {
       prevTasks.map((task) => ({
         ...task,
         selected: task.id === id ? !task.selected : task.selected,
-      }))
-    );
-  };
-  const removeAllSelectedTasks = () => {
-    setSelectedTasks([]);
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => ({
-        ...task,
-        selected: false,
       }))
     );
   };
@@ -298,25 +282,6 @@ export default function ProjectTasksPage() {
       toast.error("Lỗi nạp dữ liệu 'Công việc' từ hệ thống");
     } finally {
       setTasksLoading(false);
-    }
-  };
-
-  const updateSelectedTaskStage = async () => {
-    const projectId = params.id;
-    const stageId = selectedStageId;
-    const tasks = selectedTasks;
-    try {
-      await updateProjectTaskStage({ projectId, stageId, tasks });
-      removeAllSelectedTasks();
-      handleStageChange(
-        null,
-        stages.findIndex((stage) => stage.id === stageId) + 1
-      );
-      toast.success("Cập nhật thành công!");
-    } catch (error) {
-      console.error("Error updating task status: ", error);
-      toast.error("Lỗi cập nhật giai đoạn công việc!");
-    } finally {
     }
   };
 

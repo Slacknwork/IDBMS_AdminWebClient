@@ -52,6 +52,8 @@ import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import CreateTaskAssignmentModal from "/components/shared/Modals/TaskAssignment/CreateModal";
 
+import { getColorForAvatar, getAvatarContent } from "/utils/avatar";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
@@ -598,23 +600,34 @@ export default function ProjectTasksPage() {
                           {task.taskAssignments &&
                           task.taskAssignments.length > 0 ? (
                             <AvatarGroup
-                              max={5}
+                              max={3}
                               sx={{
                                 "& .MuiAvatar-root": {
+                                  fontSize: 16,
                                   width: 36,
                                   height: 36,
                                 },
                               }}
                             >
-                              <Avatar
-                                sx={{
-                                  bgcolor: deepOrange[500],
-                                  width: 36,
-                                  height: 36,
-                                }}
-                              >
-                                A
-                              </Avatar>
+                              {task.taskAssignments.map((taskAssignment) => (
+                                <Avatar
+                                  key={taskAssignment?.id}
+                                  sx={{
+                                    bgcolor: getColorForAvatar(
+                                      taskAssignment?.projectParticipation?.user
+                                        ?.name
+                                    ),
+                                    fontSize: 16,
+                                    width: 36,
+                                    height: 36,
+                                  }}
+                                >
+                                  {getAvatarContent(
+                                    taskAssignment?.projectParticipation?.user
+                                      ?.name
+                                  )}
+                                </Avatar>
+                              ))}
                             </AvatarGroup>
                           ) : (
                             <Typography variant="p">Chưa phân công</Typography>
