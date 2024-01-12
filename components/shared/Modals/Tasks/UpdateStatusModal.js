@@ -23,7 +23,7 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
       const projectId = params.id;
       await updateProjectTaskStatus(task?.id, status, projectId);
       toast.success("Cập nhật trạng thái công việc thành cống!");
-      typeof setTaskStatus === "function" && setTaskStatus(status);
+      typeof setTaskStatus === "function" && setTaskStatus(task?.id, status);
     } catch (error) {
       toast.error("Lỗi cập nhật trạng thái công việc!");
     }
@@ -116,7 +116,6 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
                   ) : task?.status === projectTaskStatusIndex.Ongoing &&
                     index === projectTaskStatusIndex.Done ? (
                     <MessageModal
-                      disabled={isInWarranty()}
                       buttonSize="small"
                       buttonLabel="Hoàn thành"
                       buttonVariant="contained"
