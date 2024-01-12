@@ -2,39 +2,42 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Box, CircularProgress, Typography } from "@mui/material";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "/store/reducers/user";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 import logo from "/public/images/logos/IDTco_Logo.jpg";
 
-import { adminConfirmVerify } from "/services/authenticationServices";
+import { loginByGoogle } from "/services/authenticationServices";
+
+import { login } from "/store/reducers/user";
 
 import PageContainer from "/components/container/PageContainer";
 
-export default function AdminConfirmVerify() {
-  const codeQuery = "code";
-  const emailQuery = "email";
-
+export default function AuthGoogleCallbackPage() {
   const router = useRouter();
+  const session = useSession();
   const dispatch = useDispatch();
-  const searchParams = useSearchParams();
 
-  const onEnterPage = async () => {
+  const googleLoginServer = async () => {
     try {
-      const code = searchParams.get(codeQuery) ?? "";
-      const email = searchParams.get(emailQuery) ?? "";
-      const response = await adminConfirmVerify({ code, email });
-      dispatch(login({ token: response }));
+      const googleToken = session?.data?.id_token;
+      const response = await loginByGoogle({ googleToken });
+      dispatch(login(response));
       router.push("/");
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error :", error);
+    }
   };
 
   useEffect(() => {
-    onEnterPage();
-  }, []);
+    if (session?.data?.id_token) {
+      googleLoginServer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   return (
     <PageContainer title="Đăng nhập bằng Google">
@@ -82,7 +85,7 @@ export default function AdminConfirmVerify() {
             }}
           >
             <Typography variant="h6" sx={{ mb: 1 }}>
-              Đang đăng nhập tài khoản Quản trị viên...
+              Đang đăng nhập bằng tài khoản Google...
             </Typography>
             <Typography variant="p">
               <Link href="/authentication/engineer-login">Click vào đây</Link>{" "}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,23 +10,20 @@ import {
   TextField,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { useSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { login } from "/store/reducers/user";
 
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
-import { loginUser, loginByGoogle } from "/services/authenticationServices";
+import { loginUser } from "/services/authenticationServices";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
-  const session = useSession();
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const user = useSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +50,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       ) {
         dispatch(login(response));
         router.push("/");
-      } else {
       }
     } catch (error) {
       console.error("Error :", error);
@@ -61,26 +57,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   };
 
   const handleGoogleLogin = () => {
-    signIn("google");
+    signIn("google", { callbackUrl: "/authentication/google" });
   };
-
-  const googleLoginServer = async () => {
-    try {
-      const googleToken = session?.data?.id_token;
-      const response = await loginByGoogle({ googleToken });
-      dispatch(login(response));
-      router.push("/");
-    } catch (error) {
-      console.error("Error :", error);
-    }
-  };
-
-  useEffect(() => {
-    if (session?.data?.id_token) {
-      console.log("ok");
-      googleLoginServer();
-    }
-  }, [session]);
 
   return (
     <>

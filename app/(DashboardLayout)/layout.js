@@ -46,11 +46,9 @@ export default function RootLayout({ children }) {
   };
 
   const user = useSelector((state) => state.user);
-  useEffect(() => {
-    if (!user?.loggedIn) {
-      router.push("/authentication/login");
-    }
-  }, [router, user]);
+  if (!(user && user?.loggedIn)) {
+    router.push("/authentication/login");
+  }
 
   return (
     <MainWrapper className="mainwrapper">

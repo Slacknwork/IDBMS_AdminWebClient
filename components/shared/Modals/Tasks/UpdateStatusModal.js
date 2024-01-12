@@ -38,7 +38,7 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
       disableSubmitFunction
       submitLabel="Đóng"
       submitVariant="outlined"
-      title="Trạng thái dự án"
+      title="Trạng thái công việc"
       buttonLabel={projectTaskStatusOptions[task?.status]}
       buttonEndIcon={<ChangeCircleIcon />}
     >
