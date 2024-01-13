@@ -1,13 +1,7 @@
-import { mapFromOdata } from "/utils/odata";
-import { languageIndex } from "/constants/enums/language";
-import { userStatusIndex } from "/constants/enums/userStatus";
 import { store } from "/store";
 import { fetchData } from "/utils/api";
 
 const endpoint = "/Users";
-
-const API_BASE_URL = "https://localhost:7062/services/users";
-const API_ODATA_URL = "https://localhost:7062/odata/Users";
 
 // Fetch all users
 const getAllUsers = async ({
@@ -47,6 +41,32 @@ const getUserById = async (userId) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+};
+
+// Fetch available users for a project
+const getAvailableUsersForProject = async ({
+  projectId = "",
+  search = "",
+  role = "",
+  status = "",
+  pageSize = "",
+  pageNo = "",
+} = {}) => {
+  try {
+    const token = store.getState().user?.token ?? "";
+    const paramString = `projectId=${projectId}&searchParam=${search}&status=${status}&role=${role}&pageSize=${pageSize}&pageNo=${pageNo}`;
+    const url = `${endpoint}?${paramString}`;
+    const response = await fetchData({
+      url,
+      method: "GET",
+      token,
+      body: null,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
     throw error;
   }
 };
@@ -108,4 +128,11 @@ const updateUserStatus = async (userId, status) => {
   }
 };
 
-export { getAllUsers, getUserById, createUser, updateUser, updateUserStatus };
+export {
+  getAllUsers,
+  getUserById,
+  getAvailableUsersForProject,
+  createUser,
+  updateUser,
+  updateUserStatus,
+};

@@ -3,9 +3,7 @@
 // Import necessary components and libraries
 import { styled } from "@mui/material/styles";
 import {
-  Avatar,
   Box,
-  Button,
   Card,
   Chip,
   Grid,
@@ -14,22 +12,27 @@ import {
   TableCell,
   tableCellClasses,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   Stack,
   CircularProgress,
 } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
 import { IconTrash } from "@tabler/icons-react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 
-import participationRole from "/constants/enums/participationRole";
+import participationRole, {
+  participationRoleIndex,
+} from "/constants/enums/participationRole";
+import { companyRoleIndex } from "/constants/enums/companyRole";
+import timezone from "/constants/timezone";
+moment.tz.setDefault(timezone.momentDefault);
 
 import { getParticipationsByProjectId } from "/services/projectParticipationServices";
+import { getAvailableUsersForProject } from "/services/userServices";
 
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -37,8 +40,7 @@ import FilterComponent from "/components/shared/FilterStatus";
 import UserCard from "/components/shared/UserCard";
 import CreateParticipationModal from "/components/shared/Modals/Participations/CreateModal";
 import DeleteModal from "/components/shared/Modals/Participations/DeleteModal";
-import UpdateProjectOwnerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectOwnerModal";
-import UpdateProjectManagerParticipationModal from "/components/shared/Modals/Participations/UpdateProjectManagerModal";
+import UpdateParticipationModal from "/components/shared/Modals/Participations/UpdateParticipationModal";
 import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject";
 import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal";
 
@@ -62,6 +64,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // Component for displaying comments
 export default function Comments() {
+  // CONSTANTS
   const searchQuery = "search";
 
   const roleQuery = "role";
@@ -73,10 +76,12 @@ export default function Comments() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
+  // INIT
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+  const data = useSelector((state) => state.data);
+  const project = data?.project;
 
   // PARTICIPATIONS
   const [participations, setParticipations] = useState([]);
@@ -85,43 +90,93 @@ export default function Comments() {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  // FETCH DATA
-  const fetchDataFromApi = async () => {
-    const fetchParticipations = async () => {
+  // FETCH PARTICIPATIONS DATA
+  const fetchParticipations = async () => {
+    try {
       const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const role = searchParams.get(roleQuery) || "";
-      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const role = searchParams.get(roleQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
-      try {
-        const response = await getParticipationsByProjectId({
-          projectId,
-          search,
-          role,
-          page,
-          pageSize,
-        });
-        console.log(response);
+      const participations = await getParticipationsByProjectId({
+        projectId,
+        search,
+        role,
+        page,
+        pageSize,
+      });
 
-        setParticipations(response?.paginatedList?.list ?? []);
-        setCount(response?.paginatedList?.totalItem ?? 0);
+      setParticipations(participations?.paginatedList?.list ?? []);
+      setCount(participations?.paginatedList?.totalItem ?? 0);
 
-        setProjectOwner(response?.productOwner ?? []);
-        setProjectManager(response?.projectManager ?? []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Thành viên' từ hệ thống");
-      }
-    };
+      setProjectOwner(participations?.productOwner ?? []);
+      setProjectManager(participations?.projectManager ?? []);
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Thành viên' từ hệ thống");
+    }
+  };
+
+  // AVAILABLE USERS
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [userRole, setUserRole] = useState(companyRoleIndex.Customer);
+  const [userCount, setUserCount] = useState(0);
+  const [userSearch, setUserSearch] = useState("");
+  const [userPage, setUserPage] = useState(defaultPage);
+  const [userPageSize, setUserPageSize] = useState(defaultPageSize);
+
+  // FETCH AVAILABLE USERS DATA
+  const fetchAvailableUsers = async ({ setRole } = {}) => {
+    try {
+      const projectId = params.id;
+      const search = userSearch;
+      const role = setRole ?? userRole;
+      const page = userPage;
+      const pageSize = userPageSize;
+
+      const availableUsers = await getAvailableUsersForProject({
+        projectId,
+        search,
+        role,
+        page,
+        pageSize,
+      });
+
+      setUsers(availableUsers?.list ?? []);
+      setUserCount(availableUsers?.totalItem ?? 0);
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Danh sách người dùng' từ hệ thống");
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  const fetchDataFromApi = async () => {
+    setLoading(true);
     await Promise.all([fetchParticipations()]);
     setLoading(false);
   };
 
+  const fetchAvailableUsersData = async () => {
+    setUsersLoading(true);
+    await Promise.all([fetchAvailableUsers()]);
+    setUsersLoading(false);
+  };
+
+  const onOpenModal = (role) => {
+    setUserRole(role);
+  };
+
   useEffect(() => {
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  useEffect(() => {
+    fetchAvailableUsersData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userRole, userSearch, userPage, userPageSize]);
 
   const handleModalResult = () => {
     fetchDataFromApi();
@@ -155,9 +210,15 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <UpdateProjectOwnerParticipationModal
+                <UpdateParticipationModal
                   participationId={projectOwner?.id}
+                  participationRole={participationRoleIndex.ProductOwner}
                   currentUserId={projectOwner?.user?.id}
+                  users={users}
+                  loading={usersLoading}
+                  search={userSearch}
+                  setSearch={setUserSearch}
+                  handleOpen={() => onOpenModal(companyRoleIndex.Customer)}
                   success={handleModalResult}
                 />
               </Box>
@@ -189,9 +250,15 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <UpdateProjectManagerParticipationModal
+                <UpdateParticipationModal
                   participationId={projectManager?.id}
+                  participationRole={participationRoleIndex.ProjectManager}
                   currentUserId={projectManager?.user?.id}
+                  users={users}
+                  loading={usersLoading}
+                  search={userSearch}
+                  setSearch={setUserSearch}
+                  handleOpen={() => onOpenModal((project?.type ?? 0) + 1)}
                   success={handleModalResult}
                 />
               </Box>
@@ -226,7 +293,11 @@ export default function Comments() {
           </CreateParticipationModal>
         </Box>
       </Box>
-      {(participations && participations.length) > 0 ? (
+      {loading ? (
+        <Stack sx={{ my: 5 }}>
+          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+        </Stack>
+      ) : (participations && participations.length) > 0 ? (
         <Table aria-label="simple table">
           {/* Table Head */}
           <TableHead>
@@ -261,10 +332,16 @@ export default function Comments() {
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <UpdateParticipationRoleModal participant={participant}>
+                      <UpdateParticipationRoleModal
+                        participant={participant}
+                        success={handleModalResult}
+                      >
                         <IconTrash></IconTrash>
                       </UpdateParticipationRoleModal>
-                      <DeleteModal id={participant.id}>
+                      <DeleteModal
+                        id={participant.id}
+                        success={handleModalResult}
+                      >
                         <IconTrash></IconTrash>
                       </DeleteModal>
                     </Box>
@@ -273,10 +350,6 @@ export default function Comments() {
               ))}
           </TableBody>
         </Table>
-      ) : loading ? (
-        <Stack sx={{ my: 5 }}>
-          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-        </Stack>
       ) : (
         <Stack sx={{ my: 5 }}>
           <Typography variant="p" sx={{ textAlign: "center" }}>

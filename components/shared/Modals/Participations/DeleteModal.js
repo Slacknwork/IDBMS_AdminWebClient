@@ -19,7 +19,7 @@ const style = {
   pb: 3,
 };
 
-export default function DeleteParticipationModal({ children, id }) {
+export default function DeleteParticipationModal({ children, id, success }) {
   const router = useRouter();
 
   // MODAL TOGGLE
@@ -33,9 +33,9 @@ export default function DeleteParticipationModal({ children, id }) {
 
   const handleDelete = async () => {
     try {
-      const response = await deleteProjectParticipation(id);
-      console.log(response);
+      await deleteProjectParticipation(id);
       toast.success("Xóa thành công!");
+      typeof success === "function" && success();
       handleClose();
     } catch (error) {
       console.error("Error :", error);

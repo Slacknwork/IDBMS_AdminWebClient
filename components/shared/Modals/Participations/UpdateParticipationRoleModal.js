@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-  Autocomplete,
   FormControl,
   FormHelperText,
   Grid,
   MenuItem,
   Select,
-  TextField,
   Typography,
 } from "@mui/material";
 import { toast } from "react-toastify";
@@ -16,21 +14,12 @@ import { useParams } from "next/navigation";
 
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
-import DateForm from "/components/shared/Forms/Date";
-import CheckboxForm from "/components/shared/Forms/Checkbox";
-import NumberForm from "/components/shared/Forms/Number";
-import SelectForm from "/components/shared/Forms/Select";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
-import FileForm from "/components/shared/Forms/File";
-import {
-  createEmployees,
-  updateProjectParticipation,
-} from "../../../../services/projectParticipationServices";
+import { updateProjectParticipation } from "/services/projectParticipationServices";
 
-import participationRoleOptions from "../../../../constants/enums/participationRole";
+import participationRoleOptions from "/constants/enums/participationRole";
 import { useSelector } from "react-redux";
 
-export default function UpdateParticipationRoleModal({ participant }) {
+export default function UpdateParticipationRoleModal({ participant, success }) {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const project = data?.project;
@@ -70,16 +59,10 @@ export default function UpdateParticipationRoleModal({ participant }) {
   };
 
   const handleUpdate = async () => {
-    console.log(formData);
-
     try {
-      const response = await updateProjectParticipation(
-        participant.id,
-        formData
-      );
+      await updateProjectParticipation(participant.id, formData);
       toast.success("Cập nhật thành công!");
-      console.log(response);
-      // router.push(`/roomTypes/${response?.id}`);
+      typeof success === "function" && success();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -93,10 +76,12 @@ export default function UpdateParticipationRoleModal({ participant }) {
     // all role can be Viewer
     if (index === 4) return false;
 
-    if (project?.type == 0 && index == 3) // cannot add cons man to decor pj
+    if (project?.type == 0 && index == 3)
+      // cannot add cons man to decor pj
       return true;
 
-    if (project?.type == 1 && index == 2) // cannot add arc to cons pj
+    if (project?.type == 1 && index == 2)
+      // cannot add arc to cons pj
       return true;
 
     switch (participant?.user?.role) {

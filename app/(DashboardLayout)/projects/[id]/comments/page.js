@@ -264,36 +264,41 @@ export default function ProjectCommentsPage() {
                             {commentReply?.content ?? "N/A"}
                           </Typography>
                         </Box>
-                        <Box sx={{ my: "auto", mr: 1, display: "flex" }}>
-                          {isCommentMenuOpen === commentReply.id && (
+                        {user?.role &&
+                          user?.role !== companyRoleConstants.ADMIN && (
                             <Box sx={{ my: "auto", mr: 1, display: "flex" }}>
-                              <ReplyCommentModal
-                                sx={{ mr: "3px" }}
-                                comment={comment}
-                                success={fetchData}
-                                isEdit
-                                commentReply={commentReply}
-                              ></ReplyCommentModal>
-                              <MessageModal
-                                buttonLabel="Xóa"
-                                color="error"
-                                submitLabel="Xóa"
-                                onSubmit={() =>
-                                  onDeleteReplyComment(commentReply)
+                              {isCommentMenuOpen === commentReply.id && (
+                                <Box
+                                  sx={{ my: "auto", mr: 1, display: "flex" }}
+                                >
+                                  <ReplyCommentModal
+                                    sx={{ mr: "3px" }}
+                                    comment={comment}
+                                    success={fetchData}
+                                    isEdit
+                                    commentReply={commentReply}
+                                  ></ReplyCommentModal>
+                                  <MessageModal
+                                    buttonLabel="Xóa"
+                                    color="error"
+                                    submitLabel="Xóa"
+                                    onSubmit={() =>
+                                      onDeleteReplyComment(commentReply)
+                                    }
+                                  >
+                                    Xóa phản hồi này?
+                                  </MessageModal>
+                                </Box>
+                              )}
+                              <IconButton
+                                onClick={() =>
+                                  onChangeCommentMenuOpen(commentReply)
                                 }
                               >
-                                Xóa phản hồi này?
-                              </MessageModal>
+                                <MoreHorizIcon></MoreHorizIcon>
+                              </IconButton>
                             </Box>
                           )}
-                          <IconButton
-                            onClick={() =>
-                              onChangeCommentMenuOpen(commentReply)
-                            }
-                          >
-                            <MoreHorizIcon></MoreHorizIcon>
-                          </IconButton>
-                        </Box>
                       </Box>
                     </ListItem>
                     <Divider variant="inset" component="li" />

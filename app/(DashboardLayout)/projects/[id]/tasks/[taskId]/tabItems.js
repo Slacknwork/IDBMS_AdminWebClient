@@ -11,6 +11,10 @@ const items = [
     path: "items",
     label: "Nội thất",
   },
+  {
+    path: "assignments",
+    label: "Phân công",
+  },
 ];
 
 export default items;
