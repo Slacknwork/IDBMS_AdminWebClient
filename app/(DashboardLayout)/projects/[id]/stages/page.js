@@ -130,7 +130,7 @@ export default function PaymentStages() {
   //STAGE STATUS HANDLE
   const handleStartStage = async (stageId) => {
     try {
-      const response = await startPaymentStage(stageId);
+      const response = await startPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       fetchDataFromApi();
     } catch (error) {
@@ -141,7 +141,7 @@ export default function PaymentStages() {
 
   const handleCloseStage = async (stageId) => {
     try {
-      const response = await endPaymentStage(stageId);
+      const response = await endPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       fetchDataFromApi();
     } catch (error) {
@@ -152,7 +152,7 @@ export default function PaymentStages() {
 
   const handleSuspendedStage = async (stageId) => {
     try {
-      const response = await suspendPaymentStage(stageId);
+      const response = await suspendPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       fetchDataFromApi();
     } catch (error) {

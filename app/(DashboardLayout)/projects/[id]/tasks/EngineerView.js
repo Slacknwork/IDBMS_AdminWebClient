@@ -46,6 +46,9 @@ import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import PageContainer from "/components/container/PageContainer";
 import CreateTaskModal from "/components/shared/Modals/Tasks/CreateModal";
+import UpdateTaskStatusModal from "/components/shared/Modals/Tasks/UpdateStatusModal";
+
+import { getColorForAvatar, getAvatarContent } from "/utils/avatar";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -306,6 +309,16 @@ export default function ProjectTasksPage() {
     fetchDataFromApi();
   }, [searchParams]);
 
+  const onUpdateTaskStatus = (taskId, newStatus) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, status: newStatus };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
   return (
     <PageContainer
       title="Danh sách công việc"
@@ -499,35 +512,54 @@ export default function ProjectTasksPage() {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          {task.taskAssignments &&
-                          task.taskAssignments.length > 0 ? (
-                            <AvatarGroup
-                              max={5}
-                              sx={{
-                                "& .MuiAvatar-root": {
-                                  width: 36,
-                                  height: 36,
-                                },
-                              }}
-                            >
-                              <Avatar
+                          <Box display="flex">
+                            {task.taskAssignments &&
+                            task.taskAssignments.length > 0 ? (
+                              <AvatarGroup
+                                max={3}
                                 sx={{
-                                  bgcolor: deepOrange[500],
-                                  width: 36,
-                                  height: 36,
+                                  "& .MuiAvatar-root": {
+                                    fontSize: 16,
+                                    width: 36,
+                                    height: 36,
+                                  },
+                                  justifyContent: "flex-start",
                                 }}
                               >
-                                A
-                              </Avatar>
-                            </AvatarGroup>
-                          ) : (
-                            <Typography variant="p">Chưa phân công</Typography>
-                          )}
+                                {task.taskAssignments.map((taskAssignment) => (
+                                  <Avatar
+                                    key={taskAssignment?.id}
+                                    sx={{
+                                      bgcolor: getColorForAvatar(
+                                        taskAssignment?.projectParticipation
+                                          ?.user?.name
+                                      ),
+                                      fontSize: 16,
+                                      width: 36,
+                                      height: 36,
+                                    }}
+                                  >
+                                    {getAvatarContent(
+                                      taskAssignment?.projectParticipation?.user
+                                        ?.name
+                                    )}
+                                  </Avatar>
+                                ))}
+                              </AvatarGroup>
+                            ) : (
+                              <Typography variant="p">
+                                Chưa phân công
+                              </Typography>
+                            )}
+                          </Box>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="subtitle2" fontWeight={400}>
-                            {projectTaskStatusOptions[task.status]}
-                          </Typography>
+                          <Box>
+                            <UpdateTaskStatusModal
+                              task={task}
+                              setTaskStatus={onUpdateTaskStatus}
+                            ></UpdateTaskStatusModal>
+                          </Box>
                         </TableCell>
                         <TableCell align="right">
                           <Button

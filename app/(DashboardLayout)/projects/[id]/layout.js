@@ -23,7 +23,9 @@ import languageOptions, {
   languageTypeChipImages,
   languageTypeChipColors,
 } from "/constants/enums/language";
-import projectStatusOptions from "/constants/enums/projectStatus";
+import projectStatusOptions, {
+  projectStatusIndex,
+} from "/constants/enums/projectStatus";
 import projectTypeOptions, {
   projectTypeChipColors,
 } from "/constants/enums/projectType";
@@ -149,7 +151,7 @@ export default function ProjectDetailsLayout({ children }) {
               buttonEndIcon={<ChangeCircleIcon />}
             >
               <Grid item xs={12} lg={12}>
-                {project?.status === 6 ? (
+                {project?.status === projectStatusIndex.Canceled ? (
                   <Box
                     sx={{
                       display: "flex",
@@ -188,7 +190,11 @@ export default function ProjectDetailsLayout({ children }) {
                 ) : (
                   projectStatusOptions.map(
                     (status, index) =>
-                      ![0, 5, 6].includes(index) && (
+                      ![
+                        projectStatusIndex.Draft,
+                        projectStatusIndex.Suspended,
+                        projectStatusIndex.Canceled,
+                      ].includes(index) && (
                         <Box
                           key={status}
                           sx={{
@@ -200,7 +206,8 @@ export default function ProjectDetailsLayout({ children }) {
                           }}
                         >
                           <Box sx={{ display: "flex" }}>
-                            {project?.status === 5 && index === 4 ? (
+                            {project?.status === projectStatusIndex.Suspended &&
+                            index === projectStatusIndex.Ongoing ? (
                               <PauseCircleIcon
                                 sx={{ my: "auto", mr: 2 }}
                                 color="error"
@@ -239,7 +246,11 @@ export default function ProjectDetailsLayout({ children }) {
                               buttonLabel="Tiếp tục"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(4)}
-                            ></MessageModal>
+                            >
+                              <Typography variant="subtitle2">
+                                Tiếp tục dự án?
+                              </Typography>
+                            </MessageModal>
                           ) : project?.status === 4 && index === 4 ? (
                             <MessageModal
                               color="error"
@@ -247,7 +258,11 @@ export default function ProjectDetailsLayout({ children }) {
                               buttonLabel="Hoãn"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(5)}
-                            ></MessageModal>
+                            >
+                              <Typography variant="subtitle2">
+                                Hoãn dự án?
+                              </Typography>
+                            </MessageModal>
                           ) : project?.status === index &&
                             project?.status < 4 ? (
                             <MessageModal
@@ -256,14 +271,22 @@ export default function ProjectDetailsLayout({ children }) {
                               buttonLabel="Hủy"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(6)}
-                            ></MessageModal>
+                            >
+                              <Typography variant="subtitle2">
+                                Hủy dự án?
+                              </Typography>
+                            </MessageModal>
                           ) : project?.status === 4 && index === 7 ? (
                             <MessageModal
                               buttonSize="small"
                               buttonLabel="Bảo hành"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(7)}
-                            ></MessageModal>
+                            >
+                              <Typography variant="subtitle2">
+                                Vào giai đoạn bảo hành?
+                              </Typography>
+                            </MessageModal>
                           ) : project?.status === 7 && index === 8 ? (
                             <MessageModal
                               disabled={isInWarranty()}
@@ -271,7 +294,11 @@ export default function ProjectDetailsLayout({ children }) {
                               buttonLabel="Hoàn thành"
                               buttonVariant="contained"
                               onSubmit={() => onUpdateStatus(8)}
-                            ></MessageModal>
+                            >
+                              <Typography variant="subtitle2">
+                                Hoàn thành dự án?
+                              </Typography>
+                            </MessageModal>
                           ) : (
                             project?.status < 4 &&
                             index === project?.status + 1 && (
@@ -280,7 +307,18 @@ export default function ProjectDetailsLayout({ children }) {
                                 buttonLabel="Tiếp"
                                 buttonVariant="contained"
                                 onSubmit={() => onUpdateStatus(index)}
-                              ></MessageModal>
+                              >
+                                <Typography variant="p" inline>
+                                  Cập nhật trạng thái dự án:{"  "}
+                                </Typography>
+                                <Typography
+                                  variant="p"
+                                  fontWeight={600}
+                                  fontSize={16}
+                                >
+                                  {projectStatusOptions[index]}?
+                                </Typography>
+                              </MessageModal>
                             )
                           )}
                         </Box>

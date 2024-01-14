@@ -51,10 +51,10 @@ export default function CreateReportModal({ success }) {
   const handleInputChange = (field, value) => {
     switch (field) {
       case "percentage":
-        if (value < task.percentage) value = task.percentage;
+        if (value < task?.percentage) value = task?.percentage;
         setFormData((prevData) => ({
           ...prevData,
-          unitUsed: (task.unitInContract * (value / 100)).toFixed(2),
+          unitUsed: (task?.unitInContract * (value / 100)).toFixed(2),
         }));
         break;
       case "name":
@@ -156,9 +156,9 @@ export default function CreateReportModal({ success }) {
   const handleCreate = async () => {
     try {
       if (!switchSubmit) return;
-      const response = await createTaskReport(params.id, formData);
+      const response = await createTaskReport(params.id, formData, params.id);
       toast.success("Thêm thành công!");
-      success(true)
+      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -167,7 +167,7 @@ export default function CreateReportModal({ success }) {
 
   const fetchTask = async () => {
     try {
-      const task = await getProjectTaskById(params.taskId);
+      const task = await getProjectTaskById(params.taskId, params.id);
       setTask(task);
     } catch (error) {
       console.error("Error :", error);
@@ -244,11 +244,11 @@ export default function CreateReportModal({ success }) {
                   <Typography variant="p" sx={{ mx: 1 }}>
                     =
                   </Typography>
-                  {task.unitUsed + formData.unitUsed}
+                  {task?.unitUsed + formData.unitUsed}
                   <Typography variant="p" sx={{ mx: 1 }}>
                     /
                   </Typography>
-                  {task.unitInContract}
+                  {task?.unitInContract}
                   <Typography variant="p" sx={{ mx: 1 }}>
                     ({calculationUnitOptions[task?.calculationUnit]})
                   </Typography>

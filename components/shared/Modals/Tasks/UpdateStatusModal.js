@@ -122,7 +122,11 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
                       onSubmit={() =>
                         onUpdateStatus(projectTaskStatusIndex.Done)
                       }
-                    ></MessageModal>
+                    >
+                      <Typography variant="p" inline>
+                        Hoàn thành công việc?
+                      </Typography>
+                    </MessageModal>
                   ) : (
                     task?.status < projectTaskStatusIndex.Done &&
                     index === task?.status + 1 && (
@@ -131,7 +135,14 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
                         buttonLabel="Tiếp"
                         buttonVariant="contained"
                         onSubmit={() => onUpdateStatus(index)}
-                      ></MessageModal>
+                      >
+                        <Typography variant="p" inline>
+                          Cập nhật trạng thái công việc:{"  "}
+                        </Typography>
+                        <Typography variant="p" fontWeight={600} fontSize={16}>
+                          {projectTaskStatusOptions[index]}?
+                        </Typography>
+                      </MessageModal>
                     )
                   )}
                 </Box>

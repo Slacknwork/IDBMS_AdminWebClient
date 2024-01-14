@@ -58,7 +58,11 @@ export default function ReportListPage() {
 
   const fetchDataFromApi = async () => {
     try {
-      const data = await getTaskReportsByProjectTaskId({ projectTaskId });
+      const projectId = params.id;
+      const data = await getTaskReportsByProjectTaskId({
+        projectTaskId,
+        projectId,
+      });
       setValues(data.list);
       setCount(data.totalItem);
     } catch (error) {
@@ -84,7 +88,9 @@ export default function ReportListPage() {
           <Box sx={{ display: "flex" }}>
             <Search placeholder="Tìm tên báo cáo"></Search>
           </Box>
-          <CreateTaskReportModal success={handleModalResult}></CreateTaskReportModal>
+          <CreateTaskReportModal
+            success={handleModalResult}
+          ></CreateTaskReportModal>
         </Box>
         <Box>
           {loading ? (

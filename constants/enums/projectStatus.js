@@ -2,7 +2,7 @@ const projectStatusOptions = [
   "Lưu trữ",
   "Chờ xác nhận",
   "Trao đổi",
-  "Chờ trả tiền",
+  "Chờ thanh toán",
   "Đang hoạt động",
   "Tạm hoãn",
   "Hủy",
