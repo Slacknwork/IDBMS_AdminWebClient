@@ -15,7 +15,7 @@ import DateForm from "/components/shared/Forms/Date";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
 import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function CreateStageModal({ success }) {
   const params = useParams();
@@ -138,10 +138,12 @@ export default function CreateStageModal({ success }) {
       disableCloseOnSubmit
     >
       {/* NAME */}
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={12}>
         <TextForm
           title="Tên"
           required
+          titleSpan={3}
+          fieldSpan={9}
           subtitle="Nhập tên giai đoạn"
           value={formData.name}
           error={formData.nameError.hasError}
@@ -155,6 +157,9 @@ export default function CreateStageModal({ success }) {
         <NumberForm
           title="Khoảng phần trăm"
           required
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
           subtitle="% trên tổng số tiền"
           value={formData.pricePercentage}
           error={formData.pricePercentageError.hasError}
@@ -162,6 +167,19 @@ export default function CreateStageModal({ success }) {
           onChange={(value) => handleInputChange("pricePercentage", value)}
           endAdornment={<>%</>}
         ></NumberForm>
+      </Grid>
+
+      {/* END TIME PAYMENT */}
+      <Grid item xs={12} lg={6}>
+        <DateForm
+          datetime
+          title="Hạn chót thanh toán"
+          subtitle="Hạn chót thanh toán cho giai đoạn này"
+          value={formData.endTimePayment}
+          error={formData.endTimePaymentError.hasError}
+          errorLabel={formData.endTimePaymentError.label}
+          onChange={(value) => handleInputChange("endTimePayment", value)}
+        ></DateForm>
       </Grid>
 
       {/* IS WARRANTY PAID */}
@@ -188,25 +206,14 @@ export default function CreateStageModal({ success }) {
         ></CheckboxForm>
       </Grid>
 
-      {/* END TIME PAYMENT */}
-      <Grid item xs={12} lg={6}>
-        <DateForm
-          datetime
-          title="Hạn chót thanh toán"
-          subtitle="Hạn chót thanh toán cho giai đoạn này"
-          value={formData.endTimePayment}
-          error={formData.endTimePaymentError.hasError}
-          errorLabel={formData.endTimePaymentError.label}
-          onChange={(value) => handleInputChange("endTimePayment", value)}
-        ></DateForm>
-      </Grid>
-
       {/* DESCRIPTION */}
       <Grid item xs={12} lg={12}>
         <TextForm
           title="Mô tả"
           multiline
           rows={4}
+          titleSpan={3}
+          fieldSpan={9}
           subtitle="Mô tả sơ lược giai đoạn"
           value={formData.description}
           error={formData.descriptionError.hasError}

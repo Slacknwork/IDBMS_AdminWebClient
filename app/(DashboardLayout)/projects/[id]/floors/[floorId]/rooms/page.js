@@ -63,6 +63,7 @@ export default function RoomListPage() {
   const [count, setCount] = useState(0);
 
   const fetchDataFromApi = async () => {
+    const projectId = params.id;
     const floorId = params.floorId;
     const isHidden = false;
     const search = searchParams.get(searchQuery) ?? "";
@@ -72,6 +73,7 @@ export default function RoomListPage() {
     try {
       setLoading(true);
       const data = await getRoomsByFloorId({
+        projectId,
         floorId,
         search,
         isHidden,
@@ -96,7 +98,7 @@ export default function RoomListPage() {
     <Box sx={{ zIndex: 1 }}>
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Search></Search>
+        <Search placeholder="Tìm phòng..."></Search>
         <CreateRoomModal>Tạo phòng</CreateRoomModal>
       </Box>
       {loading ? (

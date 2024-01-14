@@ -24,8 +24,8 @@ import {
 } from "/services/projectDocumentServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import checkValidField from "/components/validations/field"
-import checkValidUrl from "/components/validations/url"
+import checkValidField from "/components/validations/field";
+import checkValidUrl from "/components/validations/url";
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -137,7 +137,7 @@ export default function ProjectDocumentDetails(projectDocument) {
   const fetchDataFromApi = async () => {
     const fetchProjectDocument = async () => {
       try {
-        const response = await getDocumentById(params.documentId);
+        const response = await getDocumentById(params.documentId, params.id);
         console.log(response);
         setFormData((prevData) => ({ ...prevData, ...response }));
       } catch (error) {
@@ -147,7 +147,9 @@ export default function ProjectDocumentDetails(projectDocument) {
     };
     const fetchProjectDocumentTemplates = async () => {
       try {
-        const response = await getAllProjectDocumentTemplates();
+        const response = await getAllProjectDocumentTemplates({
+          projectId: params.id,
+        });
         console.log(response);
         setProjectDocumentTemplates(response.list || []);
       } catch (error) {
@@ -164,7 +166,7 @@ export default function ProjectDocumentDetails(projectDocument) {
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
-    const transformedValue = transformData(formData);
+    const transformedValue = transformData(formData, params.id);
     console.log(transformedValue);
 
     try {
@@ -182,7 +184,10 @@ export default function ProjectDocumentDetails(projectDocument) {
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteProjectDocument(params.documentId);
+      const response = await deleteProjectDocument(
+        params.documentId,
+        params.id
+      );
       console.log(response);
       toast.success("Xoá thành công!");
       router.push(`/projects/${params.id}/documents`);
@@ -239,6 +244,8 @@ export default function ProjectDocumentDetails(projectDocument) {
           <TextForm
             title="Tên"
             required
+            titleSpan={3}
+            fieldSpan={9}
             subtitle="Nhập tên danh mục"
             value={formData.name}
             error={formData.nameError.hasError}
@@ -252,7 +259,7 @@ export default function ProjectDocumentDetails(projectDocument) {
           <FileForm
             fullWidth
             title="Tệp đính kèm"
-            subtitle="Chọn tệp"
+            subtitle="Chọn tệp đính kèm mới nếu có sai sót."
             titleSpan={3}
             fieldSpan={9}
             value={formData.file}
@@ -267,6 +274,9 @@ export default function ProjectDocumentDetails(projectDocument) {
           <SelectForm
             title="Danh mục tài liệu"
             required
+            titleSpan={6}
+            fieldSpan={6}
+            spacing={3}
             subtitle="Chọn danh mục tài liệu"
             value={formData.category}
             options={projectDocumentCategoryOptions}
@@ -296,6 +306,8 @@ export default function ProjectDocumentDetails(projectDocument) {
           <TextForm
             fullWidth
             multiline
+            titleSpan={3}
+            fieldSpan={9}
             title="Mô tả"
             subtitle="Nhập mô tả cho tài liệu"
             value={formData.description}

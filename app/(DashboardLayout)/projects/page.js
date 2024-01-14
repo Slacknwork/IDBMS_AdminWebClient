@@ -179,6 +179,9 @@ export default function ProjectListPage() {
               {participations?.map((participation) => (
                 <StyledTableRow key={participation.project?.id}>
                   <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      {participation.project?.site?.name}
+                    </Typography>
                     <Typography variant="subtitle2" fontWeight={400}>
                       {participation.project?.name}
                     </Typography>

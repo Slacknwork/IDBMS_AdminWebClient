@@ -8,7 +8,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
 
 import { createProjectDocument } from "/services/projectDocumentServices";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 import { getAllProjectDocumentTemplates } from "/services/projectDocumentTemplateServices";
 
 import SelectForm from "../../Forms/Select";
@@ -17,7 +17,7 @@ import CheckForm from "../../Forms/Checkbox";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
-import checkValidUrl from "/components/validations/url"
+import checkValidUrl from "/components/validations/url";
 
 const style = {
   position: "absolute",
@@ -151,17 +151,16 @@ export default function DocumentModal({ success, projectDocument }) {
   const fetchDataFromApi = async () => {
     const fetchProjectDocumentTemplates = async () => {
       try {
-        const response = await getAllProjectDocumentTemplates();
-        console.log(response);
+        const response = await getAllProjectDocumentTemplates({
+          projectId: params.id,
+        });
         setProjectDocumentTemplates(response.list || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Mẫu tài liệu' từ hệ thống");
       }
     };
-    await Promise.all([
-      fetchProjectDocumentTemplates(),
-    ]);
+    await Promise.all([fetchProjectDocumentTemplates()]);
     setLoading(false);
   };
 
@@ -181,7 +180,7 @@ export default function DocumentModal({ success, projectDocument }) {
   const handleCreate = async () => {
     if (!switchSubmit) return;
     try {
-      const response = await createProjectDocument(formData);
+      const response = await createProjectDocument(formData, params.id);
       toast.success("Thêm thành công!");
       console.log(response);
       success(true);
@@ -225,6 +224,8 @@ export default function DocumentModal({ success, projectDocument }) {
         <TextForm
           title="Tên"
           required
+          titleSpan={3}
+          fieldSpan={9}
           subtitle="Nhập tên danh mục"
           value={formData.name}
           error={formData.nameError.hasError}
@@ -253,6 +254,9 @@ export default function DocumentModal({ success, projectDocument }) {
         <SelectForm
           title="Danh mục tài liệu"
           required
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
           subtitle="Chọn danh mục tài liệu"
           value={formData.category}
           options={projectDocumentCategoryOptions}
@@ -264,25 +268,28 @@ export default function DocumentModal({ success, projectDocument }) {
 
       {/* PROJECT DOCUMENT TEMPLATE */}
       <Grid item xs={12} lg={6}>
-          <AutocompleteForm
-            title="Mẫu tài liệu"
-            subtitle="Chọn mẫu tài liệu"
-            value={formData.projectDocumentTemplateId}
-            options={projectDocumentTemplates}
-            error={formData.projectDocumentTemplateIdError.hasError}
-            errorLabel={formData.projectDocumentTemplateIdError.label}
-            onChange={(value) =>
-              handleInputChange("projectDocumentTemplateId", value)
-            }
-          ></AutocompleteForm>
-        </Grid>
+        <AutocompleteForm
+          title="Mẫu tài liệu"
+          subtitle="Chọn mẫu tài liệu"
+          value={formData.projectDocumentTemplateId}
+          options={projectDocumentTemplates}
+          error={formData.projectDocumentTemplateIdError.hasError}
+          errorLabel={formData.projectDocumentTemplateIdError.label}
+          onChange={(value) =>
+            handleInputChange("projectDocumentTemplateId", value)
+          }
+        ></AutocompleteForm>
+      </Grid>
 
       {/* IS PUBLIC ADVERTISEMENT */}
       <Grid item xs={12} lg={6}>
         <CheckForm
           required
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
           title="Công khai"
-          subtitle="Check vào ô nếu muốn công khai"
+          subtitle="Công khai tài liệu này"
           checked={formData.IsPublicAdvertisement}
           onChange={(e) =>
             handleCheckboxChange("IsPublicAdvertisement", e.target.checked)
@@ -295,6 +302,9 @@ export default function DocumentModal({ success, projectDocument }) {
         <TextForm
           fullWidth
           multiline
+          rows={4}
+          titleSpan={3}
+          fieldSpan={9}
           title="Mô tả"
           subtitle="Nhập mô tả cho tài liệu"
           value={formData.description}
@@ -303,8 +313,6 @@ export default function DocumentModal({ success, projectDocument }) {
           onChange={(e) => handleInputChange("description", e.target.value)}
         ></TextForm>
       </Grid>
-
-      
     </FormModal>
   );
 }

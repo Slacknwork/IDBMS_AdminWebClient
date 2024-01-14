@@ -14,7 +14,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import TextForm from "/components/shared/Forms/Text";
 import NumberForm from "/components/shared/Forms/Number";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function CreateRoomModal({ onCreate }) {
   const params = useParams();
@@ -43,10 +43,10 @@ export default function CreateRoomModal({ onCreate }) {
     switch (field) {
       case "usePurpose":
       case "area":
-      case "language":  
-      const result = checkValidField(value);
+      case "language":
+        const result = checkValidField(value);
 
-      if (result.isValid == false) {
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -103,7 +103,7 @@ export default function CreateRoomModal({ onCreate }) {
   const handleCreate = async () => {
     if (!switchSubmit) return;
     try {
-      const response = await createRoom(formData);
+      const response = await createRoom(formData, params.id);
       console.log(response);
       toast.success("Thêm thành công!");
       router.push(`/projects/${params.id}/rooms/${response.id}`);
@@ -166,6 +166,8 @@ export default function CreateRoomModal({ onCreate }) {
         <TextForm
           title="Công dụng"
           required
+          titleSpan={3}
+          fieldSpan={9}
           subtitle="Nhập mô tả mục đích sử dụng phòng"
           value={formData.usePurpose}
           error={formData.usePurposeError.hasError}
@@ -178,8 +180,8 @@ export default function CreateRoomModal({ onCreate }) {
       <Grid item xs={12} lg={12}>
         <TextForm
           multiline
-          titleSpan={2}
-          fieldSpan={10}
+          titleSpan={3}
+          fieldSpan={9}
           rows={4}
           title="Mô tả"
           subtitle="Nhập mô tả"
@@ -194,8 +196,11 @@ export default function CreateRoomModal({ onCreate }) {
       <Grid item xs={12} lg={6}>
         <NumberForm
           title="Diện tích"
+          titleSpan={6}
+          fieldSpan={6}
+          spacing={5}
           required
-          subtitle="Nhập ước tính diện tích phòng"
+          subtitle="Nhập diện tích phòng"
           value={formData.area}
           error={formData.areaError.hasError}
           errorLabel={formData.areaError.label}
@@ -223,6 +228,8 @@ export default function CreateRoomModal({ onCreate }) {
       <Grid item xs={12} lg={12}>
         <AutocompleteForm
           title="Loại phòng"
+          titleSpan={3}
+          fieldSpan={9}
           subtitle="Chọn loại phòng"
           value={formData.roomTypeId}
           options={roomtypes}

@@ -17,12 +17,15 @@ import {
   Link,
 } from "@mui/material";
 import { IconDownload } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
 
+import timezone from "/constants/timezone";
 import projectDocumentCategories from "/constants/enums/projectDocumentCategory";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import { getDocumentsByProjectId } from "/services/projectDocumentServices";
 
@@ -62,10 +65,11 @@ export default function ProjectDocuments() {
   const pageSizeQuery = "size";
   const defaultPageSize = 5;
 
+  const user = useSelector((state) => state.user);
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+  moment.tz.setDefault(timezone.momentDefault);
 
   // DOCUMENTS
   const [documents, setDocuments] = useState([]);
@@ -76,11 +80,10 @@ export default function ProjectDocuments() {
   const fetchDataFromApi = async () => {
     const fetchDocuments = async () => {
       const projectId = params.id;
-      const search = searchParams.get(searchQuery) || "";
-      const categoryEnum = searchParams.get(categoryQuery) || "";
-      const page = parseInt(searchParams.get(pageQuery)) || defaultPage;
-      const pageSize =
-        parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
+      const search = searchParams.get(searchQuery) ?? "";
+      const categoryEnum = searchParams.get(categoryQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
 
       try {
         const response = await getDocumentsByProjectId({
@@ -127,7 +130,10 @@ export default function ProjectDocuments() {
           ></FilterCategory>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <GenerateContractModal sx={{ mr: 1 }}></GenerateContractModal>
+          {user?.role && user?.role === companyRoleConstants.ADMIN && (
+            <GenerateContractModal sx={{ mr: 1 }}></GenerateContractModal>
+          )}
+
           <DocumentModal success={handleModalResult}>
             <span>Tạo</span>
           </DocumentModal>
@@ -138,27 +144,22 @@ export default function ProjectDocuments() {
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
+              <StyledTableCell width="40%">
                 <Typography variant="subtitle2" fontWeight={600}>
                   Tên
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Mô tả
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width="20%">
                 <Typography variant="subtitle2" fontWeight={600}>
                   Danh mục
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell width="20%">
                 <Typography variant="subtitle2" fontWeight={600}>
                   Ngày tạo
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell width="20%" align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -167,11 +168,6 @@ export default function ProjectDocuments() {
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
                     {document?.name ?? ""}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {document?.description ?? ""}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -187,20 +183,18 @@ export default function ProjectDocuments() {
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
-                <TableCell align="right" sx={{ display: "flex" }}>
-                  <Button
-                    sx={{ width: 75 }}
-                    size="small"
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    endIcon={<IconDownload></IconDownload>}
-                  >
-                    Tải
-                  </Button>
-                </TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      sx={{ width: 75, mr: 2 }}
+                      size="small"
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      endIcon={<IconDownload></IconDownload>}
+                    >
+                      Tải
+                    </Button>
                     <Button
                       component={Link}
                       variant="contained"

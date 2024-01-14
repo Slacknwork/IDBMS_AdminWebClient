@@ -276,7 +276,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   const handleCreate = async () => {
     if (!switchSubmit) return;
     try {
-      const response = await createProjectTask(formData);
+      const response = await createProjectTask(formData, params.id);
       toast.success("Thêm thành công!");
       hasCallback && onCallback();
     } catch (error) {

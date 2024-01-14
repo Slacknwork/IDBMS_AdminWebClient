@@ -56,7 +56,7 @@ export default function StageOverview() {
       case "pricePercentage":
         const result = checkValidField(value);
 
-        if (result.isValid === false) {
+        if (result?.isValid === false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -100,7 +100,7 @@ export default function StageOverview() {
   const fetchDataFromApi = async () => {
     try {
       setLoading(true);
-      const stage = await getPaymentStagesById(params.stageId);
+      const stage = await getPaymentStagesById(params.stageId, params.id);
       setFormData((prevData) => ({ ...prevData, ...stage }));
       setPageName(stage.name);
       setPageDescription(stage.description);
@@ -123,7 +123,7 @@ export default function StageOverview() {
 
   const onSaveStage = async () => {
     try {
-      await updatePaymentStage(params.stageId, formData);
+      await updatePaymentStage(params.stageId, formData, params.id);
       toast.success("Lưu thành công!");
       setPageName(formData.name);
       setPageDescription(formData.description);
@@ -135,7 +135,7 @@ export default function StageOverview() {
   };
   const onDeleteStage = async () => {
     try {
-      await deletePaymentStage(params.stageId);
+      await deletePaymentStage(params.stageId, params.id);
       toast.success("Xóa thành công!");
       router.push(`/projects/${params.id}/stages`);
     } catch (error) {

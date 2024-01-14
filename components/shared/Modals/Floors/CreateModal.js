@@ -14,7 +14,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import { createFloor } from "/services/floorServices";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function CreateFloorModal({ onCreate }) {
   const params = useParams();
@@ -93,7 +93,7 @@ export default function CreateFloorModal({ onCreate }) {
     if (!switchSubmit) return;
     console.log(formData);
     try {
-      const response = await createFloor(formData);
+      const response = await createFloor(formData, params.id);
       console.log(response);
       toast.success("Thêm thành công!");
       router.push(`/projects/${params.id}/floors/${response.id}`);

@@ -22,7 +22,7 @@ import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function RoomDetailsPage() {
   const params = useParams();
@@ -62,11 +62,11 @@ export default function RoomDetailsPage() {
     switch (field) {
       case "usePurpose":
       case "area":
-      case "language":  
+      case "language":
       case "pricePerArea":
-      const result = checkValidField(value);
+        const result = checkValidField(value);
 
-      if (result.isValid == false) {
+        if (result.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -106,14 +106,12 @@ export default function RoomDetailsPage() {
   const [total, setTotal] = useState(0);
   const [roomtypes, setRoomTypes] = useState([]);
 
-  
-
   const fetchDataFromApi = async () => {
     setLoading(true);
 
     const fetchRooms = async () => {
       try {
-        const data = await getRoomById(params.roomId);
+        const data = await getRoomById(params.roomId, params.id);
         setFormData((prevData) => ({ ...prevData, ...data }));
         setTotal(
           data?.tasks?.reduce(
@@ -135,10 +133,7 @@ export default function RoomDetailsPage() {
         console.log(error);
       }
     };
-    await Promise.all([
-      fetchRooms(),
-      fetchRoomTypes(),
-    ]);
+    await Promise.all([fetchRooms(), fetchRoomTypes()]);
     setLoading(false);
   };
 
@@ -154,9 +149,7 @@ export default function RoomDetailsPage() {
 
   const onDeleteRoom = async () => {
     try {
-      const response = await deleteRoom(
-        params.roomId,
-      );
+      const response = await deleteRoom(params.roomId, params.id);
       toast.success("Xoá thành công!");
       router.push(`/projects/${params.id}/floors/${params.floorId}/rooms`);
     } catch (error) {
@@ -167,7 +160,11 @@ export default function RoomDetailsPage() {
 
   const onSaveRoom = async () => {
     try {
-      const response = await updateRoom(params.roomId ?? "", formData);
+      const response = await updateRoom(
+        params.roomId ?? "",
+        formData,
+        params.id
+      );
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
@@ -213,6 +210,7 @@ export default function RoomDetailsPage() {
         </Grid>
         <Grid item xs={10} lg={10}>
           <DetailsPage
+            loading={loading}
             title="Thông tin phòng"
             saveMessage="Lưu thông tin phòng?"
             onSave={handleSubmit}

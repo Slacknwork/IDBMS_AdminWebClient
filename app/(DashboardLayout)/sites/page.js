@@ -24,6 +24,7 @@ import { getSites } from "/services/siteServices";
 import CreateSiteModal from "/components/shared/Modals/Sites/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
+import PageContainer from "/components/container/PageContainer";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -84,103 +85,114 @@ export default function SitesPage() {
   }, [searchParams]);
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Search
-          query={searchQuery}
-          placeholder="Tìm kiếm theo Tên / Địa chỉ"
-        ></Search>
-        <CreateSiteModal>Tạo công trình</CreateSiteModal>
-      </Box>
-      {loading ? (
-        <Stack sx={{ my: 5 }}>
-          <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
-        </Stack>
-      ) : values && values.length > 0 ? (
-        <Table aria-label="simple table" sx={{ mt: 1 }}>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell width={"27.5%"}>
-                <Typography variant="subtitle2" fontWeight={600} noWrap>
-                  Tên công trình
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"27.5%"}>
-                <Typography variant="subtitle2" fontWeight={600} noWrap>
-                  Địa chỉ
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"15%"}>
-                <Typography variant="subtitle2" fontWeight={600} noWrap>
-                  Tên người đại diện
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"10%"}>
-                <Typography variant="subtitle2" fontWeight={600} noWrap>
-                  Ngày tạo
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"20%"} align="right"></StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {values?.map((site) => (
-              <StyledTableRow key={site.id}>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {site.name}
+    <PageContainer
+      title="Khu công trình"
+      description="Danh sách các khu công trình"
+    >
+      <Typography variant="h2">{"Khu công trình"}</Typography>
+      <Box sx={{ mt: 3, minHeight: "30rem" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Search
+            query={searchQuery}
+            placeholder="Tìm kiếm theo Tên / Địa chỉ"
+          ></Search>
+          <CreateSiteModal>Tạo công trình</CreateSiteModal>
+        </Box>
+        {loading ? (
+          <Stack sx={{ my: 5 }}>
+            <CircularProgress sx={{ mx: "auto" }}></CircularProgress>
+          </Stack>
+        ) : values && values.length > 0 ? (
+          <Table aria-label="simple table" sx={{ mt: 1 }}>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell width={"27.5%"}>
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
+                    Tên công trình
                   </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {site.address}
+                </StyledTableCell>
+                <StyledTableCell width={"27.5%"}>
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
+                    Địa chỉ
                   </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {site.contactName}
+                </StyledTableCell>
+                <StyledTableCell width={"15%"}>
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
+                    Tên người đại diện
                   </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2" fontWeight={400}>
-                    {new Date(site.createdDate).toLocaleDateString("vi-VN")}
+                </StyledTableCell>
+                <StyledTableCell width={"10%"}>
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
+                    Ngày tạo
                   </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Button
-                    sx={{ mr: 2 }}
-                    component={Link}
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    href={`/sites/${site.id}`}
-                  >
-                    Chi tiết
-                  </Button>
-                  <Button
-                    sx={{ mr: 2 }}
-                    component={Link}
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    href={`/sites/${site.id}/projects`}
-                  >
-                    Dự án
-                  </Button>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <Stack sx={{ my: 5 }}>
-          <Typography variant="p" sx={{ textAlign: "center" }}>
-            Không có dữ liệu.
-          </Typography>
-        </Stack>
-      )}
+                </StyledTableCell>
+                <StyledTableCell width={"20%"} align="right"></StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {values?.map((site) => (
+                <StyledTableRow key={site.id}>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {site.name}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {site.address}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {site.contactName}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={400}>
+                      {new Date(site.createdDate).toLocaleDateString("vi-VN")}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      sx={{ mr: 2 }}
+                      component={Link}
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      href={`/sites/${site.id}`}
+                    >
+                      Chi tiết
+                    </Button>
+                    <Button
+                      sx={{ mr: 2 }}
+                      component={Link}
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      href={`/sites/${site.id}/projects`}
+                    >
+                      Dự án
+                    </Button>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <Stack sx={{ my: 5 }}>
+            <Typography variant="p" sx={{ textAlign: "center" }}>
+              Không có dữ liệu.
+            </Typography>
+          </Stack>
+        )}
 
-      <Pagination query={pageQuery} sizeQuery={pageSizeQuery} count={count} />
-    </Box>
+        <Pagination query={pageQuery} sizeQuery={pageSizeQuery} count={count} />
+      </Box>
+    </PageContainer>
   );
 }

@@ -21,7 +21,7 @@ import {
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 export default function FloorDetailsPage() {
   const params = useParams();
@@ -105,7 +105,7 @@ export default function FloorDetailsPage() {
     if (!initialized.current) {
       initialized.current = true;
       try {
-        const response = await getFloorsById(params.floorId);
+        const response = await getFloorsById(params.floorId, params.id);
         console.log(response);
         mapData(response);
         setLoading(false);
@@ -138,8 +138,6 @@ export default function FloorDetailsPage() {
     }
   };
 
-  
-
   const handleFloorIncrement = (incrementBy) => {
     const newValue = formData.floorNo + incrementBy;
     handleInputChange("floorNo", newValue);
@@ -161,7 +159,7 @@ export default function FloorDetailsPage() {
 
   const onSaveFloor = async () => {
     try {
-      const response = await updateFloor(params.floorId ?? "", formData);
+      await updateFloor(params.floorId ?? "", formData, params.id);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
@@ -172,7 +170,7 @@ export default function FloorDetailsPage() {
 
   const onDeleteFloor = async () => {
     try {
-      const response = await deleteFloorById(params.floorId);
+      await deleteFloorById(params.floorId, params.id);
       toast.success("Xóa thành công!");
       router.push(`/projects/${params.id}/floors`);
     } catch (error) {

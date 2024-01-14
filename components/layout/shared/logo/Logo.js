@@ -2,6 +2,8 @@ import Link from "next/link";
 import { styled } from "@mui/material";
 import Image from "next/image";
 
+import logo from "/public/images/logos/IDTco_Logo.jpg";
+
 const LinkStyled = styled(Link)(() => ({
   display: "block",
   justifyContent: "center",
@@ -12,7 +14,7 @@ const Logo = () => {
   return (
     <LinkStyled href="/">
       <Image
-        src="/images/logos/IDTco_logo.jpg"
+        src={logo}
         alt="logo"
         width={500}
         height={500}

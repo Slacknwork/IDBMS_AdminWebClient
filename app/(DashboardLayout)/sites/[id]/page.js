@@ -15,9 +15,9 @@ import UserCard from "/components/shared/UserCard";
 import TextForm from "/components/shared/Forms/Text";
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
-import checkValidField from "/components/validations/field"
-import checkValidEmail from "/components/validations/email"
-import checkValidPhone from "/components/validations/phone"
+import checkValidField from "/components/validations/field";
+import checkValidEmail from "/components/validations/email";
+import checkValidPhone from "/components/validations/phone";
 
 export default function SiteDetails() {
   const params = useParams();
@@ -50,7 +50,7 @@ export default function SiteDetails() {
       case "contactLocation":
         const result = checkValidField(value);
 
-        if (result.isValid == false) {
+        if (result?.isValid === false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -73,7 +73,7 @@ export default function SiteDetails() {
       case "contactPhone":
         const validPhone = checkValidPhone(value);
 
-        if (result.isValid == false) {
+        if (validPhone.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -96,7 +96,7 @@ export default function SiteDetails() {
       case "contactEmail":
         const validEmail = checkValidEmail(value);
 
-        if (result.isValid == false) {
+        if (validPhone.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
