@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 
 import { getFloorsByProjectId } from "/services/floorServices";
 
+import { projectStatusIndex } from "/constants/enums/projectStatus";
 import { participationRoleIndex } from "/constants/enums/participationRole";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
@@ -60,6 +61,7 @@ export default function FloorsPage() {
   // INIT
   const user = useSelector((state) => state.user);
   const data = useSelector((state) => state.data);
+  const project = data?.project;
   const participationRole = data?.projectRole;
 
   const params = useParams();
@@ -117,9 +119,11 @@ export default function FloorsPage() {
         <Box>
           <Search placeholder="Nhập số tầng / mục đích"></Search>
         </Box>
-        {isManager && (
-          <CreateFloorModal floorList={values}>Tạo</CreateFloorModal>
-        )}
+        {isManager &&
+          project &&
+          project?.status === projectStatusIndex.Negotiating && (
+            <CreateFloorModal floorList={values}>Tạo</CreateFloorModal>
+          )}
       </Box>
       <Box></Box>
       {loading ? (
