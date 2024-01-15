@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 import {
   getFloorsById,
@@ -19,12 +20,20 @@ import {
   deleteFloorById,
 } from "/services/floorServices";
 
+import { companyRoleConstants } from "/constants/enums/companyRole";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import colors from "/constants/color";
+
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import checkValidField from "/components/validations/field";
 
 export default function FloorDetailsPage() {
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
+
   const params = useParams();
   const router = useRouter();
 
@@ -219,11 +228,23 @@ export default function FloorDetailsPage() {
 
     onSaveFloor();
     setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
 
   useEffect(() => {
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participationRole?.role, user?.role]);
 
   return (
     <PageContainer
@@ -235,7 +256,8 @@ export default function FloorDetailsPage() {
         title="Thông tin tầng"
         saveMessage="Lưu thông tin tầng?"
         onSave={handleSubmit}
-        hasDelete
+        hasDelete={isManager}
+        hideSave={!isManager}
         onDelete={onDeleteFloor}
       >
         <Grid item xs={12} lg={8}>
@@ -245,64 +267,82 @@ export default function FloorDetailsPage() {
               <Grid container spacing={2}>
                 <Grid item xs={3} lg={3}>
                   <Typography variant="h5">
-                    Tầng
-                    <span style={{ color: "red" }}>*</span>
+                    Tầng<span style={{ color: "red" }}>*</span>
                   </Typography>
+                  <Typography variant="p">Số tầng</Typography>
                 </Grid>
                 <Grid item xs={9} lg={9}>
-                  <FormControl fullWidth>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item style={{ alignSelf: "center" }}>
-                        <Button
-                          color="error"
-                          disableElevation
-                          variant="contained"
-                          onClick={() => handleFloorDecrement(10)}
-                        >
-                          -10
-                        </Button>
+                  {isManager ? (
+                    <FormControl fullWidth>
+                      <Grid container spacing={1} alignItems="center">
+                        <Grid item style={{ alignSelf: "center" }}>
+                          <Button
+                            color="error"
+                            disableElevation
+                            variant="contained"
+                            onClick={() => handleFloorDecrement(10)}
+                          >
+                            -10
+                          </Button>
+                        </Grid>
+                        <Grid item style={{ alignSelf: "center" }}>
+                          <Button
+                            color="error"
+                            disableElevation
+                            variant="contained"
+                            onClick={() => handleFloorDecrement(1)}
+                          >
+                            -1
+                          </Button>
+                        </Grid>
+                        <Grid item xs={2.7} lg={2.5}>
+                          <TextField
+                            error={formData.floorNoError.hasError}
+                            variant="outlined"
+                            value={displayedValue}
+                            helperText={formData.floorNoError.label}
+                            onChange={(e) => setDisplayedValue(e.target.value)}
+                            disabled
+                            sx={{ textAlign: "center", width: "100%" }}
+                          />
+                        </Grid>
+                        <Grid item style={{ alignSelf: "center" }}>
+                          <Button
+                            disableElevation
+                            variant="contained"
+                            onClick={() => handleFloorIncrement(1)}
+                          >
+                            +1
+                          </Button>
+                        </Grid>
+                        <Grid item style={{ alignSelf: "center" }}>
+                          <Button
+                            disableElevation
+                            variant="contained"
+                            onClick={() => handleFloorIncrement(10)}
+                          >
+                            +10
+                          </Button>
+                        </Grid>
                       </Grid>
-                      <Grid item style={{ alignSelf: "center" }}>
-                        <Button
-                          color="error"
-                          disableElevation
-                          variant="contained"
-                          onClick={() => handleFloorDecrement(1)}
-                        >
-                          -1
-                        </Button>
-                      </Grid>
-                      <Grid item xs={2.7} lg={2.5}>
-                        <TextField
-                          error={formData.floorNoError.hasError}
-                          variant="outlined"
-                          value={displayedValue}
-                          helperText={formData.floorNoError.label}
-                          onChange={(e) => setDisplayedValue(e.target.value)}
-                          disabled
-                          sx={{ textAlign: "center", width: "100%" }}
-                        />
-                      </Grid>
-                      <Grid item style={{ alignSelf: "center" }}>
-                        <Button
-                          disableElevation
-                          variant="contained"
-                          onClick={() => handleFloorIncrement(1)}
-                        >
-                          +1
-                        </Button>
-                      </Grid>
-                      <Grid item style={{ alignSelf: "center" }}>
-                        <Button
-                          disableElevation
-                          variant="contained"
-                          onClick={() => handleFloorIncrement(10)}
-                        >
-                          +10
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </FormControl>
+                    </FormControl>
+                  ) : (
+                    <TextField
+                      error={formData.floorNoError.hasError}
+                      variant="outlined"
+                      value={displayedValue}
+                      helperText={formData.floorNoError.label}
+                      onChange={(e) => setDisplayedValue(e.target.value)}
+                      disabled
+                      sx={{
+                        textAlign: "center",
+                        width: "100%",
+                        "& .MuiInputBase-input.Mui-disabled": {
+                          WebkitTextFillColor: colors.disabledFormText,
+                        },
+                      }}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -312,6 +352,7 @@ export default function FloorDetailsPage() {
               <TextForm
                 title="Mục đích"
                 required
+                disabled={!isManager}
                 titleSpan={3}
                 fieldSpan={9}
                 subtitle="Mô đích sử dụng của tầng"
@@ -330,6 +371,7 @@ export default function FloorDetailsPage() {
                 title="Mô tả"
                 multiline
                 rows={4}
+                disabled={!isManager}
                 titleSpan={3}
                 fieldSpan={9}
                 subtitle="Mô tả tầng"

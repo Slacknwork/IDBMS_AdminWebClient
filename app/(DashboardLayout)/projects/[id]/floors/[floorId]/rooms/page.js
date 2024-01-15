@@ -16,10 +16,14 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getRoomsByFloorId } from "/services/roomServices";
+
+import { companyRoleConstants } from "/constants/enums/companyRole";
+import { participationRoleIndex } from "/constants/enums/participationRole";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
@@ -54,6 +58,9 @@ export default function RoomListPage() {
   const defaultPageSize = 5;
 
   // INIT
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -62,16 +69,15 @@ export default function RoomListPage() {
   const [values, setValues] = useState([]);
   const [count, setCount] = useState(0);
 
-  const fetchDataFromApi = async () => {
-    const projectId = params.id;
-    const floorId = params.floorId;
-    const isHidden = false;
-    const search = searchParams.get(searchQuery) ?? "";
-    const page = searchParams.get(pageQuery) ?? defaultPage;
-    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
-
+  const fetchRooms = async () => {
     try {
-      setLoading(true);
+      const projectId = params.id;
+      const floorId = params.floorId;
+      const isHidden = false;
+      const search = searchParams.get(searchQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
+
       const data = await getRoomsByFloorId({
         projectId,
         floorId,
@@ -83,23 +89,37 @@ export default function RoomListPage() {
       setValues(data.list);
       setCount(data.totalItem);
     } catch (error) {
-      console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu 'Phòng' từ hệ thống");
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    await Promise.all([fetchRooms()]);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participationRole?.role, user?.role]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Search placeholder="Tìm phòng..."></Search>
-        <CreateRoomModal>Tạo phòng</CreateRoomModal>
+        {isManager && <CreateRoomModal>Tạo phòng</CreateRoomModal>}
       </Box>
       {loading ? (
         <Stack sx={{ my: 5 }}>
