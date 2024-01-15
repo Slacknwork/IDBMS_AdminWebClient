@@ -12,6 +12,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+import colors from "/constants/color";
+
 export default function FormText({
   sx,
   titleSpan = 4,
@@ -46,6 +48,11 @@ export default function FormText({
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
           <TextField
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: colors.disabledFormText,
+              },
+            }}
             disabled={disabled}
             multiline={multiline}
             rows={rows}

@@ -18,7 +18,7 @@ const projectStatusOptionsEnglish = [
   "Ongoing",
   "Suspended",
   "Canceled",
-  "Bảo hành",
+  "Warranty",
   "Done",
 ];
 

@@ -19,6 +19,7 @@ export default function DetailsPage({
   onHiddenStatusChange,
   deleteLabel = "Xóa",
   deleteMessage = "Xóa thông tin?",
+  hideSave,
   onSave,
   hasDelete,
   onDelete,
@@ -71,16 +72,18 @@ export default function DetailsPage({
               )
             ) : null}
 
-            <MessageModal
-              disabled={loading}
-              sx={{ ml: 2 }}
-              buttonLabel={saveLabel}
-              onSubmit={onSave}
-              title={saveLabel}
-              submitLabel={saveLabel}
-            >
-              <Typography variant="p">{saveMessage}</Typography>
-            </MessageModal>
+            {!hideSave && (
+              <MessageModal
+                disabled={loading}
+                sx={{ ml: 2 }}
+                buttonLabel={saveLabel}
+                onSubmit={onSave}
+                title={saveLabel}
+                submitLabel={saveLabel}
+              >
+                <Typography variant="p">{saveMessage}</Typography>
+              </MessageModal>
+            )}
 
             {hasDelete ? (
               <MessageModal

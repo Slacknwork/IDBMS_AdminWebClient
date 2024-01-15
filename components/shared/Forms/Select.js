@@ -1,5 +1,3 @@
-"use client";
-
 import {
   FormControl,
   FormHelperText,
@@ -8,6 +6,8 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+
+import colors from "/constants/color";
 
 export default function FormText({
   sx,
@@ -47,12 +47,21 @@ export default function FormText({
             value={value}
             onChange={(e) => onChange(parseInt(e.target.value))}
             error={error}
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: colors.disabledFormText,
+              },
+            }}
           >
             <MenuItem disabled value={defaultValue}>
               {defaultLabel}
             </MenuItem>
             {options.map((option, index) => (
-              <MenuItem key={option} value={index} disabled={disableOptions.includes(index)}>
+              <MenuItem
+                key={option}
+                value={index}
+                disabled={disableOptions.includes(index)}
+              >
                 {option}
               </MenuItem>
             ))}

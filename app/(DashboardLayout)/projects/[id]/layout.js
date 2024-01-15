@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
@@ -33,6 +33,7 @@ import participationRoleOptions, {
   participationRoleIndex,
 } from "/constants/enums/participationRole";
 import timezone from "/constants/timezone";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 import roleConstants from "/constants/roles";
 
 moment.tz.setDefault(timezone.momentDefault);
@@ -75,14 +76,28 @@ export default function ProjectDetailsLayout({ children }) {
     }
   };
 
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    setIsAdmin(user?.role && user?.role === companyRoleConstants.ADMIN);
+  }, [user?.role]);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+  }, [participationRole?.role, user?.role]);
+
   useEffect(() => {
     dispatch(fetchProjectData(params.id));
-    if (user?.role && user?.role !== roleConstants.ADMIN) {
+    !isAdmin &&
       dispatch(
         fetchProjectRoleData({ userId: user?.id, projectId: params.id })
       );
-    }
-  }, [dispatch, params.id, user?.id, user?.role]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   return (
     <PageContainer>
@@ -169,23 +184,33 @@ export default function ProjectDetailsLayout({ children }) {
                     >
                       Đã hủy dự án.
                     </Typography>
-                    <Typography variant="p" sx={{ mt: 1, textAlign: "center" }}>
-                      Dự án đã bị hủy. Bắt đầu lại dự án ở giai đoạn Trao đổi?
-                    </Typography>
-                    <MessageModal
-                      sx={{ mt: 2 }}
-                      color="success"
-                      buttonLabel="Bắt đầu"
-                      buttonVariant="contained"
-                      onSubmit={() => onUpdateStatus(2)}
-                    >
-                      <Typography variant="h4" sx={{ mb: 2 }}>
-                        Xác nhận
-                      </Typography>
-                      <Typography variant="p">
-                        Bắt đầu lại dự án từ giai đoạn Trao đổi?
-                      </Typography>
-                    </MessageModal>
+                    {isManager && (
+                      <Box>
+                        <Typography
+                          variant="p"
+                          sx={{ mt: 1, textAlign: "center" }}
+                        >
+                          Dự án đã bị hủy. Bắt đầu lại dự án ở giai đoạn Trao
+                          đổi?
+                        </Typography>
+                        <MessageModal
+                          sx={{ mt: 2 }}
+                          color="success"
+                          buttonLabel="Bắt đầu"
+                          buttonVariant="contained"
+                          onSubmit={() =>
+                            onUpdateStatus(projectStatusIndex.Negotiating)
+                          }
+                        >
+                          <Typography variant="h4" sx={{ mb: 2 }}>
+                            Xác nhận
+                          </Typography>
+                          <Typography variant="p">
+                            Bắt đầu lại dự án từ giai đoạn Trao đổi?
+                          </Typography>
+                        </MessageModal>
+                      </Box>
+                    )}
                   </Box>
                 ) : (
                   projectStatusOptions.map(
@@ -212,7 +237,7 @@ export default function ProjectDetailsLayout({ children }) {
                                 sx={{ my: "auto", mr: 2 }}
                                 color="error"
                               ></PauseCircleIcon>
-                            ) : project?.status === 8 ||
+                            ) : project?.status === projectStatusIndex.Done ||
                               index < project?.status ? (
                               <CheckCircleIcon
                                 sx={{ my: "auto", mr: 2 }}
@@ -240,86 +265,112 @@ export default function ProjectDetailsLayout({ children }) {
                               {projectStatusOptions[index]}
                             </Typography>
                           </Box>
-                          {project?.status === 5 && index === 4 ? (
-                            <MessageModal
-                              buttonSize="small"
-                              buttonLabel="Tiếp tục"
-                              buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(4)}
-                            >
-                              <Typography variant="subtitle2">
-                                Tiếp tục dự án?
-                              </Typography>
-                            </MessageModal>
-                          ) : project?.status === 4 && index === 4 ? (
-                            <MessageModal
-                              color="error"
-                              buttonSize="small"
-                              buttonLabel="Hoãn"
-                              buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(5)}
-                            >
-                              <Typography variant="subtitle2">
-                                Hoãn dự án?
-                              </Typography>
-                            </MessageModal>
-                          ) : project?.status === index &&
-                            project?.status < 4 ? (
-                            <MessageModal
-                              color="error"
-                              buttonSize="small"
-                              buttonLabel="Hủy"
-                              buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(6)}
-                            >
-                              <Typography variant="subtitle2">
-                                Hủy dự án?
-                              </Typography>
-                            </MessageModal>
-                          ) : project?.status === 4 && index === 7 ? (
-                            <MessageModal
-                              buttonSize="small"
-                              buttonLabel="Bảo hành"
-                              buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(7)}
-                            >
-                              <Typography variant="subtitle2">
-                                Vào giai đoạn bảo hành?
-                              </Typography>
-                            </MessageModal>
-                          ) : project?.status === 7 && index === 8 ? (
-                            <MessageModal
-                              disabled={isInWarranty()}
-                              buttonSize="small"
-                              buttonLabel="Hoàn thành"
-                              buttonVariant="contained"
-                              onSubmit={() => onUpdateStatus(8)}
-                            >
-                              <Typography variant="subtitle2">
-                                Hoàn thành dự án?
-                              </Typography>
-                            </MessageModal>
-                          ) : (
-                            project?.status < 4 &&
-                            index === project?.status + 1 && (
-                              <MessageModal
-                                buttonSize="small"
-                                buttonLabel="Tiếp"
-                                buttonVariant="contained"
-                                onSubmit={() => onUpdateStatus(index)}
-                              >
-                                <Typography variant="p" inline>
-                                  Cập nhật trạng thái dự án:{"  "}
-                                </Typography>
-                                <Typography
-                                  variant="p"
-                                  fontWeight={600}
-                                  fontSize={16}
+                          {isManager ? (
+                            <>
+                              {project?.status ===
+                                projectStatusIndex.Suspended &&
+                              index === projectStatusIndex.Ongoing ? (
+                                <MessageModal
+                                  buttonSize="small"
+                                  buttonLabel="Tiếp tục"
+                                  buttonVariant="contained"
+                                  onSubmit={() =>
+                                    onUpdateStatus(projectStatusIndex.Ongoing)
+                                  }
                                 >
-                                  {projectStatusOptions[index]}?
-                                </Typography>
-                              </MessageModal>
-                            )
+                                  <Typography variant="subtitle2">
+                                    Tiếp tục dự án?
+                                  </Typography>
+                                </MessageModal>
+                              ) : project?.status ===
+                                  projectStatusIndex.Ongoing &&
+                                index === projectStatusIndex.Ongoing ? (
+                                <MessageModal
+                                  color="error"
+                                  buttonSize="small"
+                                  buttonLabel="Hoãn"
+                                  buttonVariant="contained"
+                                  onSubmit={() =>
+                                    onUpdateStatus(projectStatusIndex.Suspended)
+                                  }
+                                >
+                                  <Typography variant="subtitle2">
+                                    Hoãn dự án?
+                                  </Typography>
+                                </MessageModal>
+                              ) : project?.status === index &&
+                                project?.status < projectStatusIndex.Ongoing ? (
+                                <MessageModal
+                                  color="error"
+                                  buttonSize="small"
+                                  buttonLabel="Hủy"
+                                  buttonVariant="contained"
+                                  onSubmit={() =>
+                                    onUpdateStatus(projectStatusIndex.Canceled)
+                                  }
+                                >
+                                  <Typography variant="subtitle2">
+                                    Hủy dự án?
+                                  </Typography>
+                                </MessageModal>
+                              ) : project?.status ===
+                                  projectStatusIndex.Ongoing &&
+                                index === projectStatusIndex.WarrantyPending ? (
+                                <MessageModal
+                                  buttonSize="small"
+                                  buttonLabel="Bảo hành"
+                                  buttonVariant="contained"
+                                  onSubmit={() =>
+                                    onUpdateStatus(
+                                      projectStatusIndex.WarrantyPending
+                                    )
+                                  }
+                                >
+                                  <Typography variant="subtitle2">
+                                    Vào giai đoạn bảo hành?
+                                  </Typography>
+                                </MessageModal>
+                              ) : project?.status ===
+                                  projectStatusIndex.WarrantyPending &&
+                                index === projectStatusIndex.Done ? (
+                                <MessageModal
+                                  disabled={isInWarranty()}
+                                  buttonSize="small"
+                                  buttonLabel="Hoàn thành"
+                                  buttonVariant="contained"
+                                  onSubmit={() =>
+                                    onUpdateStatus(projectStatusIndex.Done)
+                                  }
+                                >
+                                  <Typography variant="subtitle2">
+                                    Hoàn thành dự án?
+                                  </Typography>
+                                </MessageModal>
+                              ) : (
+                                project?.status < projectStatusIndex.Ongoing &&
+                                index === project?.status + 1 && (
+                                  <MessageModal
+                                    buttonSize="small"
+                                    buttonLabel="Tiếp"
+                                    buttonVariant="contained"
+                                    onSubmit={() => onUpdateStatus(index)}
+                                  >
+                                    <Typography variant="p" inline>
+                                      Cập nhật trạng thái dự án:{"  "}
+                                    </Typography>
+                                    <Typography
+                                      variant="p"
+                                      fontWeight={600}
+                                      fontSize={16}
+                                    >
+                                      {projectStatusOptions[index]}?
+                                    </Typography>
+                                  </MessageModal>
+                                )
+                              )}
+                            </>
+                          ) : (
+                            <></>
                           )}
                         </Box>
                       )

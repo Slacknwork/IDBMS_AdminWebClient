@@ -1,15 +1,13 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Avatar, Box, Card, Grid, Typography } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
+import { Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
-import projectLanguageOptions from "/constants/enums/language";
-import projectTypeOptions from "/constants/enums/projectType";
-import projectStatusOptions from "/constants/enums/projectStatus";
 import projectAdvertisementStatusOptions from "/constants/enums/advertisementStatus";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import {
   getProjectById,
@@ -28,6 +26,7 @@ import checkValidField from "/components/validations/field";
 
 export default function ProjectDetails() {
   const params = useParams();
+  const user = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -199,9 +198,15 @@ export default function ProjectDetails() {
     }
   };
 
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    setIsAdmin(user?.role && user?.role === companyRoleConstants.ADMIN);
+  }, [user?.role]);
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        hideSave={!isAdmin}
         loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
@@ -213,6 +218,7 @@ export default function ProjectDetails() {
             <Grid item xs={12} lg={12}>
               <TextForm
                 title="Tên"
+                disabled={!isAdmin}
                 required
                 subtitle="Nhập tên dự án"
                 value={formData.name}
@@ -227,6 +233,7 @@ export default function ProjectDetails() {
               <AutocompleteForm
                 title="Phân loại"
                 subtitle="Chọn phân loại dự án"
+                disabled={!isAdmin}
                 required
                 value={formData.projectCategoryId}
                 options={projectCategories}
@@ -243,6 +250,7 @@ export default function ProjectDetails() {
               <SelectForm
                 title="Quảng cáo"
                 required
+                disabled={!isAdmin}
                 subtitle="Cho phép hệ thống quảng cáo dự án này"
                 value={formData.advertisementStatus}
                 options={projectAdvertisementStatusOptions}
@@ -271,7 +279,7 @@ export default function ProjectDetails() {
                   onChange={(value) =>
                     handleInputChange("basedOnDecorProjectId", value)
                   }
-                  disabled={true}
+                  disabled={!isAdmin}
                 ></AutocompleteForm>
               </Grid>
             ) : null}
@@ -281,6 +289,7 @@ export default function ProjectDetails() {
               <TextForm
                 title="Mô tả"
                 multiline
+                disabled={!isAdmin}
                 rows={4}
                 subtitle="Mô tả dự án"
                 value={formData.description}

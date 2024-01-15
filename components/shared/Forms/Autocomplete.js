@@ -1,7 +1,7 @@
-"use client";
-
 import { Autocomplete, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+
+import colors from "/constants/color";
 
 export default function AutocompleteForm({
   sx,
@@ -50,8 +50,8 @@ export default function AutocompleteForm({
             option.code
               ? `${option.code} - ${option.name}`
               : option.usePurpose
-                ? option.usePurpose
-                : option.name ?? option
+              ? option.usePurpose
+              : option.name ?? option
           }
           isOptionEqualToValue={(option, value) => option.id === value?.id}
           getOptionDisabled={(option) => disableOptions.includes(option.id)}
@@ -59,6 +59,11 @@ export default function AutocompleteForm({
           onChange={(_, newValue) => onSelectedObjectChange(newValue)}
           renderInput={(params) => (
             <TextField
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: colors.disabledFormText,
+                },
+              }}
               {...params}
               label={label || ""}
               variant={variant}
