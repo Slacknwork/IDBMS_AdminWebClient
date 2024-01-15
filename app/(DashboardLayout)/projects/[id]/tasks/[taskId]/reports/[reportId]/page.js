@@ -39,8 +39,8 @@ import {
 } from "/services/taskReportServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import checkValidField from "/components/validations/field"
-import checkValidUrl from "/components/validations/url"
+import checkValidField from "/components/validations/field";
+import checkValidUrl from "/components/validations/url";
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -89,7 +89,7 @@ export default function ProjectDocumentDetails(projectDocument) {
             },
           }));
         }
-      break;
+        break;
       case "documentList":
         const validFile = checkValidUrl(value);
         if (validFile.isValid == false) {
@@ -126,13 +126,6 @@ export default function ProjectDocumentDetails(projectDocument) {
     }
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
   const handleFileInputChange = (files) => {
     const filesArray = Array.from(files).map((file) => ({
       name: file.name,
@@ -165,22 +158,20 @@ export default function ProjectDocumentDetails(projectDocument) {
   const [projectDocumentTemplates, setProjectDocumentTemplates] = useState([]);
 
   // FETCH DATA
-  const fetchDataFromApi = async () => {
-    const fetchTaskReport = async () => {
-      try {
-        const response = await getTaskReportById(params.reportId);
-        console.log(response);
-        setFormData((prevData) => ({ ...prevData, ...response }));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống");
-      }
-    };
+  const fetchTaskReport = async () => {
+    try {
+      const response = await getTaskReportById(params.reportId, params.id);
+      setFormData((prevData) => ({ ...prevData, ...response }));
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Phân loại công việc' từ hệ thống");
+    }
+  };
 
+  const fetchDataFromApi = async () => {
+    setLoading(true);
     await Promise.all([fetchTaskReport()]);
     setLoading(false);
   };
-
 
   const [formHasError, setFormHasError] = useState(true);
   const [switchSubmit, setSwitchSubmit] = useState(false);
@@ -234,7 +225,6 @@ export default function ProjectDocumentDetails(projectDocument) {
   };
 
   useEffect(() => {
-    fetchDataFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -248,7 +238,13 @@ export default function ProjectDocumentDetails(projectDocument) {
 
     handleSave();
     setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
+
+  useEffect(() => {
+    fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <PageContainer
@@ -256,6 +252,7 @@ export default function ProjectDocumentDetails(projectDocument) {
       description="Chi tiết thiết kế công việc"
     >
       <DetailsPage
+        loading={loading}
         title="Thông tin thiết kế công việc"
         saveMessage="Lưu thông tin thiết kế công việc?"
         onSave={handleSubmit}
@@ -290,29 +287,6 @@ export default function ProjectDocumentDetails(projectDocument) {
             error={formData.unitUsedError.hasError}
             errorLabel={formData.unitUsedError.label}
             onChange={(value) => handleInputChange("unitUsed", value)}
-            startAdornment={
-              <>
-                {task?.unitUsed}
-                <Typography variant="p" sx={{ mx: 1 }}>
-                  +
-                </Typography>
-              </>
-            }
-            endAdornment={
-              <>
-                <Typography variant="p" sx={{ mx: 1 }}>
-                  =
-                </Typography>
-                {task.unitUsed + formData.unitUsed}
-                <Typography variant="p" sx={{ mx: 1 }}>
-                  /
-                </Typography>
-                {task.unitInContract}
-                <Typography variant="p" sx={{ mx: 1 }}>
-                  ({calculationUnitOptions[task?.calculationUnit]})
-                </Typography>
-              </>
-            }
           ></NumberSimpleForm>
         </Grid>
 

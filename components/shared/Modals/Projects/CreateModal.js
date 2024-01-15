@@ -18,7 +18,7 @@ import AutocompleteForm from "../../Forms/Autocomplete";
 import SelectForm from "../../Forms/Select";
 import TextForm from "../../Forms/Text";
 import FormModal from "../../Modals/Form";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 
 const style = {
   position: "absolute",
@@ -43,7 +43,7 @@ export default function CreateProjectModal({ children }) {
     nameError: { hasError: false, label: "" },
     type: 0,
     typeError: { hasError: false, label: "" },
-    status: 0,
+    status: 2,
     statusError: { hasError: false, label: "" },
     language: 0,
     languageError: { hasError: false, label: "" },
@@ -234,23 +234,6 @@ export default function CreateProjectModal({ children }) {
           error={formData.typeError.hasError}
           errorLabel={formData.typeError.label}
           onChange={(value) => handleInputChange("type", value)}
-        ></SelectForm>
-      </Grid>
-
-      {/* PROJECT STATUS */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Trạng thái"
-          required
-          subtitle="Chọn trạng thái của dự án"
-          value={formData.status}
-          options={projectStatusOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn trạng thái"
-          error={formData.statusError.hasError}
-          errorLabel={formData.statusError.label}
-          onChange={(value) => handleInputChange("status", value)}
-          disableOptions={[3, 4, 5, 6, 7, 8]}
         ></SelectForm>
       </Grid>
 

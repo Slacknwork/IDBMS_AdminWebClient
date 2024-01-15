@@ -217,6 +217,7 @@ export default function ProjectDetailsLayout({ children }) {
                     (status, index) =>
                       ![
                         projectStatusIndex.Draft,
+                        projectStatusIndex.PendingConfirmation,
                         projectStatusIndex.Suspended,
                         projectStatusIndex.Canceled,
                       ].includes(index) && (
