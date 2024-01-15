@@ -16,12 +16,13 @@ import TextForm from "/components/shared/Forms/Text";
 import { createFloor } from "/services/floorServices";
 import checkValidField from "/components/validations/field";
 
-export default function CreateFloorModal({ onCreate }) {
+export default function CreateFloorModal({ floorList }) {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const modalOpenQuery = "create";
+
   const [formData, setFormData] = useState({
     floorNo: 0,
     floorNoError: { hasError: false, label: "" },
@@ -32,9 +33,23 @@ export default function CreateFloorModal({ onCreate }) {
     projectId: params.id,
   });
 
+  useEffect(() => {
+    const floorMax = floorList?.reduce(
+      (max, floor) => (floor.floorNo > max ? floor.floorNo : max),
+      -1
+    );
+    console.log(floorMax);
+    handleInputChange("floorNo", floorMax + 1);
+  }, [floorList]);
+
   const handleInputChange = (field, value) => {
     switch (field) {
       case "floorNo":
+        setFormData((prevData) => ({
+          ...prevData,
+          [field]: value,
+        }));
+        break;
       case "usePurpose":
         const result = checkValidField(value);
         if (result.isValid == false) {
@@ -91,42 +106,47 @@ export default function CreateFloorModal({ onCreate }) {
 
   const handleCreate = async () => {
     if (!switchSubmit) return;
-    console.log(formData);
     try {
       const response = await createFloor(formData, params.id);
-      console.log(response);
       toast.success("Thêm thành công!");
       router.push(`/projects/${params.id}/floors/${response.id}`);
     } catch (error) {
-      console.error("Error :", error);
       toast.error("Lỗi!");
     }
   };
 
   // FLOOR NO DISPLAY
-  const [displayedValue, setDisplayedValue] = useState(
-    formData.floorNo === 0 ? "Trệt" : formData.floorNo
-  );
+  const [displayedValue, setDisplayedValue] = useState(0);
+  useEffect(() => {
+    setDisplayedValue(
+      formData.floorNo === 0
+        ? "Trệt"
+        : formData.floorNo < 0
+        ? `B${-formData.floorNo}`
+        : formData.floorNo.toString()
+    );
+  }, [formData]);
+
+  const floorExists = (floorNo) => {
+    return floorList.find((floor) => floorNo === floor.floorNo);
+  };
 
   const handleFloorIncrement = (incrementBy) => {
-    const newValue = formData.floorNo + incrementBy;
+    let newValue = formData.floorNo + Number(incrementBy);
+    while (floorExists(newValue)) {
+      newValue++;
+    }
     handleInputChange("floorNo", newValue);
-    setDisplayedValue(newValue);
   };
 
   const handleFloorDecrement = (decrementBy) => {
-    if (formData.floorNo > 0) {
-      const newValue = Math.max(0, formData.floorNo - decrementBy);
-
-      if (newValue === 0) {
-        handleInputChange("floorNo", newValue);
-        setDisplayedValue("Trệt");
-      } else {
-        handleInputChange("floorNo", newValue.toString());
-        setDisplayedValue(newValue.toString());
-      }
+    let newValue = formData.floorNo - Number(decrementBy);
+    while (floorExists(newValue)) {
+      newValue--;
     }
+    handleInputChange("floorNo", newValue);
   };
+
   useEffect(() => {
     if (!switchSubmit) return;
 
@@ -149,10 +169,9 @@ export default function CreateFloorModal({ onCreate }) {
       isOpen={openModal}
       setOpenModal={setOpenModal}
       buttonLabel="Tạo"
-      title="Tạo loại phòng"
+      title="Tạo tầng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
-      size="big"
       disableCloseOnSubmit
     >
       {/* FLOOR NO */}
@@ -168,7 +187,9 @@ export default function CreateFloorModal({ onCreate }) {
               <Grid container spacing={1} alignItems="center">
                 <Grid item style={{ alignSelf: "center" }}>
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    disableElevation
+                    color="error"
                     onClick={() => handleFloorDecrement(10)}
                   >
                     -10
@@ -176,7 +197,9 @@ export default function CreateFloorModal({ onCreate }) {
                 </Grid>
                 <Grid item style={{ alignSelf: "center" }}>
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    disableElevation
+                    color="error"
                     onClick={() => handleFloorDecrement(1)}
                   >
                     -1
@@ -185,7 +208,6 @@ export default function CreateFloorModal({ onCreate }) {
                 <Grid item xs={2.7} lg={2.5}>
                   <TextField
                     error={formData.floorNoError.hasError}
-                    variant="outlined"
                     value={displayedValue}
                     helperText={formData.floorNoError.label}
                     onChange={(e) => setDisplayedValue(e.target.value)}
@@ -195,7 +217,8 @@ export default function CreateFloorModal({ onCreate }) {
                 </Grid>
                 <Grid item style={{ alignSelf: "center" }}>
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    disableElevation
                     onClick={() => handleFloorIncrement(1)}
                   >
                     +1
@@ -203,7 +226,8 @@ export default function CreateFloorModal({ onCreate }) {
                 </Grid>
                 <Grid item style={{ alignSelf: "center" }}>
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    disableElevation
                     onClick={() => handleFloorIncrement(10)}
                   >
                     +10
@@ -216,7 +240,7 @@ export default function CreateFloorModal({ onCreate }) {
       </Grid>
 
       {/* USE PURPOSE */}
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={12}>
         <TextForm
           title="Công dụng"
           required
@@ -229,9 +253,11 @@ export default function CreateFloorModal({ onCreate }) {
       </Grid>
 
       {/* DESCRIPTION */}
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={12}>
         <TextForm
           title="Mô tả"
+          multiline
+          rows={4}
           subtitle="Nhập mô tả"
           value={formData.description}
           error={formData.descriptionError.hasError}

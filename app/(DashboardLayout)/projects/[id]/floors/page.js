@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -20,6 +21,9 @@ import { useParams, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
 import { getFloorsByProjectId } from "/services/floorServices";
+
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import CreateFloorModal from "/components/shared/Modals/Floors/CreateModal";
 import Pagination from "/components/shared/Pagination";
@@ -54,6 +58,10 @@ export default function FloorsPage() {
   const defaultPageSize = 5;
 
   // INIT
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
+
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -62,8 +70,7 @@ export default function FloorsPage() {
   const [values, setValues] = useState([]);
   const [count, setCount] = useState(0);
 
-  const fetchDataFromApi = async () => {
-    setLoading(true);
+  const fetchFloors = async () => {
     try {
       const projectId = params.id;
       const search = searchParams.get(searchQuery) ?? "";
@@ -78,17 +85,30 @@ export default function FloorsPage() {
       });
       setValues(data.list);
       setCount(data.totalItem);
-      setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu 'Tầng' từ hệ thống");
     }
+  };
+
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    await Promise.all([fetchFloors()]);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchDataFromApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+  }, [participationRole?.role, user?.role]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -97,7 +117,9 @@ export default function FloorsPage() {
         <Box>
           <Search placeholder="Nhập số tầng / mục đích"></Search>
         </Box>
-        <CreateFloorModal>Tạo</CreateFloorModal>
+        {isManager && (
+          <CreateFloorModal floorList={values}>Tạo</CreateFloorModal>
+        )}
       </Box>
       <Box></Box>
       {loading ? (
@@ -137,7 +159,11 @@ export default function FloorsPage() {
               <StyledTableRow key={floor.id}>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={800}>
-                    {floor.floorNo === 0 ? "Trệt" : floor.floorNo}
+                    {floor.floorNo === 0
+                      ? "Trệt"
+                      : floor.floorNo < 0
+                      ? `B${-floor.floorNo}`
+                      : floor.floorNo}
                   </Typography>
                 </TableCell>
                 <TableCell>

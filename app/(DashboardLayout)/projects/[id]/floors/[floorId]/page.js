@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Button,
   Card,
@@ -9,11 +9,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import {
   getFloorsById,
+  getFloorsByProjectId,
   updateFloor,
   deleteFloorById,
 } from "/services/floorServices";
@@ -86,8 +87,8 @@ export default function FloorDetailsPage() {
     }));
   };
 
+  const [floors, setFloors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
   const [rooms, setRooms] = useState([]);
   const [total, setTotal] = useState(0);
 
@@ -101,21 +102,45 @@ export default function FloorDetailsPage() {
     setSwitchSubmit(true);
   };
 
-  const fetchDataFromApi = async () => {
-    if (!initialized.current) {
-      initialized.current = true;
-      try {
-        const response = await getFloorsById(params.floorId, params.id);
-        console.log(response);
-        mapData(response);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Lỗi nạp dữ liệu 'Tầng' từ hệ thống");
-      }
+  const fetchFloorDetails = async () => {
+    try {
+      const projectId = params.id;
+      const response = await getFloorsById(params.floorId, projectId);
+      mapData(response);
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Tầng' từ hệ thống");
     }
   };
-  const [displayedValue, setDisplayedValue] = useState("");
+
+  const fetchFloorList = async () => {
+    try {
+      const projectId = params.id;
+      const floors = await getFloorsByProjectId({
+        projectId,
+      });
+      setFloors(floors.list);
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Danh sách tầng' từ hệ thống");
+    }
+  };
+
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    await Promise.all([fetchFloorList(), fetchFloorDetails()]);
+    setLoading(false);
+  };
+
+  // FLOOR NO DISPLAY
+  const [displayedValue, setDisplayedValue] = useState(0);
+  useEffect(() => {
+    setDisplayedValue(
+      formData.floorNo === 0
+        ? "Trệt"
+        : formData.floorNo < 0
+        ? `B${-formData.floorNo}`
+        : formData.floorNo.toString()
+    );
+  }, [formData]);
 
   const mapData = (data) => {
     if (data) {
@@ -138,23 +163,24 @@ export default function FloorDetailsPage() {
     }
   };
 
+  const floorExists = (floorNo) => {
+    return floors.find((floor) => floorNo === floor.floorNo);
+  };
+
   const handleFloorIncrement = (incrementBy) => {
-    const newValue = formData.floorNo + incrementBy;
+    let newValue = formData.floorNo + Number(incrementBy);
+    while (floorExists(newValue)) {
+      newValue++;
+    }
     handleInputChange("floorNo", newValue);
-    setDisplayedValue(newValue);
   };
 
   const handleFloorDecrement = (decrementBy) => {
-    if (formData.floorNo > 0) {
-      const newValue = Math.max(0, formData.floorNo - decrementBy);
-      if (newValue === 0) {
-        handleInputChange("floorNo", newValue);
-        setDisplayedValue("Trệt");
-      } else {
-        handleInputChange("floorNo", newValue.toString());
-        setDisplayedValue(newValue.toString());
-      }
+    let newValue = formData.floorNo - Number(decrementBy);
+    while (floorExists(newValue)) {
+      newValue--;
     }
+    handleInputChange("floorNo", newValue);
   };
 
   const onSaveFloor = async () => {
@@ -180,7 +206,6 @@ export default function FloorDetailsPage() {
   };
 
   useEffect(() => {
-    fetchDataFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -196,12 +221,17 @@ export default function FloorDetailsPage() {
     setSwitchSubmit(false);
   }, [switchSubmit]);
 
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
   return (
     <PageContainer
       title="Thông tin tầng"
       description="Thông tin chi tiết về tầng"
     >
       <DetailsPage
+        loading={loading}
         title="Thông tin tầng"
         saveMessage="Lưu thông tin tầng?"
         onSave={handleSubmit}
