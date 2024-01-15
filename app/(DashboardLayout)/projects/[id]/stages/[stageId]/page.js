@@ -63,7 +63,6 @@ export default function StageOverview() {
       case "isWarrantyStage":
       case "pricePercentage":
         const result = checkValidField(value);
-
         if (result?.isValid === false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -98,25 +97,22 @@ export default function StageOverview() {
       default:
     }
   };
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
 
-  const fetchDataFromApi = async () => {
+  const fetchStage = async () => {
     try {
-      setLoading(true);
       const stage = await getPaymentStagesById(params.stageId, params.id);
       setFormData((prevData) => ({ ...prevData, ...stage }));
       setPageName(stage.name);
       setPageDescription(stage.description);
-      setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
       toast.error("Lỗi nạp dữ liệu 'Giai đoạn thanh toán' từ hệ thống");
     }
+  };
+
+  const fetchDataFromApi = async () => {
+    setLoading(true);
+    await Promise.all([fetchStage()]);
+    setLoading(false);
   };
 
   const [formHasError, setFormHasError] = useState(true);
@@ -147,7 +143,6 @@ export default function StageOverview() {
       toast.success("Xóa thành công!");
       router.push(`/projects/${params.id}/stages`);
     } catch (error) {
-      console.error("Error fetching data:", error);
       toast.error("Lỗi!");
     }
   };
@@ -155,7 +150,6 @@ export default function StageOverview() {
   // FETCH DATA FROM API
   useEffect(() => {
     if (!switchSubmit) return;
-    console.log();
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
 
@@ -188,6 +182,7 @@ export default function StageOverview() {
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        loading={loading}
         title="Thông tin giai đoạn"
         saveMessage="Lưu thông tin giai đoạn?"
         onSave={handleSubmit}

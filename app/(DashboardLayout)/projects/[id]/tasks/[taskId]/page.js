@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import { getAllTaskCategories } from "/services/taskCategoryServices";
 import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
@@ -30,6 +33,9 @@ import checkValidField from "/components/validations/field";
 
 export default function TaskOverviewPage() {
   const params = useParams();
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
 
   const projectId = params.id;
   const taskId = params.taskId;
@@ -109,7 +115,6 @@ export default function TaskOverviewPage() {
       case "startedDate":
       case "estimateBusinessDay":
       case "unitUsed":
-      case "isIncurred":
       case "parentTaskId":
       case "taskDesignId":
       case "taskCategoryId":
@@ -243,11 +248,23 @@ export default function TaskOverviewPage() {
 
     onSaveTask();
     setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
 
   useEffect(() => {
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participationRole?.role, user?.role]);
 
   return (
     <PageContainer title="Task Details" description="Details of the task">
@@ -255,6 +272,7 @@ export default function TaskOverviewPage() {
         title="Thông tin công việc"
         saveMessage="Lưu thông tin công việc?"
         onSave={handleSubmit}
+        hideSave={!isManager}
         loading={loading}
       >
         <Grid item xs={12} lg={12}>
@@ -264,6 +282,7 @@ export default function TaskOverviewPage() {
               <TextForm
                 title="Tên"
                 required
+                disabled={!isManager}
                 titleSpan={3}
                 fieldSpan={9}
                 subtitle="Nhập tên giai đoạn"
@@ -280,6 +299,7 @@ export default function TaskOverviewPage() {
                 title="Đơn vị tính"
                 titleSpan={6}
                 fieldSpan={6}
+                disabled={!isManager}
                 required
                 spacing={5}
                 subtitle="Đơn vị tính của công việc"
@@ -300,6 +320,7 @@ export default function TaskOverviewPage() {
               <NumberForm
                 title="Đơn giá"
                 required
+                disabled={!isManager}
                 titleSpan={6}
                 fieldSpan={6}
                 subtitle="Đơn giá trên một đơn vị tính"
@@ -316,6 +337,7 @@ export default function TaskOverviewPage() {
               <NumberSimpleForm
                 title="KL Hợp đồng"
                 required
+                disabled={!isManager}
                 titleSpan={6}
                 fieldSpan={6}
                 spacing={5}
@@ -339,6 +361,7 @@ export default function TaskOverviewPage() {
                 title="Danh mục"
                 titleSpan={6}
                 fieldSpan={6}
+                disabled={!isManager}
                 subtitle="Chọn danh mục công việc"
                 value={formData.taskCategoryId}
                 options={taskCategories}
@@ -358,6 +381,7 @@ export default function TaskOverviewPage() {
                 required
                 titleSpan={6}
                 fieldSpan={6}
+                disabled={!isManager}
                 spacing={5}
                 subtitle="Ngày bắt đầu thực hiện công việc"
                 value={formData.startedDate}
@@ -374,6 +398,7 @@ export default function TaskOverviewPage() {
                 title="Ngày kết thúc"
                 titleSpan={6}
                 fieldSpan={6}
+                disabled={!isManager}
                 subtitle="Ngày hoàn thành công việc"
                 value={formData.endDate}
                 error={formData.endDateError.hasError}
@@ -389,6 +414,7 @@ export default function TaskOverviewPage() {
                 titleSpan={6}
                 fieldSpan={6}
                 spacing={5}
+                disabled={!isManager}
                 subtitle="Chọn giai đoạn cho công việc này"
                 value={formData.paymentStageId}
                 options={stages}
@@ -407,6 +433,7 @@ export default function TaskOverviewPage() {
                 titleSpan={6}
                 fieldSpan={6}
                 required
+                disabled={!isManager}
                 subtitle="Trạng thái của công việc"
                 value={formData.status}
                 options={projectTaskStatusOptions}
@@ -424,6 +451,7 @@ export default function TaskOverviewPage() {
                 title="Phòng"
                 titleSpan={3}
                 fieldSpan={9}
+                disabled={!isManager}
                 groupBy="floorUsePurpose"
                 subtitle="Chọn phòng của công việc này"
                 value={formData.roomId}
@@ -442,6 +470,7 @@ export default function TaskOverviewPage() {
                 title="Công việc phụ thuộc"
                 titleSpan={3}
                 fieldSpan={9}
+                disabled={!isManager}
                 subtitle="Chọn công việc phụ thuộc"
                 value={formData.parentTaskId}
                 options={tasks}
@@ -462,6 +491,7 @@ export default function TaskOverviewPage() {
                 rows={4}
                 titleSpan={3}
                 fieldSpan={9}
+                disabled={!isManager}
                 subtitle="Mô tả công việc"
                 value={formData.description}
                 error={formData.descriptionError.hasError}
