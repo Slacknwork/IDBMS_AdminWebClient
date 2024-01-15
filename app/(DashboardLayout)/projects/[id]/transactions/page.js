@@ -32,27 +32,10 @@ import Search from "/components/shared/Search";
 import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
 import { getTransactionsByProjectId } from "/services/transactionServices";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import { useSelector } from "react-redux";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
-// Sample transaction data
-const transactions = [
-  {
-    id: "1",
-    type: 1,
-    amount: 1000,
-    createdDate: "2023-01-01",
-    user: { id: "1", name: "John Doe" },
-    status: 0,
-  },
-  {
-    id: "2",
-    type: 2,
-    amount: 500,
-    createdDate: "2023-02-01",
-    user: { id: "2", name: "Jane Doe" },
-    status: 1,
-  },
-  // Add more transaction objects as needed
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,6 +56,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function Transactions() {
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participation = data?.projectRole;
+
   const searchQuery = "search";
 
   const typeQuery = "type";
@@ -138,6 +125,12 @@ export default function Transactions() {
     fetchDataFromApi();
   };
 
+  const [isManageProjectAuthorized, setIsManageProjectAuthorized] = useState(false);
+  useEffect(() => {
+    setIsManageProjectAuthorized(user?.role === companyRoleConstants.ADMIN ||
+      participation?.role === participationRoleIndex.ProjectManager);
+  }, [user?.role, participation?.role]);
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -160,9 +153,12 @@ export default function Transactions() {
             allLabel="Tất cả"
           ></FilterComponent>
         </Box>
-        <TransactionModal success={handleModalResult}>
-          <span>Tạo</span>
-        </TransactionModal>
+
+        {isManageProjectAuthorized && (
+          <TransactionModal success={handleModalResult}>
+          </TransactionModal>
+        )}
+
       </Box>
       {/* Table */}
       {(transactions && transactions.length) > 0 ? (

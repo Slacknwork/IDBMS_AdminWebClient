@@ -20,6 +20,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+  const [responseTextColor, setResponseTextColor] = useState("red");
 
   const [response, setResponse] = useState({
     message: "",
@@ -45,8 +47,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     try {
       const response = await loginAdmin(request);
       setResponse(response);
+      setResponseMessage("Đăng nhập thành công! Vui lòng kiểm tra email để xác minh!")
+      setResponseTextColor("green")
     } catch (error) {
       console.error("Error :", error);
+      setResponseMessage("Đăng nhập thất bại! Vui lòng kiểm tra tên đăng nhập và mật khẩu!")
     }
   };
 
@@ -89,8 +94,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             onChange={handlePasswordChange}
           />
         </FormControl>
-
-        <Typography fontWeight="500">{response.message ?? ""}</Typography>
+        <Typography fontWeight="500" style={{ color: responseTextColor }}>{responseMessage}</Typography>
 
         <Stack
           justifyContent="space-between"

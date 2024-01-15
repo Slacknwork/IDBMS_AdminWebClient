@@ -43,6 +43,8 @@ import DeleteModal from "/components/shared/Modals/Participations/DeleteModal";
 import UpdateParticipationModal from "/components/shared/Modals/Participations/UpdateParticipationModal";
 import CreateNotificationModalForProject from "/components/shared/Modals/Notifications/CreateModalForProject";
 import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal";
+import { companyRoleConstants } from "/constants/enums/companyRole";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -64,6 +66,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // Component for displaying comments
 export default function Comments() {
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participation = data?.projectRole;
+
   // CONSTANTS
   const searchQuery = "search";
 
@@ -80,7 +86,6 @@ export default function Comments() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const data = useSelector((state) => state.data);
   const project = data?.project;
 
   // PARTICIPATIONS
@@ -182,6 +187,11 @@ export default function Comments() {
     fetchDataFromApi();
   };
 
+  const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
+  useEffect(() => {
+    setIsAdminAuthorized(user?.role === companyRoleConstants.ADMIN);
+  }, [user?.role]);
+
   return (
     <Box sx={{ overflow: "auto" }}>
       <Grid container spacing={4}>
@@ -210,17 +220,19 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <UpdateParticipationModal
-                  participationId={projectOwner?.id}
-                  participationRole={participationRoleIndex.ProductOwner}
-                  currentUserId={projectOwner?.user?.id}
-                  users={users}
-                  loading={usersLoading}
-                  search={userSearch}
-                  setSearch={setUserSearch}
-                  handleOpen={() => onOpenModal(companyRoleIndex.Customer)}
-                  success={handleModalResult}
-                />
+                {isAdminAuthorized && (
+                  <UpdateParticipationModal
+                    participationId={projectOwner?.id}
+                    participationRole={participationRoleIndex.ProductOwner}
+                    currentUserId={projectOwner?.user?.id}
+                    users={users}
+                    loading={usersLoading}
+                    search={userSearch}
+                    setSearch={setUserSearch}
+                    handleOpen={() => onOpenModal(companyRoleIndex.Customer)}
+                    success={handleModalResult}
+                  />
+                )}
               </Box>
             </Box>
           </Card>
@@ -250,17 +262,19 @@ export default function Comments() {
             </Box>
             <Box borderColor="primary.main" padding={2}>
               <Box display="flex" alignItems="center">
-                <UpdateParticipationModal
-                  participationId={projectManager?.id}
-                  participationRole={participationRoleIndex.ProjectManager}
-                  currentUserId={projectManager?.user?.id}
-                  users={users}
-                  loading={usersLoading}
-                  search={userSearch}
-                  setSearch={setUserSearch}
-                  handleOpen={() => onOpenModal((project?.type ?? 0) + 1)}
-                  success={handleModalResult}
-                />
+                {isAdminAuthorized && (
+                  <UpdateParticipationModal
+                    participationId={projectManager?.id}
+                    participationRole={participationRoleIndex.ProjectManager}
+                    currentUserId={projectManager?.user?.id}
+                    users={users}
+                    loading={usersLoading}
+                    search={userSearch}
+                    setSearch={setUserSearch}
+                    handleOpen={() => onOpenModal((project?.type ?? 0) + 1)}
+                    success={handleModalResult}
+                  />
+                )}
               </Box>
             </Box>
           </Card>
@@ -285,9 +299,13 @@ export default function Comments() {
           ></FilterComponent>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <CreateNotificationModalForProject success={handleModalResult}>
-            Gửi thông báo
-          </CreateNotificationModalForProject>
+
+          {isAdminAuthorized && (
+            <CreateNotificationModalForProject success={handleModalResult}>
+              Gửi thông báo
+            </CreateNotificationModalForProject>
+          )}
+
           <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult}>
             Tạo
           </CreateParticipationModal>
