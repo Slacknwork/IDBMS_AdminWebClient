@@ -27,6 +27,7 @@ import stageStatusOptions, {
 } from "/constants/enums/stageStatus";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 import { participationRoleIndex } from "/constants/enums/participationRole";
+import timezone from "/constants/timezone";
 
 import {
   getPaymentStagesByProjectIdWithAllowedAction,
@@ -77,12 +78,12 @@ export default function PaymentStages() {
   // INIT
   const user = useSelector((state) => state.user);
   const data = useSelector((state) => state.data);
-  const projectRole = data?.projectRole;
+  const participationRole = data?.projectRole;
 
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+  moment.tz.setDefault(timezone.momentDefault);
 
   // FETCH DATA FROM API
   const [stages, setStages] = useState([]);
@@ -130,9 +131,9 @@ export default function PaymentStages() {
   //STAGE STATUS HANDLE
   const handleStartStage = async (stageId) => {
     try {
-      const response = await startPaymentStage(stageId, params.id);
+      await startPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi();
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -141,9 +142,9 @@ export default function PaymentStages() {
 
   const handleCloseStage = async (stageId) => {
     try {
-      const response = await endPaymentStage(stageId, params.id);
+      await endPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi();
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -152,14 +153,23 @@ export default function PaymentStages() {
 
   const handleSuspendedStage = async (stageId) => {
     try {
-      const response = await suspendPaymentStage(stageId, params.id);
+      await suspendPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
-      fetchDataFromApi();
+      await fetchDataFromApi();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
     }
   };
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+  }, [participationRole?.role, user?.role]);
 
   return (
     <Box sx={{ zIndex: 1 }}>
@@ -174,17 +184,18 @@ export default function PaymentStages() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        <Box sx={{ display: "flex" }}>
-          {!loading &&
-            stages?.length === 0 &&
-            (projectRole?.role === participationRoleIndex.ProjectManager ||
-              user.role === companyRoleConstants.ADMIN) && (
+        {isManager && (
+          <Box sx={{ display: "flex" }}>
+            {!loading && stages?.length === 0 && (
               <MapProjectDesignModal
                 success={fetchDataFromApi}
               ></MapProjectDesignModal>
             )}
-          <CreateStageModal success={handleModalResult}>Thêm</CreateStageModal>
-        </Box>
+            <CreateStageModal success={handleModalResult}>
+              Thêm
+            </CreateStageModal>
+          </Box>
+        )}
       </Box>
       {/* Table */}
       {loading ? (

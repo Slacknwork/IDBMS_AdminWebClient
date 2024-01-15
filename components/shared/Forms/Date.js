@@ -7,6 +7,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment-timezone";
 
+import colors from "/constants/color";
+
 export default function DateForm({
   sx,
   titleSpan = 4,
@@ -58,6 +60,11 @@ export default function DateForm({
             dateLibInstance={moment}
           >
             <DatePicker
+              sx={{
+                "& .MuiInputBase-input.Mui-disabled": {
+                  WebkitTextFillColor: colors.disabledFormText,
+                },
+              }}
               disabled={disabled}
               type={datetime ? "datetime-local" : "date"}
               format="DD/MM/YYYY"

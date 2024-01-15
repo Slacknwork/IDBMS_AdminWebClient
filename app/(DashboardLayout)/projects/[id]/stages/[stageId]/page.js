@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import moment from "moment-timezone";
 import stageStatusOptions from "/constants/enums/stageStatus";
 import { Card, Grid, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 import {
   getPaymentStagesById,
@@ -13,12 +14,15 @@ import {
   deletePaymentStage,
 } from "/services/paymentStageServices";
 
+import timezone from "/constants/timezone";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import { companyRoleConstants } from "/constants/enums/companyRole";
+
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
-import NumberForm from "/components/shared/Forms/Number";
 import SelectForm from "/components/shared/Forms/Select";
 
 import checkValidField from "/components/validations/field";
@@ -26,7 +30,11 @@ import checkValidField from "/components/validations/field";
 export default function StageOverview() {
   const params = useParams();
   const router = useRouter();
-  moment.tz.setDefault("Asia/Ho_Chi_Minh");
+  moment.tz.setDefault(timezone.momentDefault);
+
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -159,11 +167,23 @@ export default function StageOverview() {
 
     onSaveStage();
     setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
 
   useEffect(() => {
     fetchDataFromApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participationRole?.role, user?.role]);
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
@@ -171,7 +191,8 @@ export default function StageOverview() {
         title="Thông tin giai đoạn"
         saveMessage="Lưu thông tin giai đoạn?"
         onSave={handleSubmit}
-        hasDelete
+        hasDelete={isManager}
+        hideSave={!isManager}
         deleteMessage="Xóa giai đoạn?"
         onDelete={onDeleteStage}
       >
@@ -180,6 +201,7 @@ export default function StageOverview() {
             {/* NAME */}
             <Grid item xs={12} lg={12}>
               <TextForm
+                disabled={!isManager}
                 title="Tên"
                 required
                 subtitle="Nhập tên giai đoạn"
@@ -193,6 +215,7 @@ export default function StageOverview() {
             {/* END TIME PAYMENT */}
             <Grid item xs={12} lg={12}>
               <DateForm
+                disabled={!isManager}
                 datetime
                 title="Hạn chót thanh toán"
                 subtitle="Hạn chót thanh toán cho giai đoạn này"
@@ -206,6 +229,7 @@ export default function StageOverview() {
             {/* IS WARRANTY PAID */}
             <Grid item xs={12} lg={12}>
               <CheckboxForm
+                disabled={!isManager}
                 title="Giai đoạn bảo hành"
                 subtitle="Check vào ô nếu là giai đoạn bảo hành"
                 required
@@ -219,6 +243,7 @@ export default function StageOverview() {
             {/* IS PREPAID */}
             <Grid item xs={12} lg={12}>
               <CheckboxForm
+                disabled={!isManager}
                 title="Phải trả trước"
                 subtitle="Check nếu phải thanh toán trước khi bắt đầu"
                 required
@@ -250,6 +275,7 @@ export default function StageOverview() {
             <Grid item xs={12} lg={12}>
               <TextForm
                 title="Mô tả"
+                disabled={!isManager}
                 multiline
                 rows={4}
                 subtitle="Mô tả sơ lược giai đoạn"
