@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
+import colors from "/constants/color";
+
 const formatNumberWithDots = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -67,6 +69,11 @@ export default function FormNumber({
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
           <TextField
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: colors.disabledFormText,
+              },
+            }}
             disabled={disabled}
             variant={variant}
             value={valueString}

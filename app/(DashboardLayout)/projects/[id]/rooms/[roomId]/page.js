@@ -14,19 +14,28 @@ import {
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 import { getRoomById, updateRoom, deleteRoom } from "/services/roomServices";
 import { getAllRoomTypes } from "/services/roomTypeServices";
 
+import locales from "/constants/locales";
+import { companyRoleConstants } from "/constants/enums/companyRole";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
 import TextForm from "/components/shared/Forms/Text";
+import NumberForm from "/components/shared/Forms/Number";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import checkValidField from "/components/validations/field";
 
 export default function RoomDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participationRole = data?.projectRole;
 
   const [formData, setFormData] = useState({
     usePurpose: "",
@@ -106,33 +115,33 @@ export default function RoomDetailsPage() {
   const [total, setTotal] = useState(0);
   const [roomtypes, setRoomTypes] = useState([]);
 
+  const fetchRooms = async () => {
+    try {
+      const data = await getRoomById(params.roomId, params.id);
+      setFormData((prevData) => ({ ...prevData, ...data }));
+      setTotal(
+        data?.tasks?.reduce(
+          (acc, task) => acc + task.pricePerUnit * task.unitInContract,
+          0
+        )
+      );
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Phòng' từ hệ thống");
+      console.log(error);
+    }
+  };
+  const fetchRoomTypes = async () => {
+    try {
+      const rts = await getAllRoomTypes({});
+      setRoomTypes(rts.list);
+    } catch (error) {
+      toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
+      console.log(error);
+    }
+  };
+
   const fetchDataFromApi = async () => {
     setLoading(true);
-
-    const fetchRooms = async () => {
-      try {
-        const data = await getRoomById(params.roomId, params.id);
-        setFormData((prevData) => ({ ...prevData, ...data }));
-        setTotal(
-          data?.tasks?.reduce(
-            (acc, task) => acc + task.pricePerUnit * task.unitInContract,
-            0
-          )
-        );
-      } catch (error) {
-        toast.error("Lỗi nạp dữ liệu 'Phòng' từ hệ thống");
-        console.log(error);
-      }
-    };
-    const fetchRoomTypes = async () => {
-      try {
-        const rts = await getAllRoomTypes({});
-        setRoomTypes(rts.list);
-      } catch (error) {
-        toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
-        console.log(error);
-      }
-    };
     await Promise.all([fetchRooms(), fetchRoomTypes()]);
     setLoading(false);
   };
@@ -149,7 +158,7 @@ export default function RoomDetailsPage() {
 
   const onDeleteRoom = async () => {
     try {
-      const response = await deleteRoom(params.roomId, params.id);
+      await deleteRoom(params.roomId, params.id);
       toast.success("Xoá thành công!");
       router.push(`/projects/${params.id}/floors/${params.floorId}/rooms`);
     } catch (error) {
@@ -160,11 +169,7 @@ export default function RoomDetailsPage() {
 
   const onSaveRoom = async () => {
     try {
-      const response = await updateRoom(
-        params.roomId ?? "",
-        formData,
-        params.id
-      );
+      await updateRoom(params.roomId ?? "", formData, params.id);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
@@ -174,7 +179,6 @@ export default function RoomDetailsPage() {
   };
 
   useEffect(() => {
-    fetchDataFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -188,7 +192,22 @@ export default function RoomDetailsPage() {
 
     onSaveRoom();
     setSwitchSubmit(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [switchSubmit]);
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [participationRole?.role, user?.role]);
 
   return (
     <PageContainer
@@ -214,7 +233,8 @@ export default function RoomDetailsPage() {
             title="Thông tin phòng"
             saveMessage="Lưu thông tin phòng?"
             onSave={handleSubmit}
-            hasDelete
+            hasDelete={isManager}
+            hideSave={!isManager}
             deleteMessage="Xoá phỏng?"
             onDelete={onDeleteRoom}
           >
@@ -225,6 +245,7 @@ export default function RoomDetailsPage() {
                   <TextForm
                     title="Mục đích"
                     required
+                    disabled={!isManager}
                     subtitle="Mô đích sử dụng của tầng"
                     value={formData.usePurpose}
                     error={formData.usePurposeError.hasError}
@@ -243,6 +264,7 @@ export default function RoomDetailsPage() {
                     inputProps={{
                       min: 0,
                     }}
+                    disabled={!isManager}
                     subtitle="Tổng diện tích của phòng"
                     value={formData.area}
                     error={formData.areaError.hasError}
@@ -258,62 +280,16 @@ export default function RoomDetailsPage() {
 
                 {/* PRICE PER AREA */}
                 <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        Đơn giá / diện tích
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          variant="outlined"
-                          value={formData.pricePerArea?.toLocaleString("en-US")}
-                          error={formData.pricePerAreaError.hasError}
-                          helperText={formData.pricePerAreaError.label}
-                          disabled
-                          onChange={(e) =>
-                            handleInputChange("pricePerArea", e.target.value)
-                          }
-                          InputProps={{
-                            style: {
-                              backgroundColor: "#EFEFEF",
-                            },
-                            endAdornment: "VND/m²",
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                {/* PRICE PER AREA */}
-                <Grid item xs={12} lg={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={4} lg={4}>
-                      <Typography variant="h5">
-                        Trạng thái
-                        <span style={{ color: "red" }}>*</span>
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={8} lg={8}>
-                      <FormControl fullWidth>
-                        <TextField
-                          variant="outlined"
-                          disabled
-                          value={
-                            formData.isHidden ? "Đang ẩn" : "Đang hoạt động"
-                          }
-                          InputProps={{
-                            style: {
-                              backgroundColor: "#EFEFEF",
-                            },
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
+                  <NumberForm
+                    title="Đơn giá"
+                    disabled
+                    subtitle="Đơn giá trên 1 đơn vị diện tích của phòng"
+                    value={formData.pricePerArea?.toLocaleString(locales.viVN)}
+                    error={formData.pricePerAreaError.hasError}
+                    errorLabel={formData.pricePerAreaError.label}
+                    onChange={() => {}}
+                    endAdornment={"VND/m²"}
+                  ></NumberForm>
                 </Grid>
 
                 {/* ROOM TYPE */}
@@ -321,13 +297,13 @@ export default function RoomDetailsPage() {
                   <Grid container spacing={2}>
                     <Grid item xs={4} lg={4}>
                       <Typography variant="h5">
-                        Loại phòng
-                        <span style={{ color: "red" }}>*</span>
+                        Loại phòng<span style={{ color: "red" }}>*</span>
                       </Typography>
                     </Grid>
                     <Grid item xs={8} lg={8}>
                       <FormControl fullWidth>
                         <TextField
+                          disabled={!isManager}
                           select
                           variant="outlined"
                           value={formData.roomTypeId}
@@ -350,6 +326,7 @@ export default function RoomDetailsPage() {
                 {/* DESCRIPTION */}
                 <Grid item xs={12} lg={12}>
                   <TextForm
+                    disabled={!isManager}
                     title="Mô tả"
                     multiline
                     rows={4}

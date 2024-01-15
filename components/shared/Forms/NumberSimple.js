@@ -1,5 +1,3 @@
-"use client";
-
 import {
   FormControl,
   Grid,
@@ -7,6 +5,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+
+import colors from "/constants/color";
 
 export default function FormNumberSimple({
   sx,
@@ -40,6 +40,11 @@ export default function FormNumberSimple({
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
         <FormControl fullWidth>
           <TextField
+            sx={{
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: colors.disabledFormText,
+              },
+            }}
             type="number"
             inputProps={inputProps}
             disabled={disabled}
