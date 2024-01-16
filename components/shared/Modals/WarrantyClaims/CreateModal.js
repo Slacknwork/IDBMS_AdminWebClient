@@ -82,7 +82,7 @@ export default function CreateWarrantyClaimModal({ success }) {
           maxLength: 50,
           required: true
         });
-        console.log(result)
+
         break;
       case "totalPaid":
         result = checkValidField({
@@ -143,13 +143,13 @@ export default function CreateWarrantyClaimModal({ success }) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
 
   const handleCreate = async () => {
-    if (!switchSubmit || formHasError) return;
+    if (!switchSubmit) return;
     try {
       const response = await createWarrantyClaim(formData);
       toast.success("Thêm thành công!");
@@ -166,7 +166,7 @@ export default function CreateWarrantyClaimModal({ success }) {
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
-    console.log(formData)
+
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
       setSwitchSubmit(false);
