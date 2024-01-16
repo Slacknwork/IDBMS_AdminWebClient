@@ -30,6 +30,9 @@ import FilterComponent from "/components/shared/FilterStatus";
 import { toast } from "react-toastify";
 import { getWarrantyClaimsByProjectId } from "/services/warrantyClaimServices";
 import { set } from "lodash";
+import { participationRoleIndex } from "/constants/enums/participationRole";
+import { useSelector } from "react-redux";
+import { companyRoleConstants } from "/constants/enums/companyRole";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,6 +55,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const isCompanyCoverOptions = ["Khách hàng", "Công ty"];
 
 export default function WarrantyClaims() {
+  const user = useSelector((state) => state.user);
+  const data = useSelector((state) => state.data);
+  const participation = data?.projectRole;
+
   const searchQuery = "search";
 
   const isCompanyCoverQuery = "isCompanyCover";
@@ -82,8 +89,8 @@ export default function WarrantyClaims() {
         searchParams.get(isCompanyCoverQuery) === "1"
           ? true
           : searchParams.get(isCompanyCoverQuery) === null
-          ? ""
-          : false;
+            ? ""
+            : false;
       const pageNo = parseInt(searchParams.get(pageQuery)) || defaultPage;
       const pageSize =
         parseInt(searchParams.get(pageSizeQuery)) || defaultPageSize;
@@ -117,6 +124,12 @@ export default function WarrantyClaims() {
     fetchDataFromApi();
   };
 
+  const [isManageProjectAuthorized, setIsManageProjectAuthorized] = useState(false);
+  useEffect(() => {
+    setIsManageProjectAuthorized(user?.role === companyRoleConstants.ADMIN ||
+      participation?.role === participationRoleIndex.ProjectManager);
+  }, [user?.role, participation?.role]);
+
   return (
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -131,7 +144,11 @@ export default function WarrantyClaims() {
             allLabel="Tất cả"
           ></FilterComponent>
         </Box>
-        <WarrantyModal success={handleModalResult}>Thêm</WarrantyModal>
+        {isManageProjectAuthorized && (
+          <WarrantyModal success={handleModalResult}>
+            Thêm
+          </WarrantyModal>
+        )}
       </Box>
       {/* Table */}
       {(warrantyClaims && warrantyClaims.length) > 0 ? (

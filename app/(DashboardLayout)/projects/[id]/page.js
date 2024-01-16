@@ -57,16 +57,6 @@ export default function ProjectDetails() {
     estimateBusinessDayError: { hasError: false, label: "" },
   });
 
-  const validateInput = (field, value) => {
-    switch (field) {
-      case "name":
-        return value.trim() === "" ? "Không thể để trống" : "";
-      // Add validation for other fields as needed
-      default:
-        return "";
-    }
-  };
-
   const handleInputChange = (field, value) => {
     switch (field) {
       case "name":
