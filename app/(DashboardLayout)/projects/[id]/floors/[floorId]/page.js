@@ -47,54 +47,45 @@ export default function FloorDetailsPage() {
     projectId: params.id,
   });
 
-  const validateInput = (field, value) => {
+  const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "floorNo":
-      case "usePurpose":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "usePurpose":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+          required: true
+        });
+
         break;
       case "description":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
         break;
       default:
     }
-  };
-
-  const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
     }));
   };
+
+
 
   const [floors, setFloors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +97,7 @@ export default function FloorDetailsPage() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -355,7 +346,7 @@ export default function FloorDetailsPage() {
                 disabled={!isManager}
                 titleSpan={3}
                 fieldSpan={9}
-                subtitle="Mô đích sử dụng của tầng"
+                subtitle="Mục đích sử dụng của tầng"
                 value={formData.usePurpose}
                 error={formData.usePurposeError.hasError}
                 errorLabel={formData.usePurposeError.label}

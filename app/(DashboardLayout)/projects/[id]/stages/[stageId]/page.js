@@ -57,45 +57,58 @@ export default function StageOverview() {
   const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
       case "isPrepaid":
       case "isWarrantyStage":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
       case "pricePercentage":
-        const result = checkValidField(value);
-        if (result?.isValid === false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        result = checkValidField({
+          value: value,          
+          minValue: 0,
+          checkZeroValue: true,
+          //maxValue: 100,
+          required: true
+        });
+
         break;
       case "endTimePayment":
+        result = checkValidField({
+          value: value,
+        });
+
+        break;
       case "description":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const fetchStage = async () => {
@@ -120,7 +133,7 @@ export default function StageOverview() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

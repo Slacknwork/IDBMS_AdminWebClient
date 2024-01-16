@@ -64,30 +64,23 @@ export default function CreateItemModal() {
   };
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "interiorItemType":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "interiorItemType":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "bannerImage":
       case "iconImage":
@@ -114,20 +107,42 @@ export default function CreateItemModal() {
         }
         break;
       case "englishName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
+        break;
       case "description":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "englishDescription":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "parentCategoryId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const [openModal, setOpenModal] = useState(
@@ -137,7 +152,7 @@ export default function CreateItemModal() {
   
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

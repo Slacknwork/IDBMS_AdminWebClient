@@ -1,6 +1,7 @@
 const checkValidField = ({
     value,
     required = false,
+    minLength = null,
     maxLength = null,
     minValue = null,
     checkZeroValue = false
@@ -28,6 +29,11 @@ const checkValidField = ({
         //check length < max length
         if (typeof value === "string" && maxLength !== null && value.length > maxLength) {
             return { isValid: false, label: `Độ dài tối đa là ${maxLength} ký tự!` };
+        }
+
+        //check length > min length
+        if (typeof value === "string" && minLength !== null && value.length < minLength) {
+            return { isValid: false, label: `Độ dài tối thiểu là ${minLength} ký tự!` };
         }
 
         return { isValid: true, label: "" };

@@ -56,35 +56,27 @@ export default function TaskCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "interiorItemType":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "interiorItemType":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "bannerImage":
       case "iconImage":
         const validFile = checkValidUrl(value);
-        console.log(field)
         if (validFile.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -105,21 +97,43 @@ export default function TaskCategoryDetails() {
           }));
         }
         break;
-      case "englishName":
-      case "description":
-      case "englishDescription":
-      case "parentCategoryId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
-        break;
-      default:
+        case "englishName":
+          result = checkValidField({
+            value: value,
+            maxLength: 50,
+          });
+  
+          break;
+        case "description":
+          result = checkValidField({
+            value: value,
+            maxLength: 750,
+          });
+  
+          break;
+        case "englishDescription":
+          result = checkValidField({
+            value: value,
+            maxLength: 750,
+          });
+  
+          break;
+        case "parentCategoryId":
+          result = checkValidField({
+            value: value,
+          });
+  
+          break;
+        default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -168,7 +182,7 @@ export default function TaskCategoryDetails() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

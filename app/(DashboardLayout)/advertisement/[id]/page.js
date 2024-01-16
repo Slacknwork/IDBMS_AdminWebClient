@@ -52,55 +52,84 @@ export default function AdvertisementDetailsPage() {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "projectCategoryId":
-      case "type":
-      case "area":
-      case "language":
-      case "finalPrice":
-      case "estimatedPrice":
-      case "estimateBusinessDay":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
-      case "description":
-      case "basedOnDecorProjectId":
-      case "estimatedPrice":
-      case "finalPrice":
-      case "totalWarrantyPaid":
+      case "projectCategoryId":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "type":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
       case "area":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "language":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "finalPrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "estimatedPrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
       case "estimateBusinessDay":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   // GET SITE DETAILS
@@ -156,10 +185,15 @@ export default function AdvertisementDetailsPage() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-    fetchOptionsFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const onSaveAdvertisementProject = async () => {
     try {
@@ -172,13 +206,33 @@ export default function AdvertisementDetailsPage() {
     }
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    fetchOptionsFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveAdvertisementProject();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+  
+
   return (
     <PageContainer title={pageName} description={"Chi tiết dự án quảng cáo"}>
       <DetailsPage
         loading={loading}
         title="Thông tin dự án"
         saveMessage="Lưu thông tin dự án?"
-        onSave={onSaveAdvertisementProject}
+        onSave={handleSubmit}
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={3}>

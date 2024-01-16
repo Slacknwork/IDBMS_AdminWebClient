@@ -93,32 +93,33 @@ export default function CreateTransactionModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    switch (field) {
-      case "type":
-      case "amount":
-      case "payerName":
-      case "status":
-        const result = checkValidField(value);
+    let result = { isValid: true, label: "" }
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+    switch (field) {
+      case "amount":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "payerName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
+      case "type":
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "transactionReceiptImage":
         const validFile = checkValidUrl(value);
@@ -143,18 +144,28 @@ export default function CreateTransactionModal({ success }) {
         }
         break;
       case "note":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "userId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const [openModal, setOpenModal] = useState(
     searchParams.get(modalOpenQuery) ?? false
@@ -164,7 +175,7 @@ export default function CreateTransactionModal({ success }) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

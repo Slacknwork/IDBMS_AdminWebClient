@@ -43,32 +43,26 @@ export default function SiteDetails() {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "address":
       case "contactName":
-      case "contactLocation":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result?.isValid === false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "address":
+      case "contactLocation":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+          required: true
+        });
+
         break;
       case "contactPhone":
         const validPhone = checkValidPhone(value);
@@ -96,7 +90,7 @@ export default function SiteDetails() {
       case "contactEmail":
         const validEmail = checkValidEmail(value);
 
-        if (validPhone.isValid == false) {
+        if (validEmail.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -117,18 +111,29 @@ export default function SiteDetails() {
         }
         break;
       case "companyCode":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
+        break;
       case "description":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   // FETCH DATA FROM API
@@ -165,7 +170,7 @@ export default function SiteDetails() {
   const [switchSubmit, setSwitchSubmit] = useState(false);
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

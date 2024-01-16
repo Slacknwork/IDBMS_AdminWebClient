@@ -24,6 +24,8 @@ const initialState = {
   descriptionError: { hasError: false, label: "" },
   englishName: "",
   englishNameError: { hasError: false, label: "" },
+  englishDescription: "",
+  englishDescriptionError: { hasError: false, label: "" },
   image: null,
   imageError: { hasError: false, label: "" },
   length: 0,
@@ -64,36 +66,58 @@ export default function ItemModal({
 
   const modalOpenQuery = "create";
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
       case "length":
       case "width":
       case "height":
-      case "calculationUnit":
-      case "material":
-      case "estimatePrice":
-      case "status":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "calculationUnit":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "material":
+        result = checkValidField({
+          value: value,
+          maxLength: 250,
+          required: true
+        });
+
+        break;
+      case "estimatePrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "image":
         const validFile = checkValidUrl(value);
@@ -118,22 +142,45 @@ export default function ItemModal({
           }));
         }
       case "englishName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
+        break;
       case "description":
+      case "englishDescription":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "origin":
+        result = checkValidField({
+          value: value,
+          maxLength: 200,
+        });
+
+        break;
       case "interiorItemColorId":
       case "interiorItemCategoryId":
       case "parentItemId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -150,7 +197,7 @@ export default function ItemModal({
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -426,6 +473,22 @@ export default function ItemModal({
           error={formData.descriptionError.hasError}
           errorLabel={formData.descriptionError.label}
           onChange={(e) => handleInputChange("description", e.target.value)}
+        ></TextForm>
+      </Grid>
+
+      {/* ENGLISH DESCRIPTION */}
+      <Grid item xs={12} lg={12}>
+        <TextForm
+          titleSpan={3}
+          fieldSpan={9}
+          multiline
+          rows={4}
+          title="Mô tả tiếng anh"
+          subtitle="Mổ tả sản phẩm bằng tiếng anh"
+          value={formData.englishDescription}
+          error={formData.englishDescriptionError.hasError}
+          errorLabel={formData.englishDescriptionError.label}
+          onChange={(e) => handleInputChange("englishDescription", e.target.value)}
         ></TextForm>
       </Grid>
     </FormModal>

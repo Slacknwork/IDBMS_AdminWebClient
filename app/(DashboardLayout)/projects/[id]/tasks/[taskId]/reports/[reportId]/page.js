@@ -58,37 +58,25 @@ export default function ProjectDocumentDetails(projectDocument) {
   });
 
   const handleInputChange = (field, value) => {
-    switch (field) {
-      case "percentage":
-        if (value < task.percentage) value = task.percentage;
-        setFormData((prevData) => ({
-          ...prevData,
-          unitUsed: (task.unitInContract * (value / 100)).toFixed(2),
-        }));
-        break;
-      case "name":
-      case "unitUsed":
-        const result = checkValidField(value);
+    let result = { isValid: true, label: "" }
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+    switch (field) {
+      case "name":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
+      case "unitUsed":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
         break;
       case "documentList":
         const validFile = checkValidUrl(value);
@@ -113,17 +101,23 @@ export default function ProjectDocumentDetails(projectDocument) {
         }
         break;
       case "description":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
         break;
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleFileInputChange = (files) => {
@@ -178,7 +172,7 @@ export default function ProjectDocumentDetails(projectDocument) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

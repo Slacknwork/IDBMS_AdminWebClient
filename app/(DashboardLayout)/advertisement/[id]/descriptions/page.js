@@ -15,6 +15,8 @@ import DetailsPage from "/components/shared/DetailsPage";
 import RichTextForm from "/components/shared/Forms/RichText";
 import FileForm from "/components/shared/Forms/File";
 import UserCard from "/components/shared/UserCard";
+import checkValidField from "/components/validations/field"
+import checkValidUrl from "/components/validations/url"
 
 export default function AdvertisementDetailsPage() {
   const params = useParams();
@@ -24,8 +26,8 @@ export default function AdvertisementDetailsPage() {
     advertisementDescriptionError: { hasError: false, label: "" },
     englishAdvertisementDescription: "",
     englishAdvertisementDescriptionError: { hasError: false, label: "" },
-    file: null,
-    fileError: { hasError: false, label: "" },
+    representImage: null,
+    representImageError: { hasError: false, label: "" },
     representImageUrl: "",
   });
 
@@ -40,12 +42,34 @@ export default function AdvertisementDetailsPage() {
   };
 
   const handleInputChange = (field, value) => {
-    const errorLabel = validateInput(field, value);
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
-    }));
+    let result = { isValid: true, label: "" }
+
+    switch (field) {
+      
+      case "advertisementDescription":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
+      case "englishAdvertisementDescription":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
+        default:
+      }
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: value,
+        [`${field}Error`]: {
+          hasError: !result.isValid,
+          label: result.label,
+        },
+      }));
   };
 
   // GET SITE DETAILS
@@ -81,9 +105,15 @@ export default function AdvertisementDetailsPage() {
     }
   };
 
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
+  const [formHasError, setFormHasError] = useState(true);
+  const [switchSubmit, setSwitchSubmit] = useState(false);
+
+  const handleSubmit = () => {
+    for (const field in formData) {
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
+    }
+    setSwitchSubmit(true);
+  };
 
   const onSaveAdvertisementProject = async () => {
     try {
@@ -96,13 +126,33 @@ export default function AdvertisementDetailsPage() {
     }
   };
 
+  useEffect(() => {
+    fetchDataFromApi();
+    if (!switchSubmit) return;
+
+    const hasErrors = Object.values(formData).some((field) => field?.hasError);
+    setFormHasError(hasErrors);
+
+    if (hasErrors) {
+      toast.error("Dữ liệu nhập không đúng yêu cầu!");
+      setSwitchSubmit(false);
+      return;
+    }
+
+    onSaveAdvertisementProject();
+    setSwitchSubmit(false);
+  }, [switchSubmit]);
+
+
+  
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
         loading={loading}
         title="Mô tả dự án"
         saveMessage="Lưu thông tin mô tả dự án?"
-        onSave={onSaveAdvertisementProject}
+        onSave={handleSubmit}
       >
         <Grid item xs={12} lg={8}>
           <Grid container columnSpacing={2} rowSpacing={4}>
@@ -113,11 +163,11 @@ export default function AdvertisementDetailsPage() {
                 titleSpan={2}
                 fieldSpan={10}
                 subtitle="Chọn hình ảnh minh họa"
-                value={formData.file}
+                value={formData.representImage}
                 imgDisplay={formData.representImageUrl}
-                error={formData.fileError.hasError}
-                errorLabel={formData.fileError.label}
-                onChange={(file) => handleInputChange("file", file)}
+                error={formData.representImageError.hasError}
+                errorLabel={formData.representImageError.label}
+                onChange={(file) => handleInputChange("representImage", file)}
               ></FileForm>
             </Grid>
 
