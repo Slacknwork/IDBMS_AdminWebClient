@@ -123,6 +123,7 @@ export default function CreateWarrantyClaimModal({ success }) {
         break;
       case "endDate":
       default:
+        break
     }
 
     setFormData((prevData) => ({
@@ -148,7 +149,7 @@ export default function CreateWarrantyClaimModal({ success }) {
   };
 
   const handleCreate = async () => {
-    if (!switchSubmit) return;
+    if (!switchSubmit || formHasError) return;
     try {
       const response = await createWarrantyClaim(formData);
       toast.success("Thêm thành công!");
@@ -165,7 +166,7 @@ export default function CreateWarrantyClaimModal({ success }) {
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
     setFormHasError(hasErrors);
-
+    console.log(formData)
     if (hasErrors) {
       toast.error("Dữ liệu nhập không đúng yêu cầu!");
       setSwitchSubmit(false);
