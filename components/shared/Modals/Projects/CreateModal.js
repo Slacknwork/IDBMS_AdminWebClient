@@ -71,53 +71,64 @@ export default function CreateProjectModal({ children }) {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
     switch (field) {
       case "name":
-      case "projectCategoryId":
-      case "type":
-      case "status":
-      case "language":
-      case "advertisementStatus":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "projectCategoryId":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "type":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "language":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "advertisementStatus":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "description":
       case "basedOnDecorProjectId":
-      case "estimatedPrice":
-      case "finalPrice":
-      case "totalWarrantyPaid":
-      case "area":
-      case "estimateBusinessDay":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
-        break;
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   // SUBMIT FORM
@@ -128,7 +139,7 @@ export default function CreateProjectModal({ children }) {
   );
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
