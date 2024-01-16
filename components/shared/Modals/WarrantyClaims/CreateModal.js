@@ -74,7 +74,7 @@ export default function CreateWarrantyClaimModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    let result
+    let result = { isValid: true, label: "" }
     switch (field) {
       case "name":
         result = checkValidField({
@@ -82,7 +82,7 @@ export default function CreateWarrantyClaimModal({ success }) {
           maxLength: 50,
           required: true
         });
-
+        console.log(result)
         break;
       case "totalPaid":
         result = checkValidField({
