@@ -32,6 +32,7 @@ import { downloadSettlementFile } from "/services/excelServices";
 import FormModal from "../Form";
 import IndividualContractForm from "./IndividualContractForm";
 import CompanyContractForm from "./CompanyContractForm";
+import { projectTypeIndex } from "/constants/enums/projectType";
 
 function SelectContractTypeScreen({
   selectedContractType,
@@ -99,35 +100,38 @@ function SelectContractTypeScreen({
           </CardActionArea>
         </Card>
       </Grid>
-      <Grid item xs={12} lg={4}>
-        <Card>
-          <CardActionArea
-            onClick={() => setSelectedContractType(3)}
-            sx={{
-              height: "15rem",
-              ...(selectedContractType === 3 && {
-                border: 3,
-                borderColor: "dodgerblue",
-              }),
-            }}
-          >
-            <Box style={{ textAlign: "center", my: "auto" }}>
-              <IconFileCheck
-                style={{ marginTop: "2em" }}
-                size={75}
-              ></IconFileCheck>
-              <CardContent>
-                <Typography textAlign={"center"} gutterBottom variant="h5">
-                  Quyết toán
-                </Typography>
-                <Typography textAlign={"center"} variant="subtitle2">
-                  Tạo bản quyết toán cho dự án
-                </Typography>
-              </CardContent>
-            </Box>
-          </CardActionArea>
-        </Card>
-      </Grid>
+      {project?.type === projectTypeIndex.Construction && (
+        <Grid item xs={12} lg={4}>
+          <Card>
+            <CardActionArea
+              onClick={() => setSelectedContractType(3)}
+              sx={{
+                height: "15rem",
+                ...(selectedContractType === 3 && {
+                  border: 3,
+                  borderColor: "dodgerblue",
+                }),
+              }}
+            >
+              <Box style={{ textAlign: "center", my: "auto" }}>
+                <IconFileCheck
+                  style={{ marginTop: "2em" }}
+                  size={75}
+                ></IconFileCheck>
+                <CardContent>
+                  <Typography textAlign={"center"} gutterBottom variant="h5">
+                    Quyết toán
+                  </Typography>
+                  <Typography textAlign={"center"} variant="subtitle2">
+                    Tạo bản quyết toán cho dự án
+                  </Typography>
+                </CardContent>
+              </Box>
+            </CardActionArea>
+          </Card>
+        </Grid>
+      )}
+
     </Grid>
   );
 }
@@ -297,7 +301,7 @@ export default function GenerateContractModal({ sx }) {
     <FormModal
       sx={sx}
       buttonLabel="Tạo tự động"
-      title="Tạo hợp đồng"
+      title="Tạo tài liệu tự động"
       submitLabel="Tiếp"
       size="big"
       disableCloseOnSubmit

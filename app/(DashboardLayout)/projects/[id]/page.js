@@ -45,6 +45,7 @@ export default function ProjectDetails() {
     advertisementStatusError: { hasError: false, label: "" },
     basedOnDecorProjectId: null,
     basedOnDecorProjectErrorId: { hasError: false, label: "" },
+    basedOnDecorProject: null,
     estimatedPrice: 0,
     estimatedPriceError: { hasError: false, label: "" },
     finalPrice: 0,
@@ -112,7 +113,6 @@ export default function ProjectDetails() {
   const [loading, setLoading] = useState(true);
 
   const [projectCategories, setProjectCategories] = useState([]);
-  const [decorProjects, setDecorProjects] = useState([]);
   const [projectOwner, setProjectOwner] = useState("");
 
   const [formHasError, setFormHasError] = useState(true);
@@ -136,14 +136,6 @@ export default function ProjectDetails() {
       const listCategories = await getProjectCategories({});
       setProjectCategories(listCategories.list);
       console.log(project);
-      const listProjectsBySiteId = await getProjectsBySiteId({
-        siteId: project.siteId,
-      });
-      setDecorProjects(
-        listProjectsBySiteId.list
-          .filter((project) => project.type === 0 && project.id !== params.id)
-          .map(({ id, name }) => ({ id, name }))
-      );
       const participation = project?.projectParticipations.find(
         (par) => par.role === 0
       );
@@ -258,19 +250,12 @@ export default function ProjectDetails() {
             {/* BASED ON DECOR PROJECT */}
             {formData.type && formData.type === 1 ? (
               <Grid item xs={12} lg={12}>
-                <AutocompleteForm
+                <TextForm
                   title="Thiết kế"
                   subtitle="Chọn dự án thiết kế cho dự án thi công này"
-                  value={formData.basedOnDecorProjectId}
-                  options={decorProjects}
-                  getOptionLabel={(option) => option.name}
-                  error={formData.basedOnDecorProjectErrorId.hasError}
-                  errorLabel={formData.basedOnDecorProjectErrorId.label}
-                  onChange={(value) =>
-                    handleInputChange("basedOnDecorProjectId", value)
-                  }
-                  disabled={!isAdmin}
-                ></AutocompleteForm>
+                  value={formData?.basedOnDecorProject?.name}
+                  disabled
+                ></TextForm>
               </Grid>
             ) : null}
 
