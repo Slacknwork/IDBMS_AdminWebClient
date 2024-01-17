@@ -90,55 +90,83 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   };
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
       case "calculationUnit":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
       case "pricePerUnit":
       case "unitInContract":
-      case "isIncurred":
-      case "status":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "description":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "startedDate":
+        result = checkValidField({
+          value: value,
+        });
+
+        break;
       case "estimateBusinessDay":
-      case "unitUsed":
-      case "isIncurred":
-      case "parentTaskId":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+        });
+
+        break;
       case "taskDesignId":
       case "taskCategoryId":
       case "designCategoryId":
       case "paymentStageId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+      case "parentTaskId":
+      case "roomId":
+        result = checkValidField({
+          value: value,
+        });
+
+        break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -247,7 +275,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

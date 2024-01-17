@@ -40,72 +40,49 @@ export default function TaskCategoryDetails() {
     primaryColorFileError: { hasError: false, label: "" },
     secondaryColorFile: null,
     secondaryColorFileError: { hasError: false, label: "" },
-    primaryColor: null,
+    primaryColor: "",
     primaryColorError: { hasError: false, label: "" },
-    secondaryColor: null,
+    secondaryColor: "",
     secondaryColorError: { hasError: false, label: "" },
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "type":
-        const result = checkValidField(value);
-        console.log(field)
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
         break;
-      case "primaryColorFile":
-      case "secondaryColorFile":
-        const validFile = checkValidUrl(value);
-        if (validFile.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: validFile.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+      case "type":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      
       case "englishName":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -144,7 +121,7 @@ export default function TaskCategoryDetails() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -282,7 +259,7 @@ export default function TaskCategoryDetails() {
             onChange={(file) => handleInputChange("primaryColorFile", file)}
           ></FileForm>
         </Grid>
-
+        
       {/* SECONDARY COLOR */}
       {formData.type === 0 && (
         <Grid item xs={12} lg={6}>

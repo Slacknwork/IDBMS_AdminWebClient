@@ -59,32 +59,33 @@ export default function TransactionDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    switch (field) {
-      case "type":
-      case "amount":
-      case "payerName":
-      case "status":
-        const result = checkValidField(value);
+    let result = { isValid: true, label: "" }
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+    switch (field) {
+      case "amount":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "payerName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
+      case "type":
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "transactionReceiptImage":
         const validFile = checkValidUrl(value);
@@ -109,18 +110,28 @@ export default function TransactionDetails() {
         }
         break;
       case "note":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "userId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const handleInputError = (field, hasError, label) => {
@@ -173,7 +184,7 @@ export default function TransactionDetails() {
     const fetchUsers = async () => {
       try {
         const items = await getAllUsers({});
-        setParentCategories(items.list);
+        setUsers(items.list);
       } catch (error) {
         toast.error("Lỗi nạp dữ liệu 'Người dùng' từ hệ thống");
         console.log(error);
@@ -182,7 +193,7 @@ export default function TransactionDetails() {
     const fetchWarrantyClaims = async () => {
       try {
         const items = await getAllWarrantyClaims({});
-        setParentCategories(items.list);
+        setWarrantyClaims(items.list);
       } catch (error) {
         toast.error("Lỗi nạp dữ liệu 'Bảo hiểm' từ hệ thống");
         console.log(error);
@@ -201,7 +212,7 @@ export default function TransactionDetails() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -376,7 +387,6 @@ export default function TransactionDetails() {
           <FileForm
             fullWidth
             title="Ảnh hoá đơn"
-            required
             subtitle="Chọn tệp"
             titleSpan={3}
             fieldSpan={9}

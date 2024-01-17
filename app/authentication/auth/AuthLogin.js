@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Typography,
-  FormControl,
   Button,
+  CircularProgress,
+  FormControl,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import Link from "next/link";
 import { loginAdmin } from "/services/authenticationServices";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "/store/reducers/user";
-import { useRouter } from "next/navigation";
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const dispatch = useDispatch();
@@ -22,6 +22,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   const [password, setPassword] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [responseTextColor, setResponseTextColor] = useState("red");
+  const [loading, setLoading] = useState(false);
 
   const [response, setResponse] = useState({
     message: "",
@@ -38,21 +39,25 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+    setLoading(true);
     const request = {
       username: username ?? "",
       password: password ?? "",
     };
-
     try {
       const response = await loginAdmin(request);
       setResponse(response);
-      setResponseMessage("Đăng nhập thành công! Vui lòng kiểm tra email để xác minh!")
-      setResponseTextColor("green")
+      setResponseMessage(
+        "Đăng nhập thành công! Vui lòng kiểm tra email để xác minh!"
+      );
+      setResponseTextColor("green");
     } catch (error) {
       console.error("Error :", error);
-      setResponseMessage("Đăng nhập thất bại! Vui lòng kiểm tra tên đăng nhập và mật khẩu!")
+      setResponseMessage(
+        "Đăng nhập thất bại! Vui lòng kiểm tra tên đăng nhập và mật khẩu!"
+      );
     }
+    setLoading(false);
   };
 
   const onLoginSuccess = () => {
@@ -94,7 +99,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             onChange={handlePasswordChange}
           />
         </FormControl>
-        <Typography fontWeight="500" style={{ color: responseTextColor }}>{responseMessage}</Typography>
+        {!loading && (
+          <Typography fontWeight="500" style={{ color: responseTextColor }}>
+            {responseMessage}
+          </Typography>
+        )}
 
         <Stack
           justifyContent="space-between"
@@ -128,13 +137,25 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         <Box>
           <Button
+            sx={{ height: "3.5rem" }}
+            disabled={loading}
             color="primary"
             variant="contained"
             size="large"
             fullWidth
             type="submit"
           >
-            Đăng nhập
+            {loading ? (
+              <Stack>
+                <CircularProgress
+                  style={{ color: "gray" }}
+                  size={32}
+                  thickness={5}
+                ></CircularProgress>
+              </Stack>
+            ) : (
+              <>Đăng nhập</>
+            )}
           </Button>
         </Box>
       </Stack>

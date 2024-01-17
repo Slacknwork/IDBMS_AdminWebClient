@@ -68,47 +68,55 @@ export default function RoomDetailsPage() {
   };
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "usePurpose":
-      case "area":
-      case "language":
-      case "pricePerArea":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
-      case "floorNo":
+      case "area":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "language":
+        result = checkValidField({
+          value: value,
+        });
+
+        break;
       case "description":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "roomTypeId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   const [loading, setLoading] = useState(true);
@@ -151,7 +159,7 @@ export default function RoomDetailsPage() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
