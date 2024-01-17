@@ -46,7 +46,6 @@ function SelectContractTypeScreen({
       <Grid item xs={12} lg={4}>
         <Card>
           <CardActionArea
-            disabled={project?.status !== projectStatusIndex.Negotiating}
             onClick={() => setSelectedContractType(1)}
             sx={{
               height: "15rem",
@@ -76,7 +75,6 @@ function SelectContractTypeScreen({
       <Grid item xs={12} lg={4}>
         <Card>
           <CardActionArea
-            disabled={project?.status !== projectStatusIndex.Negotiating}
             onClick={() => setSelectedContractType(2)}
             sx={{
               height: "15rem",

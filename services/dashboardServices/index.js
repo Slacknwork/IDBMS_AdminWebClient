@@ -15,7 +15,7 @@ const getDashboardData = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching dashboard data:", error);
     throw error;
   }
 };
@@ -32,7 +32,7 @@ const getDashboardDataByUserId = async (userId) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching dashboard data by user id:", error);
     throw error;
   }
 };

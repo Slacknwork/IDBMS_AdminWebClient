@@ -109,6 +109,13 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
         break;
       case "pricePerUnit":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          required: true
+        });
+
+        break;
       case "unitInContract":
         result = checkValidField({
           value: value,
