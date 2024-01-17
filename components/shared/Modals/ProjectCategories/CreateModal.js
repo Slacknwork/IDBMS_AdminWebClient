@@ -30,29 +30,16 @@ export default function CreateProjectCategoryModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       case "iconImage":
         const validFile = checkValidUrl(value);
@@ -76,18 +63,29 @@ export default function CreateProjectCategoryModal({ success }) {
           }));
         }
       case "englishName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
+        break;
       case "isHidden":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -103,7 +101,7 @@ export default function CreateProjectCategoryModal({ success }) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

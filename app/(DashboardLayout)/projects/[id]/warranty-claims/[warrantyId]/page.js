@@ -49,69 +49,67 @@ export default function WarrantyClaimDetails() {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+    
     switch (field) {
       case "name":
-      case "totalPaid":
-      case "isCompanyCover":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "totalPaid":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          required: true,
+        });
+
+        break;
+      case "isCompanyCover":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "confirmationDocument":
-        const validFile = checkValidUrl(value);
-        if (validFile.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: validFile.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
-        break;
       case "reason":
-      case "solution":
-      case "note":  
-      case "endDate":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
         break;
+      case "solution":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
+      case "note":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
+      case "endDate":
       default:
+        break
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -147,7 +145,7 @@ export default function WarrantyClaimDetails() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

@@ -62,39 +62,84 @@ export default function CreateProjectModal({ children }) {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "projectCategoryId":
-      case "type":
-      case "area":
-      case "language":
-      case "finalPrice":
-      case "estimatedPrice":
-      case "estimateBusinessDay":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "projectCategoryId":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "type":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "area":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "language":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "finalPrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "estimatedPrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "estimateBusinessDay":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   // SUBMIT FORM
@@ -103,7 +148,7 @@ export default function CreateProjectModal({ children }) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

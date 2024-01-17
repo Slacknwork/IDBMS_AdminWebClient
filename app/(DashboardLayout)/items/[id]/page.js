@@ -42,6 +42,8 @@ export default function ItemDetails() {
     descriptionError: { hasError: false, label: "" },
     englishName: "",
     englishNameError: { hasError: false, label: "" },
+    englishDescription: "",
+    englishDescriptionError: { hasError: false, label: "" },
     image: null,
     imageError: { hasError: false, label: "" },
     imageUrl: "",
@@ -77,39 +79,62 @@ export default function ItemDetails() {
   const [loading, setLoading] = useState(true);
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
       case "length":
       case "width":
       case "height":
-      case "calculationUnit":
-      case "material":
-      case "estimatePrice":
-      case "status":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "calculationUnit":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "material":
+        result = checkValidField({
+          value: value,
+          maxLength: 250,
+          required: true
+        });
+
+        break;
+      case "estimatePrice":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
+        break;
+      case "status":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
         break;
       case "image":
         const validFile = checkValidUrl(value);
+        console.log(field)
         if (validFile.isValid == false) {
           setFormData((prevData) => ({
             ...prevData,
@@ -130,22 +155,45 @@ export default function ItemDetails() {
           }));
         }
       case "englishName":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+        });
+
+        break;
       case "description":
+      case "englishDescription":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+        });
+
+        break;
       case "origin":
+        result = checkValidField({
+          value: value,
+          maxLength: 200,
+        });
+
+        break;
       case "interiorItemColorId":
       case "interiorItemCategoryId":
       case "parentItemId":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+        });
+
         break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -210,7 +258,7 @@ export default function ItemDetails() {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };

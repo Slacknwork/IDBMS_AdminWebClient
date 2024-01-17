@@ -88,14 +88,35 @@ const createTaskReport = async (projectId, request) => {
 
 const updateTaskReport = async (reportId, request, projectId = "") => {
   try {
-    const token = store.getState().user?.token ?? "";
+  const formData = new FormData();
+  const token = store.getState().user?.token ?? "";
+
+  const appendFormData = (data, prefix = "", suffix = "") => {
+    for (const key in data) {
+      const value = data[key];
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+
+      if (Array.isArray(value)) {
+        value.forEach((element, index) => {
+          for (const key in element) {
+            const value = element[key];
+            formData.append(`${fullKey}[${index}].${key}`, value);
+          }
+        });
+      } else {
+        formData.append(fullKey, value ?? "");
+      }
+    }
+  };
+
+  appendFormData(request);
     const url = `${endpoint}/${reportId}`;
     const response = await fetchData({
       url: `${url}${projectId ? "?projectId=" + projectId : ""}`,
       method: "PUT",
-      contentType: "application/json",
+      //contentType: "application/json",
       token,
-      body: JSON.stringify(request),
+      body: formData,
     });
     return response.data;
   } catch (error) {
