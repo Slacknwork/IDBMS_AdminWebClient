@@ -138,7 +138,7 @@ export default function ProjectTasksPage() {
   const [activeStage, setActiveStage] = useState(0);
   const fetchStages = async () => {
     const stages = await getPaymentStagesByProjectId({ projectId: params.id });
-    setStages(stages.list);
+    setStages(stages.list.filter((stage) => !stage.isWarrantyStage));
     const active =
       stages.list.findIndex(
         (stage) => searchParams.get(stageQuery) === stage.id

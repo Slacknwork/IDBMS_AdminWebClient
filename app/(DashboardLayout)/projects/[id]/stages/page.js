@@ -195,7 +195,7 @@ export default function PaymentStages() {
                   success={fetchDataFromApi}
                 ></MapProjectDesignModal>
               )}
-              <CreateStageModal success={handleModalResult}>
+              <CreateStageModal stages={stages} success={handleModalResult}>
                 Thêm
               </CreateStageModal>
             </Box>

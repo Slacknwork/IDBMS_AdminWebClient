@@ -74,8 +74,8 @@ export default function TaskOverviewPage() {
     roomIdError: { hasError: false, label: "" },
     parentTaskId: null,
     parentTaskIdError: { hasError: false, label: "" },
-    status: -1,
-    statusError: { hasError: false, label: "" },
+    estimateBusinessDay: 0,
+    estimateBusinessDayError: { hasError: false, label: "" },
     designCategoryId: "",
     taskCategoryId: "",
     taskCategoryIdError: { hasError: false, label: "" },
@@ -343,8 +343,8 @@ export default function TaskOverviewPage() {
                 options={calculationUnitOptions}
                 defaultValue={-1}
                 defaultLabel="Chọn một..."
-                error={formData.statusError.hasError}
-                errorLabel={formData.statusError.label}
+                error={formData.calculationUnitError.hasError}
+                errorLabel={formData.calculationUnitError.label}
                 onChange={(value) =>
                   handleInputChange("calculationUnit", value)
                 }
@@ -464,21 +464,24 @@ export default function TaskOverviewPage() {
 
             {/* STATUS */}
             <Grid item xs={12} lg={6}>
-              <SelectForm
-                title="Trạng thái"
-                titleSpan={6}
-                fieldSpan={6}
+              <NumberSimpleForm
+                title="Số ngày làm việc ước tính"
                 required
                 disabled={!isManager}
-                subtitle="Trạng thái của công việc"
-                value={formData.status}
-                options={projectTaskStatusOptions}
-                defaultValue={-1}
-                defaultLabel="Chọn một..."
-                error={formData.statusError.hasError}
-                errorLabel={formData.statusError.label}
-                onChange={(value) => handleInputChange("status", value)}
-              ></SelectForm>
+                titleSpan={6}
+                fieldSpan={6}
+                inputProps={{
+                  min: 0,
+                }}
+                subtitle="Số ngày làm việc ước tính"
+                value={formData.estimateBusinessDay}
+                error={formData.estimateBusinessDayError.hasError}
+                errorLabel={formData.estimateBusinessDayError.label}
+                onChange={(value) =>
+                  handleInputChange("estimateBusinessDay", value)
+                }
+                endAdornment={<>ngày</>}
+              ></NumberSimpleForm>
             </Grid>
 
             {/* ROOM */}
