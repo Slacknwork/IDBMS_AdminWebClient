@@ -33,6 +33,7 @@ import { getParticipationsByProjectId } from "/services/projectParticipationServ
 import { createTaskAssignments } from "/services/taskAssignmentServices";
 
 import FormModal from "/components/shared/Modals/Form";
+import UserCard from "/components/shared/UserCard";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -173,7 +174,6 @@ export default function CreateTaskAssignmentModal({ success, selectedTasks }) {
                 }}
               >
                 <TableRow>
-                  <StyledTableCell width={"10%"}></StyledTableCell>
                   <StyledTableCell width={"45%"}>
                     <Typography variant="subtitle2" fontWeight={600}>
                       Tên
@@ -184,11 +184,24 @@ export default function CreateTaskAssignmentModal({ success, selectedTasks }) {
                       Vai trò
                     </Typography>
                   </StyledTableCell>
+                  <StyledTableCell width={"10%"}></StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {participations.map((participation) => (
                   <StyledTableRow key={participation.id}>
+                    <TableCell>
+                      <UserCard
+                        name={participation.user?.name}
+                        email={participation.user?.email}
+                        phone={participation.user?.phone}
+                      ></UserCard>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={participationRoleOptions[participation.role]}
+                      ></Chip>
+                    </TableCell>
                     <TableCell>
                       <Checkbox
                         color="primary"
@@ -199,16 +212,6 @@ export default function CreateTaskAssignmentModal({ success, selectedTasks }) {
                           participation.id
                         )}
                       />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2">
-                        {participation.user?.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={participationRoleOptions[participation.role]}
-                      ></Chip>
                     </TableCell>
                   </StyledTableRow>
                 ))}

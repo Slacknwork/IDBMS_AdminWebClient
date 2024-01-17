@@ -7,17 +7,14 @@ import { useParams, useSearchParams } from "next/navigation";
 
 import { createPaymentStage } from "/services/paymentStageServices";
 
-import stageStatusOptions from "/constants/enums/stageStatus";
-
 import FormModal from "/components/shared/Modals/Form";
 import TextForm from "/components/shared/Forms/Text";
 import DateForm from "/components/shared/Forms/Date";
 import CheckboxForm from "/components/shared/Forms/Checkbox";
-import NumberForm from "/components/shared/Forms/Number";
-import SelectForm from "/components/shared/Forms/Select";
+import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import checkValidField from "/components/validations/field";
 
-export default function CreateStageModal({ success }) {
+export default function CreateStageModal({ success, stages }) {
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -36,15 +33,24 @@ export default function CreateStageModal({ success }) {
     projectId: params.id,
   });
 
-  const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+  const [remainingPercentage, setRemainingPercentage] = useState(0);
+  useEffect(() => {
+    const sum = stages.reduce((accumulator, currentStage) => {
+      return accumulator + currentStage.stage.pricePercentage;
+    }, 0);
+    setRemainingPercentage(100 - sum);
+    console.log(sum);
+  }, [stages]);
 
+  const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" };
+    console.log(remainingPercentage);
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -52,17 +58,17 @@ export default function CreateStageModal({ success }) {
       case "isWarrantyStage":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
       case "pricePercentage":
         result = checkValidField({
-          value: value,          
+          value: value,
           minValue: 0,
           checkZeroValue: true,
-          //maxValue: 100,
-          required: true
+          maxValue: remainingPercentage,
+          required: true,
         });
 
         break;
@@ -166,9 +172,10 @@ export default function CreateStageModal({ success }) {
 
       {/* PRICE PERCENTAGE */}
       <Grid item xs={12} lg={6}>
-        <NumberForm
+        <NumberSimpleForm
           title="Khoảng phần trăm"
           required
+          inputProps={{ min: 0, max: remainingPercentage }}
           titleSpan={6}
           fieldSpan={6}
           spacing={5}
@@ -178,7 +185,7 @@ export default function CreateStageModal({ success }) {
           errorLabel={formData.pricePercentageError.label}
           onChange={(value) => handleInputChange("pricePercentage", value)}
           endAdornment={<>%</>}
-        ></NumberForm>
+        ></NumberSimpleForm>
       </Grid>
 
       {/* END TIME PAYMENT */}

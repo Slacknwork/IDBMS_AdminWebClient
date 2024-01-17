@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   Box,
+  CircularProgress,
   Typography,
   FormControl,
   Button,
@@ -27,6 +28,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [responseTextColor, setResponseTextColor] = useState("red");
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -38,6 +42,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const request = {
       email: email ?? "",
       password: password ?? "",
@@ -50,10 +55,15 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       ) {
         dispatch(login(response));
         router.push("/");
+      } else {
+        setResponseMessage(
+          "Tài khoản này không được phép đăng nhập vào hệ thống!"
+        );
       }
     } catch (error) {
       console.error("Error :", error);
     }
+    setLoading(false);
   };
 
   const handleGoogleLogin = () => {
@@ -122,15 +132,32 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           </Typography>
         </Stack>
 
-        <Box>
+        {!loading && (
+          <Typography fontWeight="500" style={{ color: responseTextColor }}>
+            {responseMessage}
+          </Typography>
+        )}
+
+        <Box sx={{ my: 2 }}>
           <Button
+            disabled={loading}
             color="primary"
             variant="contained"
             size="large"
             fullWidth
             type="submit"
           >
-            Đăng nhập
+            {loading ? (
+              <Stack>
+                <CircularProgress
+                  style={{ color: "gray" }}
+                  size={32}
+                  thickness={5}
+                ></CircularProgress>
+              </Stack>
+            ) : (
+              <>Đăng nhập</>
+            )}
           </Button>
           <Typography sx={{ my: 2, textAlign: "center" }} variant="subtitle2">
             Hoặc

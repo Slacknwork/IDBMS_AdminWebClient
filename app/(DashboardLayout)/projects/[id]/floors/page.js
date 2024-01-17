@@ -177,7 +177,7 @@ export default function FloorsPage() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="subtitle2" fontWeight={400}>
-                    {floor.description}
+                    {floor.description || "Không có"}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

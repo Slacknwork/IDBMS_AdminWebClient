@@ -76,7 +76,7 @@ export async function downloadFile({ url, method = "GET", token, body } = {}) {
   }
 }
 
-export function downloadFileFromResponse(file, fileName) {
+export function downloadFileFromResponse(file, name) {
   const decodedFileContents = new Uint8Array(
     atob(file.fileContents)
       .split("")
@@ -85,6 +85,8 @@ export function downloadFileFromResponse(file, fileName) {
   const blob = new Blob([decodedFileContents], {
     type: file.contentType,
   });
+  // Extracting file name from the file object
+  const fileName = name ?? file.fileDownloadName;
 
   const a = document.createElement("a");
   a.href = window.URL.createObjectURL(blob);

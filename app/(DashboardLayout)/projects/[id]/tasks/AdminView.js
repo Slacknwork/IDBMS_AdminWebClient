@@ -25,10 +25,11 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import moment from "moment-timezone";
+import "moment/locale/vi";
 
 import {
   getProjectTasksByProjectId,
@@ -41,6 +42,7 @@ import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 import { participationRoleIndex } from "/constants/enums/participationRole";
+import timezone from "/constants/timezone";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FormModal from "/components/shared/Modals/Form";
@@ -73,6 +75,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+moment.tz.setDefault(timezone.momentDefault);
+moment.locale(timezone.momentLocale);
 
 export default function ProjectTasksPage() {
   // CONSTANTS
@@ -133,7 +138,7 @@ export default function ProjectTasksPage() {
   const [activeStage, setActiveStage] = useState(0);
   const fetchStages = async () => {
     const stages = await getPaymentStagesByProjectId({ projectId: params.id });
-    setStages(stages.list);
+    setStages(stages.list.filter((stage) => !stage.isWarrantyStage));
     const active =
       stages.list.findIndex(
         (stage) => searchParams.get(stageQuery) === stage.id
@@ -590,10 +595,8 @@ export default function ProjectTasksPage() {
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" fontWeight={400}>
-                            {task.startDate
-                              ? new Date(task.startDate).toLocaleDateString(
-                                  "vi-VN"
-                                )
+                            {task.startedDate
+                              ? moment(task.startedDate).format("lll")
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>

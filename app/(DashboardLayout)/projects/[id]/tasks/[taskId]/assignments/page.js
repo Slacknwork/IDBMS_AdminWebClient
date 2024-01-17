@@ -5,9 +5,8 @@ import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import {
   Box,
-  Button,
+  Chip,
   CircularProgress,
-  Grid,
   Stack,
   Table,
   TableBody,
@@ -20,25 +19,19 @@ import {
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
-import checkValidUrl from "components/validations/url";
-
-import projectTaskStatus from "/constants/enums/projectTaskStatus";
 
 import {
-  getItemInTasksByTaskId,
-  updateItemInTaskQuantity,
-  deleteItemInTask,
-} from "/services/itemInTaskServices";
-import { getAllInteriorItemCategories } from "/services/interiorItemCategoryServices";
+  getTaskAssignmentsByProjectId,
+  deleteTaskAssignment,
+} from "/services/taskAssignmentServices";
 
-import ItemInTaskModal from "/components/shared/Modals/ItemInTask/CreateModal";
+import participationRoleOptions from "/constants/enums/participationRole";
+
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
-import FilterAutocomplete from "/components/shared/FilterAutocomplete";
-import FilterStatus from "/components/shared/FilterStatus";
-import FormModal from "/components/shared/Modals/Form";
+import CreateTaskAssignmentModal from "/components/shared/Modals/TaskAssignment/CreateModal";
+import UserCard from "/components/shared/UserCard";
 import MessageModal from "/components/shared/Modals/Message";
-import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -58,13 +51,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function InteriorItems() {
+export default function TaskAssignments() {
   const searchQuery = "search";
-
-  const categoryQuery = "category";
-
-  const statusQuery = "status";
-  const statusAllValue = -1;
 
   const pageQuery = "page";
   const defaultPage = 1;
@@ -76,35 +64,32 @@ export default function InteriorItems() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ITEM IN TASK
-  const [items, setItems] = useState([]);
+  // FETCH DATA
+  const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
-  // FETCH DATA
   const fetchDataFromApi = async () => {
     setLoading(true);
-    const taskId = params.taskId;
-    const search = searchParams.get(searchQuery) ?? "";
-    const categoryId = searchParams.get(categoryQuery) ?? "";
-    const status = searchParams.get(statusQuery) ?? "";
-    const page = searchParams.get(pageQuery) ?? defaultPage;
-    const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
-
     try {
-      const response = await getItemInTasksByTaskId({
-        taskId,
+      const projectId = params.id;
+      const projectTaskId = params.taskId;
+      const search = searchParams.get(searchQuery) ?? "";
+      const page = searchParams.get(pageQuery) ?? defaultPage;
+      const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
+
+      const response = await getTaskAssignmentsByProjectId({
+        projectTaskId,
+        projectId,
         search,
-        categoryId,
-        status,
         page,
         pageSize,
       });
-      setItems(response?.list ?? []);
+      setAssignments(response?.list ?? []);
       setCount(response?.totalItem ?? 0);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu 'Sản phẩm trong công việc' từ hệ thống");
+      console.error(error);
+      toast.error("Lỗi nạp dữ liệu 'Phân công' từ hệ thống");
     }
     setLoading(false);
   };
@@ -113,55 +98,15 @@ export default function InteriorItems() {
     fetchDataFromApi();
   }, [searchParams]);
 
-  // ITEM CATEGORIES
-  const [itemCategories, setItemCategories] = useState([]);
-
-  // FETCH OPTIONS
-  const fetchCategories = async () => {
+  const onDeleteTaskAssignment = async (id) => {
     try {
-      const response = await getAllInteriorItemCategories();
-      setItemCategories(response.list);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Lỗi nạp dữ liệu 'Loại sản phẩm' từ hệ thống");
-    }
-  };
-  const fetchOptionsFromApi = async () => {
-    setLoading(true);
-    await Promise.all([fetchCategories()]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchOptionsFromApi();
-  }, [searchParams]);
-
-  const handleModalResult = () => {
-    fetchDataFromApi();
-  };
-
-  const onDeleteItemInTask = async (id) => {
-    try {
-      await deleteItemInTask(id);
+      const projectId = params.id;
+      await deleteTaskAssignment(id, projectId);
       toast.success("Xóa thành công!");
       await fetchDataFromApi();
     } catch (error) {
-      toast.error("Lỗi xóa sản phẩm!");
-    }
-  };
-
-  const [selectedItemQuantity, setSelectedItemQuantity] = useState(1);
-  const onOpenEditQuantityModal = (item) => {
-    setSelectedItemQuantity(item.quantity);
-  };
-
-  const onUpdateItemQuantity = async (item) => {
-    try {
-      await updateItemInTaskQuantity(item.id, selectedItemQuantity);
-      toast.success("Cập nhật thành công!");
-      await fetchDataFromApi();
-    } catch (error) {
-      toast.error("Lỗi cập nhật!");
+      console.error(error);
+      toast.error("Lỗi xóa phân công!");
     }
   };
 
@@ -169,140 +114,62 @@ export default function InteriorItems() {
     <Box sx={{ zIndex: 1 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex" }}>
-          <Search placeholder="Tìm theo mã / tên.."></Search>
-
-          <FilterAutocomplete
-            query={categoryQuery}
-            options={itemCategories}
-            label="Danh mục"
-            allValue={-1}
-            allLabel="Tất cả"
-          ></FilterAutocomplete>
-
-          <FilterStatus
-            query={statusQuery}
-            options={projectTaskStatus}
-            label="Trạng thái"
-            allValue={statusAllValue}
-            allLabel="Tất cả"
-          ></FilterStatus>
+          <Search placeholder="Tìm theo tên.."></Search>
         </Box>
-        <ItemInTaskModal success={handleModalResult}></ItemInTaskModal>
+        <CreateTaskAssignmentModal
+          selectedTasks={[params.taskId]}
+          success={fetchDataFromApi}
+        ></CreateTaskAssignmentModal>
       </Box>
-
-      {(items && items.length) > 0 ? (
+      {(assignments && assignments.length) > 0 ? (
         <Table aria-label="simple table" sx={{ mt: 1 }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell width={"25%"}>
+              <StyledTableCell width={"40%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Tên sản phẩm
+                  Tên người dùng
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell width={"15%"}>
+              <StyledTableCell width={"40%"}>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Hình ảnh
+                  Vai trò
                 </Typography>
               </StyledTableCell>
               <StyledTableCell width={"20%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Danh mục
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"10%"}>
-                <Typography variant="subtitle2" fontWeight={600}>
-                  Số lượng
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell width={"30%"}>
                 <Typography variant="subtitle2" fontWeight={600}></Typography>
               </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {items &&
-              items.map((item) => (
-                <StyledTableRow key={item?.id}>
+            {assignments &&
+              assignments.map((assignment) => (
+                <StyledTableRow key={assignment?.id}>
                   <TableCell>
-                    <Typography variant="p" fontWeight={600}>
-                      {item?.interiorItem?.code ?? ""}
-                    </Typography>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {item?.interiorItem?.name ?? ""}
-                    </Typography>
+                    <UserCard
+                      name={assignment?.projectParticipation?.user?.name}
+                      email={assignment?.projectParticipation?.user?.email}
+                      phone={assignment?.projectParticipation?.user?.phone}
+                    ></UserCard>
                   </TableCell>
                   <TableCell>
-                    <Image
-                      src={checkValidUrl(item?.interiorItem?.imageUrl)}
-                      alt={item?.interiorItem?.name ?? ""}
-                      width={500}
-                      height={500}
-                      style={{
-                        objectFit: "cover",
-                        width: "6rem",
-                        height: "6rem",
-                      }}
-                      unoptimized={true}
-                      onError={(e) => {
-                        e.target.src = "/images/results/no-file.png";
-                      }}
-                    />
+                    <Chip
+                      label={
+                        participationRoleOptions[
+                          assignment?.projectParticipation?.role
+                        ]
+                      }
+                    ></Chip>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {item?.interiorItem?.interiorItemCategory?.name ?? ""}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={400}>
-                      {item.quantity}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        my: "auto",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <Button
-                        component={Link}
-                        disableElevation
-                        variant="contained"
-                        href={`/items/${item.interiorItem?.id}`}
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <MessageModal
+                        color="error"
+                        buttonLabel="Xóa"
+                        submitLabel="Xóa"
+                        onSubmit={() => onDeleteTaskAssignment(assignment.id)}
                       >
-                        Thông tin
-                      </Button>
-                      <FormModal
-                        sx={{ ml: 1 }}
-                        size="small"
-                        title="Cập nhật số lượng"
-                        buttonLabel="Cập nhật SL"
-                        submitLabel="Cập nhật"
-                        hasOpenEvent
-                        onOpen={() => onOpenEditQuantityModal(item)}
-                        bottomLeftContent={
-                          <MessageModal
-                            color="error"
-                            buttonLabel="Xóa"
-                            onSubmit={() => onDeleteItemInTask(item.id)}
-                          >
-                            Xóa sản phẩm này?
-                          </MessageModal>
-                        }
-                        onSubmit={() => onUpdateItemQuantity(item)}
-                      >
-                        <Grid item xs={12} lg={12}>
-                          <NumberSimpleForm
-                            title="Số lượng"
-                            required
-                            value={selectedItemQuantity}
-                            onChange={(value) => setSelectedItemQuantity(value)}
-                            subtitle="Số lượng sản phẩm"
-                          ></NumberSimpleForm>
-                        </Grid>
-                      </FormModal>
+                        Xóa phân công?
+                      </MessageModal>
                     </Box>
                   </TableCell>
                 </StyledTableRow>

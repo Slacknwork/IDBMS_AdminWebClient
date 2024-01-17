@@ -49,14 +49,14 @@ export default function CreateReportModal({ success }) {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -93,7 +93,7 @@ export default function CreateReportModal({ success }) {
       case "description":
         result = checkValidField({
           value: value,
-          maxLength: 750,
+          maxLength: 50,
           required: true
         });
         break;

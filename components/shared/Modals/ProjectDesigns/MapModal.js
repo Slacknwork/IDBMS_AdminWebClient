@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { Box, CircularProgress, Grid, Typography, Stack } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
-import { useSelector } from "react-redux";
+import { fetchProjectData } from "/store/reducers/data";
+import { useSelector, useDispatch } from "react-redux";
 
 import locales from "/constants/locales";
 
@@ -14,6 +15,7 @@ import FormModal from "/components/shared/Modals/Form";
 
 export default function MapProjectDesignModal({ success }) {
   // INIT
+  const dispatch = useDispatch();
   const params = useParams();
   const data = useSelector((state) => state.data);
   const project = data?.project;
@@ -21,14 +23,12 @@ export default function MapProjectDesignModal({ success }) {
   // FETCH DATA
   const [loading, setLoading] = useState(false);
   const [projectDesign, setProjectDesign] = useState({});
-
   const fetchMapProjectDesign = async () => {
     try {
       const estimatePrice = project?.estimatedPrice;
       const type = project?.type;
       const projectDesign = await mapProjectDesign({ estimatePrice, type });
       setProjectDesign(projectDesign);
-      console.log(projectDesign);
     } catch (error) {
       toast.error("Lỗi: Chọn thiết kế dự án!");
     }
@@ -36,6 +36,7 @@ export default function MapProjectDesignModal({ success }) {
 
   const fetchData = async () => {
     setLoading(true);
+    dispatch(fetchProjectData(params.id));
     await Promise.all([fetchMapProjectDesign()]);
     setLoading(false);
   };
