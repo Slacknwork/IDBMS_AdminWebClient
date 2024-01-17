@@ -15,7 +15,7 @@ const downloadFileByUrl = async ({ imageUrl = "", name = "" } = {}) => {
       token,
     });
 
-    downloadFileFromResponse(response.file);
+    downloadFileFromResponse(response.file, name);
   } catch (error) {
     console.error("Error fetching download by url:", error);
     throw error;
