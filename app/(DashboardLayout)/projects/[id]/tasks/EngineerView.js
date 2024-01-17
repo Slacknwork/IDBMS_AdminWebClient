@@ -24,14 +24,12 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import moment from "moment-timezone";
+import "moment/locale/vi";
 
-import {
-  getProjectTasksByProjectId,
-  updateProjectTaskStage,
-} from "/services/projectTaskServices";
+import { getProjectTasksByProjectId } from "/services/projectTaskServices";
 import { getAllTaskCategories } from "/services/taskCategoryServices";
 import { getFloorsByProjectId } from "/services/floorServices";
 import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
@@ -39,6 +37,7 @@ import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 import { participationRoleIndex } from "/constants/enums/participationRole";
+import timezone from "/constants/timezone";
 
 import FilterAutocomplete from "/components/shared/FilterAutocomplete";
 import FilterStatus from "/components/shared/FilterStatus";
@@ -68,6 +67,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+moment.tz.setDefault(timezone.momentDefault);
+moment.locale(timezone.momentLocale);
 
 export default function ProjectTasksPage() {
   // CONSTANTS
@@ -495,10 +497,8 @@ export default function ProjectTasksPage() {
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" fontWeight={400}>
-                            {task.startDate
-                              ? new Date(task.startDate).toLocaleDateString(
-                                  "vi-VN"
-                                )
+                            {task.startedDate
+                              ? moment(task.startedDate).format("lll")
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>

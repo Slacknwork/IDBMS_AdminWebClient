@@ -90,21 +90,21 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   };
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
       case "calculationUnit":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
@@ -114,14 +114,14 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           value: value,
           minValue: 0,
           checkZeroValue: true,
-          required: true
+          required: true,
         });
 
         break;
       case "status":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
@@ -480,18 +480,17 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
 
       {/* ESTIMATE BUSINESS DAY */}
       <Grid item xs={12} lg={6}>
-        <NumberForm
+        <NumberSimpleForm
           title="Ước tính số ngày làm việc"
           titleSpan={6}
           fieldSpan={6}
-          spacing={5}
           subtitle="Nhập số ngày"
           value={formData.estimateBusinessDay}
           error={formData.estimateBusinessDayError.hasError}
           errorLabel={formData.estimateBusinessDayError.label}
           onChange={(value) => handleInputChange("estimateBusinessDay", value)}
           endAdornment={<></>}
-        ></NumberForm>
+        ></NumberSimpleForm>
       </Grid>
 
       {/* PAYMENT STAGE */}

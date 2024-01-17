@@ -85,8 +85,8 @@ export default function ProjectDetailsLayout({ children }) {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-      (participationRole?.role &&
-        participationRole?.role === participationRoleIndex.ProjectManager)
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
     );
   }, [participationRole?.role, user?.role]);
 
@@ -111,7 +111,7 @@ export default function ProjectDetailsLayout({ children }) {
               <Chip
                 label={
                   participationRoleOptions[
-                  participationRole?.role ?? participationRoleIndex.Viewer
+                    participationRole?.role ?? participationRoleIndex.Viewer
                   ]
                 }
                 color={"primary"}
@@ -185,7 +185,7 @@ export default function ProjectDetailsLayout({ children }) {
                       Đã hủy dự án.
                     </Typography>
                     {isManager && (
-                      <Box>
+                      <>
                         <Typography
                           variant="p"
                           sx={{ mt: 1, textAlign: "center" }}
@@ -194,7 +194,7 @@ export default function ProjectDetailsLayout({ children }) {
                           đổi?
                         </Typography>
                         <MessageModal
-                          sx={{ mt: 2 }}
+                          sx={{ mt: 2, mx: "auto" }}
                           color="success"
                           buttonLabel="Bắt đầu"
                           buttonVariant="contained"
@@ -209,7 +209,7 @@ export default function ProjectDetailsLayout({ children }) {
                             Bắt đầu lại dự án từ giai đoạn Trao đổi?
                           </Typography>
                         </MessageModal>
-                      </Box>
+                      </>
                     )}
                   </Box>
                 ) : (
@@ -233,7 +233,7 @@ export default function ProjectDetailsLayout({ children }) {
                         >
                           <Box sx={{ display: "flex" }}>
                             {project?.status === projectStatusIndex.Suspended &&
-                              index === projectStatusIndex.Ongoing ? (
+                            index === projectStatusIndex.Ongoing ? (
                               <PauseCircleIcon
                                 sx={{ my: "auto", mr: 2 }}
                                 color="error"
@@ -270,7 +270,7 @@ export default function ProjectDetailsLayout({ children }) {
                             <>
                               {project?.status ===
                                 projectStatusIndex.Suspended &&
-                                index === projectStatusIndex.Ongoing ? (
+                              index === projectStatusIndex.Ongoing ? (
                                 <MessageModal
                                   buttonSize="small"
                                   buttonLabel="Tiếp tục"
@@ -284,7 +284,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                projectStatusIndex.Ongoing &&
+                                  projectStatusIndex.Ongoing &&
                                 index === projectStatusIndex.Ongoing ? (
                                 <MessageModal
                                   color="error"
@@ -315,7 +315,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                projectStatusIndex.Ongoing &&
+                                  projectStatusIndex.Ongoing &&
                                 index === projectStatusIndex.WarrantyPending ? (
                                 <MessageModal
                                   buttonSize="small"
@@ -332,7 +332,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                projectStatusIndex.WarrantyPending &&
+                                  projectStatusIndex.WarrantyPending &&
                                 index === projectStatusIndex.Done ? (
                                 <MessageModal
                                   disabled={isInWarranty()}
