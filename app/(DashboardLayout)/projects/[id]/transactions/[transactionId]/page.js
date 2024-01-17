@@ -54,6 +54,7 @@ export default function TransactionDetails() {
     ProjectId: params.id,
     status: "",
     statusError: { hasError: false, label: "" },
+    transactionReceiptImageUrl: null,
     transactionReceiptImage: null,
     transactionReceiptImageError: { hasError: false, label: "" },
   });
@@ -390,6 +391,7 @@ export default function TransactionDetails() {
             subtitle="Chọn tệp"
             titleSpan={3}
             fieldSpan={9}
+            imgDisplay={formData.transactionReceiptImageUrl}
             value={formData.transactionReceiptImage}
             error={formData.transactionReceiptImageError.hasError}
             errorLabel={formData.transactionReceiptImageError.label}
