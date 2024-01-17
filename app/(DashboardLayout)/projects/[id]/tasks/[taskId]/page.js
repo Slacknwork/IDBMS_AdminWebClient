@@ -5,11 +5,13 @@ import { Grid } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
+import moment from "moment-timezone";
 
 import calculationUnitOptions from "/constants/enums/calculationUnit";
 import projectTaskStatusOptions from "/constants/enums/projectTaskStatus";
 import { participationRoleIndex } from "/constants/enums/participationRole";
 import { companyRoleConstants } from "/constants/enums/companyRole";
+import timezone from "/constants/timezone";
 
 import { getAllTaskCategories } from "/services/taskCategoryServices";
 import { getPaymentStagesByProjectId } from "/services/paymentStageServices";
@@ -30,6 +32,8 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
 import checkValidField from "/components/validations/field";
+
+moment.tz.setDefault(timezone.momentDefault);
 
 export default function TaskOverviewPage() {
   const params = useParams();
@@ -82,21 +86,20 @@ export default function TaskOverviewPage() {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
-
+    let result = { isValid: true, label: "" };
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
       case "calculationUnit":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
@@ -106,14 +109,14 @@ export default function TaskOverviewPage() {
           value: value,
           minValue: 0,
           checkZeroValue: true,
-          required: true
+          required: true,
         });
 
         break;
       case "status":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
@@ -294,6 +297,10 @@ export default function TaskOverviewPage() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participationRole?.role, user?.role]);
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   return (
     <PageContainer title="Task Details" description="Details of the task">
