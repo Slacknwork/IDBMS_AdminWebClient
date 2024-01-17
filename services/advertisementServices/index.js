@@ -26,7 +26,7 @@ const getAdvertisementProjects = async ({
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching advertisement projects:", error);
     throw error;
   }
 };
@@ -45,7 +45,7 @@ const getAdvertisementProjectById = async (projectId = "") => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching advertisement project by id:", error);
     throw error;
   }
 };
@@ -68,7 +68,7 @@ const getAdvertisementProjectDocuments = async ({
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching advertisement images:", error);
     throw error;
   }
 };
@@ -119,7 +119,7 @@ const updateAdvertisementProjectDescription = async (id, request) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating project:", error);
+    console.error("Error updating project description:", error);
     throw error;
   }
 };
@@ -137,7 +137,7 @@ const updateAdvertisementProjectStatus = async (id, status) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating project:", error);
+    console.error("Error updating project advertisement status:", error);
     throw error;
   }
 };
@@ -191,7 +191,7 @@ const createAdvertisementImages = async (projectId, request) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating ads image:", error);
+    console.error("Error creating advertisement image:", error);
     throw error;
   }
 };
@@ -208,7 +208,7 @@ const deleteImageById = async (id) => {
     });
     return response.message;
   } catch (error) {
-    console.error("Error fetching delete ads image:", error);
+    console.error("Error fetching delete advertisement image:", error);
     throw error;
   }
 };
