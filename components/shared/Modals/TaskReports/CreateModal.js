@@ -64,8 +64,7 @@ export default function CreateReportModal({ success }) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          checkZeroValue: true,
-          required: true,
+          required: true
         });
 
         break;
@@ -95,7 +94,6 @@ export default function CreateReportModal({ success }) {
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: false,
         });
         break;
       default:

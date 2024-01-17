@@ -66,8 +66,7 @@ export default function ProjectDocumentDetails(projectDocument) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          checkZeroValue: true,
-          required: true,
+          required: true
         });
 
         break;
