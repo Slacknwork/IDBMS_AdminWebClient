@@ -129,7 +129,6 @@ function SelectContractTypeScreen({
           </Card>
         </Grid>
       )}
-
     </Grid>
   );
 }
@@ -244,34 +243,51 @@ export default function GenerateContractModal({ sx }) {
     setScreen(newScreen);
   };
 
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const fetchCompanyContract = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
     try {
+      toast.loading(`Đang tạo Hợp đồng doanh nghiệp...`);
       const fileName = `${fileConstants.documentType.CONTRACT} - ${project?.name}${fileConstants.type.DOCX}`;
       await generateCompanyContract(companyFormData, fileName);
     } catch (error) {
       console.error(error);
       toast.error("Lỗi dữ liệu: Hợp đồng doanh nghiệp!");
     }
+    toast.dismiss();
+    setIsDownloading(false);
   };
 
   const fetchIndividualContract = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
     try {
+      toast.loading(`Đang tạo Hợp đồng cá nhân...`);
       const fileName = `${fileConstants.documentType.CONTRACT} - ${project?.name}${fileConstants.type.DOCX}`;
       await generateIndividualContract(individualFormData, fileName);
     } catch (error) {
       console.error(error);
       toast.error("Lỗi dữ liệu: Hợp đồng cá nhân!");
     }
+    toast.dismiss();
+    setIsDownloading(false);
   };
 
   const fetchSettlementFile = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
     try {
+      toast.loading(`Đang tạo Bảng quyết toán...`);
       const fileName = `${fileConstants.documentType.SETTLEMENT} - ${project?.name}${fileConstants.type.XLSX}`;
       await downloadSettlementFile(project?.id, fileName);
     } catch (error) {
       console.error(error);
       toast.error("Lỗi dữ liệu: Quyết toán!");
     }
+    toast.dismiss();
+    setIsDownloading(false);
   };
 
   const fetchContract = () => {

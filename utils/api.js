@@ -41,11 +41,10 @@ export async function fetchDownload({
     },
     body,
   });
-  const data = await response.blob();
   if (!response.ok) {
     if (response.status === 401) {
       window.location.href = "/authentication/login";
     }
   }
-  return data;
+  return response;
 }
