@@ -227,6 +227,7 @@ export default function ProjectTasksPage() {
 
   const fetchTasks = async () => {
     const projectId = params.id;
+    const participationId = projectRole.id;
     const search = searchParams.get(searchQuery) ?? "";
     const categoryId = searchParams.get(categoryQuery) ?? "";
     const stageId = searchParams.get(stageQuery) ?? "";
@@ -237,6 +238,7 @@ export default function ProjectTasksPage() {
 
     const data = await getProjectTasksByProjectId({
       projectId,
+      participationId,
       search,
       categoryId,
       status,
