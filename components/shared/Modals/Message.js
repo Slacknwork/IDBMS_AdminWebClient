@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Chip, Grid, Modal, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  Modal,
+  Tooltip,
+} from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -22,6 +30,7 @@ export default function MessageModal({
   backgroundColor = "",
   sx,
   chip,
+  iconButton,
   disabled = false,
   buttonLabel,
   buttonSize,
@@ -53,7 +62,11 @@ export default function MessageModal({
 
   return (
     <Box>
-      {chip ? (
+      {iconButton ? (
+        <IconButton disabled={disabled} onClick={handleOpen}>
+          {iconButton}
+        </IconButton>
+      ) : chip ? (
         <Tooltip title={tooltipTitle} placement={tooltipPlacement} arrow>
           <Chip
             disabled={disabled}

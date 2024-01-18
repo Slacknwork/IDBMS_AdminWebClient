@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -231,19 +231,6 @@ export default function UserDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          lg={6}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <UpdateUserPasswordModal> </UpdateUserPasswordModal>
-        </Grid>
-
         {/* BIO */}
         <Grid item xs={12} lg={6}>
           <TextForm
@@ -360,6 +347,26 @@ export default function UserDetails() {
             errorLabel={formData.roleError.label}
             onChange={(value) => handleInputChange("role", value)}
           ></SelectForm>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={4} lg={4}>
+              <Typography variant="h5">Đổi mật khẩu</Typography>
+              <Typography variant="p">Đổi mật khẩu tài khoản này</Typography>
+            </Grid>
+            <Grid item xs={8} lg={8}>
+              <UpdateUserPasswordModal> </UpdateUserPasswordModal>
+            </Grid>
+          </Grid>
         </Grid>
       </DetailsPage>
     </PageContainer>

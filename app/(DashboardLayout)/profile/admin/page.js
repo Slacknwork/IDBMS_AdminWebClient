@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -140,19 +140,6 @@ export default function AdminDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          lg={6}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
-        </Grid>
-
         {/* TÊN ĐĂNG NHẬP */}
         <Grid item xs={12} lg={6}>
           <TextForm
@@ -178,6 +165,26 @@ export default function AdminDetails() {
             errorLabel={formData.emailError.label}
             onChange={(e) => handleInputChange("email", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={4} lg={4}>
+              <Typography variant="h5">Đổi mật khẩu</Typography>
+              <Typography variant="p">Đổi mật khẩu tài khoản này</Typography>
+            </Grid>
+            <Grid item xs={8} lg={8}>
+              <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
+            </Grid>
+          </Grid>
         </Grid>
       </DetailsPage>
     </PageContainer>

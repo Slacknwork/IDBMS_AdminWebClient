@@ -30,10 +30,15 @@ import {
   deleteTaskReport,
 } from "/services/taskReportServices";
 import { downloadFileByUrl } from "/services/downloadServices";
+import {
+  createTaskDocument,
+  deleteTaskDocument,
+} from "/services/taskDocumentServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import checkValidField from "/components/validations/field";
 import checkValidUrl from "/components/validations/url";
+import MessageModal from "/components/shared/Modals/Message";
 
 export default function ProjectDocumentDetails(projectDocument) {
   const params = useParams();
@@ -66,7 +71,7 @@ export default function ProjectDocumentDetails(projectDocument) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          required: true
+          required: true,
         });
 
         break;
@@ -240,6 +245,36 @@ export default function ProjectDocumentDetails(projectDocument) {
     setDownloading(false);
   };
 
+  const uploadFile = async (file) => {
+    try {
+      const taskReportId = params.reportId;
+      const projectId = params.id;
+      toast.loading(`Đang tải ${file.name}...`);
+      await createTaskDocument(
+        { name: file.name, document: file },
+        taskReportId,
+        projectId
+      );
+      toast.dismiss();
+      toast.success("Tải thành công!");
+      await fetchDataFromApi();
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Lỗi tải file!");
+    }
+  };
+
+  const onDeleteDocument = async (document) => {
+    try {
+      await deleteTaskDocument(document.id, params.id);
+      toast.success("Xóa thành công!");
+      await fetchDataFromApi();
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Lỗi xóa file!");
+    }
+  };
+
   return (
     <PageContainer title={formData.name} description="Báo cáo công việc">
       <DetailsPage
@@ -320,7 +355,7 @@ export default function ProjectDocumentDetails(projectDocument) {
               type="file"
               multiple
               style={{ display: "none" }}
-              onChange={(e) => handleFileInputChange(e.target.files)}
+              onChange={(e) => uploadFile(e.target.files[0])}
             />
           </Box>
           <Box sx={{ mt: 1, width: 1 }}>
@@ -330,8 +365,9 @@ export default function ProjectDocumentDetails(projectDocument) {
                   <ListItem
                     key={file.name}
                     secondaryAction={
-                      <Box>
+                      <Box sx={{ display: "flex" }}>
                         <IconButton
+                          sx={{ mr: 1 }}
                           disabled={downloading}
                           onClick={() => onDownloadDocument(file)}
                           edge="end"
@@ -339,13 +375,15 @@ export default function ProjectDocumentDetails(projectDocument) {
                         >
                           <DownloadIcon />
                         </IconButton>
-                        <IconButton
-                          sx={{ ml: 1 }}
+                        <MessageModal
+                          title="Xóa file"
+                          iconButton={<DeleteIcon />}
+                          onSubmit={() => onDeleteDocument(file)}
                           edge="end"
                           aria-label="delete"
                         >
-                          <DeleteIcon />
-                        </IconButton>
+                          Xóa {file.name}?
+                        </MessageModal>
                       </Box>
                     }
                   >
