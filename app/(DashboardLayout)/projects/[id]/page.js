@@ -185,6 +185,9 @@ export default function ProjectDetails() {
     setIsAdmin(user?.role && user?.role === companyRoleConstants.ADMIN);
   }, [user?.role]);
 
+  const vatAmount = formData?.finalPrice * 0.1 ?? 0;
+  const totalIncludeVat = vatAmount + formData?.finalPrice ?? 0
+
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
@@ -328,6 +331,32 @@ export default function ProjectDetails() {
                 <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
                   <Typography variant="p" sx={{ my: "auto" }}>
                     {formData?.finalPrice?.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    VAT (10%):
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {vatAmount.toLocaleString("en-US") ?? 0} VND
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container sx={{ mt: 1, pt: 2 }}>
+                <Grid item xs={6} lg={5}>
+                  <Typography variant="h6" sx={{ my: "auto" }}>
+                    Tổng (kèm VAT):
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} lg={7} sx={{ textAlign: "right" }}>
+                  <Typography variant="p" sx={{ my: "auto" }}>
+                    {totalIncludeVat.toLocaleString("en-US") ?? 0} VND
                   </Typography>
                 </Grid>
               </Grid>
