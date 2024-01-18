@@ -18,6 +18,7 @@ import {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import UpdateAdminPasswordModal from "/components/shared/Modals/admins/UpdatePasswordModal"
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -171,6 +172,10 @@ export default function TaskCategoryDetails() {
             errorLabel={formData.nameError.label}
             onChange={(e) => handleInputChange("name", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
         </Grid>
 
         {/* TÊN ĐĂNG NHẬP */}

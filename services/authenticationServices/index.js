@@ -28,7 +28,7 @@ const loginUser = async (request) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error logging in admin:", error);
+    console.error("Error logging in user:", error);
     throw error;
   }
 };
@@ -79,7 +79,39 @@ const adminConfirmVerify = async ({ code, email } = {}) => {
   }
 };
 
-const logout = async (request) => {};
+const updateUserPassword = async (request) => {
+  try {
+    const url = `${endpoint}/password`;
+    const response = await fetchData({
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      body: JSON.stringify(request),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user password:", error);
+    throw error;
+  }
+};
+
+const updateAdminPassword = async (request) => {
+  try {
+    const url = `${endpoint}/admin/password`;
+    const response = await fetchData({
+      url,
+      method: "PUT",
+      contentType: "application/json",
+      body: JSON.stringify(request),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user password:", error);
+    throw error;
+  }
+};
+
+const logout = async (request) => { };
 
 export {
   loginAdmin,
@@ -88,4 +120,6 @@ export {
   logout,
   confirmVerify,
   adminConfirmVerify,
+  updateUserPassword,
+  updateAdminPassword,
 };

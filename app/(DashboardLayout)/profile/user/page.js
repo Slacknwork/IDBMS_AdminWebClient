@@ -18,6 +18,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "/constants/enums/companyRole";
 import { getUserById, updateUser } from "/services/userServices";
+import UpdateUserPasswordModal from "/components/shared/Modals/users/UpdatePasswordModal"
 
 export default function UserDetails() {
   const [formData, setFormData] = useState({
@@ -228,6 +229,10 @@ export default function UserDetails() {
             errorLabel={formData.nameError.label}
             onChange={(e) => handleInputChange("name", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <UpdateUserPasswordModal> </UpdateUserPasswordModal>
         </Grid>
 
         {/* BIO */}

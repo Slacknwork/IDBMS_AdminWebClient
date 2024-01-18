@@ -13,6 +13,7 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import checkValidField from "/components/validations/field";
 import checkValidEmail from "/components/validations/email";
+import UpdateAdminPasswordModal from "/components/shared/Modals/admins/UpdatePasswordModal"
 
 export default function AdminDetails() {
   const [formData, setFormData] = useState({
@@ -137,6 +138,10 @@ export default function AdminDetails() {
             errorLabel={formData.nameError.label}
             onChange={(e) => handleInputChange("name", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
         </Grid>
 
         {/* TÊN ĐĂNG NHẬP */}
