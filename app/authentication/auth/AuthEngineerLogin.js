@@ -62,6 +62,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       }
     } catch (error) {
       console.error("Error :", error);
+      setResponseMessage(
+        "Đăng nhập thất bại! Vui lòng kiểm tra tên đăng nhập và mật khẩu!"
+      );
     }
     setLoading(false);
   };

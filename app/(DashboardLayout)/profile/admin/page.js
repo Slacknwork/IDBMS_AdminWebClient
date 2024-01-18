@@ -13,8 +13,9 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import checkValidField from "/components/validations/field";
 import checkValidEmail from "/components/validations/email";
+import UpdateAdminPasswordModal from "/components/shared/Modals/admins/UpdatePasswordModal"
 
-export default function TaskCategoryDetails() {
+export default function AdminDetails() {
   const [formData, setFormData] = useState({
     name: "",
     nameError: { hasError: false, label: "" },
@@ -24,60 +25,35 @@ export default function TaskCategoryDetails() {
     emailError: { hasError: false, label: "" },
     password: "",
     passwordError: { hasError: false, label: "" },
-    creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "name":
-      case "password":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       case "email":
-        const validEmail = checkValidEmail(value);
+        result = checkValidEmail(value);
 
-        if (validEmail.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: validEmail.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
 
   // INIT CONST
@@ -103,11 +79,10 @@ export default function TaskCategoryDetails() {
 
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
-    const transformedValue = transformData(formData);
     try {
-      await updateAdmin(user.id, transformedValue);
+      await updateAdmin(user.id, formData);
       toast.success("Cập nhật thành công!");
-      await fetchDataFromApi();
+      await fetchAdmin();
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
@@ -122,17 +97,6 @@ export default function TaskCategoryDetails() {
       handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
-  };
-
-  const transformData = (obj) => {
-    const result = { ...obj };
-    for (const key in result) {
-      if (result[key] === null) {
-        result[key] = "";
-      }
-    }
-
-    return result;
   };
 
   useEffect(() => {
@@ -174,6 +138,10 @@ export default function TaskCategoryDetails() {
             errorLabel={formData.nameError.label}
             onChange={(e) => handleInputChange("name", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
         </Grid>
 
         {/* TÊN ĐĂNG NHẬP */}
