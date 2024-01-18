@@ -6,7 +6,7 @@ const checkValidEmail = (email) => {
             return { isValid: false, label: "Email không hợp lệ!" };
         }
 
-        return { isValid: true };
+        return { isValid: true, label: "" };
     } catch (error) {
         console.error(error)
         return { isValid: false, label: "Đã có lỗi xảy ra!" };

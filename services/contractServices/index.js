@@ -16,7 +16,7 @@ const getIndividualContractInfoById = async ({ projectId = "" } = {}) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching individual contract data:", error);
     throw error;
   }
 };
@@ -33,7 +33,7 @@ const getCompanyContractInfoById = async ({ projectId = "" } = {}) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching company contract data:", error);
     throw error;
   }
 };
@@ -52,7 +52,7 @@ const generateIndividualContract = async (request, fileName = "file") => {
 
     downloadFileFromResponse(response.data, fileName);
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error generating individual contract:", error);
     throw error;
   }
 };
@@ -71,7 +71,7 @@ const generateCompanyContract = async (request, fileName = "file") => {
 
     downloadFileFromResponse(response.data, fileName);
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching generating company contract:", error);
     throw error;
   }
 };

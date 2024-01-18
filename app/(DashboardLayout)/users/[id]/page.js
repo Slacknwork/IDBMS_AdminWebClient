@@ -68,14 +68,6 @@ export default function ItemDetails() {
         });
 
         break;
-      case "password":
-        result = checkValidField({
-          value: value,
-          minLength: 6,
-          required: true,
-        });
-
-        break;
       case "language":
       case "role":
         result = checkValidField({
@@ -146,11 +138,6 @@ export default function ItemDetails() {
 
         break;
       case "dateOfBirth":
-        result = checkValidField({
-          value: value,
-          maxLength: 50,
-        });
-
         break;
       default:
     }
@@ -161,13 +148,6 @@ export default function ItemDetails() {
         hasError: !result.isValid,
         label: result.label,
       },
-    }));
-  };
-
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
     }));
   };
 
@@ -203,7 +183,6 @@ export default function ItemDetails() {
   };
 
   const onSaveUser = async () => {
-    const transformedValue = transformData(formData);
     try {
       await updateUser(params.id, formData);
       toast.success("Cập nhật thành công!");
@@ -227,17 +206,6 @@ export default function ItemDetails() {
       console.error("Error :", error);
       toast.error("Lỗi!");
     }
-  };
-
-  const transformData = (obj) => {
-    const result = { ...obj };
-    for (const key in result) {
-      if (result[key] === null) {
-        result[key] = "";
-      }
-    }
-
-    return result;
   };
 
   useEffect(() => {

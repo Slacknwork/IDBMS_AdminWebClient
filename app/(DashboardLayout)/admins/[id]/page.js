@@ -17,6 +17,7 @@ import {
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -26,9 +27,7 @@ export default function TaskCategoryDetails() {
     usernameError: { hasError: false, label: "" },
     email: "",
     emailError: { hasError: false, label: "" },
-    password: "",
-    passwordError: { hasError: false, label: "" },
-    creatorId: "0a93a6c1-8267-4d60-8c6d-c8e25c8f8f22",
+    creatorId: "",
   });
 
   const handleInputChange = (field, value) => {
@@ -43,37 +42,9 @@ export default function TaskCategoryDetails() {
         });
 
         break;
-      case "password":
-        result = checkValidField({
-          value: value,
-          minLength: 6,
-          maxLength: 20,
-          required: true
-        });
-
-        break;
       case "email":
-        const validEmail = checkValidEmail(value);
+        result = checkValidEmail(value);
 
-        if (validEmail.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: validEmail.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       default:
     }
@@ -87,17 +58,9 @@ export default function TaskCategoryDetails() {
     }));
   };
 
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
-
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [parentCategories, setParentCategories] = useState([]);
+  const user = useSelector((state) => state.user);
 
   // INIT CONST
   const [loading, setLoading] = useState(true);
@@ -193,7 +156,7 @@ export default function TaskCategoryDetails() {
         onSave={handleSubmit}
         deleteMessage={"Xoá người quản lý?"}
         deleteLabel={"Xoá"}
-        hasDelete
+        hasDelete={user.id !== formData.id}
         onDelete={handleDelete}
         loading={loading}
       >
