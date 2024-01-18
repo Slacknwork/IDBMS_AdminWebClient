@@ -5,6 +5,9 @@ import { Grid } from "@mui/material";
 import { useParams } from "next/navigation";
 import moment from "moment-timezone";
 import { toast } from "react-toastify";
+import checkValidField from "/components/validations/field"
+import checkValidEmail from "/components/validations/email"
+import checkValidPhone from "/components/validations/phone"
 
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
@@ -28,20 +31,112 @@ export default function CreateProjectModal({ formData, setFormData }) {
   };
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
-      case "projectCategory":
-      case "basedOnDecorProject":
-        setFormData((prevData) => ({ ...prevData, [`${field}Id`]: value }));
-        console.log(value);
+      case "customerName":
+      case "projectName":
+      case "identityCode":
+      case "issuedBy":
+      case "bCompanyName":
+      case "bRepresentedBy":
+      case "bSwiftCode":
+      case "bPosition":
+        result = checkValidField({
+          value: value,
+          maxLength: 50,
+          required: true
+        });
+
+        break;
+      case "dateOfBirth":
+      case "codeCreatedDate":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
+      case "address":
+      case "bCompanyAddress":
+      case "registeredPlaceOfPermanentResidence":
+      case "paymentMethod":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+          required: true
+        });
+
+        break;
+      case "phone":
+      case "bCompanyPhone":
+        const validPhone = checkValidPhone(value);
+
+        if (validPhone.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validPhone.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "email":
+      case "bEmail":
+        const validEmail = checkValidEmail(value);
+
+        if (validEmail.isValid == false) {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: true,
+              label: validEmail.label,
+            },
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+            [`${field}Error`]: {
+              hasError: false,
+              label: "",
+            },
+          }));
+        }
+        break;
+      case "numOfCopie":
+      case "numOfA":
+      case "numOfB":
+      case "estimateDays":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          checkZeroValue: true,
+          required: true
+        });
+
         break;
       default:
-        break;
     }
-    const errorLabel = validateInput(field, value);
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
-      [`${field}Error`]: { hasError: !!errorLabel, label: errorLabel },
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
     }));
   };
 
