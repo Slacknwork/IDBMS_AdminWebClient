@@ -2,10 +2,19 @@
 
 import Image from "next/image";
 import { useCallback, useState } from "react"; // Import useState
-import { Box, FormControl, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "@mui/system";
-import checkValidUrl from "components/validations/url"
+import checkValidUrl from "components/validations/url";
+import { downloadFileByUrl } from "/services/downloadServices";
+import { toast } from "react-toastify";
 
 export default function FormFile({
   sx,
@@ -14,7 +23,7 @@ export default function FormFile({
   imgSpan = 2,
   fieldSpan = 6,
   spacing = 2,
-  imgDisplay = "/images/results/no-image.png",
+  imgDisplay,
   imgAlt = "",
   title,
   required,
@@ -25,7 +34,7 @@ export default function FormFile({
   errorLabel,
   onChange,
   hasFile,
-  fileType = "/images/results/no-file.png"
+  fileType = "/images/results/no-file.png",
 }) {
   const theme = useTheme();
   const [previewImage, setPreviewImage] = useState(null); // State for image preview
@@ -50,6 +59,23 @@ export default function FormFile({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+  const downloadImgDisplay = async () => {
+    if (!imgDisplay) return;
+    try {
+      toast.loading("Đang tải file...");
+      await downloadFileByUrl({ imageUrl: imgDisplay });
+      toast.dismiss();
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Lỗi tải file!");
+    }
+  };
+
+  const removeFile = () => {
+    onChange(null);
+    setPreviewImage(null);
+  };
+
   return (
     <Grid container spacing={spacing} sx={sx}>
       {title && (
@@ -59,6 +85,31 @@ export default function FormFile({
             {required && <span style={{ color: "red" }}>*</span>}
           </Typography>
           <Typography variant="p">{subtitle || ""}</Typography>
+          <Box display="flex" sx={{ mt: 1 }}>
+            {imgDisplay && (
+              <Button
+                sx={{ mr: 1 }}
+                size="small"
+                variant="contained"
+                disableElevation
+                onClick={downloadImgDisplay}
+              >
+                Tải file
+              </Button>
+            )}
+            {value && (
+              <Button
+                color="error"
+                sx={{ mr: 1 }}
+                size=""
+                variant="contained"
+                disableElevation
+                onClick={removeFile}
+              >
+                Xóa
+              </Button>
+            )}
+          </Box>
         </Grid>
       )}
       <Grid item xs={title ? fieldSpan : 12} lg={title ? fieldSpan : 12}>
@@ -87,7 +138,9 @@ export default function FormFile({
               />
             ) : (
               <Image
-                src={previewImage || imgDisplay || "/images/results/no-image.png"}
+                src={
+                  previewImage || imgDisplay || "/images/results/no-image.png"
+                }
                 alt={imgAlt || ""}
                 width={500}
                 height={500}
