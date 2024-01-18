@@ -25,6 +25,7 @@ import moment from "moment-timezone";
 import stageStatusOptions, {
   stageStatusBackgroundChipColors,
 } from "/constants/enums/stageStatus";
+import { projectStatusIndex } from "/constants/enums/projectStatus";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 import { participationRoleIndex } from "/constants/enums/participationRole";
 import timezone from "/constants/timezone";
@@ -78,6 +79,7 @@ export default function PaymentStages() {
   // INIT
   const user = useSelector((state) => state.user);
   const data = useSelector((state) => state.data);
+  const project = data?.project;
   const participationRole = data?.projectRole;
 
   const router = useRouter();
@@ -184,18 +186,20 @@ export default function PaymentStages() {
             allLabel="Tất cả"
           ></FilterStatus>
         </Box>
-        {isManager && (
-          <Box sx={{ display: "flex" }}>
-            {!loading && stages?.length === 0 && (
-              <MapProjectDesignModal
-                success={fetchDataFromApi}
-              ></MapProjectDesignModal>
-            )}
-            <CreateStageModal success={handleModalResult}>
-              Thêm
-            </CreateStageModal>
-          </Box>
-        )}
+        {isManager &&
+          project &&
+          project?.status === projectStatusIndex.Negotiating && (
+            <Box sx={{ display: "flex" }}>
+              {!loading && stages?.length === 0 && (
+                <MapProjectDesignModal
+                  success={fetchDataFromApi}
+                ></MapProjectDesignModal>
+              )}
+              <CreateStageModal stages={stages} success={handleModalResult}>
+                Thêm
+              </CreateStageModal>
+            </Box>
+          )}
       </Box>
       {/* Table */}
       {loading ? (

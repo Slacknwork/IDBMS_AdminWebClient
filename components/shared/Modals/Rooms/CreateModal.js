@@ -12,7 +12,7 @@ import { createRoom } from "/services/roomServices";
 import FormModal from "/components/shared/Modals/Form";
 import SelectForm from "/components/shared/Forms/Select";
 import TextForm from "/components/shared/Forms/Text";
-import NumberForm from "/components/shared/Forms/Number";
+import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import checkValidField from "/components/validations/field";
 
@@ -40,14 +40,13 @@ export default function CreateRoomModal({ onCreate }) {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
-
+    let result = { isValid: true, label: "" };
     switch (field) {
       case "usePurpose":
         result = checkValidField({
           value: value,
           maxLength: 750,
-          required: true
+          required: true,
         });
 
         break;
@@ -56,7 +55,7 @@ export default function CreateRoomModal({ onCreate }) {
           value: value,
           minValue: 0,
           checkZeroValue: true,
-          required: true
+          required: true,
         });
 
         break;
@@ -113,11 +112,9 @@ export default function CreateRoomModal({ onCreate }) {
     if (!switchSubmit) return;
     try {
       const response = await createRoom(formData, params.id);
-      console.log(response);
       toast.success("Thêm thành công!");
       router.push(`/projects/${params.id}/rooms/${response.id}`);
     } catch (error) {
-      console.error("Error :", error);
       toast.error("Lỗi!");
     }
   };
@@ -127,13 +124,12 @@ export default function CreateRoomModal({ onCreate }) {
 
   // FETCH OPTIONS
   const fetchOptionsFromApi = async () => {
+    setLoading(true);
     const fetchRoomTypes = async () => {
       try {
         const response = await getAllRoomTypes();
-        console.log(response);
         setRoomTypes(response.list || []);
       } catch (error) {
-        console.error("Error fetching data:", error);
         toast.error("Lỗi nạp dữ liệu 'Loại phòng' từ hệ thống");
       }
     };
@@ -142,7 +138,6 @@ export default function CreateRoomModal({ onCreate }) {
   };
 
   useEffect(() => {
-    fetchOptionsFromApi();
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);
@@ -158,6 +153,10 @@ export default function CreateRoomModal({ onCreate }) {
     handleCreate();
     setSwitchSubmit(false);
   }, [switchSubmit]);
+
+  useEffect(() => {
+    fetchOptionsFromApi();
+  }, []);
 
   return (
     <FormModal
@@ -203,7 +202,7 @@ export default function CreateRoomModal({ onCreate }) {
 
       {/* AREA */}
       <Grid item xs={12} lg={6}>
-        <NumberForm
+        <NumberSimpleForm
           title="Diện tích"
           titleSpan={6}
           fieldSpan={6}
@@ -215,7 +214,7 @@ export default function CreateRoomModal({ onCreate }) {
           errorLabel={formData.areaError.label}
           onChange={(value) => handleInputChange("area", value)}
           endAdornment={<>m²</>}
-        ></NumberForm>
+        ></NumberSimpleForm>
       </Grid>
 
       {/* LANGUAGE */}

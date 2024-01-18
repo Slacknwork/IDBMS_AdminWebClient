@@ -9,13 +9,14 @@ const items = [
     subPaths: ["rooms"],
   },
   {
-    path: "stages",
-    label: "Giai đoạn",
-  },
-  {
     path: "tasks",
     label: "Công việc",
   },
+  {
+    path: "stages",
+    label: "Giai đoạn",
+  },
+
   {
     path: "comments",
     label: "Bình luận",

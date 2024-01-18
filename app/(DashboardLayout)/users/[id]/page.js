@@ -49,14 +49,14 @@ export default function ItemDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -64,7 +64,7 @@ export default function ItemDetails() {
         result = checkValidField({
           value: value,
           maxLength: 750,
-          required: true
+          required: true,
         });
 
         break;
@@ -72,7 +72,7 @@ export default function ItemDetails() {
         result = checkValidField({
           value: value,
           minLength: 6,
-          required: true
+          required: true,
         });
 
         break;
@@ -80,7 +80,7 @@ export default function ItemDetails() {
       case "role":
         result = checkValidField({
           value: value,
-          required: true
+          required: true,
         });
 
         break;
@@ -204,9 +204,8 @@ export default function ItemDetails() {
 
   const onSaveUser = async () => {
     const transformedValue = transformData(formData);
-    console.log(transformedValue);
     try {
-      await updateUser(params.id, transformedValue);
+      await updateUser(params.id, formData);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {

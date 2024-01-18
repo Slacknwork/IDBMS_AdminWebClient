@@ -13,21 +13,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-
-import calculationUnitOptions from "/constants/enums/calculationUnit";
+import DownloadIcon from "@mui/icons-material/Download";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
-import projectDocumentCategoryOptions from "/constants/enums/projectDocumentCategory";
-import { getAllProjectDocumentTemplates } from "/services/projectDocumentTemplateServices";
-import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import DetailsPage from "/components/shared/DetailsPage";
 import PageContainer from "/components/container/PageContainer";
-import SelectForm from "/components/shared/Forms/Select";
-import FileForm from "/components/shared/Forms/File";
-import CheckForm from "/components/shared/Forms/Checkbox";
 import TextForm from "/components/shared/Forms/Text";
-import FormModal from "/components/shared/Modals/Form";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 
 import { toast } from "react-toastify";
@@ -37,6 +29,7 @@ import {
   updateTaskReport,
   deleteTaskReport,
 } from "/services/taskReportServices";
+import { downloadFileByUrl } from "/services/downloadServices";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import checkValidField from "/components/validations/field";
@@ -53,19 +46,19 @@ export default function ProjectDocumentDetails(projectDocument) {
     unitUsedError: { hasError: false, label: "" },
     description: "",
     descriptionError: { hasError: false, label: "" },
-    documentList: [],
+    taskDocuments: [],
     projectTaskId: params.taskId,
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -73,7 +66,6 @@ export default function ProjectDocumentDetails(projectDocument) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          checkZeroValue: true,
           required: true
         });
 
@@ -180,25 +172,17 @@ export default function ProjectDocumentDetails(projectDocument) {
   // HANDLE BUTTON CLICK
   const handleSave = async () => {
     const transformedValue = transformData(formData);
-    console.log(transformedValue);
-
     try {
-      const response = await updateTaskReport(
-        params.reportId,
-        transformedValue
-      );
-      console.log(response);
+      await updateTaskReport(params.reportId, transformedValue);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
     } catch (error) {
-      console.error("Error :", error);
       toast.error("Lỗi!");
     }
   };
   const handleDelete = async () => {
     try {
-      const response = await deleteTaskReport(params.reportId);
-      console.log(response);
+      await deleteTaskReport(params.reportId);
       toast.success("Xoá thành công!");
       router.push(`/projects/${params.id}/tasks/${params.taskId}/reports`);
     } catch (error) {
@@ -240,62 +224,81 @@ export default function ProjectDocumentDetails(projectDocument) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [downloading, setDownloading] = useState(false);
+  const onDownloadDocument = async (taskDocument) => {
+    setDownloading(true);
+    try {
+      toast.loading(`Đang tải ${taskDocument.name}`);
+      await downloadFileByUrl({
+        imageUrl: taskDocument.document,
+        name: taskDocument.name,
+      });
+      toast.dismiss();
+    } catch (error) {
+      toast.error("Lỗi tải file!");
+    }
+    setDownloading(false);
+  };
+
   return (
-    <PageContainer
-      title={formData.name}
-      description="Chi tiết thiết kế công việc"
-    >
+    <PageContainer title={formData.name} description="Báo cáo công việc">
       <DetailsPage
         loading={loading}
-        title="Thông tin thiết kế công việc"
-        saveMessage="Lưu thông tin thiết kế công việc?"
+        title="Thông tin báo cáo"
+        saveMessage="Lưu báo cáo"
         onSave={handleSubmit}
-        deleteMessage={"Xoá thiết kế công việc này?"}
+        deleteMessage={"Xoá báo cáo này?"}
         deleteLabel={"Xoá"}
         hasDelete
         onDelete={handleDelete}
       >
-        {/* NAME */}
-        <Grid item xs={12} lg={12}>
-          <TextForm
-            title="Tên"
-            required
-            subtitle="Nhập tên báo cáo"
-            value={formData.name}
-            error={formData.nameError.hasError}
-            errorLabel={formData.nameError.label}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-          ></TextForm>
-        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Grid container spacing={4}>
+            {/* NAME */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+                title="Tên"
+                required
+                subtitle="Nhập tên báo cáo"
+                value={formData.name}
+                error={formData.nameError.hasError}
+                errorLabel={formData.nameError.label}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+              ></TextForm>
+            </Grid>
 
-        {/* UNIT USED */}
-        <Grid item xs={12} lg={12}>
-          <NumberSimpleForm
-            title="KL Thực hiện"
-            required
-            inputProps={{
-              min: 0,
-            }}
-            subtitle="Khối lượng đã sử dụng"
-            value={formData.unitUsed}
-            error={formData.unitUsedError.hasError}
-            errorLabel={formData.unitUsedError.label}
-            onChange={(value) => handleInputChange("unitUsed", value)}
-          ></NumberSimpleForm>
-        </Grid>
+            {/* UNIT USED */}
+            <Grid item xs={12} lg={12}>
+              <NumberSimpleForm
+                title="KL Thực hiện"
+                required
+                inputProps={{
+                  min: 0,
+                }}
+                subtitle="Khối lượng đã sử dụng"
+                value={formData.unitUsed}
+                error={formData.unitUsedError.hasError}
+                errorLabel={formData.unitUsedError.label}
+                onChange={(value) => handleInputChange("unitUsed", value)}
+              ></NumberSimpleForm>
+            </Grid>
 
-        {/* DESCRIPTION */}
-        <Grid item xs={12} lg={12}>
-          <TextForm
-            title="Mô tả"
-            multiline
-            rows={4}
-            subtitle="Mô tả sơ lược nội dung báo cáo"
-            value={formData.description}
-            error={formData.descriptionError.hasError}
-            errorLabel={formData.descriptionError.label}
-            onChange={(e) => handleInputChange("description", e.target.value)}
-          ></TextForm>
+            {/* DESCRIPTION */}
+            <Grid item xs={12} lg={12}>
+              <TextForm
+                title="Mô tả"
+                multiline
+                rows={4}
+                subtitle="Mô tả sơ lược nội dung báo cáo"
+                value={formData.description}
+                error={formData.descriptionError.hasError}
+                errorLabel={formData.descriptionError.label}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+              ></TextForm>
+            </Grid>
+          </Grid>
         </Grid>
 
         <Grid item xs={12} lg={6}>
@@ -321,19 +324,29 @@ export default function ProjectDocumentDetails(projectDocument) {
             />
           </Box>
           <Box sx={{ mt: 1, width: 1 }}>
-            {formData.documentList && formData.documentList.length > 0 ? (
+            {formData.taskDocuments && formData.taskDocuments.length > 0 ? (
               <List>
-                {formData.documentList?.map((file, index) => (
+                {formData.taskDocuments?.map((file) => (
                   <ListItem
                     key={file.name}
                     secondaryAction={
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => handleRemoveFile(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <Box>
+                        <IconButton
+                          disabled={downloading}
+                          onClick={() => onDownloadDocument(file)}
+                          edge="end"
+                          aria-label="delete"
+                        >
+                          <DownloadIcon />
+                        </IconButton>
+                        <IconButton
+                          sx={{ ml: 1 }}
+                          edge="end"
+                          aria-label="delete"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
                     }
                   >
                     <ListItemIcon>

@@ -119,17 +119,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           >
             Đăng nhập QTV
           </Typography>
-          <Typography
-            component={Link}
-            href="/"
-            fontWeight="500"
-            sx={{
-              textDecoration: "none",
-              color: "primary.main",
-            }}
-          >
-            Quên mật khẩu?
-          </Typography>
         </Stack>
 
         {!loading && (
