@@ -50,6 +50,7 @@ export default function FormText({
             sx={{
               "& .MuiInputBase-input.Mui-disabled": {
                 WebkitTextFillColor: colors.disabledFormText,
+                backgroundColor: colors.disabledBackgroundColor,
               },
             }}
           >

@@ -62,6 +62,7 @@ export default function AutocompleteForm({
               sx={{
                 "& .MuiInputBase-input.Mui-disabled": {
                   WebkitTextFillColor: colors.disabledFormText,
+                  backgroundColor: colors.disabledBackgroundColor,
                 },
               }}
               {...params}

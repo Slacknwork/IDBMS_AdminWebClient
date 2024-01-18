@@ -43,6 +43,7 @@ export default function FormNumberSimple({
             sx={{
               "& .MuiInputBase-input.Mui-disabled": {
                 WebkitTextFillColor: colors.disabledFormText,
+                backgroundColor: colors.disabledBackgroundColor,
               },
             }}
             type="number"

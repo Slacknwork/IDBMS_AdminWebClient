@@ -72,6 +72,7 @@ export default function FormNumber({
             sx={{
               "& .MuiInputBase-input.Mui-disabled": {
                 WebkitTextFillColor: colors.disabledFormText,
+                backgroundColor: colors.disabledBackgroundColor,
               },
             }}
             disabled={disabled}
