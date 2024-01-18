@@ -34,43 +34,42 @@ export default function CreateNotificationModalForProject(success) {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
+
     switch (field) {
       case "category":
-      case "content":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: "Không được để trống!",
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
+        break;
+      case "content":
+        result = checkValidField({
+          value: value,
+          maxLength: 750,
+          required: true
+        });
+
         break;
       case "listUserId":
       case "selectedNotificationOption":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
       default:
     }
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -140,7 +139,7 @@ export default function CreateNotificationModalForProject(success) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -182,6 +181,7 @@ export default function CreateNotificationModalForProject(success) {
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>
         <SelectForm
+          required
           title="Loại thông báo"
           subtitle="Chọn loại thông báo"
           value={formData.category}
@@ -195,6 +195,7 @@ export default function CreateNotificationModalForProject(success) {
       {/* CONTENT */}
       <Grid item xs={12} lg={12}>
         <TextForm
+          required
           fullWidth
           multiline
           title="Nội dung"
