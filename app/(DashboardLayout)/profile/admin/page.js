@@ -13,7 +13,7 @@ import TextForm from "/components/shared/Forms/Text";
 import SelectForm from "/components/shared/Forms/Select";
 import checkValidField from "/components/validations/field";
 import checkValidEmail from "/components/validations/email";
-import UpdateAdminPasswordModal from "/components/shared/Modals/admins/UpdatePasswordModal"
+import UpdateAdminPasswordModal from "/components/shared/Modals/Admins/UpdatePasswordModal";
 
 export default function AdminDetails() {
   const [formData, setFormData] = useState({
@@ -28,14 +28,14 @@ export default function AdminDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -140,7 +140,16 @@ export default function AdminDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
         </Grid>
 

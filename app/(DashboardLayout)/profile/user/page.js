@@ -18,7 +18,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "/constants/enums/companyRole";
 import { getUserById, updateUser } from "/services/userServices";
-import UpdateUserPasswordModal from "/components/shared/Modals/users/UpdatePasswordModal"
+import UpdateUserPasswordModal from "/components/shared/Modals/Users/UpdatePasswordModal";
 
 export default function UserDetails() {
   const [formData, setFormData] = useState({
@@ -231,7 +231,16 @@ export default function UserDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <UpdateUserPasswordModal> </UpdateUserPasswordModal>
         </Grid>
 
@@ -255,9 +264,7 @@ export default function UserDetails() {
             value={formData.jobPosition}
             error={formData.jobPositionError.hasError}
             errorLabel={formData.jobPositionError.label}
-            onChange={(e) =>
-              handleInputChange("jobPosition", e.target.value)
-            }
+            onChange={(e) => handleInputChange("jobPosition", e.target.value)}
           ></TextForm>
         </Grid>
 
@@ -269,9 +276,7 @@ export default function UserDetails() {
             value={formData.companyName}
             error={formData.companyNameError.hasError}
             errorLabel={formData.companyNameError.label}
-            onChange={(e) =>
-              handleInputChange("companyName", e.target.value)
-            }
+            onChange={(e) => handleInputChange("companyName", e.target.value)}
           ></TextForm>
         </Grid>
 
