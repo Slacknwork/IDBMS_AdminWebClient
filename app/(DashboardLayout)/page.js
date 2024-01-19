@@ -182,7 +182,7 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell>
                         <Typography variant="subtitle2">
-                          {moment(project.updatedDate).format("L")}
+                          {project?.updatedDate ? moment(project?.updatedDate).format("L") : moment(project?.createdDate).format("L")}
                         </Typography>
                       </TableCell>
                       <TableCell align="right">

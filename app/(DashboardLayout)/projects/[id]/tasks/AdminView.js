@@ -112,7 +112,7 @@ export default function ProjectTasksPage() {
   const searchParams = useSearchParams();
 
   // VIEWMODE (STAGE / FLOOR & ROOMS)
-  const viewModeLabels = ["Xem theo giai đoạn", "Xem theo tầng/phòng"];
+  const viewModeLabels = ["Xem theo tầng/phòng", "Xem theo giai đoạn"];
   const [viewMode, setViewMode] = useState(
     searchParams.get(viewModeQuery)
       ? parseInt(searchParams.get(viewModeQuery))
@@ -368,6 +368,20 @@ export default function ProjectTasksPage() {
     setTasks(updatedTasks);
   };
 
+  const translateFloorNo = (floorNo) => {
+    if (floorNo === null)
+      return "Tầng không xác định";
+
+    if (floorNo === 0) {
+      return "Tầng Trệt";
+    } else if (floorNo < 0) {
+      return "Tầng Hầm " + Math.abs(floorNo);
+    } else {
+      // You might want to handle other cases or use a translation library here
+      return "Tầng " + floorNo;
+    }
+  };
+
   return (
     <PageContainer
       title="Danh sách công việc"
@@ -419,7 +433,7 @@ export default function ProjectTasksPage() {
             >
               <Tab label="Chưa có giai đoạn" />
               {stages.map((stage) => (
-                <Tab key={stage.id} label={stage.name} />
+                <Tab key={stage.id} label={"Giai đoạn " + stage.stageNo} />
               ))}
             </Tabs>
           ) : (
@@ -430,7 +444,7 @@ export default function ProjectTasksPage() {
             >
               <Tab label="Ngoài kiến trúc" />
               {floors.map((floor) => (
-                <Tab key={floor.id} label={floor.usePurpose} />
+                <Tab key={floor.id} label={translateFloorNo(floor?.floorNo)} />
               ))}
             </Tabs>
           )}
