@@ -441,7 +441,7 @@ export default function TaskOverviewPage() {
                 title="Ngày kết thúc"
                 titleSpan={6}
                 fieldSpan={6}
-                disabled={!isManager}
+                disabled
                 subtitle="Ngày hoàn thành công việc"
                 value={formData.endDate}
                 error={formData.endDateError.hasError}
