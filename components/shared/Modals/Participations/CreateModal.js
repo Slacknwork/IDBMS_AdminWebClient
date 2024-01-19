@@ -25,7 +25,7 @@ import participationRoleOptions from "/constants/enums/participationRole";
 import companyRoleOptions from "/constants/enums/companyRole";
 import { useSelector } from "react-redux";
 
-export default function CreateParticipationModal({ sx, success }) {
+export default function CreateParticipationModal({ sx, success, list }) {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const project = data?.project;

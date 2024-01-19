@@ -90,7 +90,7 @@ export default function ProjectListPage() {
     const search = searchParams.get(searchQuery) ?? "";
     const status = searchParams.get(projectStatusQuery) ?? "";
     const type = searchParams.get(projectTypeQuery) ?? "";
-    const page = searchParams.get(pageQuery) ?? defaultPage;
+    const pageNo = searchParams.get(pageQuery) ?? defaultPage;
     const pageSize = searchParams.get(pageSizeQuery) ?? defaultPageSize;
     try {
       const data = await getParticipationsByUserId({
@@ -98,7 +98,7 @@ export default function ProjectListPage() {
         search,
         type,
         status,
-        page,
+        pageNo,
         pageSize,
       });
       setCount(data.totalItem);
@@ -204,7 +204,7 @@ export default function ProjectListPage() {
                         <Avatar
                           src={
                             languageTypeChipImages[
-                              participation.project?.language
+                            participation.project?.language
                             ]
                           }
                         />

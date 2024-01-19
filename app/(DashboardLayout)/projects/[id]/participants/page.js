@@ -129,7 +129,6 @@ export default function Comments() {
   const [userCount, setUserCount] = useState(0);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(defaultPage);
-  const [userPageSize, setUserPageSize] = useState(defaultPageSize);
 
   // FETCH AVAILABLE USERS DATA
   const fetchAvailableUsers = async ({ setRole } = {}) => {
@@ -138,7 +137,6 @@ export default function Comments() {
       const search = userSearch;
       const role = setRole ?? userRole;
       const page = userPage;
-      const pageSize = userPageSize;
 
       const availableUsers = await getAvailableUsersForProject({
         projectId,
@@ -181,10 +179,11 @@ export default function Comments() {
   useEffect(() => {
     fetchAvailableUsersData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userRole, userSearch, userPage, userPageSize]);
+  }, [userRole, userSearch, userPage]);
 
   const handleModalResult = () => {
     fetchDataFromApi();
+    fetchAvailableUsersData()
   };
 
   const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
@@ -306,7 +305,7 @@ export default function Comments() {
             </CreateNotificationModalForProject>
           )*/}
 
-          <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult}>
+          <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult} list={users}>
             Tạo
           </CreateParticipationModal>
         </Box>
