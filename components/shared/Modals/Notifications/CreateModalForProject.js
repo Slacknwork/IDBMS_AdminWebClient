@@ -34,43 +34,29 @@ export default function CreateNotificationModalForProject(success) {
   });
 
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" }
     switch (field) {
       case "category":
       case "content":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: "Không được để trống!",
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       case "listUserId":
       case "selectedNotificationOption":
-        setFormData((prevData) => ({
-          ...prevData,
-          [field]: value,
-          [`${field}Error`]: {
-            hasError: false,
-            label: "",
-          },
-        }));
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -105,7 +91,6 @@ export default function CreateNotificationModalForProject(success) {
       });
       toast.success("Gửi thành công!");
       console.log(response);
-      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

@@ -23,30 +23,23 @@ export default function CreateNotificationModalForCustomers(success) {
     switch (field) {
       case "category":
       case "content":
-        const result = checkValidField(value);
+        result = checkValidField({
+          value: value,
+          required: true
+        });
 
-        if (result.isValid == false) {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: true,
-              label: result.label,
-            },
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            [field]: value,
-            [`${field}Error`]: {
-              hasError: false,
-              label: "",
-            },
-          }));
-        }
         break;
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -74,7 +67,6 @@ export default function CreateNotificationModalForCustomers(success) {
       toast.success("Gửi thành công!");
       console.log(response);
       handleClose();
-      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");
