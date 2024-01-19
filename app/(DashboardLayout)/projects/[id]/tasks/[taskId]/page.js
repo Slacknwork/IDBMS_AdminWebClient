@@ -104,6 +104,13 @@ export default function TaskOverviewPage() {
 
         break;
       case "pricePerUnit":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          required: true
+        });
+
+        break;
       case "unitInContract":
         result = checkValidField({
           value: value,
@@ -292,8 +299,8 @@ export default function TaskOverviewPage() {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-        (participationRole?.role &&
-          participationRole?.role === participationRoleIndex.ProjectManager)
+      (participationRole?.role &&
+        participationRole?.role === participationRoleIndex.ProjectManager)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participationRole?.role, user?.role]);
