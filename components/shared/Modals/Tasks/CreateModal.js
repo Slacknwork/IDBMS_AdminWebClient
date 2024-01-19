@@ -476,7 +476,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       {/* STARTED */}
       <Grid item xs={12} lg={6}>
         <DateForm
-          datetime
           title="Ngày bắt đầu"
           titleSpan={6}
           fieldSpan={6}

@@ -130,6 +130,7 @@ export default function PaymentStages() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
+    dispatch(fetchProjectData(params.id));
   };
 
   //STAGE STATUS HANDLE
