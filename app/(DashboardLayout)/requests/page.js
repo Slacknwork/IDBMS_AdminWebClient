@@ -34,6 +34,8 @@ import MessageModal from "/components/shared/Modals/Message";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
 import UserCard from "/components/shared/UserCard";
+import languageOptions, { languageIndex } from "/constants/enums/language";
+import SelectForm from "/components/shared/Forms/Select";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -109,10 +111,14 @@ export default function RequestList() {
 
   // UPDATE BOOKING STATUS
   const [note, setNote] = useState("");
+  const [language, setLanguage] = useState(1);
   const onNoteChange = (e) => {
     setNote(e.target.value);
   };
   const onUpdateSubmit = async (request, status) => {
+    request.status = status
+    request.adminReply = note
+    request.language = language
     try {
       await processBookingRequestStatus(request.id, request);
       toast.success("Cập nhật thành công!");
@@ -230,6 +236,22 @@ export default function RequestList() {
                             value={note}
                             onChange={onNoteChange}
                           ></FormText>
+
+                          <Box sx={{ mt: 3 }}>
+                            {request?.userId === null && (
+                              <SelectForm
+                                title="Ngôn ngữ"
+                                required={request?.userId === null}
+                                subtitle="Chọn ngôn ngữ"
+                                value={language}
+                                options={languageOptions}
+                                defaultValue={-1}
+                                defaultLabel="Chọn một..."
+                                onChange={(value) => setLanguage(languageIndex[value])}
+                              ></SelectForm>
+                            )}
+                          </Box>
+
                         </MessageModal>
                         <MessageModal
                           color="error"
