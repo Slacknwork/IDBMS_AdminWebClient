@@ -59,8 +59,8 @@ export default function DashboardPage() {
         user.role === companyRoleConstants.ADMIN
           ? await getDashboardData()
           : (user.role === companyRoleConstants.ARCHITECT ||
-              user.role === companyRoleConstants.CONSTRUCTION_MANAGER) &&
-            (await getDashboardDataByUserId(user.id));
+            user.role === companyRoleConstants.CONSTRUCTION_MANAGER) &&
+          (await getDashboardDataByUserId(user.id));
 
       setRecentReports(dashboard.recentReports);
       setRecentProjects(dashboard.recentProjects);
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                 recentReports.map((report) => (
                   <TimelineItem key={report.id}>
                     <TimelineOppositeContent>
-                      {moment(report?.createdTime).format("lll")}
+                      {moment(report?.createdTime).format("L")}
                     </TimelineOppositeContent>
                     <TimelineSeparator>
                       <TimelineDot color="primary" variant="outlined" />
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell>
                         <Typography variant="subtitle2">
-                          {moment(project.updatedDate).format("lll")}
+                          {moment(project.updatedDate).format("L")}
                         </Typography>
                       </TableCell>
                       <TableCell align="right">

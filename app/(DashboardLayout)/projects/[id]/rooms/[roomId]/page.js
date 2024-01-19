@@ -211,8 +211,8 @@ export default function RoomDetailsPage() {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-        (participationRole?.role &&
-          participationRole?.role === participationRoleIndex.ProjectManager)
+      (participationRole?.role &&
+        participationRole?.role === participationRoleIndex.ProjectManager)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participationRole?.role, user?.role]);
@@ -292,10 +292,10 @@ export default function RoomDetailsPage() {
                     title="Đơn giá"
                     disabled
                     subtitle="Đơn giá trên 1 đơn vị diện tích của phòng"
-                    value={formData.pricePerArea?.toLocaleString(locales.viVN)}
+                    value={formData.pricePerArea?.toLocaleString("en-US")}
                     error={formData.pricePerAreaError.hasError}
                     errorLabel={formData.pricePerAreaError.label}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     endAdornment={"VND/m²"}
                   ></NumberForm>
                 </Grid>
