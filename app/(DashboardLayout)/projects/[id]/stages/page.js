@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import {
   Box,
@@ -44,6 +44,7 @@ import Pagination from "/components/shared/Pagination";
 import ReopenStageModal from "/components/shared/Modals/Stages/ReopenStageModal";
 import MessageModal from "/components/shared/Modals/Message";
 import MapProjectDesignModal from "/components/shared/Modals/ProjectDesigns/MapModal";
+import { fetchProjectData } from "/store/reducers/data";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -85,6 +86,7 @@ export default function PaymentStages() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch();
   moment.tz.setDefault(timezone.momentDefault);
 
   // FETCH DATA FROM API
@@ -136,6 +138,7 @@ export default function PaymentStages() {
       await startPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
+      dispatch(fetchProjectData(params.id));
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -147,6 +150,7 @@ export default function PaymentStages() {
       await endPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
+      dispatch(fetchProjectData(params.id));
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
@@ -158,6 +162,7 @@ export default function PaymentStages() {
       await suspendPaymentStage(stageId, params.id);
       toast.success("Cập nhật thành công!");
       await fetchDataFromApi();
+      dispatch(fetchProjectData(params.id));
     } catch (error) {
       console.error("Error:", error);
       toast.error("Lỗi!");
