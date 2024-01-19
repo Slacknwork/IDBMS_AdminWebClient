@@ -47,7 +47,7 @@ import Tabs from "/components/shared/Tabs";
 import MessageModal from "/components/shared/Modals/Message";
 import FormModal from "/components/shared/Modals/Form";
 
-import TabItems from "./tabItems";
+import TabItems, { viewerItems } from "./tabItems";
 
 export default function ProjectDetailsLayout({ children }) {
   // INIT
@@ -383,7 +383,17 @@ export default function ProjectDetailsLayout({ children }) {
         </Grid>
       </Grid>
       <Box sx={{ mt: 3, minHeight: "30rem" }}>
-        <Tabs shadows uriPos={3} tabs={TabItems}></Tabs>
+        <Tabs
+          shadows
+          uriPos={3}
+          tabs={
+            participationRole &&
+            participationRole.role &&
+            participationRole.role !== participationRoleIndex.Viewer
+              ? TabItems
+              : viewerItems
+          }
+        ></Tabs>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>
     </PageContainer>

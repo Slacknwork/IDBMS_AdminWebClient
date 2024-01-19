@@ -64,6 +64,7 @@ export default function AutocompleteForm({
                   WebkitTextFillColor: colors.disabledFormText,
                   backgroundColor: colors.disabledBackgroundColor,
                 },
+                backgroundColor: disabled ? colors.disabledBackgroundColor : "",
               }}
               {...params}
               label={label || ""}

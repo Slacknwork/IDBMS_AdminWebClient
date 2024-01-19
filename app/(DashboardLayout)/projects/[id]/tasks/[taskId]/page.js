@@ -290,11 +290,16 @@ export default function TaskOverviewPage() {
   }, []);
 
   const [isManager, setIsManager] = useState(false);
+  const [isViewer, setIsViewer] = useState(false);
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
         (participationRole?.role &&
           participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+    setIsViewer(
+      participationRole?.role &&
+        participationRole?.role === participationRoleIndex.Viewer
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participationRole?.role, user?.role]);
@@ -314,6 +319,7 @@ export default function TaskOverviewPage() {
         extraButtons={
           !loading && (
             <UpdateTaskStatusModal
+              disabled={isViewer}
               sx={{ my: "auto" }}
               task={formData}
               success={fetchDataFromApi}

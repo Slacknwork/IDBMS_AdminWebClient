@@ -362,58 +362,64 @@ export default function PaymentStages() {
                 </TableCell>
                 <TableCell align="right">
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    {response.openAllowed && (
-                      <MessageModal
-                        disabled={loading}
-                        color="success"
-                        buttonLabel={"Bắt đầu"}
-                        onSubmit={() => handleStartStage(response.stage.id)}
-                        title={"Bắt đầu giai đoạn"}
-                        submitLabel={"Xác nhận"}
-                      >
-                        <Typography variant="p">
-                          {"Xác nhận bắt đầu giai đoạn"}
-                        </Typography>
-                      </MessageModal>
-                    )}
+                    {isManager && (
+                      <Box>
+                        {response.openAllowed && (
+                          <MessageModal
+                            disabled={loading}
+                            color="success"
+                            buttonLabel={"Bắt đầu"}
+                            onSubmit={() => handleStartStage(response.stage.id)}
+                            title={"Bắt đầu giai đoạn"}
+                            submitLabel={"Xác nhận"}
+                          >
+                            <Typography variant="p">
+                              {"Xác nhận bắt đầu giai đoạn"}
+                            </Typography>
+                          </MessageModal>
+                        )}
 
-                    {response.closeAllowed && (
-                      <MessageModal
-                        disabled={loading}
-                        color="success"
-                        buttonLabel={"Đóng"}
-                        onSubmit={() => handleCloseStage(response.stage.id)}
-                        title={"Đóng giai đoạn"}
-                        submitLabel={"Xác nhận"}
-                      >
-                        <Typography variant="p">
-                          {"Xác nhận đã hoàn thành giai đoạn"}
-                        </Typography>
-                      </MessageModal>
-                    )}
+                        {response.closeAllowed && (
+                          <MessageModal
+                            disabled={loading}
+                            color="success"
+                            buttonLabel={"Đóng"}
+                            onSubmit={() => handleCloseStage(response.stage.id)}
+                            title={"Đóng giai đoạn"}
+                            submitLabel={"Xác nhận"}
+                          >
+                            <Typography variant="p">
+                              {"Xác nhận đã hoàn thành giai đoạn"}
+                            </Typography>
+                          </MessageModal>
+                        )}
 
-                    {response.reopenAllowed && (
-                      <ReopenStageModal
-                        stageId={response.stage.id}
-                        success={handleModalResult}
-                      >
-                        {" "}
-                      </ReopenStageModal>
-                    )}
+                        {response.reopenAllowed && (
+                          <ReopenStageModal
+                            stageId={response.stage.id}
+                            success={handleModalResult}
+                          >
+                            {" "}
+                          </ReopenStageModal>
+                        )}
 
-                    {response.suspendAllowed && (
-                      <MessageModal
-                        disabled={loading}
-                        color="error"
-                        buttonLabel={"Hoãn"}
-                        onSubmit={() => handleSuspendedStage(response.stage.id)}
-                        title={"Hoãn giai đoạn"}
-                        submitLabel={"Xác nhận"}
-                      >
-                        <Typography variant="p">
-                          {"Xác nhận hoãn giai đoạn này"}
-                        </Typography>
-                      </MessageModal>
+                        {response.suspendAllowed && (
+                          <MessageModal
+                            disabled={loading}
+                            color="error"
+                            buttonLabel={"Hoãn"}
+                            onSubmit={() =>
+                              handleSuspendedStage(response.stage.id)
+                            }
+                            title={"Hoãn giai đoạn"}
+                            submitLabel={"Xác nhận"}
+                          >
+                            <Typography variant="p">
+                              {"Xác nhận hoãn giai đoạn này"}
+                            </Typography>
+                          </MessageModal>
+                        )}
+                      </Box>
                     )}
 
                     <Button

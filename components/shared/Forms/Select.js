@@ -52,6 +52,7 @@ export default function FormText({
                 WebkitTextFillColor: colors.disabledFormText,
                 backgroundColor: colors.disabledBackgroundColor,
               },
+              backgroundColor: disabled ? colors.disabledBackgroundColor : "",
             }}
           >
             <MenuItem disabled value={defaultValue}>

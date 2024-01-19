@@ -1,19 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Card, Grid, Typography } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
 import projectAdvertisementStatusOptions from "/constants/enums/advertisementStatus";
 import { companyRoleConstants } from "/constants/enums/companyRole";
+import locales from "/constants/locales";
 
-import {
-  getProjectById,
-  getProjectsBySiteId,
-  updateProject,
-} from "/services/projectServices";
+import { getProjectById, updateProject } from "/services/projectServices";
 import { getProjectCategories } from "/services/projectCategoryServices";
 
 import PageContainer from "/components/container/PageContainer";
@@ -186,11 +184,16 @@ export default function ProjectDetails() {
   }, [user?.role]);
 
   const vatAmount = formData?.finalPrice * 0.1 ?? 0;
-  const totalIncludeVat = vatAmount + formData?.finalPrice ?? 0
+  const totalIncludeVat = vatAmount + formData?.finalPrice ?? 0;
 
   return (
     <PageContainer title={pageName} description={pageDescription}>
       <DetailsPage
+        extraButtons={
+          <Button component={Link} href={`${process.env.NEXT_PUBLIC_USER_URL}/${locales.viVN}/project/${params.id}`} disableElevation variant="contained">
+            Xem trang người dùng
+          </Button>
+        }
         hideSave={!isAdmin}
         loading={loading}
         title="Thông tin dự án"

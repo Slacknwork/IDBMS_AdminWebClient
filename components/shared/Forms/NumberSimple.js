@@ -45,6 +45,7 @@ export default function FormNumberSimple({
                 WebkitTextFillColor: colors.disabledFormText,
                 backgroundColor: colors.disabledBackgroundColor,
               },
+              backgroundColor: disabled ? colors.disabledBackgroundColor : "",
             }}
             type="number"
             inputProps={inputProps}

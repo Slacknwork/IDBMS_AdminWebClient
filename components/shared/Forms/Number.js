@@ -74,6 +74,7 @@ export default function FormNumber({
                 WebkitTextFillColor: colors.disabledFormText,
                 backgroundColor: colors.disabledBackgroundColor,
               },
+              backgroundColor: disabled ? colors.disabledBackgroundColor : "",
             }}
             disabled={disabled}
             variant={variant}

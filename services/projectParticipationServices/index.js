@@ -54,7 +54,7 @@ const getParticipationsByProjectId = async ({
   pageSize = "",
 } = {}) => {
   try {
-    const token = store.getState().user?.token ?? "";
+    const token = store.getState().customer?.token ?? "";
     const paramString = `name=${search}&role=${role}&pageNo=${page}&pageSize=${pageSize}`;
     const url = `${endpoint}/project/${projectId}?${paramString}`;
     const response = await fetchData({
