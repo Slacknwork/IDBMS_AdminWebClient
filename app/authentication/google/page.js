@@ -40,7 +40,7 @@ export default function AuthGoogleCallbackPage() {
   }, [session]);
 
   return (
-    <PageContainer title="Đăng nhập bằng Google">
+    <PageContainer title="IDT">
       <Box
         sx={{
           width: "100vw",
