@@ -15,11 +15,15 @@ import TextForm from "/components/shared/Forms/Text";
 import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import checkValidField from "/components/validations/field";
+import { useSelector } from "react-redux";
+import { projectTypeIndex } from "/constants/enums/projectType";
 
 export default function CreateRoomModal({ onCreate }) {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const data = useSelector((state) => state.data);
+  const project = data?.project;
 
   const modalOpenQuery = "create";
   const [formData, setFormData] = useState({
@@ -33,7 +37,7 @@ export default function CreateRoomModal({ onCreate }) {
     areaError: { hasError: false, label: "" },
     roomTypeId: null,
     roomTypeError: { hasError: false, label: "" },
-    language: 0,
+    language: project?.language,
     languageError: { hasError: false, label: "" },
     projectId: params.id,
     floorId: params.floorId ?? "",
@@ -56,12 +60,6 @@ export default function CreateRoomModal({ onCreate }) {
           minValue: 0,
           checkZeroValue: true,
           required: true,
-        });
-
-        break;
-      case "language":
-        result = checkValidField({
-          value: value,
         });
 
         break;
@@ -89,12 +87,7 @@ export default function CreateRoomModal({ onCreate }) {
       },
     }));
   };
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
-    }));
-  };
+
   const [openModal, setOpenModal] = useState(
     searchParams.get(modalOpenQuery) ?? false
   );
@@ -163,7 +156,7 @@ export default function CreateRoomModal({ onCreate }) {
       isOpen={openModal}
       setOpenModal={setOpenModal}
       buttonLabel="Tạo"
-      title="Tạo loại phòng"
+      title="Tạo phòng"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
@@ -217,35 +210,23 @@ export default function CreateRoomModal({ onCreate }) {
         ></NumberSimpleForm>
       </Grid>
 
-      {/* LANGUAGE */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Ngôn ngữ"
-          subtitle="Chọn ngôn ngữ"
-          value={formData.language}
-          options={languageOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn một..."
-          error={formData.languageError.hasError}
-          errorLabel={formData.languageError.label}
-          onChange={(value) => handleInputChange("language", value)}
-        ></SelectForm>
-      </Grid>
-
       {/* TYPE OF ROOM SELECTION */}
-      <Grid item xs={12} lg={12}>
-        <AutocompleteForm
-          title="Loại phòng"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Chọn loại phòng"
-          value={formData.roomTypeId}
-          options={roomtypes}
-          error={formData.roomTypeError.hasError}
-          errorLabel={formData.roomTypeError.label}
-          onChange={(value) => handleInputChange("roomTypeId", value)}
-        ></AutocompleteForm>
-      </Grid>
+      {project?.type === projectTypeIndex.Decor && (
+        <Grid item xs={12} lg={6}>
+          <AutocompleteForm
+            title="Loại phòng"
+            titleSpan={3}
+            fieldSpan={9}
+            subtitle="Chọn loại phòng"
+            value={formData.roomTypeId}
+            options={roomtypes}
+            error={formData.roomTypeError.hasError}
+            errorLabel={formData.roomTypeError.label}
+            onChange={(value) => handleInputChange("roomTypeId", value)}
+          ></AutocompleteForm>
+        </Grid>
+      )}
+
       {/* <MenuItem value={value.id} key={value.id}>
                                         {value.name} - {value.pricePerArea} VND/m² -{" "}
                                         {value.estimateDayPerArea} ngày/m² */}

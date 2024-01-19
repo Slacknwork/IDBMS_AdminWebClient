@@ -55,7 +55,7 @@ export default function DocumentModal({ success, projectDocument }) {
     projectId: params.id,
     projectDocumentTemplateId: "",
     projectDocumentTemplateIdError: { hasError: false, label: "" },
-    IsPublicAdvertisement: projectDocument?.isPublicAdvertisement || false,
+    IsPublicAdvertisement: false,
     isPublicAdvertisementError: { hasError: false, label: "" },
     // ... other fields if needed
   });
@@ -79,13 +79,6 @@ export default function DocumentModal({ success, projectDocument }) {
 
         break;
       case "category":
-      case "IsPublicAdvertisement":
-        result = checkValidField({
-          value: value,
-          required: true
-        });
-
-        break;
       case "file":
         const validFile = checkValidUrl(value);
         if (validFile.isValid == false) {
@@ -111,12 +104,6 @@ export default function DocumentModal({ success, projectDocument }) {
         result = checkValidField({
           value: value,
           maxLength: 750,
-        });
-
-        break;
-      case "projectDocumentTemplateId":
-        result = checkValidField({
-          value: value,
         });
 
         break;
@@ -267,37 +254,6 @@ export default function DocumentModal({ success, projectDocument }) {
           errorLabel={formData.categoryError.label}
           onChange={(value) => handleInputChange("category", value)}
         ></SelectForm>
-      </Grid>
-
-      {/* PROJECT DOCUMENT TEMPLATE */}
-      <Grid item xs={12} lg={6}>
-        <AutocompleteForm
-          title="Mẫu tài liệu"
-          subtitle="Chọn mẫu tài liệu"
-          value={formData.projectDocumentTemplateId}
-          options={projectDocumentTemplates}
-          error={formData.projectDocumentTemplateIdError.hasError}
-          errorLabel={formData.projectDocumentTemplateIdError.label}
-          onChange={(value) =>
-            handleInputChange("projectDocumentTemplateId", value)
-          }
-        ></AutocompleteForm>
-      </Grid>
-
-      {/* IS PUBLIC ADVERTISEMENT */}
-      <Grid item xs={12} lg={6}>
-        <CheckForm
-          required
-          titleSpan={6}
-          fieldSpan={6}
-          spacing={5}
-          title="Công khai"
-          subtitle="Công khai tài liệu này"
-          checked={formData.IsPublicAdvertisement}
-          onChange={(e) =>
-            handleCheckboxChange("IsPublicAdvertisement", e.target.checked)
-          }
-        />
       </Grid>
 
       {/* DESCRIPTION */}

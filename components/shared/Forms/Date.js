@@ -38,7 +38,7 @@ export default function DateForm({
 
   const handleDateChange = (value) => {
     const newIsoString = value
-      ? moment(value).format("YYYY-MM-DDTHH:mm:ss.SSSSSSS")
+      ? moment(value).format("L")
       : null;
     setFormattedDate(value);
     onChange(newIsoString);

@@ -54,14 +54,9 @@ export default function CreateNotificationModalForProject(success) {
         break;
       case "listUserId":
       case "selectedNotificationOption":
-        result = checkValidField({
-          value: value,
-          required: true
-        });
-
-        break;
       default:
     }
+
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
@@ -104,7 +99,6 @@ export default function CreateNotificationModalForProject(success) {
       });
       toast.success("Gửi thành công!");
       console.log(response);
-      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

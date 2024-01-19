@@ -40,6 +40,15 @@ export default function CreateNotificationModalForCustomers({ sx, success }) {
         break;
       default:
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+      [`${field}Error`]: {
+        hasError: !result.isValid,
+        label: result.label,
+      },
+    }));
   };
   const handleInputError = (field, hasError, label) => {
     setFormData((prevData) => ({
@@ -67,7 +76,6 @@ export default function CreateNotificationModalForCustomers({ sx, success }) {
       toast.success("Gửi thành công!");
       console.log(response);
       handleClose();
-      success(true);
     } catch (error) {
       console.error("Error :", error);
       toast.error("Lỗi!");

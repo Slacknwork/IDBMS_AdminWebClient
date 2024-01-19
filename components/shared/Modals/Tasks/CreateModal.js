@@ -29,6 +29,8 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
 import checkValidField from "/components/validations/field";
+import { useSelector } from "react-redux";
+import languageOptions, { languageIndex } from "/constants/enums/language";
 
 export default function CreateTaskModal({ hasCallback, onCallback }) {
   // CONSTANTS
@@ -40,6 +42,8 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
   const params = useParams();
   const searchParams = useSearchParams();
   const modalOpenQuery = "create";
+  const data = useSelector((state) => state.data);
+  const project = data?.project;
 
   const [formData, setFormData] = useState({
     code: null,
@@ -263,8 +267,8 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       setFormData((prevData) => ({
         ...prevData,
         code: selectedTaskDesign.code || null,
-        name: selectedTaskDesign.name || "",
-        description: selectedTaskDesign.description || "",
+        name: project?.language === languageIndex.English ? selectedTaskDesign.englishName : selectedTaskDesign.name ?? "",
+        description: project?.language === languageIndex.English ? selectedTaskDesign?.englishDescription : selectedTaskDesign?.description ?? "",
         percentage: 0,
         calculationUnit: selectedTaskDesign?.calculationUnit ?? -1,
         pricePerUnit: selectedTaskDesign.estimatePricePerUnit || 0,
@@ -342,7 +346,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           fieldSpan={9}
           subtitle="Chọn mẫu công việc"
           value={formData.taskDesignId}
-          options={taskDesigns}
+          options={taskDesigns.filter((taskdesign) => taskdesign?.taskCategory?.projectType === project?.type)}
           error={formData.taskDesignIdError.hasError}
           errorLabel={formData.taskDesignIdError.label}
           onChange={(value) => {

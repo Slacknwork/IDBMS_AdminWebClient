@@ -300,11 +300,11 @@ export default function Comments() {
         </Box>
         <Box sx={{ display: "flex" }}>
 
-          {isAdminAuthorized && (
+          {/*isAdminAuthorized && (
             <CreateNotificationModalForProject success={handleModalResult}>
               Gửi thông báo
             </CreateNotificationModalForProject>
-          )}
+          )*/}
 
           <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult}>
             Tạo

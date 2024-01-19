@@ -145,7 +145,7 @@ export default function ProjectCommentsPage() {
                       </Typography>
                       <Typography variant="p">
                         {comment?.createdTime &&
-                          moment(comment?.createdTime).format("lll")}
+                          moment(comment?.createdTime).format("L")}
                       </Typography>
                     </Box>
 
@@ -246,13 +246,12 @@ export default function ProjectCommentsPage() {
                             </Typography>
                             <Typography variant="p">
                               {commentReply?.createdTime &&
-                                moment(commentReply?.createdTime).format("lll")}
+                                moment(commentReply?.createdTime).format("L")}
                             </Typography>
                             <Typography variant="p" sx={{ ml: 1 }}>
                               {commentStatusIndex.Edited ===
                                 commentReply?.status &&
-                                `(${
-                                  commentStatusOptions[commentReply.status]
+                                `(${commentStatusOptions[commentReply.status]
                                 })`}
                             </Typography>
                           </Box>

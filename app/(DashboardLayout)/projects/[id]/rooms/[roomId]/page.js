@@ -211,8 +211,8 @@ export default function RoomDetailsPage() {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-        (participationRole?.role &&
-          participationRole?.role === participationRoleIndex.ProjectManager)
+      (participationRole?.role &&
+        participationRole?.role === participationRoleIndex.ProjectManager)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participationRole?.role, user?.role]);
@@ -223,19 +223,7 @@ export default function RoomDetailsPage() {
       description="Thông tin chi tiết của phòng"
     >
       <Grid container spacing={2}>
-        <Grid item xs={2} lg={2}>
-          <Button
-            component={Link}
-            disableElevation
-            variant="contained"
-            color="primary"
-            href={`/projects/${params.id}/tasks?viewMode=1&floor=${formData.floorId}&room=${params.roomId}`}
-            endIcon={<AssignmentIcon />}
-          >
-            Xem công việc
-          </Button>
-        </Grid>
-        <Grid item xs={10} lg={10}>
+        <Grid item xs={12} lg={12}>
           <DetailsPage
             loading={loading}
             title="Thông tin phòng"
@@ -292,10 +280,10 @@ export default function RoomDetailsPage() {
                     title="Đơn giá"
                     disabled
                     subtitle="Đơn giá trên 1 đơn vị diện tích của phòng"
-                    value={formData.pricePerArea?.toLocaleString(locales.viVN)}
+                    value={formData.pricePerArea?.toLocaleString("en-US")}
                     error={formData.pricePerAreaError.hasError}
                     errorLabel={formData.pricePerAreaError.label}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     endAdornment={"VND/m²"}
                   ></NumberForm>
                 </Grid>
@@ -396,6 +384,20 @@ export default function RoomDetailsPage() {
                   </Grid>
                 </Grid>
               </Card>
+
+              <Grid sx={{ mt: 3, mx: "auto", textAlign: "center" }}>
+                <Button
+                  component={Link}
+                  disableElevation
+                  variant="contained"
+                  color="primary"
+                  href={`/projects/${params.id}/tasks?viewMode=1&floor=${formData.floorId}&room=${params.roomId}`}
+                  endIcon={<AssignmentIcon />}
+                >
+                  Xem công việc
+                </Button>
+              </Grid>
+
             </Grid>
           </DetailsPage>
         </Grid>

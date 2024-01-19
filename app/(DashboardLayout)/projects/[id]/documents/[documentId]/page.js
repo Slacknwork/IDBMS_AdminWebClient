@@ -42,7 +42,7 @@ export default function ProjectDocumentDetails(projectDocument) {
     projectId: params.id,
     projectDocumentTemplateId: "",
     projectDocumentTemplateIdError: { hasError: false, label: "" },
-    IsPublicAdvertisement: projectDocument?.isPublicAdvertisement || false,
+    IsPublicAdvertisement: false,
     isPublicAdvertisementError: { hasError: false, label: "" },
   });
 
@@ -59,13 +59,6 @@ export default function ProjectDocumentDetails(projectDocument) {
 
         break;
       case "category":
-      case "IsPublicAdvertisement":
-        result = checkValidField({
-          value: value,
-          required: true
-        });
-
-        break;
       case "file":
         const validFile = checkValidUrl(value);
         if (validFile.isValid == false) {
@@ -94,12 +87,6 @@ export default function ProjectDocumentDetails(projectDocument) {
         });
 
         break;
-      case "projectDocumentTemplateId":
-        result = checkValidField({
-          value: value,
-        });
-
-        break;
       default:
     }
     setFormData((prevData) => ({
@@ -109,13 +96,6 @@ export default function ProjectDocumentDetails(projectDocument) {
         hasError: !result.isValid,
         label: result.label,
       },
-    }));
-  };
-
-  const handleInputError = (field, hasError, label) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [`${field}Error`]: { hasError, label },
     }));
   };
 
@@ -289,21 +269,6 @@ export default function ProjectDocumentDetails(projectDocument) {
           ></SelectForm>
         </Grid>
 
-        {/* PROJECT DOCUMENT TEMPLATE */}
-        <Grid item xs={12} lg={6}>
-          <AutocompleteForm
-            title="Mẫu tài liệu"
-            subtitle="Chọn mẫu tài liệu"
-            value={formData.projectDocumentTemplateId}
-            options={projectDocumentTemplates}
-            error={formData.projectDocumentTemplateIdError.hasError}
-            errorLabel={formData.projectDocumentTemplateIdError.label}
-            onChange={(value) =>
-              handleInputChange("projectDocumentTemplateId", value)
-            }
-          ></AutocompleteForm>
-        </Grid>
-
         {/* DESCRIPTION */}
         <Grid item xs={12} lg={12}>
           <TextForm
@@ -320,17 +285,6 @@ export default function ProjectDocumentDetails(projectDocument) {
           ></TextForm>
         </Grid>
 
-        {/* IS PUBLIC ADVERTISEMENT */}
-        <Grid item xs={12} lg={6}>
-          <CheckForm
-            title="Công khai"
-            required
-            checked={formData.IsPublicAdvertisement}
-            onChange={(e) =>
-              handleCheckboxChange("IsPublicAdvertisement", e.target.checked)
-            }
-          />
-        </Grid>
       </DetailsPage>
     </PageContainer>
   );

@@ -79,17 +79,17 @@ export default function MapProjectDesignModal({ success }) {
                 {projectDesign?.name}
               </Typography>
               <Typography variant="p" sx={{ my: "auto", color: "gray" }}>
-                {project?.estimatedPrice.toLocaleString(locales.viVN)} VND
+                {project?.estimatedPrice.toLocaleString("en-US")} VND
               </Typography>
             </Box>
             <Box sx={{ mb: 1, display: "flex" }}>
               <Typography variant="h6">
                 Giá trị dao động:{" "}
-                {projectDesign?.minBudget?.toLocaleString(locales.viVN)} VND
+                {projectDesign?.minBudget?.toLocaleString("en-US")} VND
               </Typography>
               <Typography sx={{ mx: 2 }}>-</Typography>
               <Typography variant="h6">
-                {projectDesign?.maxBudget?.toLocaleString(locales.viVN)} VND
+                {projectDesign?.maxBudget?.toLocaleString("en-US")} VND
               </Typography>
             </Box>
             <Box sx={{ pb: 2, borderBottom: 1, borderColor: "lightgray" }}>

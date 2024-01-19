@@ -402,11 +402,11 @@ export default function ProjectTasksPage() {
           </Button>
           {(user?.role === companyRoleConstants.ADMIN ||
             projectRole.role === participationRoleIndex.ProjectManager) && (
-            <CreateTaskModal
-              hasCallback
-              onCallback={fetchDataFromApi}
-            ></CreateTaskModal>
-          )}
+              <CreateTaskModal
+                hasCallback
+                onCallback={fetchDataFromApi}
+              ></CreateTaskModal>
+            )}
         </Box>
       </Box>
       {(stages && stages.length) || (floors && floors.length) > 0 ? (
@@ -527,9 +527,9 @@ export default function ProjectTasksPage() {
                     <TableRow>
                       {(user?.role === companyRoleConstants.ADMIN ||
                         projectRole.role ===
-                          participationRoleIndex.ProjectManager) && (
-                        <StyledTableCell width={"1%"}></StyledTableCell>
-                      )}
+                        participationRoleIndex.ProjectManager) && (
+                          <StyledTableCell width={"1%"}></StyledTableCell>
+                        )}
                       <StyledTableCell width={"22%"}>
                         <Typography variant="subtitle2" fontWeight={600}>
                           Công việc
@@ -568,15 +568,15 @@ export default function ProjectTasksPage() {
                       <StyledTableRow key={task.id}>
                         {(user?.role === companyRoleConstants.ADMIN ||
                           projectRole.role ===
-                            participationRoleIndex.ProjectManager) && (
-                          <TableCell>
-                            <Checkbox
-                              color="primary"
-                              checked={task?.selected}
-                              onChange={(e) => onSelectedChange(task.id)}
-                            />
-                          </TableCell>
-                        )}
+                          participationRoleIndex.ProjectManager) && (
+                            <TableCell>
+                              <Checkbox
+                                color="primary"
+                                checked={task?.selected}
+                                onChange={(e) => onSelectedChange(task.id)}
+                              />
+                            </TableCell>
+                          )}
 
                         <TableCell>
                           <Typography variant="p" fontWeight={600}>
@@ -596,7 +596,7 @@ export default function ProjectTasksPage() {
                         <TableCell>
                           <Typography variant="subtitle2" fontWeight={400}>
                             {task.startedDate
-                              ? moment(task.startedDate).format("lll")
+                              ? moment(task.startedDate).format("L")
                               : "Chưa xác định"}
                           </Typography>
                         </TableCell>
@@ -612,7 +612,7 @@ export default function ProjectTasksPage() {
                         <TableCell>
                           <Box display="flex">
                             {task.taskAssignments &&
-                            task.taskAssignments.length > 0 ? (
+                              task.taskAssignments.length > 0 ? (
                               <AvatarGroup
                                 max={3}
                                 sx={{

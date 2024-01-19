@@ -105,6 +105,13 @@ export default function TaskOverviewPage() {
 
         break;
       case "pricePerUnit":
+        result = checkValidField({
+          value: value,
+          minValue: 0,
+          required: true
+        });
+
+        break;
       case "unitInContract":
         result = checkValidField({
           value: value,
@@ -294,8 +301,8 @@ export default function TaskOverviewPage() {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-        (participationRole?.role &&
-          participationRole?.role === participationRoleIndex.ProjectManager)
+      (participationRole?.role &&
+        participationRole?.role === participationRoleIndex.ProjectManager)
     );
     setIsViewer(
       participationRole?.role &&
@@ -450,7 +457,7 @@ export default function TaskOverviewPage() {
                 title="Ngày kết thúc"
                 titleSpan={6}
                 fieldSpan={6}
-                disabled={!isManager}
+                disabled
                 subtitle="Ngày hoàn thành công việc"
                 value={formData.endDate}
                 error={formData.endDateError.hasError}
