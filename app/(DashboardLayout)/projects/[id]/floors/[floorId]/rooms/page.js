@@ -27,7 +27,8 @@ import { participationRoleIndex } from "/constants/enums/participationRole";
 
 import Search from "/components/shared/Search";
 import Pagination from "/components/shared/Pagination";
-import CreateRoomModal from "components/shared/Modals/Rooms/CreateModal";
+import CreateRoomModal from "/components/shared/Modals/Rooms/CreateModal";
+import PageContainer from "/components/container/PageContainer";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -115,7 +116,7 @@ export default function RoomListPage() {
   }, [participationRole?.role, user?.role]);
 
   return (
-    <Box sx={{ zIndex: 1 }}>
+    <PageContainer title="Danh sách phòng">
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Search placeholder="Tìm phòng..."></Search>
@@ -210,6 +211,6 @@ export default function RoomListPage() {
         </Stack>
       )}
       <Pagination count={count}></Pagination>
-    </Box>
+    </PageContainer>
   );
 }

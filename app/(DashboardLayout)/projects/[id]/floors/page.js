@@ -26,6 +26,7 @@ import { projectStatusIndex } from "/constants/enums/projectStatus";
 import { participationRoleIndex } from "/constants/enums/participationRole";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
+import PageContainer from "/components/container/PageContainer";
 import CreateFloorModal from "/components/shared/Modals/Floors/CreateModal";
 import Pagination from "/components/shared/Pagination";
 import Search from "/components/shared/Search";
@@ -113,7 +114,7 @@ export default function FloorsPage() {
   }, [participationRole?.role, user?.role]);
 
   return (
-    <Box sx={{ zIndex: 1 }}>
+    <PageContainer title="Tầng">
       {/* Table */}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
@@ -204,6 +205,6 @@ export default function FloorsPage() {
       )}
 
       <Pagination count={count}></Pagination>
-    </Box>
+    </PageContainer>
   );
 }

@@ -174,8 +174,8 @@ export default function PaymentStages() {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-      (participationRole?.role &&
-        participationRole?.role === participationRoleIndex.ProjectManager)
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
     );
   }, [participationRole?.role, user?.role]);
 
@@ -299,14 +299,14 @@ export default function PaymentStages() {
                   </Typography>
                   {response.stage?.penaltyFee > 0
                     ? "+ " +
-                    (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
+                      (response.stage?.penaltyFee?.toLocaleString("en-US") ?? 0)
                     : null}
                   <Typography variant="subtitle2" fontWeight={800}>
                     {response.stage?.isIncurredAmountPaid
                       ? "(Đã trả)"
                       : response.stage?.isContractAmountPaid
-                        ? "(Chưa trả)"
-                        : null}
+                      ? "(Chưa trả)"
+                      : null}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -317,8 +317,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.startedDate
                       ? `${new Date(
-                        response.stage.startedDate
-                      ).toLocaleDateString("vi-VN")}`
+                          response.stage.startedDate
+                        ).toLocaleDateString("vi-VN")}`
                       : "Chưa xác định"}
                   </Typography>
                   <Typography
@@ -335,8 +335,8 @@ export default function PaymentStages() {
                   >
                     {response.stage.endDate
                       ? `${new Date(response.stage.endDate).toLocaleDateString(
-                        "vi-VN"
-                      )}`
+                          "vi-VN"
+                        )}`
                       : "Chưa xác định"}
                   </Typography>
                 </TableCell>
@@ -356,7 +356,7 @@ export default function PaymentStages() {
                       px: "4px",
                       backgroundColor:
                         stageStatusBackgroundChipColors[
-                        response.stage?.status
+                          response.stage?.status
                         ] || "error",
                     }}
                     size="small"
@@ -367,36 +367,35 @@ export default function PaymentStages() {
                   ></Chip>
                 </TableCell>
                 <TableCell align="right">
-
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-
-                    {isManager && !(project?.status === projectStatusIndex.Negotiating
-                      || project?.status === projectStatusIndex.PendingConfirmation
-                      || project?.status === projectStatusIndex.Draft) && (
+                    {isManager &&
+                      !(project?.status === projectStatusIndex.Negotiating) && (
                         <Box>
-                          {
-                            response.openAllowed && (
-                              <MessageModal
-                                disabled={loading}
-                                color="success"
-                                buttonLabel={"Bắt đầu"}
-                                onSubmit={() => handleStartStage(response.stage.id)}
-                                title={"Bắt đầu giai đoạn"}
-                                submitLabel={"Xác nhận"}
-                              >
-                                <Typography variant="p">
-                                  {"Xác nhận bắt đầu giai đoạn"}
-                                </Typography>
-                              </MessageModal>
-                            )
-                          }
+                          {response.openAllowed && (
+                            <MessageModal
+                              disabled={loading}
+                              color="success"
+                              buttonLabel={"Bắt đầu"}
+                              onSubmit={() =>
+                                handleStartStage(response.stage.id)
+                              }
+                              title={"Bắt đầu giai đoạn"}
+                              submitLabel={"Xác nhận"}
+                            >
+                              <Typography variant="p">
+                                {"Xác nhận bắt đầu giai đoạn"}
+                              </Typography>
+                            </MessageModal>
+                          )}
 
                           {response.closeAllowed && (
                             <MessageModal
                               disabled={loading}
                               color="error"
                               buttonLabel={"Đóng"}
-                              onSubmit={() => handleCloseStage(response.stage.id)}
+                              onSubmit={() =>
+                                handleCloseStage(response.stage.id)
+                              }
                               title={"Đóng giai đoạn"}
                               submitLabel={"Xác nhận"}
                             >
@@ -420,7 +419,9 @@ export default function PaymentStages() {
                               disabled={loading}
                               color="error"
                               buttonLabel={"Hoãn"}
-                              onSubmit={() => handleSuspendedStage(response.stage.id)}
+                              onSubmit={() =>
+                                handleSuspendedStage(response.stage.id)
+                              }
                               title={"Hoãn giai đoạn"}
                               submitLabel={"Xác nhận"}
                             >
@@ -430,8 +431,7 @@ export default function PaymentStages() {
                             </MessageModal>
                           )}
                         </Box>
-                      )
-                    }
+                      )}
 
                     <Button
                       component={Link}
