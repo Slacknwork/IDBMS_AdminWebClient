@@ -43,4 +43,34 @@ const items = [
   },
 ];
 
+const viewerItems = [
+  {
+    path: "",
+    label: "Tổng quan",
+  },
+  {
+    path: "floors",
+    label: "Kiến trúc",
+    subPaths: ["rooms"],
+  },
+  {
+    path: "tasks",
+    label: "Công việc",
+  },
+  {
+    path: "stages",
+    label: "Giai đoạn",
+  },
+
+  {
+    path: "comments",
+    label: "Bình luận",
+  },
+  {
+    path: "items",
+    label: "Nội thất",
+  },
+];
+
+export { viewerItems };
 export default items;

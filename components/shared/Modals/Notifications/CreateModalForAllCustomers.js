@@ -6,10 +6,10 @@ import FormModal from "../Form";
 import { createNotificationForAllCustomers } from "/services/notificationServices";
 import { toast } from "react-toastify";
 import notificationCategoryOptions from "/constants/enums/notificationCategory";
-import checkValidField from "/components/validations/field"
+import checkValidField from "/components/validations/field";
 import { useSearchParams } from "next/navigation";
 
-export default function CreateNotificationModalForCustomers(success) {
+export default function CreateNotificationModalForCustomers({ sx, success }) {
   const [formData, setFormData] = useState({
     category: "",
     categoryError: { hasError: false, label: "" },
@@ -20,12 +20,21 @@ export default function CreateNotificationModalForCustomers(success) {
 
   const modalOpenQuery = "create";
   const handleInputChange = (field, value) => {
+    let result = { isValid: true, label: "" };
+
     switch (field) {
       case "category":
+        result = checkValidField({
+          value: value,
+          required: true,
+        });
+
+        break;
       case "content":
         result = checkValidField({
           value: value,
-          required: true
+          maxLength: 750,
+          required: true,
         });
 
         break;
@@ -55,7 +64,7 @@ export default function CreateNotificationModalForCustomers(success) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -92,6 +101,7 @@ export default function CreateNotificationModalForCustomers(success) {
 
   return (
     <FormModal
+      sx={sx}
       isOpen={openModal}
       setOpenModal={setOpenModal}
       buttonLabel="Gửi thông báo"

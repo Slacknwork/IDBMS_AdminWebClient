@@ -21,6 +21,7 @@ export default function DetailsPage({
   deleteMessage = "Xóa thông tin?",
   hideSave,
   onSave,
+  extraButtons,
   hasDelete,
   onDelete,
   children,
@@ -71,6 +72,8 @@ export default function DetailsPage({
                 </MessageModal>
               )
             ) : null}
+
+            {extraButtons}
 
             {!hideSave && (
               <MessageModal

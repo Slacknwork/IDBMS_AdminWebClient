@@ -129,10 +129,15 @@ export default function UserList() {
               allLabel={statusAllLabel}
             ></FilterStatus>
           </Box>
-          <CreateNotificationModalForAllCustomers success={handleModalResult}>
-            Gửi thông báo
-          </CreateNotificationModalForAllCustomers>
-          <CreateUserModal success={handleModalResult}>Tạo</CreateUserModal>
+          <Box sx={{ display: "flex" }}>
+            <CreateNotificationModalForAllCustomers
+              sx={{ mr: 1 }}
+              success={handleModalResult}
+            >
+              Gửi thông báo
+            </CreateNotificationModalForAllCustomers>
+            <CreateUserModal success={handleModalResult}>Tạo</CreateUserModal>
+          </Box>
         </Box>
         {users && users.length > 0 ? (
           <Table

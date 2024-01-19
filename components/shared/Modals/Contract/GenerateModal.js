@@ -252,11 +252,12 @@ export default function GenerateContractModal({ sx }) {
       toast.loading(`Đang tạo Hợp đồng doanh nghiệp...`);
       const fileName = `${fileConstants.documentType.CONTRACT} - ${project?.name}${fileConstants.type.DOCX}`;
       await generateCompanyContract(companyFormData, fileName);
+      toast.dismiss();
     } catch (error) {
       console.error(error);
+      toast.dismiss();
       toast.error("Lỗi dữ liệu: Hợp đồng doanh nghiệp!");
     }
-    toast.dismiss();
     setIsDownloading(false);
   };
 
@@ -267,11 +268,12 @@ export default function GenerateContractModal({ sx }) {
       toast.loading(`Đang tạo Hợp đồng cá nhân...`);
       const fileName = `${fileConstants.documentType.CONTRACT} - ${project?.name}${fileConstants.type.DOCX}`;
       await generateIndividualContract(individualFormData, fileName);
+      toast.dismiss();
     } catch (error) {
       console.error(error);
+      toast.dismiss();
       toast.error("Lỗi dữ liệu: Hợp đồng cá nhân!");
     }
-    toast.dismiss();
     setIsDownloading(false);
   };
 
@@ -282,11 +284,12 @@ export default function GenerateContractModal({ sx }) {
       toast.loading(`Đang tạo Bảng quyết toán...`);
       const fileName = `${fileConstants.documentType.SETTLEMENT} - ${project?.name}${fileConstants.type.XLSX}`;
       await downloadSettlementFile(project?.id, fileName);
+      toast.dismiss();
     } catch (error) {
       console.error(error);
+      toast.dismiss();
       toast.error("Lỗi dữ liệu: Quyết toán!");
     }
-    toast.dismiss();
     setIsDownloading(false);
   };
 

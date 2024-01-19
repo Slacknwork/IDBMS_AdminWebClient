@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 import PageContainer from "/components/container/PageContainer";
 import DetailsPage from "/components/shared/DetailsPage";
@@ -18,7 +18,7 @@ import {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import UpdateAdminPasswordModal from "/components/shared/Modals/admins/UpdatePasswordModal"
+import UpdateAdminPasswordModal from "/components/shared/Modals/Admins/UpdatePasswordModal";
 
 export default function TaskCategoryDetails() {
   const [formData, setFormData] = useState({
@@ -32,14 +32,14 @@ export default function TaskCategoryDetails() {
   });
 
   const handleInputChange = (field, value) => {
-    let result = { isValid: true, label: "" }
+    let result = { isValid: true, label: "" };
 
     switch (field) {
       case "name":
         result = checkValidField({
           value: value,
           maxLength: 50,
-          required: true
+          required: true,
         });
 
         break;
@@ -174,10 +174,6 @@ export default function TaskCategoryDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
-        </Grid>
-
         {/* TÊN ĐĂNG NHẬP */}
         <Grid item xs={12} lg={6}>
           <TextForm
@@ -203,6 +199,26 @@ export default function TaskCategoryDetails() {
             errorLabel={formData.emailError.label}
             onChange={(e) => handleInputChange("email", e.target.value)}
           ></TextForm>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={4} lg={4}>
+              <Typography variant="h5">Đổi mật khẩu</Typography>
+              <Typography variant="p">Đổi mật khẩu tài khoản này</Typography>
+            </Grid>
+            <Grid item xs={8} lg={8}>
+              <UpdateAdminPasswordModal> </UpdateAdminPasswordModal>
+            </Grid>
+          </Grid>
         </Grid>
       </DetailsPage>
     </PageContainer>

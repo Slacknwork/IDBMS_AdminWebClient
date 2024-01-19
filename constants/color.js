@@ -1,5 +1,6 @@
 const colors = {
-  disabledFormText: "#505050",
+  disabledFormText: "#808080",
+  disabledBackgroundColor: "#F0F0F0",
 };
 
 export default colors;

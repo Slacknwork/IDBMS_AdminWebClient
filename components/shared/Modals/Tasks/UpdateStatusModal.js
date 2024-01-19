@@ -4,6 +4,7 @@ import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { toast } from "react-toastify";
 
 import projectTaskStatusOptions, {
   projectTaskStatusIndex,
@@ -13,9 +14,13 @@ import { updateProjectTaskStatus } from "/services/projectTaskServices";
 
 import FormModal from "/components/shared/Modals/Form";
 import MessageModal from "/components/shared/Modals/Message";
-import { toast } from "react-toastify";
 
-export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
+export default function UpdateTaskStatusModal({
+  sx,
+  task,
+  setTaskStatus,
+  success,
+}) {
   const params = useParams();
 
   const onUpdateStatus = async (status) => {
@@ -24,6 +29,7 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
       await updateProjectTaskStatus(task?.id, status, projectId);
       toast.success("Cập nhật trạng thái công việc thành cống!");
       typeof setTaskStatus === "function" && setTaskStatus(task?.id, status);
+      typeof success === "function" && success();
     } catch (error) {
       toast.error("Lỗi cập nhật trạng thái công việc!");
     }
@@ -31,6 +37,7 @@ export default function UpdateTaskStatusModal({ task, setTaskStatus }) {
 
   return (
     <FormModal
+      sx={sx}
       chip
       tooltipTitle="Cập nhật"
       tooltipPlacement="top"

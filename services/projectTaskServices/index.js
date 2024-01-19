@@ -13,10 +13,11 @@ const getProjectTasksByProjectId = async ({
   roomId = "",
   page = "",
   pageSize = "",
+  participationId = "",
 } = {}) => {
   try {
     const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/project/${projectId}?codeOrName=${search}&includeStageIdFilter=${includeStageIdFilter}&stageId=${stageId}&includeRoomIdFilter=${includeRoomIdFilter}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&pageNo=${page}&pageSize=${pageSize}`;
+    const url = `${endpoint}/project/${projectId}?codeOrName=${search}&includeStageIdFilter=${includeStageIdFilter}&stageId=${stageId}&includeRoomIdFilter=${includeRoomIdFilter}&roomId=${roomId}&taskCategoryId=${categoryId}&taskStatus=${status}&participationId=${participationId}&pageNo=${page}&pageSize=${pageSize}`;
     const response = await fetchData({
       url: `${url}${projectId ? "&projectId=" + projectId : ""}`,
       method: "GET",
@@ -84,7 +85,10 @@ const getProjectTasksWithItemByRoomId = async (roomId, projectId = "") => {
   }
 };
 
-const getProjectTasksByPaymentStageId = async (paymentStageId, projectId = "") => {
+const getProjectTasksByPaymentStageId = async (
+  paymentStageId,
+  projectId = ""
+) => {
   try {
     const token = store.getState().user?.token ?? "";
     const url = `${endpoint}/payment-stage/${paymentStageId}`;
@@ -166,7 +170,6 @@ const updateProjectTaskStatus = async (taskId, status, projectId = "") => {
       body: null,
     });
     return response.message;
-
   } catch (error) {
     console.error("Error updating project task status:", error);
     throw error;

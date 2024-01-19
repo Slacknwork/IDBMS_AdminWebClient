@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -18,7 +18,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import languageOptions from "/constants/enums/language";
 import companyRoleOptions from "/constants/enums/companyRole";
 import { getUserById, updateUser } from "/services/userServices";
-import UpdateUserPasswordModal from "/components/shared/Modals/users/UpdatePasswordModal"
+import UpdateUserPasswordModal from "/components/shared/Modals/Users/UpdatePasswordModal";
 
 export default function UserDetails() {
   const [formData, setFormData] = useState({
@@ -231,10 +231,6 @@ export default function UserDetails() {
           ></TextForm>
         </Grid>
 
-        <Grid item xs={12} lg={6} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <UpdateUserPasswordModal> </UpdateUserPasswordModal>
-        </Grid>
-
         {/* BIO */}
         <Grid item xs={12} lg={6}>
           <TextForm
@@ -255,9 +251,7 @@ export default function UserDetails() {
             value={formData.jobPosition}
             error={formData.jobPositionError.hasError}
             errorLabel={formData.jobPositionError.label}
-            onChange={(e) =>
-              handleInputChange("jobPosition", e.target.value)
-            }
+            onChange={(e) => handleInputChange("jobPosition", e.target.value)}
           ></TextForm>
         </Grid>
 
@@ -269,9 +263,7 @@ export default function UserDetails() {
             value={formData.companyName}
             error={formData.companyNameError.hasError}
             errorLabel={formData.companyNameError.label}
-            onChange={(e) =>
-              handleInputChange("companyName", e.target.value)
-            }
+            onChange={(e) => handleInputChange("companyName", e.target.value)}
           ></TextForm>
         </Grid>
 
@@ -355,6 +347,26 @@ export default function UserDetails() {
             errorLabel={formData.roleError.label}
             onChange={(value) => handleInputChange("role", value)}
           ></SelectForm>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          lg={6}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={4} lg={4}>
+              <Typography variant="h5">Đổi mật khẩu</Typography>
+              <Typography variant="p">Đổi mật khẩu tài khoản này</Typography>
+            </Grid>
+            <Grid item xs={8} lg={8}>
+              <UpdateUserPasswordModal> </UpdateUserPasswordModal>
+            </Grid>
+          </Grid>
         </Grid>
       </DetailsPage>
     </PageContainer>

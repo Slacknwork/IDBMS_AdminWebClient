@@ -369,7 +369,7 @@ export default function PaymentStages() {
 
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 
-                    {!(project?.status === projectStatusIndex.Negotiating
+                    {isManager && !(project?.status === projectStatusIndex.Negotiating
                       || project?.status === projectStatusIndex.PendingConfirmation
                       || project?.status === projectStatusIndex.Draft) && (
                         <Box>

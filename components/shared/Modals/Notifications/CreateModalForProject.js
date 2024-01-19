@@ -35,11 +35,19 @@ export default function CreateNotificationModalForProject(success) {
 
   const handleInputChange = (field, value) => {
     let result = { isValid: true, label: "" }
+
     switch (field) {
       case "category":
+        result = checkValidField({
+          value: value,
+          required: true
+        });
+
+        break;
       case "content":
         result = checkValidField({
           value: value,
+          maxLength: 750,
           required: true
         });
 
@@ -125,7 +133,7 @@ export default function CreateNotificationModalForProject(success) {
 
   const handleSubmit = () => {
     for (const field in formData) {
-      handleInputChange(field, formData[field]);
+      !field.endsWith("Error") && handleInputChange(field, formData[field]);
     }
     setSwitchSubmit(true);
   };
@@ -167,6 +175,7 @@ export default function CreateNotificationModalForProject(success) {
       {/* CATEGORY */}
       <Grid item xs={12} lg={12}>
         <SelectForm
+          required
           title="Loại thông báo"
           subtitle="Chọn loại thông báo"
           value={formData.category}
@@ -180,6 +189,7 @@ export default function CreateNotificationModalForProject(success) {
       {/* CONTENT */}
       <Grid item xs={12} lg={12}>
         <TextForm
+          required
           fullWidth
           multiline
           title="Nội dung"

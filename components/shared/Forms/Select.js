@@ -50,7 +50,9 @@ export default function FormText({
             sx={{
               "& .MuiInputBase-input.Mui-disabled": {
                 WebkitTextFillColor: colors.disabledFormText,
+                backgroundColor: colors.disabledBackgroundColor,
               },
+              backgroundColor: disabled ? colors.disabledBackgroundColor : "",
             }}
           >
             <MenuItem disabled value={defaultValue}>

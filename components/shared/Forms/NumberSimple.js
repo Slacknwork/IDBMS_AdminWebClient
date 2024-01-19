@@ -43,7 +43,9 @@ export default function FormNumberSimple({
             sx={{
               "& .MuiInputBase-input.Mui-disabled": {
                 WebkitTextFillColor: colors.disabledFormText,
+                backgroundColor: colors.disabledBackgroundColor,
               },
+              backgroundColor: disabled ? colors.disabledBackgroundColor : "",
             }}
             type="number"
             inputProps={inputProps}
