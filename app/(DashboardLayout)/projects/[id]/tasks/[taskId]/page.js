@@ -32,6 +32,7 @@ import SelectForm from "/components/shared/Forms/Select";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import AutocompleteGroupForm from "/components/shared/Forms/AutocompleteGroup";
 import checkValidField from "/components/validations/field";
+import UpdateTaskStatusModal from "/components/shared/Modals/Tasks/UpdateStatusModal";
 
 moment.tz.setDefault(timezone.momentDefault);
 
@@ -310,6 +311,15 @@ export default function TaskOverviewPage() {
         onSave={handleSubmit}
         hideSave={!isManager}
         loading={loading}
+        extraButtons={
+          !loading && (
+            <UpdateTaskStatusModal
+              sx={{ my: "auto" }}
+              task={formData}
+              success={fetchDataFromApi}
+            ></UpdateTaskStatusModal>
+          )
+        }
       >
         <Grid item xs={12} lg={12}>
           <Grid container columnSpacing={8} rowSpacing={4}>

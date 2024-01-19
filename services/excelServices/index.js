@@ -1,5 +1,5 @@
 import { store } from "/store";
-import { fetchData } from "/utils/api";
+import { fetchData, fetchDownload } from "/utils/api";
 import { downloadFileFromResponse } from "/utils/downloadFile";
 
 const endpoint = "/Excel";
@@ -13,7 +13,7 @@ const downloadSettlementFile = async (projectId, fileName = "file") => {
       method: "POST",
       token,
     });
-    downloadFileFromResponse(response.data, fileName);
+    downloadFileFromResponse(response.data);
   } catch (error) {
     console.error("Error fetching download file:", error);
     throw error;
