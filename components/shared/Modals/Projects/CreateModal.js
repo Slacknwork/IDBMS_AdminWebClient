@@ -45,7 +45,7 @@ export default function CreateProjectModal({ children }) {
     typeError: { hasError: false, label: "" },
     status: 2,
     statusError: { hasError: false, label: "" },
-    language: 0,
+    language: 1,
     languageError: { hasError: false, label: "" },
     projectCategoryId: null,
     projectCategoryIdError: { hasError: false, label: "" },
