@@ -16,6 +16,7 @@ import NumberSimpleForm from "/components/shared/Forms/NumberSimple";
 import AutocompleteForm from "/components/shared/Forms/Autocomplete";
 import checkValidField from "/components/validations/field";
 import { useSelector } from "react-redux";
+import { projectTypeIndex } from "/constants/enums/projectType";
 
 export default function CreateRoomModal({ onCreate }) {
   const params = useParams();
@@ -210,19 +211,22 @@ export default function CreateRoomModal({ onCreate }) {
       </Grid>
 
       {/* TYPE OF ROOM SELECTION */}
-      <Grid item xs={12} lg={6}>
-        <AutocompleteForm
-          title="Loại phòng"
-          titleSpan={3}
-          fieldSpan={9}
-          subtitle="Chọn loại phòng"
-          value={formData.roomTypeId}
-          options={roomtypes}
-          error={formData.roomTypeError.hasError}
-          errorLabel={formData.roomTypeError.label}
-          onChange={(value) => handleInputChange("roomTypeId", value)}
-        ></AutocompleteForm>
-      </Grid>
+      {project?.type === projectTypeIndex.Decor && (
+        <Grid item xs={12} lg={6}>
+          <AutocompleteForm
+            title="Loại phòng"
+            titleSpan={3}
+            fieldSpan={9}
+            subtitle="Chọn loại phòng"
+            value={formData.roomTypeId}
+            options={roomtypes}
+            error={formData.roomTypeError.hasError}
+            errorLabel={formData.roomTypeError.label}
+            onChange={(value) => handleInputChange("roomTypeId", value)}
+          ></AutocompleteForm>
+        </Grid>
+      )}
+
       {/* <MenuItem value={value.id} key={value.id}>
                                         {value.name} - {value.pricePerArea} VND/m² -{" "}
                                         {value.estimateDayPerArea} ngày/m² */}

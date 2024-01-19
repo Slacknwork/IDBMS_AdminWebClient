@@ -223,19 +223,7 @@ export default function RoomDetailsPage() {
       description="Thông tin chi tiết của phòng"
     >
       <Grid container spacing={2}>
-        <Grid item xs={2} lg={2}>
-          <Button
-            component={Link}
-            disableElevation
-            variant="contained"
-            color="primary"
-            href={`/projects/${params.id}/tasks?viewMode=1&floor=${formData.floorId}&room=${params.roomId}`}
-            endIcon={<AssignmentIcon />}
-          >
-            Xem công việc
-          </Button>
-        </Grid>
-        <Grid item xs={10} lg={10}>
+        <Grid item xs={12} lg={12}>
           <DetailsPage
             loading={loading}
             title="Thông tin phòng"
@@ -396,6 +384,20 @@ export default function RoomDetailsPage() {
                   </Grid>
                 </Grid>
               </Card>
+
+              <Grid sx={{ mt: 3, mx: "auto", textAlign: "center" }}>
+                <Button
+                  component={Link}
+                  disableElevation
+                  variant="contained"
+                  color="primary"
+                  href={`/projects/${params.id}/tasks?viewMode=1&floor=${formData.floorId}&room=${params.roomId}`}
+                  endIcon={<AssignmentIcon />}
+                >
+                  Xem công việc
+                </Button>
+              </Grid>
+
             </Grid>
           </DetailsPage>
         </Grid>
