@@ -113,6 +113,8 @@ export default function RequestList() {
     setNote(e.target.value);
   };
   const onUpdateSubmit = async (request, status) => {
+    request.status = status
+    request.adminReply = note
     try {
       await processBookingRequestStatus(request.id, request);
       toast.success("Cập nhật thành công!");
