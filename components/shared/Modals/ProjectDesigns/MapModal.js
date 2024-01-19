@@ -65,6 +65,8 @@ export default function MapProjectDesignModal({ success }) {
       submitLabel="Tạo"
       onSubmit={onSubmit}
       confirmBeforeSubmit
+      hasOpenEvent
+      onOpen={fetchData}
       confirmBeforeSubmitMessage="Xác nhận tạo các giai đoạn đã liệt kê?"
     >
       <Grid item xs={12} lg={12}>
