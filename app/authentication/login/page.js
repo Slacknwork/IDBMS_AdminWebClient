@@ -9,7 +9,7 @@ import AuthLogin from "../auth/AuthLogin";
 
 const Login2 = () => {
   return (
-    <PageContainer title="Login" description="this is Login page">
+    <PageContainer title="Đăng nhập" description="this is Login page">
       <Box
         sx={{
           position: "relative",
