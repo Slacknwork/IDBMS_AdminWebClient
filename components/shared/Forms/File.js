@@ -93,7 +93,10 @@ export default function FormFile({
                 height={500}
                 style={{ objectFit: "contain", width: "100%", height: "100%" }}
                 onError={(e) => {
-                  setPreviewImage("/images/results/no-image.png");
+                  if (imgDisplay !== null)
+                    setPreviewImage("/images/results/has-file.png");
+                  else
+                    setPreviewImage("/images/results/no-image.png");
                 }}
                 unoptimized={true}
               />
