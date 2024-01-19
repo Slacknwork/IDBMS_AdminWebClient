@@ -9,13 +9,13 @@ const checkValidField = ({
 } = {}) => {
   try {
     // check undefined
-    if (value === undefined)
-      return { isValid: false, label: "Dữ liệu không xác định!" };
+    // if (value === undefined)
+    // return { isValid: false, label: "Dữ liệu không xác định!" };
 
     // check required field
     if (
       required &&
-      (value === null || (typeof value === "string" && value.trim() === ""))
+      (value === undefined || value === null || (typeof value === "string" && value.trim() === ""))
     )
       return { isValid: false, label: "Không được để trống!" };
 

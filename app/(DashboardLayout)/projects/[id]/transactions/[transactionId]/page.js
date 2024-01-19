@@ -261,6 +261,9 @@ export default function TransactionDetails() {
 
   useEffect(() => {
     fetchDataFromApi();
+  }, []);
+
+  useEffect(() => {
     if (!switchSubmit) return;
 
     const hasErrors = Object.values(formData).some((field) => field?.hasError);

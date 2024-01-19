@@ -394,7 +394,7 @@ export default function PaymentStages() {
                           {response.closeAllowed && (
                             <MessageModal
                               disabled={loading}
-                              color="success"
+                              color="error"
                               buttonLabel={"Đóng"}
                               onSubmit={() => handleCloseStage(response.stage.id)}
                               title={"Đóng giai đoạn"}
