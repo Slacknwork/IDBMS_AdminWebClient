@@ -90,6 +90,14 @@ export default function ProjectDetailsLayout({ children }) {
     );
   }, [participationRole?.role, user?.role]);
 
+  const [isViewer, setIsViewer] = useState(true);
+  useEffect(() => {
+    setIsViewer(
+      participationRole?.role &&
+        participationRole?.role === participationRoleIndex.Viewer
+    );
+  }, [participationRole?.role]);
+
   useEffect(() => {
     dispatch(fetchProjectData(params.id));
     !isAdmin &&
@@ -386,13 +394,7 @@ export default function ProjectDetailsLayout({ children }) {
         <Tabs
           shadows
           uriPos={3}
-          tabs={
-            participationRole &&
-            participationRole.role &&
-            participationRole.role !== participationRoleIndex.Viewer
-              ? TabItems
-              : viewerItems
-          }
+          tabs={isViewer ? viewerItems : TabItems}
         ></Tabs>
         <Box sx={{ mt: 3 }}>{children}</Box>
       </Box>
