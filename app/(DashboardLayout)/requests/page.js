@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 
 import {
   getBookingRequests,
-  updateBookingRequestStatus,
+  processBookingRequestStatus,
 } from "/services/bookingRequestServices";
 
 import projectTypeOptions, {
@@ -114,7 +114,7 @@ export default function RequestList() {
   };
   const onUpdateSubmit = async (request, status) => {
     try {
-      await updateBookingRequestStatus(request.id, status, note);
+      await processBookingRequestStatus(request.id, request);
       toast.success("Cập nhật thành công!");
       router.push(
         `/sites?createSite=true&contactName=${request.contactName}&contactPhone=${request.contactPhone}&contactEmail=${request.contactEmail}&contactLocation=${request.contactLocation}`

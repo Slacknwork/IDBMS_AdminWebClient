@@ -61,10 +61,10 @@ const updateBookingRequest = async (id, request) => {
   }
 };
 
-const updateBookingRequestStatus = async (id, status, request) => {
+const processBookingRequestStatus = async (id, request) => {
   try {
     const token = store.getState().user?.token ?? "";
-    const url = `${endpoint}/${id}/process?status=${status}`;
+    const url = `${endpoint}/${id}/process`;
     const response = await fetchData({
       url,
       method: "PUT",
@@ -74,7 +74,7 @@ const updateBookingRequestStatus = async (id, status, request) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating booking request status:", error);
+    console.error("Error process booking request:", error);
     throw error;
   }
 };
@@ -83,5 +83,5 @@ export {
   getBookingRequests,
   createBookingRequest,
   updateBookingRequest,
-  updateBookingRequestStatus,
+  processBookingRequestStatus,
 };
