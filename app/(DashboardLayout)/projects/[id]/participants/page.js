@@ -45,7 +45,6 @@ import CreateNotificationModalForProject from "/components/shared/Modals/Notific
 import UpdateParticipationRoleModal from "/components/shared/Modals/Participations/UpdateParticipationRoleModal";
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
@@ -132,6 +131,7 @@ export default function Comments() {
 
   // FETCH AVAILABLE USERS DATA
   const fetchAvailableUsers = async ({ setRole } = {}) => {
+    if (!isAdminAuthorized) return;
     try {
       const projectId = params.id;
       const search = userSearch;
@@ -183,7 +183,7 @@ export default function Comments() {
 
   const handleModalResult = () => {
     fetchDataFromApi();
-    fetchAvailableUsersData()
+    fetchAvailableUsersData();
   };
 
   const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
@@ -298,14 +298,17 @@ export default function Comments() {
           ></FilterComponent>
         </Box>
         <Box sx={{ display: "flex" }}>
-
           {/*isAdminAuthorized && (
             <CreateNotificationModalForProject success={handleModalResult}>
               Gửi thông báo
             </CreateNotificationModalForProject>
           )*/}
 
-          <CreateParticipationModal sx={{ ml: 1 }} success={handleModalResult} list={users}>
+          <CreateParticipationModal
+            sx={{ ml: 1 }}
+            success={handleModalResult}
+            list={users}
+          >
             Tạo
           </CreateParticipationModal>
         </Box>
