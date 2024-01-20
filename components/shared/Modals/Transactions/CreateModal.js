@@ -257,7 +257,7 @@ export default function CreateTransactionModal({ success }) {
       isOpen={openModal}
       setOpenModal={setOpenModal}
       buttonLabel="Tạo"
-      title="Tạo tài liệu"
+      title="Tạo giao dịch thanh toán"
       submitLabel="Tạo"
       onSubmit={handleSubmit}
       size="big"
