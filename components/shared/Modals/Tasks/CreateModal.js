@@ -114,7 +114,7 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          required: true
+          required: true,
         });
 
         break;
@@ -258,8 +258,14 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
       setFormData((prevData) => ({
         ...prevData,
         code: selectedTaskDesign.code || null,
-        name: project?.language === languageIndex.English ? selectedTaskDesign.englishName : selectedTaskDesign.name ?? "",
-        description: project?.language === languageIndex.English ? selectedTaskDesign?.englishDescription : selectedTaskDesign?.description ?? "",
+        name:
+          project?.language === languageIndex.English
+            ? selectedTaskDesign.englishName
+            : selectedTaskDesign.name ?? "",
+        description:
+          project?.language === languageIndex.English
+            ? selectedTaskDesign?.englishDescription
+            : selectedTaskDesign?.description ?? "",
         percentage: 0,
         calculationUnit: selectedTaskDesign?.calculationUnit ?? -1,
         pricePerUnit: selectedTaskDesign.estimatePricePerUnit || 0,
@@ -337,7 +343,10 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           fieldSpan={9}
           subtitle="Chọn mẫu công việc"
           value={formData.taskDesignId}
-          options={taskDesigns.filter((taskdesign) => taskdesign?.taskCategory?.projectType === project?.type)}
+          options={taskDesigns.filter(
+            (taskdesign) =>
+              taskdesign?.taskCategory?.projectType === project?.type
+          )}
           error={formData.taskDesignIdError.hasError}
           errorLabel={formData.taskDesignIdError.label}
           onChange={(value) => {
@@ -405,8 +414,8 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           options={calculationUnitOptions}
           defaultValue={-1}
           defaultLabel="Chọn một..."
-          error={formData.statusError.hasError}
-          errorLabel={formData.statusError.label}
+          error={formData.calculationUnitError.hasError}
+          errorLabel={formData.calculationUnitError.label}
           onChange={(value) => handleInputChange("calculationUnit", value)}
         ></SelectForm>
       </Grid>
