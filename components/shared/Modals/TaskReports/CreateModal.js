@@ -64,7 +64,7 @@ export default function CreateReportModal({ success }) {
         result = checkValidField({
           value: value,
           minValue: 0,
-          required: true
+          required: true,
         });
 
         break;
@@ -147,11 +147,13 @@ export default function CreateReportModal({ success }) {
   const handleCreate = async () => {
     try {
       if (!switchSubmit) return;
-      const response = await createTaskReport(params.id, formData, params.id);
+      toast.loading("Đang tạo báo cáo...");
+      await createTaskReport(params.id, formData, params.id);
+      toast.dismiss();
       toast.success("Thêm thành công!");
       success(true);
     } catch (error) {
-      console.error("Error :", error);
+      toast.dismiss();
       toast.error("Lỗi!");
     }
   };
@@ -161,7 +163,6 @@ export default function CreateReportModal({ success }) {
       const task = await getProjectTaskById(params.taskId, params.id);
       setTask(task);
     } catch (error) {
-      console.error("Error :", error);
       toast.error("Lỗi nạp dữ liệu 'Công việc' từ hệ thống!");
     }
   };

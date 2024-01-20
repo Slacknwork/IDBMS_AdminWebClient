@@ -28,6 +28,7 @@ import projectDocumentCategories from "/constants/enums/projectDocumentCategory"
 import { companyRoleConstants } from "/constants/enums/companyRole";
 
 import { getDocumentsByProjectId } from "/services/projectDocumentServices";
+import { downloadFileByUrl } from "/services/downloadServices";
 
 import GenerateContractModal from "/components/shared/Modals/Contract/GenerateModal";
 import DocumentModal from "/components/shared/Modals/ProjectDocuments/CreateModal";
@@ -114,6 +115,17 @@ export default function ProjectDocuments() {
     fetchDataFromApi();
   };
 
+  const onDownload = async (document) => {
+    try {
+      toast.loading(`Đang tải ${document.name}...`);
+      await downloadFileByUrl({ imageUrl: document?.url });
+      toast.dismiss();
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Lỗi tải file!");
+    }
+  };
+
   return (
     <Box sx={{ zIndex: 1 }}>
       {/* Filter and Search */}
@@ -192,6 +204,7 @@ export default function ProjectDocuments() {
                       disableElevation
                       color="primary"
                       endIcon={<IconDownload></IconDownload>}
+                      onClick={() => onDownload(document)}
                     >
                       Tải
                     </Button>
