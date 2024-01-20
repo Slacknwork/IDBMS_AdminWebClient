@@ -244,7 +244,7 @@ export default function CreateWarrantyClaimModal({ success }) {
       <Grid item xs={12} lg={6}>
         <CheckForm
           required
-          title="Bảo Hiểm Công Ty"
+          title="Xử lý bởi công ty"
           checked={formData.isCompanyCover}
           onChange={(e) =>
             handleInputChange("isCompanyCover", e.target.checked)
