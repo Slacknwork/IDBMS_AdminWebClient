@@ -124,7 +124,7 @@ export default function Comments() {
   // AVAILABLE USERS
   const [usersLoading, setUsersLoading] = useState(false);
   const [users, setUsers] = useState([]);
-  const [userRole, setUserRole] = useState(companyRoleIndex.Customer);
+  const [userRole, setUserRole] = useState("");
   const [userCount, setUserCount] = useState(0);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(defaultPage);
