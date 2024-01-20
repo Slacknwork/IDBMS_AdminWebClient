@@ -143,7 +143,6 @@ export default function Comments() {
         search,
         role,
         page,
-        pageSize,
       });
 
       setUsers(availableUsers?.list ?? []);
