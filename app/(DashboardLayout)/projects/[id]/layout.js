@@ -85,8 +85,8 @@ export default function ProjectDetailsLayout({ children }) {
   useEffect(() => {
     setIsManager(
       (user?.role && user?.role === companyRoleConstants.ADMIN) ||
-        (participationRole?.role &&
-          participationRole?.role === participationRoleIndex.ProjectManager)
+      (participationRole?.role &&
+        participationRole?.role === participationRoleIndex.ProjectManager)
     );
   }, [participationRole?.role, user?.role]);
 
@@ -94,7 +94,7 @@ export default function ProjectDetailsLayout({ children }) {
   useEffect(() => {
     setIsViewer(
       participationRole?.role &&
-        participationRole?.role === participationRoleIndex.Viewer
+      participationRole?.role === participationRoleIndex.Viewer
     );
   }, [participationRole?.role]);
 
@@ -110,16 +110,16 @@ export default function ProjectDetailsLayout({ children }) {
   return (
     <PageContainer>
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={7} sx={{ my: "auto" }}>
+        <Grid item xs={12} lg={6} sx={{ my: "auto" }}>
           <Typography variant="h2">{project?.name ?? "Dự án"}</Typography>
         </Grid>
-        <Grid item xs={12} lg={5} sx={{ my: "auto" }}>
+        <Grid item xs={12} lg={6} sx={{ my: "auto" }}>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             {user?.role && user?.role !== roleConstants.ADMIN && (
               <Chip
                 label={
                   participationRoleOptions[
-                    participationRole?.role ?? participationRoleIndex.Viewer
+                  participationRole?.role ?? participationRoleIndex.Viewer
                   ]
                 }
                 color={"primary"}
@@ -241,7 +241,7 @@ export default function ProjectDetailsLayout({ children }) {
                         >
                           <Box sx={{ display: "flex" }}>
                             {project?.status === projectStatusIndex.Suspended &&
-                            index === projectStatusIndex.Ongoing ? (
+                              index === projectStatusIndex.Ongoing ? (
                               <PauseCircleIcon
                                 sx={{ my: "auto", mr: 2 }}
                                 color="error"
@@ -278,7 +278,7 @@ export default function ProjectDetailsLayout({ children }) {
                             <>
                               {project?.status ===
                                 projectStatusIndex.Suspended &&
-                              index === projectStatusIndex.Ongoing ? (
+                                index === projectStatusIndex.Ongoing ? (
                                 <MessageModal
                                   buttonSize="small"
                                   buttonLabel="Tiếp tục"
@@ -292,7 +292,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                  projectStatusIndex.Ongoing &&
+                                projectStatusIndex.Ongoing &&
                                 index === projectStatusIndex.Ongoing ? (
                                 <MessageModal
                                   color="error"
@@ -323,7 +323,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                  projectStatusIndex.Ongoing &&
+                                projectStatusIndex.Ongoing &&
                                 index === projectStatusIndex.WarrantyPending ? (
                                 <MessageModal
                                   buttonSize="small"
@@ -340,7 +340,7 @@ export default function ProjectDetailsLayout({ children }) {
                                   </Typography>
                                 </MessageModal>
                               ) : project?.status ===
-                                  projectStatusIndex.WarrantyPending &&
+                                projectStatusIndex.WarrantyPending &&
                                 index === projectStatusIndex.Done ? (
                                 <MessageModal
                                   disabled={isInWarranty()}
