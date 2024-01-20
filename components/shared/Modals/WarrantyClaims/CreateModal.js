@@ -255,7 +255,6 @@ export default function CreateWarrantyClaimModal({ success }) {
       {/* END DATE */}
       <Grid item xs={12} lg={6}>
         <DateForm
-          datetime
           title="Ngày kết thúc"
           titleSpan={6}
           fieldSpan={6}
