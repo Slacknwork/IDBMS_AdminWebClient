@@ -74,8 +74,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
     taskDesignIdError: { hasError: false, label: "" },
     roomId: searchParams.get(roomQuery) ?? null,
     roomIdError: { hasError: false, label: "" },
-    status: 0,
-    statusError: { hasError: false, label: "" },
     designCategoryId: "",
     taskCategoryId: "",
     taskCategoryIdError: { hasError: false, label: "" },
@@ -125,13 +123,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
           value: value,
           minValue: 0,
           checkZeroValue: true,
-          required: true,
-        });
-
-        break;
-      case "status":
-        result = checkValidField({
-          value: value,
           required: true,
         });
 
@@ -519,24 +510,6 @@ export default function CreateTaskModal({ hasCallback, onCallback }) {
             handleInputChange("paymentStageId", value);
           }}
         ></AutocompleteForm>
-      </Grid>
-
-      {/* STATUS */}
-      <Grid item xs={12} lg={6}>
-        <SelectForm
-          title="Trạng thái"
-          titleSpan={6}
-          fieldSpan={6}
-          required
-          subtitle="Trạng thái của công việc"
-          value={formData.status}
-          options={projectTaskStatusOptions}
-          defaultValue={-1}
-          defaultLabel="Chọn một..."
-          error={formData.statusError.hasError}
-          errorLabel={formData.statusError.label}
-          onChange={(value) => handleInputChange("status", value)}
-        ></SelectForm>
       </Grid>
 
       {/* START DATE - END DATE

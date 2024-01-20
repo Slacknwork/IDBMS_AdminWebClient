@@ -94,15 +94,9 @@ const createWarrantyClaim = async (request) => {
         const token = store.getState().user?.token ?? "";
 
         Object.keys(request).forEach((key) => {
-            const value = request[key];
-
-            if ((key.endsWith("Date") || key.endsWith("Time")) && (value !== null && value !== "")) {
-                formData.append(key, value.format("YYYY-MM-DD"))
+            if (!key.endsWith("Error")) {
+                formData.append(key, request[key]);
             }
-            else
-                if (!key.endsWith("Error")) {
-                    formData.append(key, request[key]);
-                }
         });
 
         const url = `${endpoint}`;
@@ -126,10 +120,10 @@ const updateWarrantyClaim = async (id, request) => {
 
         for (const key in request) {
             if (request[key] === null) {
-              request[key] = "";
+                request[key] = "";
             }
-          }
-          
+        }
+
         Object.keys(request).forEach((key) => {
             if (!key.endsWith("Error")) {
                 formData.append(key, request[key]);

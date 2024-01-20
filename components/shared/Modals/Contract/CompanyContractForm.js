@@ -222,9 +222,9 @@ export default function CompanyContractForm({ formData, setFormData }) {
       {/* A POSITION */}
       <Grid item xs={12} lg={6}>
         <TextForm
-          title="Chức vụ công ty A"
+          title="Chức vụ đại diện bên A"
           required
-          subtitle="Nhập chức vụ trong công ty A"
+          subtitle="Nhập chức vụ đại diện bên A"
           value={formData.aPosition}
           error={formData.aPositionError.hasError}
           errorLabel={formData.aPositionError.label}
@@ -354,11 +354,11 @@ export default function CompanyContractForm({ formData, setFormData }) {
       {/* NUM OF A */}
       <Grid item xs={12} lg={6}>
         <NumberForm
-          title="Số lượng A"
+          title="Số lượng bản sao cho bên A"
           required
           titleSpan={6}
           fieldSpan={6}
-          subtitle="Số lượng A"
+          subtitle="Số lượng bản sao cho bên A"
           value={formData.numOfA}
           error={formData.numOfAError.hasError}
           errorLabel={formData.numOfAError.label}
@@ -369,11 +369,11 @@ export default function CompanyContractForm({ formData, setFormData }) {
       {/* NUM OF B */}
       <Grid item xs={12} lg={6}>
         <NumberForm
-          title="Số lượng B"
+          title="Số lượng bản sao cho bên B"
           required
           titleSpan={6}
           fieldSpan={6}
-          subtitle="Số lượng B"
+          subtitle="Số lượng bản sao cho bên B"
           value={formData.numOfB}
           error={formData.numOfBError.hasError}
           errorLabel={formData.numOfBError.label}

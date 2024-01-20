@@ -402,11 +402,11 @@ export default function CreateProjectModal({ formData, setFormData }) {
       {/* NUM OF A */}
       <Grid item xs={12} lg={6}>
         <NumberForm
-          title="Số lượng A"
+          title="Số lượng bản sao cho bên A"
           required
           titleSpan={6}
           fieldSpan={6}
-          subtitle="Số lượng A"
+          subtitle="Số lượng bản sao cho bên A"
           value={formData.numOfA}
           error={formData.numOfAError.hasError}
           errorLabel={formData.numOfAError.label}
@@ -417,11 +417,11 @@ export default function CreateProjectModal({ formData, setFormData }) {
       {/* NUM OF B */}
       <Grid item xs={12} lg={6}>
         <NumberForm
-          title="Số lượng B"
+          title="Số lượng bản sao cho bên B"
           required
           titleSpan={6}
           fieldSpan={6}
-          subtitle="Số lượng B"
+          subtitle="Số lượng bản sao cho bên B"
           value={formData.numOfB}
           error={formData.numOfBError.hasError}
           errorLabel={formData.numOfBError.label}

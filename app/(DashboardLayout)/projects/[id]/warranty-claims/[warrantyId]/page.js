@@ -50,7 +50,7 @@ export default function WarrantyClaimDetails() {
 
   const handleInputChange = (field, value) => {
     let result = { isValid: true, label: "" }
-    
+
     switch (field) {
       case "name":
         result = checkValidField({
@@ -282,21 +282,22 @@ export default function WarrantyClaimDetails() {
 
             {/* TOTAL PAID */}
             <Grid item xs={12} lg={6}>
-              <TextForm
+              <NumberForm
                 title="Tổng số tiền"
                 required
                 subtitle="Nhập tổng số tiền để Bảo hiểm"
                 value={formData.totalPaid}
                 error={formData.totalPaidError.hasError}
                 errorLabel={formData.totalPaidError.label}
-                onChange={(e) => handleInputChange("totalPaid", e.target.value)}
+                onChange={(value) => handleInputChange("totalPaid", value)}
+                endAdornment={<>VND</>}
               />
             </Grid>
 
             {/* IS COMPANY COVER */}
             <Grid item xs={12} lg={6}>
               <CheckForm
-                title="Bảo Hiểm bởi Công Ty"
+                title="Xử lý bởi công ty"
                 required
                 checked={formData.isCompanyCover}
                 onChange={(e) =>
