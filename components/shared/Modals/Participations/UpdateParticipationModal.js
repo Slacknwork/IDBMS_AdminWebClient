@@ -52,6 +52,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function UpdateParticipationModal({
   title = "Cập nhật",
+  sx,
+  buttonLabel,
   success,
   participationId,
   participationRole,
@@ -136,12 +138,13 @@ export default function UpdateParticipationModal({
 
   return (
     <FormModal
+      sx={sx}
       stickyBottom
-      buttonLabel="Cập nhật"
+      buttonLabel={buttonLabel ?? "Cập nhật"}
       title={title}
       submitLabel="Cập nhật"
       onSubmit={handleUpdate}
-      buttonEndIcon={<LoopIcon />}
+      buttonEndIcon={!buttonLabel && <LoopIcon />}
       hasOpenEvent
       onOpen={onOpenModal}
       confirmBeforeSubmit

@@ -24,7 +24,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 
-import participationRole, {
+import participationRoleOptions, {
   participationRoleIndex,
 } from "/constants/enums/participationRole";
 import { companyRoleIndex } from "/constants/enums/companyRole";
@@ -67,7 +67,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function Comments() {
   const user = useSelector((state) => state.user);
   const data = useSelector((state) => state.data);
-  const participation = data?.projectRole;
+  const participationRole = data?.projectRole;
 
   // CONSTANTS
   const searchQuery = "search";
@@ -129,6 +129,19 @@ export default function Comments() {
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(defaultPage);
 
+  const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsAdminAuthorized(
+      user?.role && user?.role === companyRoleConstants.ADMIN
+    );
+    setIsManager(
+      (user?.role && user?.role === companyRoleConstants.ADMIN) ||
+        (participationRole?.role &&
+          participationRole?.role === participationRoleIndex.ProjectManager)
+    );
+  }, [participationRole?.role, user?.role]);
+
   // FETCH AVAILABLE USERS DATA
   const fetchAvailableUsers = async ({ setRole } = {}) => {
     if (!isAdminAuthorized) return;
@@ -143,11 +156,9 @@ export default function Comments() {
         search,
         role,
         page,
-        pageSize,
       });
 
-      setUsers(availableUsers?.list ?? []);
-      setUserCount(availableUsers?.totalItem ?? 0);
+      setUsers(availableUsers);
     } catch (error) {
       toast.error("Lỗi nạp dữ liệu 'Danh sách người dùng' từ hệ thống");
     } finally {
@@ -185,11 +196,6 @@ export default function Comments() {
     fetchDataFromApi();
     fetchAvailableUsersData();
   };
-
-  const [isAdminAuthorized, setIsAdminAuthorized] = useState(false);
-  useEffect(() => {
-    setIsAdminAuthorized(user?.role === companyRoleConstants.ADMIN);
-  }, [user?.role]);
 
   return (
     <Box sx={{ overflow: "auto" }}>
@@ -291,7 +297,7 @@ export default function Comments() {
 
           <FilterComponent
             query={roleQuery}
-            options={participationRole}
+            options={participationRoleOptions}
             label="Vai trò"
             allValue={roleAllValue}
             allLabel="Tất cả"
@@ -303,14 +309,50 @@ export default function Comments() {
               Gửi thông báo
             </CreateNotificationModalForProject>
           )*/}
-
-          <CreateParticipationModal
+          {isManager && (
+            <UpdateParticipationModal
+              sx={{ mr: 1 }}
+              buttonLabel="Thêm thành viên"
+              title="Thêm thành viên"
+              participationRole={(project?.type ?? 0) + 2}
+              users={users.filter(
+                (user) =>
+                  user?.id &&
+                  user?.id !== projectManager?.userId &&
+                  user?.id !== projectOwner?.userId
+              )}
+              loading={usersLoading}
+              search={userSearch}
+              setSearch={setUserSearch}
+              handleOpen={() => onOpenModal((project?.type ?? 0) + 1)}
+              success={handleModalResult}
+            />
+          )}
+          {isManager && (
+            <UpdateParticipationModal
+              buttonLabel="Thêm người xem"
+              title="Thêm người xem"
+              participationRole={participationRoleIndex.Viewer}
+              users={users.filter(
+                (user) =>
+                  user?.id &&
+                  user?.id !== projectManager?.userId &&
+                  user?.id !== projectOwner?.userId
+              )}
+              loading={usersLoading}
+              search={userSearch}
+              setSearch={setUserSearch}
+              handleOpen={() => onOpenModal()}
+              success={handleModalResult}
+            />
+          )}
+          {/* <CreateParticipationModal
             sx={{ ml: 1 }}
             success={handleModalResult}
             list={users}
           >
             Tạo
-          </CreateParticipationModal>
+          </CreateParticipationModal> */}
         </Box>
       </Box>
       {loading ? (
@@ -347,7 +389,9 @@ export default function Comments() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" fontWeight={400}>
-                      <Chip label={participationRole[participant.role]}></Chip>
+                      <Chip
+                        label={participationRoleOptions[participant.role]}
+                      ></Chip>
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

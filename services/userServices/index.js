@@ -57,7 +57,7 @@ const getAvailableUsersForProject = async ({
   try {
     const token = store.getState().user?.token ?? "";
     const paramString = `projectId=${projectId}&searchParam=${search}&status=${status}&role=${role}&pageSize=${pageSize}&pageNo=${pageNo}`;
-    const url = `${endpoint}?${paramString}`;
+    const url = `${endpoint}/project/${projectId}/available-users?${paramString}`;
     const response = await fetchData({
       url,
       method: "GET",
